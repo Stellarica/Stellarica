@@ -1,0 +1,9 @@
+main: io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
+name: Minecraft-Starship-Plugin
+version: 1.0.0
+description: A shameless rip-off of Star Legacy's plguins.
+api-version: 1.17
+load: STARTUP
+author: Peter-Crawley
+website: https://github.com/Peter-Crawley/Minecraft-Starship-Plugin
+prefix: Minecraft Starship Plugin
