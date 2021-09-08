@@ -6,6 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin
 
 class MinecraftStarshipPlugin: JavaPlugin() {
 	override fun onEnable() {
-		Bukkit.getPluginManager().registerEvents(Interface(), this)
+		Bukkit.getPluginManager().registerEvents(Interface(this), this)
 	}
 }
