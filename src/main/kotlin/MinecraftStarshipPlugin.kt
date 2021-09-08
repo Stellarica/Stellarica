@@ -5,7 +5,20 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
 class MinecraftStarshipPlugin: JavaPlugin() {
-	override fun onEnable() {
-		Bukkit.getPluginManager().registerEvents(Interface(this), this)
+	companion object {
+		// I spent far too long trying to do this with kotlin getters and setters... I give up.
+		private lateinit var plugin: MinecraftStarshipPlugin
+
+		fun getPlugin(): MinecraftStarshipPlugin {
+			return plugin
+		}
 	}
+
+	override fun onEnable() {
+		plugin = this
+
+		Bukkit.getPluginManager().registerEvents(Interface(), this)
+	}
+
+
 }
