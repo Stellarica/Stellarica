@@ -6,8 +6,6 @@ import org.bukkit.entity.Player
 import ships.DetectionTask
 
 class Starship(val origin: Location, val player: Player) {
-	val detectedBlocks: MutableSet<Location> = mutableSetOf()
-
 	fun detect() {
 		DetectionTask(this).runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin())
 	}

@@ -1,8 +1,9 @@
 package ships
 
+import io.github.petercrawley.minecraftstarshipplugin.ships.MSPBlockLocation
 import io.github.petercrawley.minecraftstarshipplugin.ships.Starship
-import org.bukkit.Location
 import org.bukkit.Material
+import org.bukkit.World
 import org.bukkit.scheduler.BukkitRunnable
 
 class DetectionTask(private val starship: Starship): BukkitRunnable() {
@@ -14,17 +15,19 @@ class DetectionTask(private val starship: Starship): BukkitRunnable() {
 	override fun run() {
 		starship.player.sendMessage("Detecting Starship, this can take a few seconds.")
 
-		starship.detectedBlocks.clear()
+		val detectedBlocks: MutableSet<MSPBlockLocation> = mutableSetOf()
 
 		val startTime: Long = System.currentTimeMillis()
 
-		val checkedBlocks: MutableSet<Location> = mutableSetOf()
-		val blocksToCheck: MutableSet<Location> = mutableSetOf()
+		val checkedBlocks: MutableSet<MSPBlockLocation> = mutableSetOf()
+		val blocksToCheck: MutableSet<MSPBlockLocation> = mutableSetOf()
 
-		blocksToCheck.add(starship.origin)
+		val world: World = starship.origin.world
+
+		blocksToCheck.add(MSPBlockLocation(starship.origin))
 
 		while (blocksToCheck.isNotEmpty()) {
-			if (starship.detectedBlocks.size == 1000000) {
+			if (detectedBlocks.size == 1000000) {
 				starship.player.sendMessage("Reached arbitrary detection limit. (1,000,000)")
 				break
 			}
@@ -36,20 +39,20 @@ class DetectionTask(private val starship: Starship): BukkitRunnable() {
 
 			checkedBlocks.add(currentBlock)
 
-			if (nonDetectableBlocks.contains(currentBlock.block.type)) continue // NOT THREAD SAFE
+			if (nonDetectableBlocks.contains(currentBlock.bukkit(world).block.type)) continue // NOT THREAD SAFE
 
-			starship.detectedBlocks.add(currentBlock)
+			detectedBlocks.add(currentBlock)
 
-			blocksToCheck.add(currentBlock.clone().add( 1.0, 0.0, 0.0))
-			blocksToCheck.add(currentBlock.clone().add(-1.0, 0.0, 0.0))
-			blocksToCheck.add(currentBlock.clone().add( 0.0, 1.0, 0.0))
-			blocksToCheck.add(currentBlock.clone().add( 0.0,-1.0, 0.0))
-			blocksToCheck.add(currentBlock.clone().add( 0.0, 0.0, 1.0))
-			blocksToCheck.add(currentBlock.clone().add( 0.0, 0.0,-1.0))
+			blocksToCheck.add(currentBlock.add( 1, 0, 0))
+			blocksToCheck.add(currentBlock.add(-1, 0, 0))
+			blocksToCheck.add(currentBlock.add( 0, 1, 0))
+			blocksToCheck.add(currentBlock.add( 0,-1, 0))
+			blocksToCheck.add(currentBlock.add( 0, 0, 1))
+			blocksToCheck.add(currentBlock.add( 0, 0,-1))
 		}
 
 		val endTime: Long = System.currentTimeMillis()
 
-		starship.player.sendMessage("Detected " + starship.detectedBlocks.size + " blocks. Took " + (endTime - startTime) + "ms")
+		starship.player.sendMessage("Detected " + detectedBlocks.size + " blocks. Took " + (endTime - startTime) + "ms")
 	}
 }
