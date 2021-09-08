@@ -1,4 +1,6 @@
 # Minecraft-Starship-Plugin
-A shameless rip-off of Star Legacy's plugins.
+An open-source plugin that accomodates starships on Minecraft Bukkit servers.
 
-Discord: https://discord.gg/yhduWCPCrU
+*'A shameless rip-off of Star Legacy's plugins.'*
+
+[*Minecraft Starship Plugin* Discord Server]( https://discord.gg/yhduWCPCrU "*Minecraft Starship Plugin* Discord Server")
