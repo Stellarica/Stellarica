@@ -2,11 +2,8 @@ package io.github.petercrawley.minecraftstarshipplugin.ships
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.World
 import org.bukkit.entity.Player
-
 
 /*
 	I am aware that this async task is not properly being shutdown when the plugin is reloaded.
@@ -15,7 +12,7 @@ import org.bukkit.entity.Player
 	TODO: Fix.
  */
 
-class Starship(private val origin: Location, private val player: Player) {
+class Starship(private val origin: MSPLocation, private val owner: Player) {
 	// TODO: This should be loaded from a config file.
 	private val nonDetectableBlocks: Set<Material> = setOf(
 		Material.AIR
@@ -27,17 +24,15 @@ class Starship(private val origin: Location, private val player: Player) {
 
 	fun detect() {
 		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
-			player.sendMessage("Detecting Starship, this can take a few seconds.")
+			owner.sendMessage("Detecting Starship, this can take a few seconds.")
 
 			val startTime: Long = System.currentTimeMillis()
 
-			val world: World = origin.world
-
-			blocksToCheck.add(MSPLocation(origin))
+			blocksToCheck.add(origin)
 
 			while (blocksToCheck.isNotEmpty()) {
 				if (detectedBlocks.size == 1000000) {
-					player.sendMessage("Reached arbitrary detection limit. (1,000,000)")
+					owner.sendMessage("Reached arbitrary detection limit. (1,000,000)")
 					break
 				}
 
@@ -48,7 +43,7 @@ class Starship(private val origin: Location, private val player: Player) {
 
 				checkedBlocks.add(currentBlock)
 
-				if (nonDetectableBlocks.contains(currentBlock.bukkit(world).block.type)) continue
+				if (nonDetectableBlocks.contains(currentBlock.bukkit().block.type)) continue
 
 				detectedBlocks.add(currentBlock)
 
@@ -62,7 +57,7 @@ class Starship(private val origin: Location, private val player: Player) {
 
 			val endTime: Long = System.currentTimeMillis()
 
-			player.sendMessage("Detected " + detectedBlocks.size + " blocks. Took " + (endTime - startTime) + "ms")
+			owner.sendMessage("Detected " + detectedBlocks.size + " blocks. Took " + (endTime - startTime) + "ms")
 		})
 	}
 }
