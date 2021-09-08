@@ -17,7 +17,7 @@ class Interface: Listener {
 		if (event.clickedBlock!!.type != Material.JUKEBOX) return // Ignore blocks we don't care about.
 
 		// Later we will do more then just attempt to detect a ship
-		Starship(event.player).detect()
+		Starship(event.clickedBlock!!.location, event.player).detect()
 
 		event.isCancelled = true
 	}
