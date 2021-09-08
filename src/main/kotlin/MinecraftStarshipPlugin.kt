@@ -19,6 +19,4 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 		Bukkit.getPluginManager().registerEvents(Interface(), this)
 	}
-
-
 }
