@@ -13,26 +13,25 @@ import org.bukkit.entity.Player
  */
 
 class Starship(private val origin: MSPLocation, private val owner: Player) {
-	// TODO: This should be loaded from a config file.
-	private val nonDetectableBlocks: Set<Material> = setOf(
-		Material.AIR
-	)
-
 	private val detectedBlocks: MutableSet<MSPLocation> = mutableSetOf()
-	private val checkedBlocks:  MutableSet<MSPLocation> = mutableSetOf()
-	private val blocksToCheck:  MutableSet<MSPLocation> = mutableSetOf()
 
 	fun detect() {
 		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
-			owner.sendMessage("Detecting Starship, this can take a few seconds.")
+			owner.sendMessage("Detecting Starship.")
 
-			val startTime: Long = System.currentTimeMillis()
+			// TODO: This should be loaded from a config file.
+			val nonDetectableBlocks: Set<Material> = setOf(
+				Material.AIR
+			)
+
+			val checkedBlocks: MutableSet<MSPLocation> = mutableSetOf()
+			val blocksToCheck: MutableSet<MSPLocation> = mutableSetOf()
 
 			blocksToCheck.add(origin)
 
 			while (blocksToCheck.isNotEmpty()) {
-				if (detectedBlocks.size == 1000000) {
-					owner.sendMessage("Reached arbitrary detection limit. (1,000,000)")
+				if (detectedBlocks.size == 500000) {
+					owner.sendMessage("Reached arbitrary detection limit. (500,000)")
 					break
 				}
 
@@ -55,9 +54,41 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 				blocksToCheck.add(currentBlock.add( 0, 0,-1))
 			}
 
-			val endTime: Long = System.currentTimeMillis()
+			owner.sendMessage("Detected " + detectedBlocks.size + " blocks.")
+		})
+	}
 
-			owner.sendMessage("Detected " + detectedBlocks.size + " blocks. Took " + (endTime - startTime) + "ms")
+	private fun move(x: Int, y: Int, z: Int) {
+		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
+			var last = 0
+
+			var canMove = true
+
+			for (block in detectedBlocks) {
+				if (!detectedBlocks.contains(block.add(x, y, z))) {
+					if (!block.add(x, y, z).bukkit().block.type.isAir) {
+						canMove = false
+						break
+					}
+				}
+			}
+
+			if (!canMove) {
+				owner.sendMessage("Obstructed.")
+				return@Runnable
+			}
+
+			for (block in detectedBlocks) {
+				Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
+					val material = block.bukkit().block.type
+					block.bukkit().block.type = Material.AIR
+					block.x += x
+					block.y += y
+					block.z += z
+					block.bukkit().block.type = material
+				})
+			}
+
 		})
 	}
 }
