@@ -13,22 +13,23 @@ import org.bukkit.entity.Player
  */
 
 class Starship(private val origin: MSPLocation, private val owner: Player) {
-	// TODO: This should be loaded from a config file.
-	private val nonDetectableBlocks: Set<Material> = setOf(
-		Material.AIR
-	)
-
 	private val detectedBlocks: MutableSet<MSPLocation> = mutableSetOf()
-	private val checkedBlocks:  MutableSet<MSPLocation> = mutableSetOf()
-	private val blocksToCheck:  MutableSet<MSPLocation> = mutableSetOf()
 
 	fun detect() {
 		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
 			owner.sendMessage("Detecting Starship, this can take a few seconds.")
 
-			val startTime: Long = System.currentTimeMillis()
+			// TODO: This should be loaded from a config file.
+			val nonDetectableBlocks: Set<Material> = setOf(
+				Material.AIR
+			)
+
+			val checkedBlocks: MutableSet<MSPLocation> = mutableSetOf()
+			val blocksToCheck: MutableSet<MSPLocation> = mutableSetOf()
 
 			blocksToCheck.add(origin)
+
+			val startTime: Long = System.currentTimeMillis()
 
 			while (blocksToCheck.isNotEmpty()) {
 				if (detectedBlocks.size == 1000000) {
@@ -39,25 +40,47 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 				val currentBlock = blocksToCheck.first()
 				blocksToCheck.remove(currentBlock)
 
-				if (checkedBlocks.contains(currentBlock)) continue
+				if (!checkedBlocks.contains(currentBlock)) {
+					checkedBlocks.add(currentBlock)
 
-				checkedBlocks.add(currentBlock)
+					if (!nonDetectableBlocks.contains(currentBlock.bukkit().block.type)) {
+						detectedBlocks.add(currentBlock)
 
-				if (nonDetectableBlocks.contains(currentBlock.bukkit().block.type)) continue
-
-				detectedBlocks.add(currentBlock)
-
-				blocksToCheck.add(currentBlock.add( 1, 0, 0))
-				blocksToCheck.add(currentBlock.add(-1, 0, 0))
-				blocksToCheck.add(currentBlock.add( 0, 1, 0))
-				blocksToCheck.add(currentBlock.add( 0,-1, 0))
-				blocksToCheck.add(currentBlock.add( 0, 0, 1))
-				blocksToCheck.add(currentBlock.add( 0, 0,-1))
+						blocksToCheck.add(currentBlock.add( 1, 0, 0))
+						blocksToCheck.add(currentBlock.add(-1, 0, 0))
+						blocksToCheck.add(currentBlock.add( 0, 1, 0))
+						blocksToCheck.add(currentBlock.add( 0,-1, 0))
+						blocksToCheck.add(currentBlock.add( 0, 0, 1))
+						blocksToCheck.add(currentBlock.add( 0, 0,-1))
+					}
+				}
 			}
 
 			val endTime: Long = System.currentTimeMillis()
 
 			owner.sendMessage("Detected " + detectedBlocks.size + " blocks. Took " + (endTime - startTime) + "ms")
+
+			move(0, 1, 0)
+		})
+	}
+
+	private fun move(x: Int, y: Int, z: Int) {
+		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
+			var last = 0
+
+			var canMove = true
+
+			for (block in detectedBlocks) {
+				if (!detectedBlocks.contains(block.add(x, y, z))) {
+					if (!block.bukkit().block.type.isAir) {
+						canMove = false
+						break
+					}
+				}
+			}
+
+
+			println(canMove)
 		})
 	}
 }
