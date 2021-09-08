@@ -6,6 +6,16 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.scheduler.BukkitRunnable
 
+/*
+
+	I am aware that this async task is not properly being shutdown when the plugin is reloaded.
+	I will fix it later.
+
+	TODO: Fix.
+
+ */
+
+
 class DetectionTask(private val starship: Starship): BukkitRunnable() {
 	// TODO: This should be loaded from a config file.
 	private val nonDetectableBlocks: Set<Material> = setOf(
