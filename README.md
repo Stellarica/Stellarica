@@ -1,5 +1,5 @@
 # Minecraft-Starship-Plugin
-An open-source plugin that accomodates starships on Minecraft Bukkit servers.
+An open-source plugin that accommodates starships on minecraft servers.
 
 *'A shameless rip-off of Star Legacy's plugins.'*
 
