@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin
+package io.github.petercrawley.minecraftstarshipplugin.Ships
 
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
