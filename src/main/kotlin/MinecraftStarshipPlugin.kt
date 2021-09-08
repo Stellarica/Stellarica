@@ -1,5 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin
 
+import io.github.petercrawley.minecraftstarshipplugin.Ships.Interface
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 
