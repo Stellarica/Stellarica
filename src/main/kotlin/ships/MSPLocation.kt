@@ -34,7 +34,7 @@ class MSPLocation {
 
 	override fun equals(other: Any?): Boolean {
 		if (other !is MSPLocation) return false
-		if (other.world != world)
+		if (other.world != world) return false
 		if (other.x != x) return false
 		if (other.y != y) return false
 		if (other.z != z) return false
