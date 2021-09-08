@@ -21,9 +21,9 @@ class Starship(private val origin: Location, private val player: Player) {
 		Material.AIR
 	)
 
-	private val detectedBlocks: MutableSet<MSPBlockLocation> = mutableSetOf()
-	private val checkedBlocks: MutableSet<MSPBlockLocation> = mutableSetOf()
-	private val blocksToCheck: MutableSet<MSPBlockLocation> = mutableSetOf()
+	private val detectedBlocks: MutableSet<MSPLocation> = mutableSetOf()
+	private val checkedBlocks:  MutableSet<MSPLocation> = mutableSetOf()
+	private val blocksToCheck:  MutableSet<MSPLocation> = mutableSetOf()
 
 	fun detect() {
 		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
@@ -33,7 +33,7 @@ class Starship(private val origin: Location, private val player: Player) {
 
 			val world: World = origin.world
 
-			blocksToCheck.add(MSPBlockLocation(origin))
+			blocksToCheck.add(MSPLocation(origin))
 
 			while (blocksToCheck.isNotEmpty()) {
 				if (detectedBlocks.size == 1000000) {
