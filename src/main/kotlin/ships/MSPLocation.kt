@@ -3,7 +3,7 @@ package io.github.petercrawley.minecraftstarshipplugin.ships
 import org.bukkit.Location
 import org.bukkit.World
 
-class MSPBlockLocation {
+class MSPLocation {
 	var x: Int = 0
 	var y: Int = 0
 	var z: Int = 0
@@ -24,12 +24,12 @@ class MSPBlockLocation {
 		return Location(world, x.toDouble(), y.toDouble(), z.toDouble())
 	}
 
-	fun add(x: Int, y: Int, z: Int): MSPBlockLocation {
-		return MSPBlockLocation(this.x + x, this.y + y, this.z + z)
+	fun add(x: Int, y: Int, z: Int): MSPLocation {
+		return MSPLocation(this.x + x, this.y + y, this.z + z)
 	}
 
 	override fun equals(other: Any?): Boolean {
-		if (other !is MSPBlockLocation) return false
+		if (other !is MSPLocation) return false
 		if (other.x != x) return false
 		if (other.y != y) return false
 		if (other.z != z) return false
