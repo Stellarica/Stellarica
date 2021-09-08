@@ -16,6 +16,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 	override fun onEnable() {
 		plugin = this
+		plugin.saveDefaultConfig() // Save the default config, doesn't overwrite existing
 
 		Bukkit.getPluginManager().registerEvents(Interface(), this)
 	}

@@ -19,10 +19,19 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
 			owner.sendMessage("Detecting Starship.")
 
-			// TODO: This should be loaded from a config file.
-			val nonDetectableBlocks: Set<Material> = setOf(
-				Material.AIR
-			)
+			// Get the non-detectable blocks from the config file
+			// Probably not the best idea to put it here, this should probably be done on a config reload
+			val nonDetectableBlocks: MutableSet<Material> = mutableSetOf(Material.AIR)
+
+			MinecraftStarshipPlugin.getPlugin().config.getStringList("non-detectable-blocks").forEach {
+				if (Material.getMaterial(it) == null){
+					MinecraftStarshipPlugin.getPlugin().logger.
+					warning("No Material for $it! Make sure all non-detectable blocks are correctly named!")
+				}
+				else {
+					nonDetectableBlocks.add(Material.getMaterial(it)!!)
+				}
+			}
 
 			val checkedBlocks: MutableSet<MSPLocation> = mutableSetOf()
 			val blocksToCheck: MutableSet<MSPLocation> = mutableSetOf()
