@@ -15,7 +15,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		}
 	}
 
-	val nonDetectableBlocks: MutableSet<Material> = mutableSetOf(Material.AIR)
+	val nonDetectableBlocks: MutableSet<Material> = mutableSetOf()
 
 	override fun onEnable() {
 		plugin = this
