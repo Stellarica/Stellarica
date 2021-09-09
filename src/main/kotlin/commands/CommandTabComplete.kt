@@ -9,7 +9,7 @@ class CommandTabComplete : TabCompleter {
         val subcommands: MutableList<String> = ArrayList()
         if (args.size == 1) {
             // /msp <x>
-            if (sender.hasPermission("msp.config.reload")) {
+            if (sender.hasPermission("msp.config.reload") || sender.hasPermission("msp.config.reset")) {
                 subcommands.add("config")
             }
         }
