@@ -14,11 +14,16 @@ class MSPCommands : CommandExecutor {
             return false;
         }
         if (args[0].equals("config",ignoreCase = true) &&
-            (sender.hasPermission("msp.config.reset") || sender.hasPermission("msp.config.reload"))){
-            if (args[1].equals("reset",ignoreCase = true)){
+            (sender.hasPermission("msp.config.reset") || sender.hasPermission("msp.config.reload"))) {
+
+            if (args.size == 1) {
+                sender.sendMessage("Not enough arguments for command!")
+                return false;
+            }
+            if (args[1].equals("reset", ignoreCase = true)) {
                 return resetConfig(sender)
             }
-            if (args[1].equals("reload",ignoreCase = true) && sender.hasPermission("msp.config.reload")){
+            if (args[1].equals("reload", ignoreCase = true) && sender.hasPermission("msp.config.reload")) {
                 return reloadConfig(sender)
             }
         }
