@@ -3,6 +3,7 @@ package io.github.petercrawley.minecraftstarshipplugin.ships
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.World
+import org.bukkit.block.Block
 
 class MSPLocation {
 	var world: World = Bukkit.getWorlds()[0]
@@ -24,8 +25,8 @@ class MSPLocation {
 		z = bukkit.blockZ
 	}
 
-	fun bukkit(): Location {
-		return Location(world, x.toDouble(), y.toDouble(), z.toDouble())
+	fun block(): Block {
+		return world.getBlockAt(x, y, z)
 	}
 
 	fun add(x: Int, y: Int, z: Int): MSPLocation {

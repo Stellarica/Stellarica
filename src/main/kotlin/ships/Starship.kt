@@ -37,7 +37,7 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 
 				checkedBlocks.add(currentBlock)
 
-				val type = currentBlock.bukkit().block.type
+				val type = currentBlock.block().type
 
 				if (type == Material.AIR) continue
 
@@ -65,7 +65,7 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 
 			for (block in detectedBlocks) {
 				if (!detectedBlocks.contains(block.add(x, y, z))) {
-					if (!block.add(x, y, z).bukkit().block.type.isAir) {
+					if (!block.add(x, y, z).block().type.isAir) {
 						canMove = false
 						break
 					}
@@ -79,12 +79,12 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 
 			for (block in detectedBlocks) {
 				Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
-					val material = block.bukkit().block.type
-					block.bukkit().block.type = Material.AIR
+					val material = block.block().type
+					block.block().type = Material.AIR
 					block.x += x
 					block.y += y
 					block.z += z
-					block.bukkit().block.type = material
+					block.block().type = material
 				})
 			}
 
