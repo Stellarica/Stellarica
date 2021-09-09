@@ -23,6 +23,6 @@ permissions:
 commands:
   msp:
     description: Base Minecraft Starship Plugin command
-    usage: /<command>
+    usage: /<command> [config]
     permission: msp
     permission-message: You do not have permission to use this command! # might be redundant

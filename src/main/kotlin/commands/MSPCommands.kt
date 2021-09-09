@@ -9,6 +9,10 @@ import java.io.File
 
 class MSPCommands : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
+        if (args.isEmpty()){
+            sender.sendMessage("Please input at least one argument!")
+            return false;
+        }
         if (args[0].equals("config",ignoreCase = true) && sender.hasPermission("msp.config.reset")){
             if (args[1].equals("reset",ignoreCase = true)){
                 return resetConfig(sender)
