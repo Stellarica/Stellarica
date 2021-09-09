@@ -37,7 +37,11 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 
 				checkedBlocks.add(currentBlock)
 
-				if (MinecraftStarshipPlugin.getPlugin().nonDetectableBlocks.contains(currentBlock.bukkit().block.type)) continue
+				val type = currentBlock.bukkit().block.type
+
+				if (type == Material.AIR) continue
+
+				if (MinecraftStarshipPlugin.getPlugin().nonDetectableBlocks.contains(type)) continue
 
 				detectedBlocks.add(currentBlock)
 
