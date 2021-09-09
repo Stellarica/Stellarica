@@ -13,7 +13,8 @@ class MSPCommands : CommandExecutor {
             sender.sendMessage("Please input at least one argument!")
             return false;
         }
-        if (args[0].equals("config",ignoreCase = true) && sender.hasPermission("msp.config.reset")){
+        if (args[0].equals("config",ignoreCase = true) &&
+            (sender.hasPermission("msp.config.reset") || sender.hasPermission("msp.config.reload"))){
             if (args[1].equals("reset",ignoreCase = true)){
                 return resetConfig(sender)
             }
