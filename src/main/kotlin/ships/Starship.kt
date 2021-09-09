@@ -19,11 +19,6 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
 			owner.sendMessage("Detecting Starship.")
 
-			// TODO: This should be loaded from a config file.
-			val nonDetectableBlocks: Set<Material> = setOf(
-				Material.AIR
-			)
-
 			val checkedBlocks: MutableSet<MSPLocation> = mutableSetOf()
 			val blocksToCheck: MutableSet<MSPLocation> = mutableSetOf()
 
@@ -42,7 +37,7 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 
 				checkedBlocks.add(currentBlock)
 
-				if (nonDetectableBlocks.contains(currentBlock.bukkit().block.type)) continue
+				if (MinecraftStarshipPlugin.getPlugin().nonDetectableBlocks.contains(currentBlock.bukkit().block.type)) continue
 
 				detectedBlocks.add(currentBlock)
 
