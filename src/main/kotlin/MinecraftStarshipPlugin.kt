@@ -32,7 +32,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 	fun updateNonDetectableBlocks(){
 		// Get the non-detectable blocks from the config file
-		nonDetectableBlocks = mutableSetOf(Material.AIR)
+		nonDetectableBlocks = mutableSetOf()
 		config.getStringList("non-detectable-blocks").forEach {
 			if (Material.getMaterial(it) == null){
 				logger.warning("No Material for $it! Make sure all non-detectable blocks are correctly named!")
