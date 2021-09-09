@@ -1,6 +1,3 @@
-# DETECTABLE BLOCK CONFIGURATION FILE
-# You can add or remove items from this list as long as the format is adhered to.
-
 non-detectable-blocks:
   - ACACIA_LEAVES
   - ACACIA_LOG
@@ -41,8 +38,6 @@ non-detectable-blocks:
   - BRICKS
   - BROWN_MUSHROOM
   - BROWN_MUSHROOM_BLOCK
-#I do not think that BUBBLE_COLUMN would work, but have added it anyway in case it causes bugs.
-  - BUBBLE_COLUMN
   - BUBBLE_CORAL
   - BUBBLE_CORAL_BLOCK
   - BUBBLE_CORAL_FAN
@@ -52,8 +47,6 @@ non-detectable-blocks:
   - CALCITE
   - CAMPFIRE
   - CARVED_PUMPKIN
-#Another odd one which has been included because it may cause bugs.
-  - CAVE_AIR
   - CAVE_VINES
   - CAVE_VINES_PLANT
   - CHAIN_COMMAND_BLOCK
@@ -131,16 +124,12 @@ non-detectable-blocks:
   - DRIED_KELP_BLOCK
   - DRIPSTONE_BLOCK
   - EMERALD_ORE
-#Weird tile entity which might cause issues?
-  - END_CRYSTAL
   - END_GATEWAY
   - END_PORTAL
   - END_STONE
   - END_STONE_BRICKS
   - FARMLAND
   - FERN
-#Making this detectable might allow for some nicer ship damage effects.
-  - FIRE
   - FIRE_CORAL
   - FIRE_CORAL_BLOCK
   - FIRE_CORAL_FAN
@@ -149,8 +138,6 @@ non-detectable-blocks:
   - FLOWERING_AZALEA_LEAVES
   - FROSTED_ICE
   - GILDED_BLACKSTONE
-#How does your ship detection work with tile entities?
-  - GLOW_ITEM_FRAME
   - GLOW_LICHEN
   - GRANITE
   - GRASS_BLOCK
@@ -188,7 +175,6 @@ non-detectable-blocks:
   - LILY_OF_THE_VALLEY
   - LILY_PAD
   - MEDIUM_AMETHYST_BUD
-#No 'MELON_BLOCK' is in the enum cases list of materials?
   - MELON
   - MELON_STEM
   - MOSSY_COBBLESTONE
@@ -318,4 +304,3 @@ non-detectable-blocks:
   - WHEAT
   - WHITE_TULIP
   - WITHER_ROSE
-  - 
