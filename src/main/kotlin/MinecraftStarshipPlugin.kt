@@ -7,6 +7,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.plugin.java.JavaPlugin
 import org.hjson.JsonValue
+import java.io.File
 
 class MinecraftStarshipPlugin: JavaPlugin() {
 	companion object {
@@ -35,7 +36,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		// Get the non-detectable blocks from the config file
 		nonDetectableBlocks = mutableSetOf()
 
-		JsonValue.readHjson(plugin.getTextResource("config.hjson")).asObject()["non-detectable-blocks"].asArray().forEach {
+		JsonValue.readHjson(File(plugin.dataFolder, "config.hjson").bufferedReader()).asObject()["non-detectable-blocks"].asArray().forEach {
 			val value = it.asString()
 
 			if (Material.getMaterial(value) == null){
