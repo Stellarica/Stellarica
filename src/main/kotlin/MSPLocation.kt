@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.ships
+package io.github.petercrawley.minecraftstarshipplugin
 
 import org.bukkit.Bukkit
 import org.bukkit.Location

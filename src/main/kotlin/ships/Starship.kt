@@ -1,6 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin.ships
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MSPLocation
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
