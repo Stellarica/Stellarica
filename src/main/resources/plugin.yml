@@ -7,7 +7,6 @@ load: STARTUP
 author: Peter-Crawley
 website: https://github.com/Peter-Crawley/Minecraft-Starship-Plugin
 prefix: Minecraft Starship Plugin
-
 permissions:
   msp:
     description: Base Minecraft Starship Plugin permission
@@ -18,11 +17,11 @@ permissions:
   msp.config.reset:
     description: Lets users reset the configuration file
     default: op
-
-
 commands:
   msp:
     description: Base Minecraft Starship Plugin command
     usage: /<command> [config]
     permission: msp
     permission-message: You do not have permission to use this command! # might be redundant
+libraries:
+  - org.hjson:hjson:3.0.0
