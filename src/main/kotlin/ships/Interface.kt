@@ -1,5 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin.ships
 
+import io.github.petercrawley.minecraftstarshipplugin.MSPLocation
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
