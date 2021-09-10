@@ -21,9 +21,13 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 	var nonDetectableBlocks: MutableSet<Material> = mutableSetOf()
 
+	override fun saveDefaultConfig() {
+		plugin.saveResource("config.hjson", false)
+	}
+
 	override fun onEnable() {
 		plugin = this
-		plugin.saveResource("config.hjson", false)
+		plugin.saveDefaultConfig()
 		plugin.updateNonDetectableBlocks()
 
 		Bukkit.getPluginManager().registerEvents(Interface(), this)
