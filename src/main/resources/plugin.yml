@@ -4,7 +4,7 @@ version: 1.0.0
 description: An open-source plugin that accommodates starships on minecraft servers.  `A shameless rip-off of Star Legacy`s plguins.`
 api-version: 1.17
 load: STARTUP
-author: Peter-Crawley
+authors: ["Peter-Crawley", "trainb0y1", "DoctorXeno"]
 website: https://github.com/Peter-Crawley/Minecraft-Starship-Plugin
 prefix: Minecraft Starship Plugin
 
