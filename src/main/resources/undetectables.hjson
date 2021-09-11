@@ -3,6 +3,7 @@
 	forcedUndetectable: [
 		AIR
 		CAVE_AIR
+		VOID_AIR
 		BARRIER
 		LIGHT
 		SPAWNER
@@ -16,6 +17,9 @@
 
 	// These blocks can not be detected by default, but users can allow there detection when using the interface.
 	defaultUndetectable: [
+		BROWN_MUSHROOM_BLOCK
+		RED_MUSHROOM_BLOCK
+		MUSHROOM_STEM
 		ACACIA_LEAVES
 		ACACIA_LOG
 		ACACIA_SAPLING
