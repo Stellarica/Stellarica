@@ -1,13 +1,13 @@
 package io.github.petercrawley.minecraftstarshipplugin.commands
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import java.io.File
 
 class Commands : CommandExecutor {
-    private val plugin = MinecraftStarshipPlugin.getPlugin()
+    private val plugin = getPlugin()
 
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (args.isEmpty()){
