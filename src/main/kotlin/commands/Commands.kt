@@ -6,7 +6,6 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import java.io.File
 
-
 class Commands : CommandExecutor {
     override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
         if (args.isEmpty()){
