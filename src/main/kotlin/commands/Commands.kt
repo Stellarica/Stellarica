@@ -29,7 +29,6 @@ class Commands : CommandExecutor {
         return false
     }
 
-
     private fun resetConfig(sender: CommandSender): Boolean{
         val plugin = MinecraftStarshipPlugin.getPlugin()
         val configFile = File(plugin.dataFolder, "undetectables.hjson")
