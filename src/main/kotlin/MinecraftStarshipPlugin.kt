@@ -2,6 +2,7 @@ package io.github.petercrawley.minecraftstarshipplugin
 
 import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplete
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
+import io.github.petercrawley.minecraftstarshipplugin.customblocks.CustomBlocksListener
 import io.github.petercrawley.minecraftstarshipplugin.ships.Interface
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -38,7 +39,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		reloadConfig()
 
 		Bukkit.getPluginManager().registerEvents(Interface(), this)
-		Bukkit.getPluginManager().registerEvents(CustomBlocks(), this)
+		Bukkit.getPluginManager().registerEvents(CustomBlocksListener(), this)
 
 		plugin.getCommand("msp")!!.setExecutor(Commands())
 		plugin.getCommand("msp")!!.tabCompleter = CommandTabComplete()

@@ -1,5 +1,6 @@
-package io.github.petercrawley.minecraftstarshipplugin
+package io.github.petercrawley.minecraftstarshipplugin.customblocks
 
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -12,7 +13,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent
 import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
 
-class CustomBlocks: Listener {
+class CustomBlocksListener: Listener {
 	// For our purposes BlockPistonExtendEvent and BlockPistonRetractEvent can be handled the same way.
 	private fun mushroomBlockMovedByPiston(blocks: List<Block>, direction: BlockFace) {
 		val blocksToChange = mutableMapOf<Block, BlockData>()
