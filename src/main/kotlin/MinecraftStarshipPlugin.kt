@@ -5,6 +5,8 @@ import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.ships.Interface
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.event.*
+import org.bukkit.plugin.RegisteredListener
 import org.bukkit.plugin.java.JavaPlugin
 import org.hjson.JsonValue
 import java.io.File
@@ -31,6 +33,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		plugin.updateNonDetectableBlocks()
 
 		Bukkit.getPluginManager().registerEvents(Interface(), this)
+		Bukkit.getPluginManager().registerEvents(CustomBlocks(), this)
 
 		plugin.getCommand("msp")!!.setExecutor(Commands())
 		plugin.getCommand("msp")!!.tabCompleter = CommandTabComplete()
