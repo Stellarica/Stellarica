@@ -1,4 +1,5 @@
 {
+	// These blocks can not be detected at all.
 	forcedUndetectable: [
 		AIR
 		CAVE_AIR
@@ -12,6 +13,8 @@
 		STRUCTURE_VOID
 		STRUCTURE_BLOCK
 	],
+
+	// These blocks can not be detected by default, but users can allow there detection when using the interface.
 	defaultUndetectable: [
 		ACACIA_LEAVES
 		ACACIA_LOG
@@ -46,7 +49,6 @@
 		BRAIN_CORAL_FAN
 		BRAIN_CORAL_WALL_FAN
 		BROWN_MUSHROOM
-		BROWN_MUSHROOM_BLOCK
 		BUBBLE_CORAL
 		BUBBLE_CORAL_BLOCK
 		BUBBLE_CORAL_FAN
@@ -167,7 +169,6 @@
 		MOSSY_COBBLESTONE
 		MOSS_BLOCK
 		MOSS_CARPET
-		MUSHROOM_STEM
 		MYCELIUM
 		NETHERRACK
 		NETHER_GOLD_ORE
@@ -196,7 +197,6 @@
 		PUMPKIN_STEM
 		REDSTONE_ORE
 		RED_MUSHROOM
-		RED_MUSHROOM_BLOCK
 		RED_SAND
 		RED_SANDSTONE
 		RED_TULIP
