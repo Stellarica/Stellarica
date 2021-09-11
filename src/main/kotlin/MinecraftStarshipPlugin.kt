@@ -18,13 +18,14 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		fun getPlugin(): MinecraftStarshipPlugin {
 			return plugin
 		}
+
+		var forcedUndetectable = mutableSetOf<Material>()
+		var defaultUndetectable = mutableSetOf<Material>()
+
+		var mainConfig: JsonObject = JsonObject()
 	}
 
-	var nonDetectableBlocks: MutableSet<Material> = mutableSetOf()
-
-	lateinit var config: JsonObject
-
-	fun saveDefault(name:String) {
+	private fun saveDefault(name:String) {
 		if (!File(plugin.dataFolder, name).exists()){
 			// Although it won't overwrite it creates some useless warnings
 			plugin.saveResource(name, false)
@@ -33,11 +34,8 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 	override fun onEnable() {
 		plugin = this
-		plugin.saveDefault("undetectables.hjson")
-		plugin.updateNonDetectableBlocks()
 
-		config = JsonValue.readHjson(File(plugin.dataFolder, "config.hjson").bufferedReader()).asObject()!!
-		plugin.saveDefault("config.hjson")
+		reloadConfig()
 
 		Bukkit.getPluginManager().registerEvents(Interface(), this)
 		Bukkit.getPluginManager().registerEvents(CustomBlocks(), this)
@@ -46,19 +44,36 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		plugin.getCommand("msp")!!.tabCompleter = CommandTabComplete()
 	}
 
-	fun updateNonDetectableBlocks() {
+	override fun reloadConfig() {
+		plugin.saveDefault("undetectables.hjson")
+		plugin.saveDefault("config.hjson")
+
 		// Get the non-detectable blocks from the config file
-		nonDetectableBlocks = mutableSetOf()
+		forcedUndetectable = mutableSetOf()
+		defaultUndetectable = mutableSetOf()
+
+		JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()["forcedUndetectable"].asArray().forEach {
+			val value = it.asString()
+
+			if (Material.getMaterial(value) == null){
+				logger.warning("No Material for $it! Make sure all forced undetectable blocks are correctly named!")
+			}
+			else {
+				defaultUndetectable.add(Material.getMaterial(value)!!)
+			}
+		}
 
 		JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()["defaultUndetectable"].asArray().forEach {
 			val value = it.asString()
 
 			if (Material.getMaterial(value) == null){
-				logger.warning("No Material for $it! Make sure all non-detectable blocks are correctly named!")
+				logger.warning("No Material for $it! Make sure all default undetectable blocks are correctly named!")
 			}
 			else {
-				nonDetectableBlocks.add(Material.getMaterial(value)!!)
+				defaultUndetectable.add(Material.getMaterial(value)!!)
 			}
 		}
+
+		mainConfig = JsonValue.readHjson(File(plugin.dataFolder, "config.hjson").bufferedReader()).asObject()!!
 	}
 }
