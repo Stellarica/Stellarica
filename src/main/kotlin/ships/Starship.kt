@@ -4,6 +4,8 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MSPLocation
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.block.Block
+import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
 
 /*
@@ -60,35 +62,36 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 
 	private fun move(x: Int, y: Int, z: Int) {
 		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
-			var last = 0
-
-			var canMove = true
-
 			for (block in detectedBlocks) {
 				if (!detectedBlocks.contains(block.add(x, y, z))) {
 					if (!block.add(x, y, z).block().type.isAir) {
-						canMove = false
-						break
+						owner.sendMessage("Obstructed at " + block.x + ", " + block.y + ", " + block.z  + " by " + block.block().type.toString())
+						return@Runnable
 					}
 				}
 			}
 
-			if (!canMove) {
-				owner.sendMessage("Obstructed.")
-				return@Runnable
+			val blocksToUpdate: MutableMap<Block, BlockData> = mutableMapOf()
+
+			// Start by getting all of the old positions and setting them to air.
+			val airBlockData = Bukkit.getServer().createBlockData(Material.AIR)
+
+			detectedBlocks.forEach {
+				blocksToUpdate[it.block()] = airBlockData
 			}
 
-			for (block in detectedBlocks) {
-				Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
-					val material = block.block().type
-					block.block().type = Material.AIR
-					block.x += x
-					block.y += y
-					block.z += z
-					block.block().type = material
-				})
+			// Now move all the blocks on out map.
+			detectedBlocks.forEach {
+				blocksToUpdate[it.add(x, y, z).block()] = it.block().blockData
 			}
 
+			Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
+				// Remember we have not actually made any changes yet, but we now have a list of all the positions, and what they need to be changed too.
+				// So lets actually move stuff now.
+				blocksToUpdate.forEach {
+					it.key.setBlockData(it.value, false)
+				}
+			})
 		})
 	}
 }
