@@ -12,6 +12,7 @@ class Interface: Listener {
 	fun interfaceUse(event: PlayerInteractEvent) {
 		if (event.hand != EquipmentSlot.HAND) return // PlayerInteractEvent is called twice for each hand.
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return // Ignore Air Punchers
+		if (event.player.isSneaking) return
 
 		// We know that event.clickedBlock is not null at this point because of the action.
 		if (event.clickedBlock!!.type != Material.JUKEBOX) return // Ignore blocks we don't care about.
