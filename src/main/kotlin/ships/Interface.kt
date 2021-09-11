@@ -1,6 +1,5 @@
 package io.github.petercrawley.minecraftstarshipplugin.ships
 
-import io.github.petercrawley.minecraftstarshipplugin.MSPLocation
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -18,7 +17,7 @@ class Interface: Listener {
 		if (event.clickedBlock!!.type != Material.JUKEBOX) return // Ignore blocks we don't care about.
 
 		// Later we will do more then just attempt to detect a ship
-		val ship = Starship(MSPLocation(event.clickedBlock!!.location), event.player)
+		val ship = Starship(event.clickedBlock!!, event.player)
 		ship.detect()
 
 		event.isCancelled = true
