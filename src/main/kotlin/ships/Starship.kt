@@ -43,9 +43,9 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 				val type = currentBlock.type
 
-				if (type == Material.AIR) continue
+				if (MinecraftStarshipPlugin.forcedUndetectable.contains(type)) continue
 
-				if (MinecraftStarshipPlugin.getPlugin().nonDetectableBlocks.contains(type)) continue
+				if (MinecraftStarshipPlugin.defaultUndetectable.contains(type)) continue
 
 				detectedBlocks.add(currentBlock)
 
@@ -61,7 +61,7 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 			val endTime = System.currentTimeMillis()
 
-			if (MinecraftStarshipPlugin.getPlugin().config.getBoolean("timeOperations", false)) {
+			if (MinecraftStarshipPlugin.mainConfig.getBoolean("timeOperations", false)) {
 				MinecraftStarshipPlugin.getPlugin().logger.info("Ship detection took: " + (endTime - startTime) + "ms.")
 			}
 		})
@@ -103,7 +103,7 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 				val endTime = System.currentTimeMillis()
 
-				if (MinecraftStarshipPlugin.getPlugin().config.getBoolean("timeOperations", false)) {
+				if (MinecraftStarshipPlugin.mainConfig.getBoolean("timeOperations", false)) {
 					MinecraftStarshipPlugin.getPlugin().logger.info("Ship movement took: " + (endTime - startTime) + "ms.")
 				}
 			})
