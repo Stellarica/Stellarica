@@ -14,7 +14,6 @@ import org.bukkit.event.block.BlockPlaceEvent
 
 class CustomBlocks: Listener {
 	// For our purposes BlockPistonExtendEvent and BlockPistonRetractEvent can be handled the same way.
-	// TODO: See if this can make use of async tasks.
 	private fun mushroomBlockMovedByPiston(blocks: List<Block>, direction: BlockFace) {
 		val blocksToChange = mutableMapOf<Block, BlockData>()
 
@@ -25,7 +24,7 @@ class CustomBlocks: Listener {
 
 		if (blocksToChange.isNotEmpty()) {
 			// Create a task to correct the blocks after the piston is done doing its thing.
-			Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
+			Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
 				blocksToChange.forEach { it.key.setBlockData(it.value, false) }
 			})
 		}
@@ -50,36 +49,37 @@ class CustomBlocks: Listener {
 	}
 
 	// Prevent the block faces from changing.
-	// TODO: See if this can make use of async tasks.
 	// TODO: On the client the mushroom blocks flash with the incorrect faces very briefly, see if this can be avoided.
 	@EventHandler fun mushroomBlockPhysicsEvent(event: BlockPhysicsEvent) {
 		if (event.changedType == Material.MUSHROOM_STEM) {
 			event.isCancelled = true
 
-			val blocksToUpdate = mutableSetOf<Block>()
-			val checkedBlocks = mutableSetOf<Block>()
+			Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
+				val blocksToUpdate = mutableSetOf<Block>()
+				val checkedBlocks = mutableSetOf<Block>()
 
-			blocksToUpdate.add(event.block)
+				blocksToUpdate.add(event.block)
 
-			while (blocksToUpdate.isNotEmpty()) {
-				val block = blocksToUpdate.first()
-				blocksToUpdate.remove(block)
+				while (blocksToUpdate.isNotEmpty()) {
+					val block = blocksToUpdate.first()
+					blocksToUpdate.remove(block)
 
-				if (checkedBlocks.contains(block)) continue
+					if (checkedBlocks.contains(block)) continue
 
-				checkedBlocks.add(block)
+					checkedBlocks.add(block)
 
-				if (block.type != Material.MUSHROOM_STEM) continue
+					if (block.type != Material.MUSHROOM_STEM) continue
 
-				block.state.update(true, false)
+					block.state.update(true, false)
 
-				blocksToUpdate.add(block.getRelative( 1, 0, 0))
-				blocksToUpdate.add(block.getRelative(-1, 0, 0))
-				blocksToUpdate.add(block.getRelative( 0, 1, 0))
-				blocksToUpdate.add(block.getRelative( 0,-1, 0))
-				blocksToUpdate.add(block.getRelative( 0, 0, 1))
-				blocksToUpdate.add(block.getRelative( 0, 0,-1))
-			}
+					blocksToUpdate.add(block.getRelative(1, 0, 0))
+					blocksToUpdate.add(block.getRelative(-1, 0, 0))
+					blocksToUpdate.add(block.getRelative(0, 1, 0))
+					blocksToUpdate.add(block.getRelative(0, -1, 0))
+					blocksToUpdate.add(block.getRelative(0, 0, 1))
+					blocksToUpdate.add(block.getRelative(0, 0, -1))
+				}
+			})
 		}
 	}
 }
