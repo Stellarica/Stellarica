@@ -1,6 +1,9 @@
 package io.github.petercrawley.minecraftstarshipplugin.ships
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -18,7 +21,7 @@ class Starship(private val origin: Block, private val owner: Player) {
 	private val detectedBlocks = mutableSetOf<Block>()
 
 	fun detect() {
-		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
+		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
 			val startTime = System.currentTimeMillis()
 
 			owner.sendMessage("Detecting Starship.")
@@ -43,9 +46,9 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 				val type = currentBlock.type
 
-				if (MinecraftStarshipPlugin.forcedUndetectable.contains(type)) continue
+				if (forcedUndetectable.contains(type)) continue
 
-				if (MinecraftStarshipPlugin.defaultUndetectable.contains(type)) continue
+				if (defaultUndetectable.contains(type)) continue
 
 				detectedBlocks.add(currentBlock)
 
@@ -61,14 +64,14 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 			val endTime = System.currentTimeMillis()
 
-			if (MinecraftStarshipPlugin.mainConfig.getBoolean("timeOperations", false)) {
-				MinecraftStarshipPlugin.getPlugin().logger.info("Ship detection took: " + (endTime - startTime) + "ms.")
+			if (mainConfig.getBoolean("timeOperations", false)) {
+				getPlugin().logger.info("Ship detection took: " + (endTime - startTime) + "ms.")
 			}
 		})
 	}
 
 	private fun move(x: Int, y: Int, z: Int) {
-		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
+		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
 			val startTime = System.currentTimeMillis()
 
 			for (block in detectedBlocks) {
@@ -94,7 +97,7 @@ class Starship(private val origin: Block, private val owner: Player) {
 				blocksToUpdate[it.getRelative(x, y, z)] = it.blockData
 			}
 
-			Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
+			Bukkit.getScheduler().runTask(getPlugin(), Runnable {
 				// Remember we have not actually made any changes yet, but we now have a list of all the positions, and what they need to be changed too.
 				// So lets actually move stuff now.
 				blocksToUpdate.forEach {
@@ -103,8 +106,8 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 				val endTime = System.currentTimeMillis()
 
-				if (MinecraftStarshipPlugin.mainConfig.getBoolean("timeOperations", false)) {
-					MinecraftStarshipPlugin.getPlugin().logger.info("Ship movement took: " + (endTime - startTime) + "ms.")
+				if (mainConfig.getBoolean("timeOperations", false)) {
+					getPlugin().logger.info("Ship movement took: " + (endTime - startTime) + "ms.")
 				}
 			})
 		})
