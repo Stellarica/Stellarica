@@ -1,7 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin
 
 import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -14,32 +13,35 @@ import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
 
 class CustomBlocks: Listener {
+	// For our purposes BlockPistonExtendEvent and BlockPistonRetractEvent can be handled the same way.
+	// TODO: See if this can make use of async tasks.
 	private fun mushroomBlockMovedByPiston(blocks: List<Block>, direction: BlockFace) {
-		val blocksToChange: MutableMap<Block, BlockData> = mutableMapOf()
+		val blocksToChange = mutableMapOf<Block, BlockData>()
 
+		// Add each mushroom block to the list.
 		blocks.forEach {
 			if (it.type == Material.MUSHROOM_STEM) blocksToChange[it.getRelative(direction)] = it.blockData
 		}
 
 		if (blocksToChange.isNotEmpty()) {
+			// Create a task to correct the blocks after the piston is done doing its thing.
 			Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
 				blocksToChange.forEach { it.key.setBlockData(it.value, false) }
 			})
 		}
 	}
 
-	@EventHandler
-	fun mushroomBlockPushedByPiston(event: BlockPistonExtendEvent) {
+	@EventHandler fun mushroomBlockPushedByPiston(event: BlockPistonExtendEvent) {
 		mushroomBlockMovedByPiston(event.blocks, event.direction)
 	}
 
-	@EventHandler
-	fun mushroomBlockPulledByPiston(event: BlockPistonRetractEvent) {
+	@EventHandler fun mushroomBlockPulledByPiston(event: BlockPistonRetractEvent) {
 		mushroomBlockMovedByPiston(event.blocks, event.direction)
 	}
 
-	@EventHandler
-	fun mushroomBlockPlaced(event: BlockPlaceEvent) {
+	// If a mushroom block is placed force its faces to all be true.
+	// This allows us to keep allowing the use of the blocks in builds.
+	@EventHandler fun mushroomBlockPlaced(event: BlockPlaceEvent) {
 		val block = event.blockPlaced
 
 		if (block.type != Material.MUSHROOM_STEM) return
@@ -47,15 +49,17 @@ class CustomBlocks: Listener {
 		block.setBlockData(Bukkit.getServer().createBlockData(Material.MUSHROOM_STEM), false)
 	}
 
-	@EventHandler
-	fun mushroomBlockPhysicsEvent(event: BlockPhysicsEvent) {
+	// Prevent the block faces from changing.
+	// TODO: See if this can make use of async tasks.
+	// TODO: On the client the mushroom blocks flash with the incorrect faces very briefly, see if this can be avoided.
+	@EventHandler fun mushroomBlockPhysicsEvent(event: BlockPhysicsEvent) {
 		if (event.changedType == Material.MUSHROOM_STEM) {
 			event.isCancelled = true
 
-			val blocksToUpdate = mutableSetOf<Location>()
-			val checkedBlocks = mutableSetOf<Location>()
+			val blocksToUpdate = mutableSetOf<Block>()
+			val checkedBlocks = mutableSetOf<Block>()
 
-			blocksToUpdate.add(event.block.location)
+			blocksToUpdate.add(event.block)
 
 			while (blocksToUpdate.isNotEmpty()) {
 				val block = blocksToUpdate.first()
@@ -65,16 +69,16 @@ class CustomBlocks: Listener {
 
 				checkedBlocks.add(block)
 
-				if (block.block.type != Material.MUSHROOM_STEM) continue
+				if (block.type != Material.MUSHROOM_STEM) continue
 
-				block.block.state.update(true, false)
+				block.state.update(true, false)
 
-				blocksToUpdate.add(block.clone().add( 1.0, 0.0, 0.0))
-				blocksToUpdate.add(block.clone().add(-1.0, 0.0, 0.0))
-				blocksToUpdate.add(block.clone().add( 0.0, 1.0, 0.0))
-				blocksToUpdate.add(block.clone().add( 0.0,-1.0, 0.0))
-				blocksToUpdate.add(block.clone().add( 0.0, 0.0, 1.0))
-				blocksToUpdate.add(block.clone().add( 0.0, 0.0,-1.0))
+				blocksToUpdate.add(block.getRelative( 1, 0, 0))
+				blocksToUpdate.add(block.getRelative(-1, 0, 0))
+				blocksToUpdate.add(block.getRelative( 0, 1, 0))
+				blocksToUpdate.add(block.getRelative( 0,-1, 0))
+				blocksToUpdate.add(block.getRelative( 0, 0, 1))
+				blocksToUpdate.add(block.getRelative( 0, 0,-1))
 			}
 		}
 	}
