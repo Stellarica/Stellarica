@@ -21,7 +21,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 	var nonDetectableBlocks: MutableSet<Material> = mutableSetOf()
 
-	fun saveDefault(name:String) {
+	private fun saveDefault(name:String) {
 		if (!File(plugin.dataFolder, name).exists()){
 			// Although it won't overwrite it creates some useless warnings
 			plugin.saveResource(name, false)
@@ -30,7 +30,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 	override fun onEnable() {
 		plugin = this
-		plugin.saveDefault("config.hjson")
+		plugin.saveDefault("undetectables.hjson")
 		plugin.updateNonDetectableBlocks()
 
 		Bukkit.getPluginManager().registerEvents(Interface(), this)
@@ -40,11 +40,11 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		plugin.getCommand("msp")!!.tabCompleter = CommandTabComplete()
 	}
 
-	fun updateNonDetectableBlocks(){
+	fun updateNonDetectableBlocks() {
 		// Get the non-detectable blocks from the config file
 		nonDetectableBlocks = mutableSetOf()
 
-		JsonValue.readHjson(File(plugin.dataFolder, "config.hjson").bufferedReader()).asObject()["non-detectable-blocks"].asArray().forEach {
+		JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()["non-detectable-blocks"].asArray().forEach {
 			val value = it.asString()
 
 			if (Material.getMaterial(value) == null){
