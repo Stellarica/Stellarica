@@ -4,6 +4,7 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
+import org.hjson.JsonValue
 import java.io.File
 
 class Commands : CommandExecutor {
@@ -31,16 +32,19 @@ class Commands : CommandExecutor {
 
     private fun resetConfig(sender: CommandSender): Boolean{
         val plugin = MinecraftStarshipPlugin.getPlugin()
-        val configFile = File(plugin.dataFolder, "undetectables.hjson")
-        configFile.delete()
-        plugin.saveDefaultConfig()
+        File(plugin.dataFolder, "undetectables.hjson").delete()
+        File(plugin.dataFolder, "config.hjson").delete()
+        plugin.saveDefault("undetectables.hjson")
+        plugin.saveDefault("config.hjson")
         plugin.reloadConfig()
         plugin.updateNonDetectableBlocks()
         sender.sendMessage("Reset config")
+        MinecraftStarshipPlugin.getPlugin().config = JsonValue.readHjson(File(MinecraftStarshipPlugin.getPlugin().dataFolder, "config.hjson").bufferedReader()).asObject()!!
         return true
     }
 
     private fun reloadConfig(sender: CommandSender): Boolean{
+        MinecraftStarshipPlugin.getPlugin().config = JsonValue.readHjson(File(MinecraftStarshipPlugin.getPlugin().dataFolder, "config.hjson").bufferedReader()).asObject()!!
         MinecraftStarshipPlugin.getPlugin().reloadConfig()
         MinecraftStarshipPlugin.getPlugin().updateNonDetectableBlocks()
         sender.sendMessage("Reloaded config")
