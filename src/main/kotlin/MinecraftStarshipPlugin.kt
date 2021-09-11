@@ -44,7 +44,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		// Get the non-detectable blocks from the config file
 		nonDetectableBlocks = mutableSetOf()
 
-		JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()["non-detectable-blocks"].asArray().forEach {
+		JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()["defaultUndetectable"].asArray().forEach {
 			val value = it.asString()
 
 			if (Material.getMaterial(value) == null){
