@@ -6,6 +6,7 @@ import io.github.petercrawley.minecraftstarshipplugin.ships.Interface
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.plugin.java.JavaPlugin
+import org.hjson.JsonObject
 import org.hjson.JsonValue
 import java.io.File
 
@@ -21,7 +22,9 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 	var nonDetectableBlocks: MutableSet<Material> = mutableSetOf()
 
-	private fun saveDefault(name:String) {
+	lateinit var config: JsonObject
+
+	fun saveDefault(name:String) {
 		if (!File(plugin.dataFolder, name).exists()){
 			// Although it won't overwrite it creates some useless warnings
 			plugin.saveResource(name, false)
@@ -32,6 +35,9 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		plugin = this
 		plugin.saveDefault("undetectables.hjson")
 		plugin.updateNonDetectableBlocks()
+
+		config = JsonValue.readHjson(File(plugin.dataFolder, "config.hjson").bufferedReader()).asObject()!!
+		plugin.saveDefault("config.hjson")
 
 		Bukkit.getPluginManager().registerEvents(Interface(), this)
 		Bukkit.getPluginManager().registerEvents(CustomBlocks(), this)
