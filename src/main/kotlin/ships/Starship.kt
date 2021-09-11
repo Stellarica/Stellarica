@@ -1,6 +1,5 @@
 package io.github.petercrawley.minecraftstarshipplugin.ships
 
-import io.github.petercrawley.minecraftstarshipplugin.MSPLocation
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -15,8 +14,8 @@ import org.bukkit.entity.Player
 	TODO: Fix.
  */
 
-class Starship(private val origin: MSPLocation, private val owner: Player) {
-	private val detectedBlocks: MutableSet<MSPLocation> = mutableSetOf()
+class Starship(private val origin: Block, private val owner: Player) {
+	private val detectedBlocks = mutableSetOf<Block>()
 
 	fun detect() {
 		Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
@@ -24,8 +23,8 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 
 			owner.sendMessage("Detecting Starship.")
 
-			val checkedBlocks: MutableSet<MSPLocation> = mutableSetOf()
-			val blocksToCheck: MutableSet<MSPLocation> = mutableSetOf()
+			val checkedBlocks = mutableSetOf<Block>()
+			val blocksToCheck = mutableSetOf<Block>()
 
 			blocksToCheck.add(origin)
 
@@ -42,7 +41,7 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 
 				checkedBlocks.add(currentBlock)
 
-				val type = currentBlock.block().type
+				val type = currentBlock.type
 
 				if (type == Material.AIR) continue
 
@@ -50,12 +49,12 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 
 				detectedBlocks.add(currentBlock)
 
-				blocksToCheck.add(currentBlock.add( 1, 0, 0))
-				blocksToCheck.add(currentBlock.add(-1, 0, 0))
-				blocksToCheck.add(currentBlock.add( 0, 1, 0))
-				blocksToCheck.add(currentBlock.add( 0,-1, 0))
-				blocksToCheck.add(currentBlock.add( 0, 0, 1))
-				blocksToCheck.add(currentBlock.add( 0, 0,-1))
+				blocksToCheck.add(currentBlock.getRelative( 1, 0, 0))
+				blocksToCheck.add(currentBlock.getRelative(-1, 0, 0))
+				blocksToCheck.add(currentBlock.getRelative( 0, 1, 0))
+				blocksToCheck.add(currentBlock.getRelative( 0,-1, 0))
+				blocksToCheck.add(currentBlock.getRelative( 0, 0, 1))
+				blocksToCheck.add(currentBlock.getRelative( 0, 0,-1))
 			}
 
 			owner.sendMessage("Detected " + detectedBlocks.size + " blocks.")
@@ -73,9 +72,9 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 			val startTime = System.currentTimeMillis()
 
 			for (block in detectedBlocks) {
-				if (!detectedBlocks.contains(block.add(x, y, z))) {
-					if (!block.add(x, y, z).block().type.isAir) {
-						owner.sendMessage("Obstructed at " + block.x + ", " + block.y + ", " + block.z  + " by " + block.block().type.toString())
+				if (!detectedBlocks.contains(block.getRelative(x, y, z))) {
+					if (!block.getRelative(x, y, z).type.isAir) {
+						owner.sendMessage("Obstructed at " + block.x + ", " + block.y + ", " + block.z  + " by " + block.type.toString())
 						return@Runnable
 					}
 				}
@@ -87,12 +86,12 @@ class Starship(private val origin: MSPLocation, private val owner: Player) {
 			val airBlockData = Bukkit.getServer().createBlockData(Material.AIR)
 
 			detectedBlocks.forEach {
-				blocksToUpdate[it.block()] = airBlockData
+				blocksToUpdate[it] = airBlockData
 			}
 
 			// Now move all the blocks on out map.
 			detectedBlocks.forEach {
-				blocksToUpdate[it.add(x, y, z).block()] = it.block().blockData
+				blocksToUpdate[it.getRelative(x, y, z)] = it.blockData
 			}
 
 			Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
