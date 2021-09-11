@@ -7,7 +7,8 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.block.*
+import org.bukkit.event.block.BlockPistonExtendEvent
+import org.bukkit.event.block.BlockPistonRetractEvent
 
 class CustomBlocks: Listener {
 	private fun mushroomBlockMovedByPiston(blocks: List<Block>, direction: BlockFace) {
