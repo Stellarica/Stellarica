@@ -52,7 +52,9 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		forcedUndetectable = mutableSetOf()
 		defaultUndetectable = mutableSetOf()
 
-		JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()["forcedUndetectable"].asArray().forEach {
+		val configFile = JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()
+
+		configFile["forcedUndetectable"].asArray().forEach {
 			val value = it.asString()
 
 			if (Material.getMaterial(value) == null){
@@ -63,7 +65,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 			}
 		}
 
-		JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()["defaultUndetectable"].asArray().forEach {
+		configFile["defaultUndetectable"].asArray().forEach {
 			val value = it.asString()
 
 			if (Material.getMaterial(value) == null){
