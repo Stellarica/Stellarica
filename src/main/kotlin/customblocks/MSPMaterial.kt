@@ -55,13 +55,6 @@ class MSPMaterial {
 	}
 
 	override fun equals(other: Any?): Boolean {
-		if (this === other) return true
-		if (javaClass != other?.javaClass) return false
-
-		other as MSPMaterial
-
-		if (material != other.material) return false
-
-		return true
+		return if (other is MSPMaterial) material == other.material else material == other
 	}
 }
