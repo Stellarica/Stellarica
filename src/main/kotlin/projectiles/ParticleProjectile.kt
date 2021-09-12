@@ -24,7 +24,7 @@ class ParticleProjectile (val origin: Location, val beam: Boolean, val color: Co
             }
         }
         else {
-            ProjectileRunnable(this).runTaskTimer(getPlugin(), 1, 1);
+            ProjectileRunnable(this).runTaskTimer(getPlugin(), 1, 1)
         }
     }
 
