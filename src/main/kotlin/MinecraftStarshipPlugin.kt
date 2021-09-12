@@ -3,9 +3,9 @@ package io.github.petercrawley.minecraftstarshipplugin
 import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplete
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.CustomBlocksListener
+import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.ships.Interface
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.plugin.java.JavaPlugin
 import org.hjson.JsonObject
 import org.hjson.JsonValue
@@ -20,8 +20,8 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 			return plugin
 		}
 
-		var forcedUndetectable = mutableSetOf<Material>()
-		var defaultUndetectable = mutableSetOf<Material>()
+		var forcedUndetectable = mutableSetOf<MSPMaterial>()
+		var defaultUndetectable = mutableSetOf<MSPMaterial>()
 
 		var mainConfig: JsonObject = JsonObject()
 	}
@@ -56,25 +56,17 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		val configFile = JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()
 
 		configFile["forcedUndetectable"].asArray().forEach {
-			val value = it.asString()
+			val value = MSPMaterial(it.asString())
 
-			if (Material.getMaterial(value) == null){
-				logger.warning("No Material for $it! Make sure all forced undetectable blocks are correctly named!")
-			}
-			else {
-				defaultUndetectable.add(Material.getMaterial(value)!!)
-			}
+			if (value == null) logger.warning("No Material for $value! Make sure all forced undetectable blocks are correctly named!")
+			else forcedUndetectable.add(value)
 		}
 
 		configFile["defaultUndetectable"].asArray().forEach {
-			val value = it.asString()
+			val value = MSPMaterial(it.asString())
 
-			if (Material.getMaterial(value) == null){
-				logger.warning("No Material for $it! Make sure all default undetectable blocks are correctly named!")
-			}
-			else {
-				defaultUndetectable.add(Material.getMaterial(value)!!)
-			}
+			if (value == null) logger.warning("No Material for $value! Make sure all default undetectable blocks are correctly named!")
+			else defaultUndetectable.add(value)
 		}
 
 		mainConfig = JsonValue.readHjson(File(plugin.dataFolder, "config.hjson").bufferedReader()).asObject()!!

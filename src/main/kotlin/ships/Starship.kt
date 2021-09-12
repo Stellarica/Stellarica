@@ -4,7 +4,7 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
-import io.github.petercrawley.minecraftstarshipplugin.customblocks.CustomBlocks.bukkitToCustom
+import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -45,16 +45,11 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 				checkedBlocks.add(currentBlock)
 
-				val type = currentBlock.type
+				val type = MSPMaterial(currentBlock)
 
-				if (type == Material.MUSHROOM_STEM) {
-					if (bukkitToCustom(currentBlock) == "MUSHROOM_STEM") continue
+				if (forcedUndetectable.contains(type)) continue
 
-				} else {
-					if (forcedUndetectable.contains(type)) continue
-
-					if (defaultUndetectable.contains(type)) continue
-				}
+				if (defaultUndetectable.contains(type)) continue
 
 				detectedBlocks.add(currentBlock)
 
