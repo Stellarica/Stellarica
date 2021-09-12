@@ -63,7 +63,7 @@ class Interface(origin: Block, player: Player): Listener {
 	@EventHandler
 	fun onPlayerClick(event: InventoryClickEvent) {
 		if (event.inventory == screen) {
-			if (event.slot == 0) {
+			if (event.rawSlot == 0) {
 				starship.detect()
 				screen.close()
 				unregister()
