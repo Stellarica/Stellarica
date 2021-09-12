@@ -20,7 +20,7 @@ class ParticleProjectile (val origin: Location, val beam: Boolean, val color: Co
             // Simple beam mode, do it all on the same server tick
             for (i in 0..range) {
                 loc.add(direction)
-                tick(loc)
+                if (!tick(loc)) break // if it returned false it hit something
             }
         }
         else {
@@ -28,14 +28,14 @@ class ParticleProjectile (val origin: Location, val beam: Boolean, val color: Co
         }
     }
 
-    fun tick(loc: Location){
+    fun tick(loc: Location): Boolean{
         particle.location(loc).spawn()
 
         for (e in loc.world.getNearbyEntities(loc, 1.0, 1.0, 1.0)) {
             if (e is LivingEntity && origin.distance(loc) > minRange) {
                 e.damage(damage)
                 if (explosion > 0) loc.world.createExplosion(loc, explosion)
-                return // damage one entity only
+                return false // damage one entity only
             }
         }
 
@@ -46,7 +46,8 @@ class ParticleProjectile (val origin: Location, val beam: Boolean, val color: Co
                     loc.world.createExplosion(loc, explosion)
                 }
             }
-            return
+            return false
         }
+        return true
     }
 }
