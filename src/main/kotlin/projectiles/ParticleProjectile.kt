@@ -34,7 +34,7 @@ class ParticleProjectile (val origin: Location, val beam: Boolean, val color: Co
         for (e in loc.world.getNearbyEntities(loc, 1.0, 1.0, 1.0)) {
             if (e is LivingEntity && origin.distance(loc) > minRange) {
                 e.damage(damage)
-                loc.world.createExplosion(loc, explosion)
+                if (explosion > 0) loc.world.createExplosion(loc, explosion)
                 return // damage one entity only
             }
         }
