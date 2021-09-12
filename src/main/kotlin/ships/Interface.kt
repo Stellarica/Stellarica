@@ -1,6 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin.ships
 
-import org.bukkit.Material
+import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -10,17 +11,15 @@ import org.bukkit.inventory.EquipmentSlot
 class Interface: Listener {
 	@EventHandler
 	fun interfaceUse(event: PlayerInteractEvent) {
-		if (event.hand != EquipmentSlot.HAND) return // PlayerInteractEvent is called twice for each hand.
-		if (event.action != Action.RIGHT_CLICK_BLOCK) return // Ignore Air Punchers
-		if (event.player.isSneaking) return
+		if (event.hand == EquipmentSlot.HAND && event.action == Action.RIGHT_CLICK_BLOCK && !event.player.isSneaking) {
+			val clickedBlock: Block = event.clickedBlock!!
 
-		// We know that event.clickedBlock is not null at this point because of the action.
-		if (event.clickedBlock!!.type != Material.JUKEBOX) return // Ignore blocks we don't care about.
+			if (MSPMaterial(clickedBlock) == MSPMaterial("INTERFACE")) {
+				val ship = Starship(event.clickedBlock!!, event.player)
+				ship.detect()
 
-		// Later we will do more then just attempt to detect a ship
-		val ship = Starship(event.clickedBlock!!, event.player)
-		ship.detect()
-
-		event.isCancelled = true
+				event.isCancelled = true
+			}
+		}
 	}
 }
