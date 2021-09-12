@@ -44,51 +44,43 @@ class CustomBlocksListener: Listener {
 	@EventHandler fun mushroomBlockPlaced(event: BlockPlaceEvent) {
 		val block = event.blockPlaced
 
-		if (block.type != Material.MUSHROOM_STEM) return
+		if (block.type != Material.MUSHROOM_STEM) return // If it's not a mushroom stem, ignore it.
 
-		block.setBlockData(Bukkit.getServer().createBlockData(Material.MUSHROOM_STEM), false)
+		block.setBlockData(Bukkit.getServer().createBlockData(Material.MUSHROOM_STEM), false) // A blank block data will have all sides set to true.
 	}
 
 	// Prevent the block faces from changing.
+	// This has to be done on the main thread as doing it async will cause issues.
 	// TODO: On the client the mushroom blocks flash with the incorrect faces very briefly, see if this can be avoided.
 	@EventHandler fun mushroomBlockPhysicsEvent(event: BlockPhysicsEvent) {
 		if (event.changedType == Material.MUSHROOM_STEM) {
 			event.isCancelled = true
 
-			Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
-				val blocksToUpdate = mutableSetOf<Block>()
+			val blocksToUpdate = mutableSetOf<Block>()
+			val checkedBlocks = mutableSetOf<Block>()
 
-				val queuedBlocks = mutableSetOf<Block>()
-				val checkedBlocks = mutableSetOf<Block>()
+			blocksToUpdate.add(event.block)
 
-				blocksToUpdate.add(event.block)
+			// It is important to find every block that changed as these changes will be processed client side, so we need to update ALL of them to ensure they are all correct client side.
+			while (blocksToUpdate.isNotEmpty()) {
+				val block = blocksToUpdate.first()
+				blocksToUpdate.remove(block)
 
-				while (queuedBlocks.isNotEmpty()) {
-					val block = queuedBlocks.first()
-					queuedBlocks.remove(block)
+				if (checkedBlocks.contains(block)) continue
 
-					if (checkedBlocks.contains(block)) continue
+				checkedBlocks.add(block)
 
-					checkedBlocks.add(block)
+				if (block.type != Material.MUSHROOM_STEM) continue
 
-					if (block.type != Material.MUSHROOM_STEM) continue
+				block.state.update(true, false)
 
-					blocksToUpdate.add(block)
-
-					queuedBlocks.add(block.getRelative(1, 0, 0))
-					queuedBlocks.add(block.getRelative(-1, 0, 0))
-					queuedBlocks.add(block.getRelative(0, 1, 0))
-					queuedBlocks.add(block.getRelative(0, -1, 0))
-					queuedBlocks.add(block.getRelative(0, 0, 1))
-					queuedBlocks.add(block.getRelative(0, 0, -1))
-				}
-
-				Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
-					blocksToUpdate.forEach {
-						it.state.update(true, false)
-					}
-				})
-			})
+				blocksToUpdate.add(block.getRelative(1, 0, 0))
+				blocksToUpdate.add(block.getRelative(-1, 0, 0))
+				blocksToUpdate.add(block.getRelative(0, 1, 0))
+				blocksToUpdate.add(block.getRelative(0, -1, 0))
+				blocksToUpdate.add(block.getRelative(0, 0, 1))
+				blocksToUpdate.add(block.getRelative(0, 0, -1))
+			}
 		}
 	}
 }
