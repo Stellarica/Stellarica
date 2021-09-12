@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.ships
+package io.github.petercrawley.minecraftstarshipplugin
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable

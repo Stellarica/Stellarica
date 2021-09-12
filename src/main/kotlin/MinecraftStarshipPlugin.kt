@@ -4,7 +4,7 @@ import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplet
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.CustomBlocksListener
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
-import io.github.petercrawley.minecraftstarshipplugin.ships.Interface
+import io.github.petercrawley.minecraftstarshipplugin.interfaces.InterfaceListener
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.hjson.JsonObject
@@ -38,7 +38,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 		reloadConfig()
 
-		Bukkit.getPluginManager().registerEvents(Interface(), this)
+		Bukkit.getPluginManager().registerEvents(InterfaceListener(), this)
 		Bukkit.getPluginManager().registerEvents(CustomBlocksListener(), this)
 
 		plugin.getCommand("msp")!!.setExecutor(Commands())
