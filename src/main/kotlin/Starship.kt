@@ -38,9 +38,11 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 			val undetectable = undetectableMutable.toSet()
 
+			val detectionLimit = mainConfig.getInt("detectionLimit", 500000)
+
 			while (blocksToCheck.isNotEmpty()) {
-				if (detectedBlocks.size == 500000) {
-					owner.sendMessage("Reached arbitrary detection limit. (500,000)")
+				if (detectedBlocks.size == detectionLimit) {
+					owner.sendMessage("Reached arbitrary detection limit. ($detectionLimit)")
 					break
 				}
 
