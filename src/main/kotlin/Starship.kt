@@ -32,6 +32,12 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 			blocksToCheck.add(origin)
 
+			val undetectableMutable = mutableSetOf<MSPMaterial>()
+			undetectableMutable.addAll(forcedUndetectable)
+			undetectableMutable.addAll(defaultUndetectable)
+
+			val undetectable = undetectableMutable.toSet()
+
 			while (blocksToCheck.isNotEmpty()) {
 				if (detectedBlocks.size == 500000) {
 					owner.sendMessage("Reached arbitrary detection limit. (500,000)")
@@ -47,9 +53,7 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 				val type = MSPMaterial(currentBlock)
 
-				if (forcedUndetectable.contains(type)) continue
-
-				if (defaultUndetectable.contains(type)) continue
+				if (undetectable.contains(type)) continue
 
 				detectedBlocks.add(currentBlock)
 
@@ -86,7 +90,7 @@ class Starship(private val origin: Block, private val owner: Player) {
 
 			val blocksToUpdate: MutableMap<Block, BlockData> = mutableMapOf()
 
-			// Start by getting all of the old positions and setting them to air.
+			// Start by getting all the old positions and setting them to air.
 			val airBlockData = Bukkit.getServer().createBlockData(Material.AIR)
 
 			detectedBlocks.forEach {
