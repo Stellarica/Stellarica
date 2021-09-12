@@ -1,6 +1,7 @@
-package io.github.petercrawley.minecraftstarshipplugin.ships
+package io.github.petercrawley.minecraftstarshipplugin.interfaces
 
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.Starship
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -8,7 +9,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 
-class Interface: Listener {
+class InterfaceListener: Listener {
 	@EventHandler
 	fun interfaceUse(event: PlayerInteractEvent) {
 		if (event.hand == EquipmentSlot.HAND && event.action == Action.RIGHT_CLICK_BLOCK && !event.player.isSneaking) {
