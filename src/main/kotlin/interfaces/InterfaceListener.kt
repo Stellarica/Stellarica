@@ -1,7 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin.interfaces
 
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
-import io.github.petercrawley.minecraftstarshipplugin.Starship
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -16,8 +15,7 @@ class InterfaceListener: Listener {
 			val clickedBlock: Block = event.clickedBlock!!
 
 			if (MSPMaterial(clickedBlock) == MSPMaterial("INTERFACE")) {
-				val ship = Starship(event.clickedBlock!!, event.player)
-				ship.detect()
+				Interface(clickedBlock, event.player)
 
 				event.isCancelled = true
 			}
