@@ -9,23 +9,23 @@ import org.bukkit.Particle
 import org.bukkit.entity.LivingEntity
 import org.bukkit.util.Vector
 
-class ParticleProjectile (val origin: Location, val beam: Boolean, val color: Color, val range: Int, val minRange: Double, val speed: Int, val damage: Double, val explosion: Float) {
-    val particle = ParticleBuilder(Particle.REDSTONE).color(color).force(true).count(2)
-    fun shoot(){
-        if (beam){
-            val loc = origin.clone()
-            val direction: Vector = origin.direction
-            direction.multiply(range)
-            direction.normalize()
-            // Simple beam mode, do it all on the same server tick
-            for (i in 0..range) {
-                loc.add(direction)
-                if (!tick(loc)) break // if it returned false it hit something
-            }
+class ParticleProjectile (val origin: Location, val color: Color, val range: Int, val minRange: Double, val speed: Int, val damage: Double, val explosion: Float) {
+    private val particle = ParticleBuilder(Particle.REDSTONE).color(color).force(true).count(2)
+
+    fun shootBeam() {
+        val loc = origin.clone()
+        val direction: Vector = origin.direction
+        direction.multiply(range)
+        direction.normalize()
+        // Simple beam mode, do it all on the same server tick
+        for (i in 0..range) {
+            loc.add(direction)
+            if (!tick(loc)) break // if it returned false it hit something
         }
-        else {
-            ProjectileRunnable(this).runTaskTimer(getPlugin(), 1, 1)
-        }
+    }
+
+    fun shootProjectile() {
+        ProjectileRunnable(this).runTaskTimer(getPlugin(), 1, 1)
     }
 
     fun tick(loc: Location): Boolean{
