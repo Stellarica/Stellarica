@@ -25,7 +25,7 @@ class CustomBlocksListener: Listener {
 
 		if (blocksToChange.isNotEmpty()) {
 			// Create a task to correct the blocks after the piston is done doing its thing.
-			Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
+			Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
 				blocksToChange.forEach { it.key.setBlockData(it.value, false) }
 			})
 		}
@@ -57,13 +57,15 @@ class CustomBlocksListener: Listener {
 
 			Bukkit.getScheduler().runTaskAsynchronously(MinecraftStarshipPlugin.getPlugin(), Runnable {
 				val blocksToUpdate = mutableSetOf<Block>()
+
+				val queuedBlocks = mutableSetOf<Block>()
 				val checkedBlocks = mutableSetOf<Block>()
 
 				blocksToUpdate.add(event.block)
 
-				while (blocksToUpdate.isNotEmpty()) {
-					val block = blocksToUpdate.first()
-					blocksToUpdate.remove(block)
+				while (queuedBlocks.isNotEmpty()) {
+					val block = queuedBlocks.first()
+					queuedBlocks.remove(block)
 
 					if (checkedBlocks.contains(block)) continue
 
@@ -71,15 +73,21 @@ class CustomBlocksListener: Listener {
 
 					if (block.type != Material.MUSHROOM_STEM) continue
 
-					block.state.update(true, false)
+					blocksToUpdate.add(block)
 
-					blocksToUpdate.add(block.getRelative(1, 0, 0))
-					blocksToUpdate.add(block.getRelative(-1, 0, 0))
-					blocksToUpdate.add(block.getRelative(0, 1, 0))
-					blocksToUpdate.add(block.getRelative(0, -1, 0))
-					blocksToUpdate.add(block.getRelative(0, 0, 1))
-					blocksToUpdate.add(block.getRelative(0, 0, -1))
+					queuedBlocks.add(block.getRelative(1, 0, 0))
+					queuedBlocks.add(block.getRelative(-1, 0, 0))
+					queuedBlocks.add(block.getRelative(0, 1, 0))
+					queuedBlocks.add(block.getRelative(0, -1, 0))
+					queuedBlocks.add(block.getRelative(0, 0, 1))
+					queuedBlocks.add(block.getRelative(0, 0, -1))
 				}
+
+				Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
+					blocksToUpdate.forEach {
+						it.state.update(true, false)
+					}
+				})
 			})
 		}
 	}
