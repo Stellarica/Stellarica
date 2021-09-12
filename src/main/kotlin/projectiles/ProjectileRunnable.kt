@@ -10,9 +10,14 @@ class ProjectileRunnable(private val projectileHandler: ParticleProjectile) : Bu
 
     override fun run() {
         if (counter > projectileHandler.range) cancel()
+
         for (i in 0..projectileHandler.speed){
             loc.add(direction)
-            projectileHandler.tick(loc)
+            if (!projectileHandler.tick(loc)) {
+                // it will be false if it hit something, so don't do any more steps
+                cancel()
+                break
+            }
             counter++
         }
     }
