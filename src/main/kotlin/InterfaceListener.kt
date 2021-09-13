@@ -1,6 +1,7 @@
-package io.github.petercrawley.minecraftstarshipplugin.interfaces
+package io.github.petercrawley.minecraftstarshipplugin
 
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.interfaces.Interface
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
