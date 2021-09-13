@@ -20,6 +20,10 @@ class MSPMaterial {
 		set(value)
 	}
 
+	fun getBukkit(): Material? {
+		return if (material is Material) material as Material else null
+	}
+
 	fun set(value: Any?) {
 		when (value) {
 			is Block -> {
