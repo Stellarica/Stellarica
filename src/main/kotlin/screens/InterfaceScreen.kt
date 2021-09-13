@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.interfaces
+package io.github.petercrawley.minecraftstarshipplugin.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.Starship
@@ -17,7 +17,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 
-class Interface(origin: Block, player: Player): Listener {
+class InterfaceScreen(origin: Block, player: Player): Listener {
 	private val screen = Bukkit.createInventory(player, InventoryType.HOPPER, Component.text("Starship Interface"))
 
 	private val starship = Starship(origin, player)
