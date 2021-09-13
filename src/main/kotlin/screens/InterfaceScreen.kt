@@ -1,6 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
 import io.github.petercrawley.minecraftstarshipplugin.Starship
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
@@ -25,25 +26,9 @@ class InterfaceScreen(origin: Block, private val player: Player): Listener {
 	init {
 		player.openInventory(screen)
 
-		val detect = ItemStack(Material.MINECART)
-		val pilot = ItemStack(Material.COMPASS)
-		val allow = ItemStack(Material.BEDROCK)
-
-		val detectItemMeta = detect.itemMeta
-		val pilotItemMeta = pilot.itemMeta
-		val allowItemMeta = allow.itemMeta
-
-		detectItemMeta.displayName(Component.text("Detect Starship").style(Style.style(TextColor.color(128, 255, 128)).decoration(TextDecoration.ITALIC, false).decorate(TextDecoration.BOLD)))
-		pilotItemMeta.displayName(Component.text("Pilot Starship").style(Style.style(TextColor.color(128, 128, 255)).decoration(TextDecoration.ITALIC, false).decorate(TextDecoration.BOLD)))
-		allowItemMeta.displayName(Component.text("Allow Undetectables").style(Style.style(TextColor.color(255, 128, 128)).decoration(TextDecoration.ITALIC, false).decorate(TextDecoration.BOLD)))
-
-		detect.itemMeta = detectItemMeta
-		pilot.itemMeta = pilotItemMeta
-		allow.itemMeta = allowItemMeta
-
-		screen.setItem(0, detect)
-		screen.setItem(1, pilot)
-		screen.setItem(4, allow)
+		screen.setItem(0, itemWithName(Material.MINECART, "Detect Starship", 128, 255, 128, true, false))
+		screen.setItem(1, itemWithName(Material.COMPASS, "Pilot Starship", 128, 128, 255, true, false))
+		screen.setItem(4, itemWithName(Material.BEDROCK, "Allow Undetectables", 255, 128, 128, true, false))
 
 		Bukkit.getPluginManager().registerEvents(this, getPlugin())
 	}
