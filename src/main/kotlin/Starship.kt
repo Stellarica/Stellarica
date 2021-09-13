@@ -21,6 +21,9 @@ import org.bukkit.entity.Player
 class Starship(private val origin: Block, private val owner: Player) {
 	private val detectedBlocks = mutableSetOf<Block>()
 
+	val allowedBlocks = mutableSetOf<MSPMaterial>()
+	val disallowedBlocks = mutableSetOf<MSPMaterial>()
+
 	fun detect() {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
 			val startTime = System.currentTimeMillis()
@@ -35,6 +38,8 @@ class Starship(private val origin: Block, private val owner: Player) {
 			val undetectableMutable = mutableSetOf<MSPMaterial>()
 			undetectableMutable.addAll(forcedUndetectable)
 			undetectableMutable.addAll(defaultUndetectable)
+			undetectableMutable.addAll(disallowedBlocks)
+			undetectableMutable.removeAll(allowedBlocks)
 
 			val undetectable = undetectableMutable.toSet()
 
@@ -119,14 +124,4 @@ class Starship(private val origin: Block, private val owner: Player) {
 			})
 		})
 	}
-
-    fun getCustomisedUndetectables(): MutableList<Material> {
-		val customisedUndetectables = mutableListOf<Material>()
-
-		defaultUndetectable.forEach {
-			if (it.getBukkit() != null) customisedUndetectables.add(it.getBukkit()!!)
-		}
-
-		return customisedUndetectables
-    }
 }

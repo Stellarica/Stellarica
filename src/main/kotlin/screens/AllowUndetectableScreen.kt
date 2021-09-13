@@ -1,5 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin.screens
 
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithTranslatableName
@@ -19,46 +20,69 @@ import kotlin.math.min
 class AllowUndetectableScreen(private val starship: Starship, private val player: Player): Listener {
 	private val screen = Bukkit.createInventory(player, 54, Component.text("Allow Undetectables"))
 
-	private val undetectableItems: MutableList<Material> = starship.getCustomisedUndetectables()
+	private val defaultUndetectable = MinecraftStarshipPlugin.defaultUndetectable.toList() // A list version, we have to store it here because it must retain its order
 
-	private var page: Int = 0
-	private val maxPage = undetectableItems.size / 45
+	private var leftPage = 0
+	private var rightPage = 0
 
-	private fun displayPage() {
-		page = max(min(page, maxPage), 0)
+	private var leftMaxPage = defaultUndetectable.size / 24
+	private var rightMaxPage = starship.allowedBlocks.size / 8
 
-		for (i in 0 .. 53) {
-			screen.clear(i)
-		}
+	private fun update() {
+		leftMaxPage = defaultUndetectable.size / 24
+		rightMaxPage = starship.allowedBlocks.size / 8
 
-		val start = page * 45
-		val end = start + 44
+		leftPage = max(min(leftPage, leftMaxPage), 0)
+		rightPage = max(min(rightPage, rightMaxPage), 0)
 
-		for (i in start .. min(end, undetectableItems.lastIndex)) {
-			var item = undetectableItems[i]
+		screen.clear()
 
-			if (!item.isItem) {
-				item = Material.BARRIER
+		val start = leftPage * 24
+
+		for (i in start .. min(start + 23, defaultUndetectable.lastIndex)) {
+			var id = 9
+//			if (id == 15 || id == 24 || id == 33) id += 3
+			id -= start
+
+			var bukkitMaterial = defaultUndetectable[i].getBukkit()
+
+			if (bukkitMaterial == null) {
+				screen.setItem(id, itemWithName(Material.BARRIER, (defaultUndetectable[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
+			} else if (!bukkitMaterial.isItem) {
+				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey()))
+			} else {
+				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey()))
 			}
-
-			screen.setItem(i - start, itemWithTranslatableName(item, undetectableItems[i].translationKey()))
 		}
 
-		screen.setItem(45, if (page > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(46, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(47, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(48, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(49, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(50, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(51, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(52, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(53, if (page < maxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+//		page = max(min(page, maxPage), 0)
+//
+//		for (i in 0 .. 53) {
+//			screen.clear(i)
+//		}
+//
+//		val start = page * 45
+//		val end = start + 44
+//
+//		for (i in start .. min(end, undetectableItems.lastIndex)) {
+//			var item = undetectableItems[i]
+//
+//			if (!item.isItem) {
+//				item = Material.BARRIER
+//			}
+//
+//			screen.setItem(i - start, itemWithTranslatableName(item, undetectableItems[i].translationKey()))
+//		}
+//
+		screen.setItem(45, if (leftPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+//		screen.setItem(46, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(50, if (leftPage < leftMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 	}
 
 	init {
 		player.openInventory(screen)
 
-		displayPage()
+		update()
 
 		Bukkit.getPluginManager().registerEvents(this, getPlugin())
 	}
@@ -78,12 +102,12 @@ class AllowUndetectableScreen(private val starship: Starship, private val player
 		if (event.inventory == screen) {
 			when (event.rawSlot) {
 				45 -> {
-					if (page > 0) page--
-					displayPage()
+					if (leftPage > 0) leftPage--
+					update()
 				}
-				53 -> {
-					if (page < maxPage) page++
-					displayPage()
+				50 -> {
+					if (leftPage < leftMaxPage) leftPage++
+					update()
 				}
 			}
 
