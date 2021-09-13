@@ -55,9 +55,7 @@ class InterfaceScreen(origin: Block, private val player: Player): Listener {
 
 	@EventHandler
 	fun onPlayerCloseScreen(event: InventoryCloseEvent) {
-		if (event.inventory == screen) {
-			unregister()
-		}
+		if (event.inventory == screen) unregister()
 	}
 
 	@EventHandler
