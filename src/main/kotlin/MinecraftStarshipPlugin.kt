@@ -37,6 +37,18 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 			return item
 		}
 
+		fun itemWithTranslatableName(material: Material, name: String, colorR: Int = 255, colorG: Int = 255, colorB: Int = 255, bold: Boolean = false, italic: Boolean = false): ItemStack {
+			val item = ItemStack(material)
+
+			val itemMeta = item.itemMeta
+
+			itemMeta.displayName(Component.translatable(name).style(Style.style(TextColor.color(colorR, colorG, colorB)).decoration(TextDecoration.ITALIC, italic).decoration(TextDecoration.BOLD, bold)))
+
+			item.itemMeta = itemMeta
+
+			return item
+		}
+
 		var forcedUndetectable = mutableSetOf<MSPMaterial>()
 		var defaultUndetectable = mutableSetOf<MSPMaterial>()
 
