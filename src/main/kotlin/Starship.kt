@@ -119,4 +119,14 @@ class Starship(private val origin: Block, private val owner: Player) {
 			})
 		})
 	}
+
+    fun getCustomisedUndetectables(): MutableList<Material> {
+		val customisedUndetectables = mutableListOf<Material>()
+
+		defaultUndetectable.forEach {
+			if (it.getBukkit() != null) customisedUndetectables.add(it.getBukkit()!!)
+		}
+
+		return customisedUndetectables
+    }
 }
