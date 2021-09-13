@@ -50,6 +50,10 @@ class MSPMaterial {
 		}
 	}
 
+	fun get(): Any? {
+		return material
+	}
+
 	override fun hashCode(): Int {
 		return material?.hashCode() ?: 0
 	}
