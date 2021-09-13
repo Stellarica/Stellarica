@@ -4,7 +4,13 @@ import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplet
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.CustomBlocksListener
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
+import org.bukkit.Material
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.hjson.JsonObject
 import org.hjson.JsonValue
@@ -17,6 +23,18 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 		fun getPlugin(): MinecraftStarshipPlugin {
 			return plugin
+		}
+
+		fun itemWithName(material: Material, name: String, colorR: Int = 255, colorG: Int = 255, colorB: Int = 255, bold: Boolean = false, italic: Boolean = false): ItemStack {
+			val item = ItemStack(material)
+
+			val itemMeta = item.itemMeta
+
+			itemMeta.displayName(Component.text(name).style(Style.style(TextColor.color(colorR, colorG, colorB)).decoration(TextDecoration.ITALIC, italic).decoration(TextDecoration.BOLD, bold)))
+
+			item.itemMeta = itemMeta
+
+			return item
 		}
 
 		var forcedUndetectable = mutableSetOf<MSPMaterial>()
