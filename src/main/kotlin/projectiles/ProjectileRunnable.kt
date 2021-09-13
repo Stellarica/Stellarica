@@ -17,7 +17,7 @@ class ProjectileRunnable(private val projectileHandler: ParticleProjectile) : Bu
         for (i in 0..projectileHandler.speed){ // We have to do the speed number of steps per tick, otherwise its incredibly slow
             loc.add(direction)
 
-            if (!projectileHandler.tick(loc)) { // Spawn the particle and check for blocks/entities
+            if (!projectileHandler.step(loc)) { // Spawn the particle and check for blocks/entities
                 // it will be false if it hit something, so don't do any more steps
                 cancel()
                 break

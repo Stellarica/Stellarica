@@ -26,7 +26,7 @@ class ParticleProjectile (val origin: Location, private val color: Color, privat
 
         for (i in 0..range) { // Go tick at every location in the range, during this server tick
             loc.add(direction)
-            if (!tick(loc)) break // if it returned false it hit something
+            if (!step(loc)) break // if it returned false it hit something
         }
     }
 
@@ -35,7 +35,7 @@ class ParticleProjectile (val origin: Location, private val color: Color, privat
         ProjectileRunnable(this).runTaskTimer(getPlugin(), 1, 1)
     }
 
-    fun tick(loc: Location): Boolean{
+    fun step(loc: Location): Boolean{
         // A single particle spawn + check for damage/blocks/explosion
         // Returns false if it hit something, otherwise true.
         particle.location(loc).spawn() // actually spawn the particle
