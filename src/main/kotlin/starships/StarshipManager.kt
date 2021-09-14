@@ -13,8 +13,9 @@ object StarshipManager {
         Bukkit.getScheduler().runTaskTimer(getPlugin(), Runnable {
             if (blockMoves.isEmpty()) return@Runnable
 
-            
-            it.key.setBlockData(it.value, false)
+            blockMoves.forEach {
+                it.key.setBlockData(it.value, false)
+            }
         }, 1, 1)
     }
 
