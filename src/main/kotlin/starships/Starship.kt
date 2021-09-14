@@ -12,7 +12,9 @@ import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
 
-class Starship(origin: Block, var owner: Player) {
+class Starship(origin: Block, private val pilot: Player) {
+	val owner = pilot
+
 	private val detectedBlocks = mutableSetOf(origin) // Blocks that we know are part of the ship.
 
 	var allowedBlocks = setOf<MSPMaterial>() // Blocks that have been specifically allowed.
@@ -21,7 +23,7 @@ class Starship(origin: Block, var owner: Player) {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
 			val startTime = System.currentTimeMillis() // Debug
 
-			owner.sendMessage("Detecting Starship.")
+			pilot.sendMessage("Detecting Starship.")
 
 			val checkedBlocks = mutableSetOf<Block>() // List of blocks we have checked
 			val blocksToCheck = mutableSetOf<Block>() // List of blocks we need to check
@@ -39,7 +41,7 @@ class Starship(origin: Block, var owner: Player) {
 
 			while (blocksToCheck.isNotEmpty()) {
 				if (detectedBlocks.size == detectionLimit) {
-					owner.sendMessage("Reached arbitrary detection limit. ($detectionLimit)")
+					pilot.sendMessage("Reached arbitrary detection limit. ($detectionLimit)")
 					break
 				}
 
@@ -71,7 +73,7 @@ class Starship(origin: Block, var owner: Player) {
 				}
 			}
 
-			owner.sendMessage("Detected " + detectedBlocks.size + " blocks.")
+			pilot.sendMessage("Detected " + detectedBlocks.size + " blocks.")
 
 			// Debug
 			val endTime = System.currentTimeMillis()
@@ -90,7 +92,7 @@ class Starship(origin: Block, var owner: Player) {
 
 				if (!detectedBlocks.contains(targetBlock)) {
 					if (!targetBlock.type.isAir) {
-						owner.sendMessage("Obstructed at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z  + " by " + targetBlock.type.toString())
+						pilot.sendMessage("Obstructed at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z  + " by " + targetBlock.type.toString())
 						return@Runnable
 					}
 				}
