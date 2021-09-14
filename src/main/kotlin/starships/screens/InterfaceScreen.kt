@@ -46,9 +46,9 @@ class InterfaceScreen(private val starship: Starship): Listener {
 
 				}
 				1 -> {
+					starship.owner.sendMessage("Not implemented.")
 					screen.close()
 					unregister()
-					starship.owner.sendMessage("Not implemented.")
 
 				}
 				4 -> {

@@ -20,17 +20,22 @@ import kotlin.math.min
 class AllowUndetectableScreen(private val starship: Starship): Listener {
 	private val screen = Bukkit.createInventory(starship.owner, 54, Component.text("Allow Undetectables"))
 
-	private val defaultUndetectable = MinecraftStarshipPlugin.defaultUndetectable.toList() // A list version, we have to store it here because it must retain its order
+	private val disallowed = MinecraftStarshipPlugin.defaultUndetectable.toMutableList() // A list version, we have to store it here because it must retain its order
 	private val allowed = mutableListOf<MSPMaterial>()
 
 	private var leftPage = 0
 	private var rightPage = 0
 
-	private var leftMaxPage = defaultUndetectable.size / 24
-	private var rightMaxPage = starship.allowedBlocks.size / 8
+	private var leftMaxPage = disallowed.size / 24
+	private var rightMaxPage = allowed.size / 8
+
+	private var leftStart = 0
+	private var rightStart = 0
+	private var leftEnd = 0
+	private var rightEnd = 0
 
 	private fun update() {
-		leftMaxPage = defaultUndetectable.size / 24
+		leftMaxPage = disallowed.size / 24
 		rightMaxPage = allowed.size / 8
 
 		leftPage = max(min(leftPage, leftMaxPage), 0)
@@ -38,21 +43,21 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 
 		screen.clear()
 
-		val leftStart = leftPage * 24
-        val leftEnd = min(leftStart + 23, defaultUndetectable.lastIndex)
+		leftStart = leftPage * 24
+        leftEnd = min(leftStart + 23, disallowed.lastIndex)
 
-		val rightStart = rightPage * 8
-		val rightEnd = min(rightStart + 7, allowed.lastIndex)
+		rightStart = rightPage * 8
+		rightEnd = min(rightStart + 7, allowed.lastIndex)
 
 		for (i in leftStart .. leftEnd) {
 			var id = i + 9
-			if (id == 15 || id == 24 || id == 33) id += 3
 			id -= leftStart
+			if (id == 15 || id == 24 || id == 33) id += 3
 
-			var bukkitMaterial = defaultUndetectable[i].getBukkit()
+			val bukkitMaterial = disallowed[i].getBukkit()
 
 			if (bukkitMaterial == null) {
-				screen.setItem(id, itemWithName(Material.BARRIER, (defaultUndetectable[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
+				screen.setItem(id, itemWithName(Material.BARRIER, (disallowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
 			} else if (!bukkitMaterial.isItem) {
 				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey()))
 			} else {
@@ -62,10 +67,10 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 
 		for (i in rightStart .. rightEnd) {
 			var id = i + 15
-			if (id == 18 || id == 27 || id == 36) id += 6
 			id -= rightStart
+			if (id == 18 || id == 27 || id == 36) id += 6
 
-			var bukkitMaterial = allowed[i].getBukkit()
+			val bukkitMaterial = allowed[i].getBukkit()
 
 			if (bukkitMaterial == null) {
 				screen.setItem(id, itemWithName(Material.BARRIER, (allowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
@@ -131,6 +136,15 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 				50 -> leftPage++
 				52 -> rightPage--
 				53 -> rightPage++
+				9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32, 36, 37, 38, 39, 40, 41 -> {
+					var id = event.rawSlot
+					if (id == 15 || id == 24 || id == 33) id -= 3
+					id += leftStart
+					id -= 9
+
+					allowed.add(disallowed[id])
+					disallowed.removeAt(id)
+				}
 			}
 
 			update()
