@@ -21,8 +21,8 @@ import org.bukkit.entity.Player
 class Starship(private val origin: Block, val owner: Player) {
 	private val detectedBlocks = mutableSetOf<Block>()
 
-	val allowedBlocks = mutableSetOf<MSPMaterial>()
-	val disallowedBlocks = mutableSetOf<MSPMaterial>()
+	var allowedBlocks = setOf<MSPMaterial>()
+	var disallowedBlocks = setOf<MSPMaterial>()
 
 	fun detect() {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {

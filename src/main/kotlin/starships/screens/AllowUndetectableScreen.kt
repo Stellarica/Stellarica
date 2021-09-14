@@ -1,6 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithTranslatableName
@@ -116,6 +117,11 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 	}
 
 	private fun unregister() {
+		disallowed.removeAll(defaultUndetectable)
+
+		starship.allowedBlocks = allowed.toSet()
+		starship.disallowedBlocks = disallowed.toSet()
+
 		InventoryCloseEvent.getHandlerList().unregister(this)
 		InventoryClickEvent.getHandlerList().unregister(this)
 	}
