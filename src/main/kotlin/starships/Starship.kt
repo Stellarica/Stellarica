@@ -98,15 +98,10 @@ class Starship(origin: Block, var owner: Player) {
 
 			val blocksToUpdate: MutableMap<Block, BlockData> = mutableMapOf()
 
-			// Start by getting all the old positions and setting them to air.
 			val airBlockData = Bukkit.getServer().createBlockData(Material.AIR)
 
 			detectedBlocks.forEach {
 				blocksToUpdate[it] = airBlockData
-			}
-
-			// Now move all the blocks on out map.
-			detectedBlocks.forEach {
 				blocksToUpdate[it.getRelative(x, y, z)] = it.blockData
 			}
 
