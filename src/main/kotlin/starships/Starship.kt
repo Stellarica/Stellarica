@@ -5,6 +5,7 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.blockMoves
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -109,19 +110,16 @@ class Starship(origin: Block, var owner: Player) {
 				blocksToUpdate[it.getRelative(x, y, z)] = it.blockData
 			}
 
-			Bukkit.getScheduler().runTask(getPlugin(), Runnable {
-				// Remember we have not actually made any changes yet, but we now have a list of all the positions, and what they need to be changed too.
-				// So lets actually move stuff now.
-				blocksToUpdate.forEach {
-					it.key.setBlockData(it.value, false)
-				}
+			// Remember we have not actually made any changes yet, but we now have a list of all the positions, and what they need to be changed too.
+			blocksToUpdate.forEach{
+				blockMoves[it.key] = it.value
+			}
 
-				val endTime = System.currentTimeMillis()
+			val endTime = System.currentTimeMillis()
 
-				if (mainConfig.getBoolean("timeOperations", false)) {
-					getPlugin().logger.info("Ship movement took: " + (endTime - startTime) + "ms.")
-				}
-			})
+			if (mainConfig.getBoolean("timeOperations", false)) {
+				getPlugin().logger.info("Ship movement took: " + (endTime - startTime) + "ms.")
+			}
 		})
 	}
 }
