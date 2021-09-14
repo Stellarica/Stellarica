@@ -11,38 +11,29 @@ import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
 
-/*
-	I am aware that this async task is not properly being shutdown when the plugin is reloaded.
-	I will fix it later.
+class Starship(origin: Block, var owner: Player) {
+	private val detectedBlocks = mutableSetOf(origin) // Blocks that we know are part of the ship.
 
-	TODO: Fix.
- */
-
-class Starship(private val origin: Block, val owner: Player) {
-	private val detectedBlocks = mutableSetOf<Block>()
-
-	var allowedBlocks = setOf<MSPMaterial>()
-	var disallowedBlocks = setOf<MSPMaterial>()
+	var allowedBlocks = setOf<MSPMaterial>() // Blocks that have been specifically allowed.
 
 	fun detect() {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
-			val startTime = System.currentTimeMillis()
+			val startTime = System.currentTimeMillis() // Debug
 
 			owner.sendMessage("Detecting Starship.")
 
-			val checkedBlocks = mutableSetOf<Block>()
-			val blocksToCheck = mutableSetOf<Block>()
+			val checkedBlocks = mutableSetOf<Block>() // List of blocks we have checked
+			val blocksToCheck = mutableSetOf<Block>() // List of blocks we need to check
 
-			blocksToCheck.add(origin)
+			blocksToCheck.addAll(detectedBlocks) // We need to check that all the blocks we already know about
 
-			val undetectableMutable = mutableSetOf<MSPMaterial>()
-			undetectableMutable.addAll(forcedUndetectable)
-			undetectableMutable.addAll(defaultUndetectable)
-			undetectableMutable.addAll(disallowedBlocks)
-			undetectableMutable.removeAll(allowedBlocks)
+			// Construct the undetectable list
+			val undetectables = mutableSetOf<MSPMaterial>()
+			undetectables.addAll(forcedUndetectable)
+			undetectables.addAll(defaultUndetectable)
+			undetectables.removeAll(allowedBlocks)
 
-			val undetectable = undetectableMutable.toSet()
-
+			// Get the detection limit from the config file.
 			val detectionLimit = mainConfig.getInt("detectionLimit", 500000)
 
 			while (blocksToCheck.isNotEmpty()) {
@@ -51,31 +42,38 @@ class Starship(private val origin: Block, val owner: Player) {
 					break
 				}
 
+				// Get and remove the first item
 				val currentBlock = blocksToCheck.first()
 				blocksToCheck.remove(currentBlock)
 
-				if (checkedBlocks.contains(currentBlock)) continue
-
-				checkedBlocks.add(currentBlock)
-
 				val type = MSPMaterial(currentBlock)
 
-				if (undetectable.contains(type)) continue
+				if (undetectables.contains(type)) continue
 
 				detectedBlocks.add(currentBlock)
 
-				blocksToCheck.add(currentBlock.getRelative( 1, 0, 0))
-				blocksToCheck.add(currentBlock.getRelative(-1, 0, 0))
-				blocksToCheck.add(currentBlock.getRelative( 0, 1, 0))
-				blocksToCheck.add(currentBlock.getRelative( 0,-1, 0))
-				blocksToCheck.add(currentBlock.getRelative( 0, 0, 1))
-				blocksToCheck.add(currentBlock.getRelative( 0, 0,-1))
+				// List of neighbouring blocks.
+				mutableSetOf(
+					currentBlock.getRelative( 1, 0, 0),
+					currentBlock.getRelative(-1, 0, 0),
+					currentBlock.getRelative( 0, 1, 0),
+					currentBlock.getRelative( 0,-1, 0),
+					currentBlock.getRelative( 0, 0, 1),
+					currentBlock.getRelative( 0, 0,-1)
+
+				// If it's not a block we have checked, check it
+				).forEach {
+					if (!checkedBlocks.contains(it)) {
+						checkedBlocks.add(it)
+						blocksToCheck.add(it)
+					}
+				}
 			}
 
 			owner.sendMessage("Detected " + detectedBlocks.size + " blocks.")
 
+			// Debug
 			val endTime = System.currentTimeMillis()
-
 			if (mainConfig.getBoolean("timeOperations", false)) {
 				getPlugin().logger.info("Ship detection took: " + (endTime - startTime) + "ms.")
 			}
@@ -84,12 +82,14 @@ class Starship(private val origin: Block, val owner: Player) {
 
 	private fun move(x: Int, y: Int, z: Int) {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
-			val startTime = System.currentTimeMillis()
+			val startTime = System.currentTimeMillis() // Debug
 
-			for (block in detectedBlocks) {
-				if (!detectedBlocks.contains(block.getRelative(x, y, z))) {
-					if (!block.getRelative(x, y, z).type.isAir) {
-						owner.sendMessage("Obstructed at " + block.x + ", " + block.y + ", " + block.z  + " by " + block.type.toString())
+			detectedBlocks.forEach {
+				val targetBlock = it.getRelative(x, y, z)
+
+				if (!detectedBlocks.contains(targetBlock)) {
+					if (!targetBlock.type.isAir) {
+						owner.sendMessage("Obstructed at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z  + " by " + targetBlock.type.toString())
 						return@Runnable
 					}
 				}

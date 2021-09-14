@@ -21,7 +21,7 @@ import kotlin.math.min
 class AllowUndetectableScreen(private val starship: Starship): Listener {
 	private val screen = Bukkit.createInventory(starship.owner, 54, Component.text("Allow Undetectables"))
 
-	private val disallowed = MinecraftStarshipPlugin.defaultUndetectable.toMutableList() // A list version, we have to store it here because it must retain its order
+	private val disallowed = defaultUndetectable.toMutableList() // A list version, we have to store it here because it must retain its order
 	private val allowed = mutableListOf<MSPMaterial>()
 
 	private var leftPage = 0
@@ -117,10 +117,7 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 	}
 
 	private fun unregister() {
-		disallowed.removeAll(defaultUndetectable)
-
 		starship.allowedBlocks = allowed.toSet()
-		starship.disallowedBlocks = disallowed.toSet()
 
 		InventoryCloseEvent.getHandlerList().unregister(this)
 		InventoryClickEvent.getHandlerList().unregister(this)
