@@ -138,12 +138,21 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 				53 -> rightPage++
 				9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32, 36, 37, 38, 39, 40, 41 -> {
 					var id = event.rawSlot
-					if (id == 15 || id == 24 || id == 33) id -= 3
+					if (id == 15 + 3 || id == 24 + 3 || id == 33 + 3) id -= 3
 					id += leftStart
 					id -= 9
 
 					allowed.add(disallowed[id])
 					disallowed.removeAt(id)
+				}
+				16, 17, 25, 26, 34, 35, 43, 44 -> {
+					var id = event.rawSlot
+					if (id == 18 + 6 || id == 27 + 6 || id == 36 + 6) id -= 6
+					id += rightStart
+					id -= 15
+
+					disallowed.add(allowed[id])
+					allowed.removeAt(id)
 				}
 			}
 
