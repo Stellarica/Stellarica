@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
 	TODO: Fix.
  */
 
-class Starship(private val origin: Block, private val owner: Player) {
+class Starship(private val origin: Block, val owner: Player) {
 	private val detectedBlocks = mutableSetOf<Block>()
 
 	val allowedBlocks = mutableSetOf<MSPMaterial>()
