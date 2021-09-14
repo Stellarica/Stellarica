@@ -2,7 +2,7 @@ package io.github.petercrawley.minecraftstarshipplugin.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
-import io.github.petercrawley.minecraftstarshipplugin.Starship
+import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
