@@ -16,11 +16,11 @@ class InterfaceScreen(private val starship: Starship): Listener {
 	private val screen = Bukkit.createInventory(starship.owner, InventoryType.HOPPER, Component.text("Starship Interface"))
 
 	init {
-		starship.owner.openInventory(screen)
-
 		screen.setItem(0, itemWithName(Material.MINECART, "Detect Starship", 128, 255, 128, bold = true))
 		screen.setItem(1, itemWithName(Material.COMPASS, "Pilot Starship", 128, 128, 255, bold = true))
 		screen.setItem(4, itemWithName(Material.BEDROCK, "Allow Undetectables", 255, 128, 128, bold = true))
+
+		starship.owner.openInventory(screen)
 
 		Bukkit.getPluginManager().registerEvents(this, getPlugin())
 	}
