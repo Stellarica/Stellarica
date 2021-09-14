@@ -1,12 +1,11 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithTranslatableName
-import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -36,8 +35,8 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 	private var rightEnd = 0
 
 	private fun update() {
-		leftMaxPage = disallowed.size / 24
-		rightMaxPage = allowed.size / 8
+		leftMaxPage = (disallowed.size - 1) / 24
+		rightMaxPage = (allowed.size - 1) / 8
 
 		leftPage = max(min(leftPage, leftMaxPage), 0)
 		rightPage = max(min(rightPage, rightMaxPage), 0)
@@ -51,9 +50,10 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 		rightEnd = min(rightStart + 7, allowed.lastIndex)
 
 		for (i in leftStart .. leftEnd) {
-			var id = i + 9
-			id -= leftStart
-			if (id == 15 || id == 24 || id == 33) id += 3
+			var id = i - leftStart + 9
+			if (id > 14) id += 3
+			if (id > 23) id += 3
+			if (id > 32) id += 3
 
 			val bukkitMaterial = disallowed[i].getBukkit()
 
@@ -67,9 +67,10 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 		}
 
 		for (i in rightStart .. rightEnd) {
-			var id = i + 15
-			id -= rightStart
-			if (id == 18 || id == 27 || id == 36) id += 6
+			var id = i - rightStart + 16
+			if (id > 17) id += 7
+			if (id > 26) id += 7
+			if (id > 35) id += 7
 
 			val bukkitMaterial = allowed[i].getBukkit()
 
@@ -105,13 +106,13 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 		screen.setItem(50, if (leftPage < leftMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 		screen.setItem(51, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 		screen.setItem(52, if (rightPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(53, if (leftPage < leftMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(53, if (rightPage < rightMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 	}
 
 	init {
-		starship.owner.openInventory(screen)
-
 		update()
+
+		starship.owner.openInventory(screen)
 
 		Bukkit.getPluginManager().registerEvents(this, getPlugin())
 	}
@@ -126,8 +127,8 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 	@EventHandler
 	fun onPlayerCloseScreen(event: InventoryCloseEvent) {
 		if (event.inventory == screen) {
-			InterfaceScreen(starship)
 			unregister()
+			InterfaceScreen(starship)
 		}
 	}
 
@@ -140,19 +141,21 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 				52 -> rightPage--
 				53 -> rightPage++
 				9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32, 36, 37, 38, 39, 40, 41 -> {
-					var id = event.rawSlot
-					if (id == 15 + 3 || id == 24 + 3 || id == 33 + 3) id -= 3
+					var id = event.rawSlot - 9
+					if (id > 35) id -= 3
+					if (id > 26) id -= 3
+					if (id > 17) id -= 3
 					id += leftStart
-					id -= 9
 
 					allowed.add(disallowed[id])
 					disallowed.removeAt(id)
 				}
 				16, 17, 25, 26, 34, 35, 43, 44 -> {
-					var id = event.rawSlot
-					if (id == 18 + 6 || id == 27 + 6 || id == 36 + 6) id -= 6
-					id += rightStart
-					id -= 15
+					var id = event.rawSlot - 16
+					if (id > 25) id -= 7
+					if (id > 16) id -= 7
+					if (id > 7) id -= 7
+					id -= rightStart
 
 					disallowed.add(allowed[id])
 					allowed.removeAt(id)
