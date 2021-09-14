@@ -15,6 +15,7 @@ object StarshipManager {
 
             blockMoves.forEach {
                 it.key.setBlockData(it.value, false)
+                blockMoves.remove(it.key)
             }
         }, 1, 1)
     }
