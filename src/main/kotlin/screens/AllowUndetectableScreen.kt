@@ -38,9 +38,9 @@ class AllowUndetectableScreen(private val starship: Starship, private val player
 		screen.clear()
 
 		val start = leftPage * 24
-        val end = min(start + 23, defaultUndetectable.lastIndex
+        val end = min(start + 23, defaultUndetectable.lastIndex)
 
-		for (i in start .. end)) {
+		for (i in start .. end) {
 			var id = i + 9
 			if (id == 15 || id == 24 || id == 33) id += 3
 			id -= start
@@ -55,10 +55,31 @@ class AllowUndetectableScreen(private val starship: Starship, private val player
 				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey()))
 			}
 		}
-        
+
+		// Oh boy, this is A LOT of setitem() calls.
+		// TODO: Maybe there is a less stupid way of doing this?
+		screen.setItem(0, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(1, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(2, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(3, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(4, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(5, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(6, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(7, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(8, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(15, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(24, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(33, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(42, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 		screen.setItem(45, if (leftPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-//		screen.setItem(46, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(46, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(47, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(48, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(49, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 		screen.setItem(50, if (leftPage < leftMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(51, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(52, if (rightPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(53, if (leftPage < leftMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 	}
 
 	init {
