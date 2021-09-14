@@ -104,15 +104,13 @@ class AllowUndetectableScreen(private val starship: Starship, private val player
 	fun onPlayerClick(event: InventoryClickEvent) {
 		if (event.inventory == screen) {
 			when (event.rawSlot) {
-				45 -> {
-					if (leftPage > 0) leftPage--
-					update()
-				}
-				50 -> {
-					if (leftPage < leftMaxPage) leftPage++
-					update()
-				}
+				45 -> leftPage--
+				50 -> leftPage++
+				52 -> rightPage--
+				53 -> rightPage++
 			}
+
+			update()
 
 			event.isCancelled = true
 		}
