@@ -38,10 +38,11 @@ class AllowUndetectableScreen(private val starship: Starship, private val player
 		screen.clear()
 
 		val start = leftPage * 24
+        val end = min(start + 23, defaultUndetectable.lastIndex
 
-		for (i in start .. min(start + 23, defaultUndetectable.lastIndex)) {
-			var id = 9
-//			if (id == 15 || id == 24 || id == 33) id += 3
+		for (i in start .. end)) {
+			var id = i + 9
+			if (id == 15 || id == 24 || id == 33) id += 3
 			id -= start
 
 			var bukkitMaterial = defaultUndetectable[i].getBukkit()
@@ -54,26 +55,7 @@ class AllowUndetectableScreen(private val starship: Starship, private val player
 				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey()))
 			}
 		}
-
-//		page = max(min(page, maxPage), 0)
-//
-//		for (i in 0 .. 53) {
-//			screen.clear(i)
-//		}
-//
-//		val start = page * 45
-//		val end = start + 44
-//
-//		for (i in start .. min(end, undetectableItems.lastIndex)) {
-//			var item = undetectableItems[i]
-//
-//			if (!item.isItem) {
-//				item = Material.BARRIER
-//			}
-//
-//			screen.setItem(i - start, itemWithTranslatableName(item, undetectableItems[i].translationKey()))
-//		}
-//
+        
 		screen.setItem(45, if (leftPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 //		screen.setItem(46, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 		screen.setItem(50, if (leftPage < leftMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
