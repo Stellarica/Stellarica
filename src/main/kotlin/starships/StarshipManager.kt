@@ -14,6 +14,8 @@ object StarshipManager {
         Bukkit.getScheduler().runTaskTimer(getPlugin(), Runnable {
             if (blockMoves.isEmpty()) return@Runnable
 
+            val initialBlocks = blockMoves.size
+
             val start = System.currentTimeMillis()
 
             val targetTime = start + 45
@@ -27,7 +29,7 @@ object StarshipManager {
 
             val timeTook = System.currentTimeMillis() - start
 
-            getPlugin().logger.info(timeTook.toString())
+            getPlugin().logger.info("$timeTook $initialBlocks")
         }, 1, 1)
     }
 
