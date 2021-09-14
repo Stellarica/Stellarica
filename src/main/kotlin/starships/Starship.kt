@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin
+package io.github.petercrawley.minecraftstarshipplugin.starships
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
@@ -18,8 +18,11 @@ import org.bukkit.entity.Player
 	TODO: Fix.
  */
 
-class Starship(private val origin: Block, private val owner: Player) {
+class Starship(private val origin: Block, val owner: Player) {
 	private val detectedBlocks = mutableSetOf<Block>()
+
+	var allowedBlocks = setOf<MSPMaterial>()
+	var disallowedBlocks = setOf<MSPMaterial>()
 
 	fun detect() {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
@@ -35,6 +38,8 @@ class Starship(private val origin: Block, private val owner: Player) {
 			val undetectableMutable = mutableSetOf<MSPMaterial>()
 			undetectableMutable.addAll(forcedUndetectable)
 			undetectableMutable.addAll(defaultUndetectable)
+			undetectableMutable.addAll(disallowedBlocks)
+			undetectableMutable.removeAll(allowedBlocks)
 
 			val undetectable = undetectableMutable.toSet()
 

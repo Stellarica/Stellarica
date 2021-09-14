@@ -20,6 +20,10 @@ class MSPMaterial {
 		set(value)
 	}
 
+	fun getBukkit(): Material? {
+		return if (material is Material) material as Material else null
+	}
+
 	fun set(value: Any?) {
 		when (value) {
 			is Block -> {
@@ -44,6 +48,10 @@ class MSPMaterial {
 			is String -> material = Material.getMaterial(value) ?: if (customBlocks.values.contains(value)) value else null
 			else -> material = null
 		}
+	}
+
+	fun get(): Any? {
+		return material
 	}
 
 	override fun hashCode(): Int {
