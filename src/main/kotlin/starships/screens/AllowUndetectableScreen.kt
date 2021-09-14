@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.screens
+package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
@@ -9,7 +9,6 @@ import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
@@ -18,8 +17,8 @@ import org.bukkit.inventory.ItemStack
 import kotlin.math.max
 import kotlin.math.min
 
-class AllowUndetectableScreen(private val starship: Starship, private val player: Player): Listener {
-	private val screen = Bukkit.createInventory(player, 54, Component.text("Allow Undetectables"))
+class AllowUndetectableScreen(private val starship: Starship): Listener {
+	private val screen = Bukkit.createInventory(starship.owner, 54, Component.text("Allow Undetectables"))
 
 	private val defaultUndetectable = MinecraftStarshipPlugin.defaultUndetectable.toList() // A list version, we have to store it here because it must retain its order
 	private val allowed = mutableListOf<MSPMaterial>()
@@ -104,7 +103,7 @@ class AllowUndetectableScreen(private val starship: Starship, private val player
 	}
 
 	init {
-		player.openInventory(screen)
+		starship.owner.openInventory(screen)
 
 		update()
 
@@ -118,7 +117,10 @@ class AllowUndetectableScreen(private val starship: Starship, private val player
 
 	@EventHandler
 	fun onPlayerCloseScreen(event: InventoryCloseEvent) {
-		if (event.inventory == screen) unregister()
+		if (event.inventory == screen) {
+			InterfaceScreen(starship)
+			unregister()
+		}
 	}
 
 	@EventHandler

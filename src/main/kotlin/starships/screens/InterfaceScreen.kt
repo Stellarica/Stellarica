@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.screens
+package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
@@ -6,21 +6,17 @@ import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.block.Block
-import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
 
-class InterfaceScreen(origin: Block, private val player: Player): Listener {
-	private val screen = Bukkit.createInventory(player, InventoryType.HOPPER, Component.text("Starship Interface"))
-
-	private val starship = Starship(origin, player)
+class InterfaceScreen(private val starship: Starship): Listener {
+	private val screen = Bukkit.createInventory(starship.owner, InventoryType.HOPPER, Component.text("Starship Interface"))
 
 	init {
-		player.openInventory(screen)
+		starship.owner.openInventory(screen)
 
 		screen.setItem(0, itemWithName(Material.MINECART, "Detect Starship", 128, 255, 128, bold = true))
 		screen.setItem(1, itemWithName(Material.COMPASS, "Pilot Starship", 128, 128, 255, bold = true))
@@ -52,11 +48,11 @@ class InterfaceScreen(origin: Block, private val player: Player): Listener {
 				1 -> {
 					screen.close()
 					unregister()
-					player.sendMessage("Not implemented.")
+					starship.owner.sendMessage("Not implemented.")
 
 				}
 				4 -> {
-					AllowUndetectableScreen(starship, player)
+					AllowUndetectableScreen(starship)
 					screen.close()
 					unregister()
 
