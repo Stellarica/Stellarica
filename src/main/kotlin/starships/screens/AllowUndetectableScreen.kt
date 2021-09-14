@@ -118,10 +118,7 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 	}
 
 	private fun unregister() {
-		disallowed.removeAll(defaultUndetectable)
-
 		starship.allowedBlocks = allowed.toSet()
-		starship.disallowedBlocks = disallowed.toSet()
 
 		InventoryCloseEvent.getHandlerList().unregister(this)
 		InventoryClickEvent.getHandlerList().unregister(this)
