@@ -60,9 +60,9 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 			if (bukkitMaterial == null) {
 				screen.setItem(id, itemWithName(Material.BARRIER, (disallowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
 			} else if (!bukkitMaterial.isItem) {
-				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey()))
+				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
 			} else {
-				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey()))
+				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
 			}
 		}
 
@@ -77,9 +77,9 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 			if (bukkitMaterial == null) {
 				screen.setItem(id, itemWithName(Material.BARRIER, (allowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
 			} else if (!bukkitMaterial.isItem) {
-				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey()))
+				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
 			} else {
-				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey()))
+				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
 			}
 		}
 
