@@ -5,7 +5,8 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
-import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.blockMoves
+import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.blockSetQueue
+import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.playerTeleportQueue
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -40,7 +41,7 @@ class Starship(origin: Block, private val pilot: Player) {
 			val detectionLimit = mainConfig.getInt("detectionLimit", 500000)
 
 			while (blocksToCheck.isNotEmpty()) {
-				if (detectedBlocks.size == detectionLimit) {
+				if (detectedBlocks.size > detectionLimit) {
 					pilot.sendMessage("Reached arbitrary detection limit. ($detectionLimit)")
 					break
 				}
@@ -109,8 +110,10 @@ class Starship(origin: Block, private val pilot: Player) {
 
 			// Remember we have not actually made any changes yet, but we now have a list of all the positions, and what they need to be changed too.
 			blocksToUpdate.forEach{
-				blockMoves[it.key] = it.value
+				blockSetQueue[it.key] = it.value
 			}
+
+			playerTeleportQueue[pilot] =  pilot.location.add(x.toDouble(), y.toDouble(), z.toDouble())
 
 			val endTime = System.currentTimeMillis()
 
