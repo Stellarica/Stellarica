@@ -27,27 +27,7 @@ class Starship(origin: Block, private val pilot: Player) {
 
 			pilot.sendMessage("Detecting Starship.")
 
-			class ChunkCoord(val x: Int, val z: Int) {
-				constructor(block: MSPBlockLocation): this(block.x shr 4, block.z shr 4)
-
-				override fun equals(other: Any?): Boolean {
-					if (this === other) return true
-					if (javaClass != other?.javaClass) return false
-
-					other as ChunkCoord
-
-					if (x != other.x) return false
-					if (z != other.z) return false
-
-					return true
-				}
-
-				override fun hashCode(): Int {
-					return 31 * (x) + z
-				}
-			}
-
-			val chunkStorage = mutableMapOf<ChunkCoord, ChunkSnapshot>()
+			val chunkStorage = mutableMapOf<MSPChunkLocation, ChunkSnapshot>()
 
 			val checkedBlocks = mutableSetOf<MSPBlockLocation>() // List of blocks we have checked
 			val blocksToCheck = mutableSetOf<MSPBlockLocation>() // List of blocks we need to check
@@ -81,7 +61,7 @@ class Starship(origin: Block, private val pilot: Player) {
 				val currentBlock = blocksToCheck.first()
 				blocksToCheck.remove(currentBlock)
 
-				val chunkCoord = ChunkCoord(currentBlock)
+				val chunkCoord = MSPChunkLocation(currentBlock)
 
 				val chunk = chunkStorage.getOrPut(chunkCoord) {
 					currentBlock.world.getChunkAt(chunkCoord.x, chunkCoord.z).chunkSnapshot
