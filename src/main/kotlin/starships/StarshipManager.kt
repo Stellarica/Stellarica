@@ -1,45 +1,25 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
-import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.block.Block
-import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
-import java.util.concurrent.ConcurrentHashMap
 
 object StarshipManager {
-    val blockSetQueue = ConcurrentHashMap<Block, BlockData>()
+	private val activeStarships = mutableSetOf<Starship>()
 
-    val playerTeleportQueue = ConcurrentHashMap<Player, Location>()
+	init {
+		StarshipTick().runTaskTimer(getPlugin(), 1, 1)
+	}
 
-    init {
-        Bukkit.getScheduler().runTaskTimer(getPlugin(), Runnable {
-            val start = System.currentTimeMillis()
+	fun getStarshipAt(block: Block, requester: Player): Starship {
+		return Starship(block, requester)
+	}
 
-            val targetTime = start + 50
+	fun activateStarship(starship: Starship, requester: Player) {
+		if (starship.owner == requester) {
+			starship.pilot = requester
 
-            if (blockSetQueue.isNotEmpty()) {
-                blockSetQueue.forEach {
-                    if (System.currentTimeMillis() > targetTime) return@forEach
-
-                    it.key.setBlockData(it.value, false)
-                    blockSetQueue.remove(it.key)
-                }
-            }
-
-            if (playerTeleportQueue.isNotEmpty()) {
-                playerTeleportQueue.forEach {
-                    if (System.currentTimeMillis() > targetTime) return@forEach
-
-                    it.key.player?.teleport(it.value)
-                    playerTeleportQueue.remove(it.key)
-                }
-            }
-        }, 1, 1)
-    }
-
-    fun getStarshipAt(block: Block, requester: Player): Starship {
-        return Starship(block, requester)
-    }
+			activeStarships.add(starship)
+		}
+	}
 }

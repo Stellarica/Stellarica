@@ -3,6 +3,7 @@ package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
+import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.activateStarship
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -39,14 +40,9 @@ class InterfaceScreen(private val starship: Starship): Listener {
 	fun onPlayerClick(event: InventoryClickEvent) {
 		if (event.inventory == screen) {
 			when (event.rawSlot) {
-				0 -> {
-					starship.detect()
-					screen.close()
-					unregister()
-
-				}
+				0 -> starship.detect()
 				1 -> {
-					starship.owner.sendMessage("Not implemented.")
+					activateStarship(starship, starship.owner)
 					screen.close()
 					unregister()
 

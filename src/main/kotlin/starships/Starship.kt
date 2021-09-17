@@ -5,19 +5,17 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
-import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.blockSetQueue
-import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.playerTeleportQueue
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
-import org.bukkit.Material
 import org.bukkit.block.Block
-import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
 
-class Starship(origin: Block, private val pilot: Player) {
-	val owner = pilot
+class Starship(origin: Block, private val user: Player) {
+	val owner = user
 
-	private val detectedBlocks = mutableSetOf(MSPBlockLocation(origin)) // Blocks that we know are part of the ship.
+	var pilot: Player? = null
+
+	var detectedBlocks = mutableSetOf(MSPBlockLocation(origin)) // Blocks that we know are part of the ship.
 
 	var allowedBlocks = setOf<MSPMaterial>() // Blocks that have been specifically allowed.
 
@@ -25,7 +23,7 @@ class Starship(origin: Block, private val pilot: Player) {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
 			val startTime = System.currentTimeMillis() // Debug
 
-			pilot.sendMessage("Detecting Starship.")
+			user.sendMessage("Detecting Starship.")
 
 			val chunkStorage = mutableMapOf<MSPChunkLocation, ChunkSnapshot>()
 
@@ -45,13 +43,13 @@ class Starship(origin: Block, private val pilot: Player) {
 
 			while (blocksToCheck.isNotEmpty()) {
 				if (detectedBlocks.size > detectionLimit) {
-					pilot.sendMessage("Reached arbitrary detection limit. ($detectionLimit)")
+					user.sendMessage("Reached arbitrary detection limit. ($detectionLimit)")
 
 					// Debug
 					val endTime = System.currentTimeMillis()
 					if (mainConfig.getBoolean("timeOperations", false)) {
 						getPlugin().logger.info("Ship detection took: " + (endTime - startTime) + "ms.")
-						pilot.sendMessage("Ship detection took: " + (endTime - startTime) + "ms.")
+						user.sendMessage("Ship detection took: " + (endTime - startTime) + "ms.")
 					}
 
 					return@Runnable
@@ -91,52 +89,13 @@ class Starship(origin: Block, private val pilot: Player) {
 				}
 			}
 
-			pilot.sendMessage("Detected " + detectedBlocks.size + " blocks.")
+			user.sendMessage("Detected " + detectedBlocks.size + " blocks.")
 
 			// Debug
 			val endTime = System.currentTimeMillis()
 			if (mainConfig.getBoolean("timeOperations", false)) {
 				getPlugin().logger.info("Ship detection took: " + (endTime - startTime) + "ms.")
-				pilot.sendMessage("Ship detection took: " + (endTime - startTime) + "ms.")
-			}
-		})
-	}
-
-	private fun move(x: Int, y: Int, z: Int) {
-		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
-			val startTime = System.currentTimeMillis() // Debug
-
-			detectedBlocks.forEach {
-				val targetBlock = it.relative(x, y, z)
-
-				if (!detectedBlocks.contains(targetBlock)) {
-					if (!targetBlock.bukkit().type.isAir) {
-						pilot.sendMessage("Obstructed at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z  + " by " + targetBlock.bukkit().type.toString())
-						return@Runnable
-					}
-				}
-			}
-
-			val blocksToUpdate: MutableMap<Block, BlockData> = mutableMapOf()
-
-			val airBlockData = Bukkit.getServer().createBlockData(Material.AIR)
-
-			detectedBlocks.forEach {
-				blocksToUpdate[it.bukkit()] = airBlockData
-				blocksToUpdate[it.relative(x, y, z).bukkit()] = it.bukkit().blockData
-			}
-
-			// Remember we have not actually made any changes yet, but we now have a list of all the positions, and what they need to be changed too.
-			blocksToUpdate.forEach{
-				blockSetQueue[it.key] = it.value
-			}
-
-			playerTeleportQueue[pilot] =  pilot.location.add(x.toDouble(), y.toDouble(), z.toDouble())
-
-			val endTime = System.currentTimeMillis()
-
-			if (mainConfig.getBoolean("timeOperations", false)) {
-				getPlugin().logger.info("Ship movement took: " + (endTime - startTime) + "ms.")
+				user.sendMessage("Ship detection took: " + (endTime - startTime) + "ms.")
 			}
 		})
 	}
