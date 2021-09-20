@@ -4,22 +4,23 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithTranslatableName
+import io.github.petercrawley.minecraftstarshipplugin.Screen
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 import kotlin.math.max
 import kotlin.math.min
 
-class AllowUndetectableScreen(private val starship: Starship): Listener {
-	private val screen = Bukkit.createInventory(starship.owner, 54, Component.text("Allow Undetectables"))
-
+class AllowUndetectableScreen(private val starship: Starship, player: Player): Screen(player, 54, "Allow Undetectables") {
 	private val disallowed = defaultUndetectable.toMutableList() // A list version, we have to store it here because it must retain its order
 	private val allowed = mutableListOf<MSPMaterial>()
 
@@ -34,7 +35,7 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 	private var leftEnd = 0
 	private var rightEnd = 0
 
-	private fun update() {
+	override fun update() {
 		leftMaxPage = (disallowed.size - 1) / 24
 		rightMaxPage = (allowed.size - 1) / 8
 
@@ -109,63 +110,38 @@ class AllowUndetectableScreen(private val starship: Starship): Listener {
 		screen.setItem(53, if (rightPage < rightMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
 	}
 
-	init {
-		update()
+	override fun slotClicked(slot: Int) {
+		when (slot) {
+			45 -> leftPage--
+			50 -> leftPage++
+			52 -> rightPage--
+			53 -> rightPage++
+			9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32, 36, 37, 38, 39, 40, 41 -> {
+				var id = slot - 9
+				if (id > 35) id -= 3
+				if (id > 26) id -= 3
+				if (id > 17) id -= 3
+				id += leftStart
 
-		starship.owner.openInventory(screen)
-
-		Bukkit.getPluginManager().registerEvents(this, getPlugin())
-	}
-
-	private fun unregister() {
-		starship.allowedBlocks = allowed.toSet()
-
-		InventoryCloseEvent.getHandlerList().unregister(this)
-		InventoryClickEvent.getHandlerList().unregister(this)
-	}
-
-	@EventHandler
-	fun onPlayerCloseScreen(event: InventoryCloseEvent) {
-		if (event.inventory == screen) {
-			unregister()
-			InterfaceScreen(starship)
-		}
-	}
-
-	@EventHandler
-	fun onPlayerClick(event: InventoryClickEvent) {
-		if (event.inventory == screen) {
-			when (event.rawSlot) {
-				45 -> leftPage--
-				50 -> leftPage++
-				52 -> rightPage--
-				53 -> rightPage++
-				9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32, 36, 37, 38, 39, 40, 41 -> {
-					var id = event.rawSlot - 9
-					if (id > 35) id -= 3
-					if (id > 26) id -= 3
-					if (id > 17) id -= 3
-					id += leftStart
-
-					allowed.add(disallowed[id])
-					disallowed.removeAt(id)
-				}
-				16, 17, 25, 26, 34, 35, 43, 44 -> {
-					var id = event.rawSlot - 16
-					if (id > 25) id -= 7
-					if (id > 16) id -= 7
-					if (id > 7) id -= 7
-					id -= rightStart
-
-					disallowed.add(allowed[id])
-					allowed.removeAt(id)
-				}
+				allowed.add(disallowed[id])
+				disallowed.removeAt(id)
 			}
+			16, 17, 25, 26, 34, 35, 43, 44 -> {
+				var id = slot - 16
+				if (id > 25) id -= 7
+				if (id > 16) id -= 7
+				if (id > 7) id -= 7
+				id -= rightStart
 
-			update()
-
-			event.isCancelled = true
+				disallowed.add(allowed[id])
+				allowed.removeAt(id)
+			}
 		}
 	}
 
+	override fun closed() {
+		InterfaceScreen(starship, player)
+
+		starship.allowedBlocks = allowed.toSet()
+	}
 }
