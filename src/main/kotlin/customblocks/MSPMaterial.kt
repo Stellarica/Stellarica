@@ -3,6 +3,7 @@ package io.github.petercrawley.minecraftstarshipplugin.customblocks
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
+import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.MultipleFacing
 
 class MSPMaterial {
@@ -26,9 +27,13 @@ class MSPMaterial {
 
 	fun set(value: Any?) {
 		when (value) {
-			is Block -> {
-				if (value.type == Material.MUSHROOM_STEM) {
-					val block = value.blockData as MultipleFacing
+			is Block, is BlockData -> {
+				val originalMaterial = if (value is Block) value.type else (value as BlockData).material
+
+				val blockData = if (value is Block) value.blockData else value
+
+				if (originalMaterial == Material.MUSHROOM_STEM) {
+					val block = blockData as MultipleFacing
 					var id = 0
 
 					if (block.hasFace(BlockFace.DOWN))  id += 32
@@ -40,9 +45,9 @@ class MSPMaterial {
 
 					material = customBlocks.getOrDefault(id, "MUSHROOM_STEM")
 
-					if (material == "MUSHROOM_STEM") material = value.type
+					if (material == "MUSHROOM_STEM") material = originalMaterial
 
-				} else material = value.type
+				} else material = originalMaterial
 			}
 			is Material -> material = value
 			is String -> material = Material.getMaterial(value) ?: if (customBlocks.values.contains(value)) value else null

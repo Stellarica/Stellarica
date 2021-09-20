@@ -5,15 +5,17 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
-import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.blockMoves
 import org.bukkit.Bukkit
-import org.bukkit.Material
+import org.bukkit.ChunkSnapshot
 import org.bukkit.block.Block
-import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
 
-class Starship(origin: Block, var owner: Player) {
-	private val detectedBlocks = mutableSetOf(origin) // Blocks that we know are part of the ship.
+class Starship(origin: Block, private val user: Player) {
+	val owner = user
+
+	var pilot: Player? = null
+
+	var detectedBlocks = mutableSetOf(MSPBlockLocation(origin)) // Blocks that we know are part of the ship.
 
 	var allowedBlocks = setOf<MSPMaterial>() // Blocks that have been specifically allowed.
 
@@ -21,10 +23,12 @@ class Starship(origin: Block, var owner: Player) {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
 			val startTime = System.currentTimeMillis() // Debug
 
-			owner.sendMessage("Detecting Starship.")
+			user.sendMessage("Detecting Starship.")
 
-			val checkedBlocks = mutableSetOf<Block>() // List of blocks we have checked
-			val blocksToCheck = mutableSetOf<Block>() // List of blocks we need to check
+			val chunkStorage = mutableMapOf<MSPChunkLocation, ChunkSnapshot>()
+
+			val checkedBlocks = mutableSetOf<MSPBlockLocation>() // List of blocks we have checked
+			val blocksToCheck = mutableSetOf<MSPBlockLocation>() // List of blocks we need to check
 
 			blocksToCheck.addAll(detectedBlocks) // We need to check that all the blocks we already know about
 
@@ -38,16 +42,30 @@ class Starship(origin: Block, var owner: Player) {
 			val detectionLimit = mainConfig.getInt("detectionLimit", 500000)
 
 			while (blocksToCheck.isNotEmpty()) {
-				if (detectedBlocks.size == detectionLimit) {
-					owner.sendMessage("Reached arbitrary detection limit. ($detectionLimit)")
-					break
+				if (detectedBlocks.size > detectionLimit) {
+					user.sendMessage("Reached arbitrary detection limit. ($detectionLimit)")
+
+					// Debug
+					val endTime = System.currentTimeMillis()
+					if (mainConfig.getBoolean("timeOperations", false)) {
+						getPlugin().logger.info("Ship detection took: " + (endTime - startTime) + "ms.")
+						user.sendMessage("Ship detection took: " + (endTime - startTime) + "ms.")
+					}
+
+					return@Runnable
 				}
 
 				// Get and remove the first item
 				val currentBlock = blocksToCheck.first()
 				blocksToCheck.remove(currentBlock)
 
-				val type = MSPMaterial(currentBlock)
+				val chunkCoord = MSPChunkLocation(currentBlock)
+
+				val chunk = chunkStorage.getOrPut(chunkCoord) {
+					currentBlock.world.getChunkAt(chunkCoord.x, chunkCoord.z).chunkSnapshot
+				}
+
+				val type = MSPMaterial(chunk.getBlockData(currentBlock.x - (chunkCoord.x shl 4), currentBlock.y, currentBlock.z - (chunkCoord.z shl 4)))
 
 				if (undetectables.contains(type)) continue
 
@@ -55,12 +73,12 @@ class Starship(origin: Block, var owner: Player) {
 
 				// List of neighbouring blocks.
 				mutableSetOf(
-					currentBlock.getRelative( 1, 0, 0),
-					currentBlock.getRelative(-1, 0, 0),
-					currentBlock.getRelative( 0, 1, 0),
-					currentBlock.getRelative( 0,-1, 0),
-					currentBlock.getRelative( 0, 0, 1),
-					currentBlock.getRelative( 0, 0,-1)
+					currentBlock.relative( 1, 0, 0),
+					currentBlock.relative(-1, 0, 0),
+					currentBlock.relative( 0, 1, 0),
+					currentBlock.relative( 0,-1, 0),
+					currentBlock.relative( 0, 0, 1),
+					currentBlock.relative( 0, 0,-1)
 
 				// If it's not a block we have checked, check it
 				).forEach {
@@ -71,49 +89,13 @@ class Starship(origin: Block, var owner: Player) {
 				}
 			}
 
-			owner.sendMessage("Detected " + detectedBlocks.size + " blocks.")
+			user.sendMessage("Detected " + detectedBlocks.size + " blocks.")
 
 			// Debug
 			val endTime = System.currentTimeMillis()
 			if (mainConfig.getBoolean("timeOperations", false)) {
 				getPlugin().logger.info("Ship detection took: " + (endTime - startTime) + "ms.")
-			}
-		})
-	}
-
-	private fun move(x: Int, y: Int, z: Int) {
-		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
-			val startTime = System.currentTimeMillis() // Debug
-
-			detectedBlocks.forEach {
-				val targetBlock = it.getRelative(x, y, z)
-
-				if (!detectedBlocks.contains(targetBlock)) {
-					if (!targetBlock.type.isAir) {
-						owner.sendMessage("Obstructed at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z  + " by " + targetBlock.type.toString())
-						return@Runnable
-					}
-				}
-			}
-
-			val blocksToUpdate: MutableMap<Block, BlockData> = mutableMapOf()
-
-			val airBlockData = Bukkit.getServer().createBlockData(Material.AIR)
-
-			detectedBlocks.forEach {
-				blocksToUpdate[it] = airBlockData
-				blocksToUpdate[it.getRelative(x, y, z)] = it.blockData
-			}
-
-			// Remember we have not actually made any changes yet, but we now have a list of all the positions, and what they need to be changed too.
-			blocksToUpdate.forEach{
-				blockMoves[it.key] = it.value
-			}
-
-			val endTime = System.currentTimeMillis()
-
-			if (mainConfig.getBoolean("timeOperations", false)) {
-				getPlugin().logger.info("Ship movement took: " + (endTime - startTime) + "ms.")
+				user.sendMessage("Ship detection took: " + (endTime - startTime) + "ms.")
 			}
 		})
 	}
