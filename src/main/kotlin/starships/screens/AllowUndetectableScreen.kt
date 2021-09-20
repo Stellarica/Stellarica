@@ -24,8 +24,6 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 
 	private var topStart = 0
 	private var bottomStart = 0
-	private var topEnd = 0
-	private var bottomEnd = 0
 
 	override fun update() {
 		topMaxPage = disallowed.size / 27
@@ -37,12 +35,9 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 		screen.clear()
 
 		topStart = topPage * 27
-        topEnd = min(topStart + 26, disallowed.lastIndex)
-
 		bottomStart = bottomPage * 9
-		bottomEnd = min(bottomStart + 8, allowed.lastIndex)
 
-		for (i in topStart .. topEnd) {
+		for (i in topStart .. min(topStart + 26, disallowed.lastIndex)) {
 			val id = i - topStart + 9
 
 			val bukkitMaterial = disallowed[i].getBukkit()
@@ -52,7 +47,7 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 			else screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
 		}
 
-		for (i in bottomStart .. bottomEnd) {
+		for (i in bottomStart .. min(bottomStart + 8, allowed.lastIndex)) {
 			val id = i - bottomStart + 45
 
 			val bukkitMaterial = allowed[i].getBukkit()
