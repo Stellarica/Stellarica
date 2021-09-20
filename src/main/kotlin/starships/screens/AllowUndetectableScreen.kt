@@ -64,7 +64,7 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 
 		// Oh boy, this is A LOT of setitem() calls.
 		// TODO: Maybe there is a less stupid way of doing this?
-		screen.setItem(0, if (topPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(0, if (topPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(1, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(2, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(3, ItemStack(Material.RED_STAINED_GLASS_PANE))
@@ -72,8 +72,8 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 		screen.setItem(5, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(6, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(7, ItemStack(Material.RED_STAINED_GLASS_PANE))
-		screen.setItem(8, if (topPage < topMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(36, if (bottomPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(8, if (topPage < topMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(36, if (bottomPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 		screen.setItem(37, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 		screen.setItem(38, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 		screen.setItem(39, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
@@ -81,7 +81,7 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 		screen.setItem(41, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 		screen.setItem(42, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 		screen.setItem(43, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(44, if (bottomPage < bottomMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(44, if (bottomPage < bottomMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 	}
 
 	override fun slotClicked(slot: Int) {
