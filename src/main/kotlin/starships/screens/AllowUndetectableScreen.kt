@@ -47,13 +47,9 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 
 			val bukkitMaterial = disallowed[i].getBukkit()
 
-			if (bukkitMaterial == null) {
-				screen.setItem(id, itemWithName(Material.BARRIER, (disallowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
-			} else if (!bukkitMaterial.isItem) {
-				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
-			} else {
-				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
-			}
+			if (bukkitMaterial == null) screen.setItem(id, itemWithName(Material.BARRIER, (disallowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
+			else if (!bukkitMaterial.isItem) screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
+			else screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
 		}
 
 		for (i in bottomStart .. bottomEnd) {
@@ -61,13 +57,9 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 
 			val bukkitMaterial = allowed[i].getBukkit()
 
-			if (bukkitMaterial == null) {
-				screen.setItem(id, itemWithName(Material.BARRIER, (allowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
-			} else if (!bukkitMaterial.isItem) {
-				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
-			} else {
-				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
-			}
+			if (bukkitMaterial == null) screen.setItem(id, itemWithName(Material.BARRIER, (allowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
+			else if (!bukkitMaterial.isItem) screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
+			else screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
 		}
 
 		// Oh boy, this is A LOT of setitem() calls.
