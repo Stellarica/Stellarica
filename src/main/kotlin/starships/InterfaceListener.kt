@@ -1,6 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships
 
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.getStarshipAt
 import io.github.petercrawley.minecraftstarshipplugin.starships.screens.InterfaceScreen
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
@@ -16,7 +17,7 @@ class InterfaceListener: Listener {
 			val clickedBlock: Block = event.clickedBlock!!
 
 			if (MSPMaterial(clickedBlock) == MSPMaterial("INTERFACE")) {
-				InterfaceScreen(Starship(clickedBlock, event.player))
+				InterfaceScreen(getStarshipAt(clickedBlock, event.player))
 
 				event.isCancelled = true
 			}
