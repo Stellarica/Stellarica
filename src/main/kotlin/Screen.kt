@@ -1,3 +1,5 @@
+@file:Suppress("LeakingThis")
+
 package io.github.petercrawley.minecraftstarshipplugin
 
 import net.kyori.adventure.text.Component.text
