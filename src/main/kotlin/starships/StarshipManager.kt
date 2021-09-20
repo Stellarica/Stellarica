@@ -3,13 +3,20 @@ package io.github.petercrawley.minecraftstarshipplugin.starships
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitRunnable
 
-object StarshipManager {
+object StarshipManager: BukkitRunnable() {
 	private val activeStarships = mutableSetOf<Starship>()
 
 	init {
-		StarshipTick().runTaskTimer(getPlugin(), 1, 1)
+		this.runTaskTimer(getPlugin(), 1, 1)
 	}
+
+    override fun run() {
+        val start = System.currentTimeMillis()
+
+        val targetTime = start + 50
+    }
 
 	fun getStarshipAt(block: Block, requester: Player): Starship {
 		return Starship(block, requester)
