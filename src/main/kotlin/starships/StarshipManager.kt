@@ -21,24 +21,31 @@ object StarshipManager: BukkitRunnable() {
     override fun run() {
         val start = System.currentTimeMillis()
 
-        val targetTime = start + 50
+        val targetTime = start + 40
 
 		activeStarships.forEach { starship ->
 			// TODO: This can be moved to a separate thread by using a ChunkSnapshot
 			// TODO: Collision Detection
 			// That is why starshipMoveOrders is a ConcurrentHashMap and not a MutableMap
+			if (currentStarship == starship || starshipMoveOrders.contains(starship)) return@forEach // Don't make multiple move orders for a ship.
+
+			val newBlockLocations = mutableSetOf<MSPBlockLocation>()
+
 			val starshipMoves = mutableMapOf<MSPBlockLocation, BlockData>()
 
 			starship.detectedBlocks.forEach { block ->
-				starshipMoves.putIfAbsent(block.clone(), Bukkit.createBlockData(Material.AIR))
+				starshipMoves[block.clone()] = Bukkit.createBlockData(Material.AIR)
+			}
 
-				val newLocation = block.add(1, 0, 0)
-				val newBlockData = block.bukkit().blockData
+			starship.detectedBlocks.forEach { block ->
+				val newLocation = block.relative(1, 0, 0)
 
-				if (newLocation.bukkit().blockData != newBlockData) starshipMoves[newLocation] = newBlockData
+				newBlockLocations.add(newLocation)
+				starshipMoves[newLocation] = block.bukkit().blockData
 			}
 
 			starshipMoveOrders[starship] = starshipMoves
+			starship.detectedBlocks = newBlockLocations // Set the new block locations.
 		}
 
 	    if (currentStarship == null && starshipMoveOrders.isNotEmpty()) {
