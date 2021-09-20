@@ -17,7 +17,7 @@ class InterfaceListener: Listener {
 			val clickedBlock: Block = event.clickedBlock!!
 
 			if (MSPMaterial(clickedBlock) == MSPMaterial("INTERFACE")) {
-				InterfaceScreen(getStarshipAt(clickedBlock, event.player))
+				InterfaceScreen(getStarshipAt(clickedBlock, event.player), event.player)
 
 				event.isCancelled = true
 			}
