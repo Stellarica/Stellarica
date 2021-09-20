@@ -39,6 +39,11 @@ object StarshipManager: BukkitRunnable() {
 
 			starshipMoveOrders[starship] = starshipMoves
 		}
+
+	    if (currentStarship == null && starshipMoveOrders.isNotEmpty()) {
+			currentStarship = starshipMoveOrders.keys.first()
+		    currentStarshipMoves = starshipMoveOrders.remove(currentStarship)
+	    }
     }
 
 	fun getStarshipAt(block: Block, requester: Player): Starship { return Starship(block, requester) }
