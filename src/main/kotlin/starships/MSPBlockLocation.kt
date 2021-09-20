@@ -6,8 +6,19 @@ import org.bukkit.block.Block
 class MSPBlockLocation(var x: Int, var y: Int, var z: Int, var world: World) {
 	constructor(block: Block) : this(block.x, block.y, block.z, block.world)
 
+	fun clone(): MSPBlockLocation {
+		return MSPBlockLocation(this.x, this.y, this.z, this.world)
+	}
+
 	fun relative(x: Int, y: Int, z: Int): MSPBlockLocation {
 		return MSPBlockLocation(this.x + x, this.y + y, this.z + z, this.world)
+	}
+
+	fun add(x: Int, y: Int, z: Int): MSPBlockLocation {
+		this.x += x
+		this.y += y
+		this.z += z
+		return this
 	}
 
 	fun bukkit(): Block {
