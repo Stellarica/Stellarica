@@ -44,6 +44,23 @@ object StarshipManager: BukkitRunnable() {
 			currentStarship = starshipMoveOrders.keys.first()
 		    currentStarshipMoves = starshipMoveOrders.remove(currentStarship)
 	    }
+
+	    val movesToRemove = mutableSetOf<MSPBlockLocation>()
+
+	    currentStarshipMoves?.forEach { move ->
+		    if (System.currentTimeMillis() > targetTime) return@forEach
+			move.key.bukkit().setBlockData(move.value, false)
+		    movesToRemove.add(move.key)
+	    }
+
+	    movesToRemove.forEach { block -> 
+			currentStarshipMoves?.remove(block)
+	    }
+
+	    if (currentStarshipMoves?.isEmpty() == true) {
+			currentStarship = null
+		    currentStarshipMoves = null
+	    }
     }
 
 	fun getStarshipAt(block: Block, requester: Player): Starship { return Starship(block, requester) }
