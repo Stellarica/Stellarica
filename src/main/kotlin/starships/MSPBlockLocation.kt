@@ -14,13 +14,6 @@ class MSPBlockLocation(var x: Int, var y: Int, var z: Int, var world: World) {
 		return MSPBlockLocation(this.x + x, this.y + y, this.z + z, this.world)
 	}
 
-	fun add(x: Int, y: Int, z: Int): MSPBlockLocation {
-		this.x += x
-		this.y += y
-		this.z += z
-		return this
-	}
-
 	fun bukkit(): Block {
 		return world.getBlockAt(x, y, z)
 	}
