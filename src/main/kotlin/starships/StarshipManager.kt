@@ -25,6 +25,7 @@ object StarshipManager: BukkitRunnable() {
 
 		activeStarships.forEach { starship ->
 			// TODO: This can be moved to a separate thread by using a ChunkSnapshot
+			// TODO: Collision Detection
 			// That is why starshipMoveOrders is a ConcurrentHashMap and not a MutableMap
 			val starshipMoves = mutableMapOf<MSPBlockLocation, BlockData>()
 
@@ -53,7 +54,7 @@ object StarshipManager: BukkitRunnable() {
 		    movesToRemove.add(move.key)
 	    }
 
-	    movesToRemove.forEach { block -> 
+	    movesToRemove.forEach { block ->
 			currentStarshipMoves?.remove(block)
 	    }
 
