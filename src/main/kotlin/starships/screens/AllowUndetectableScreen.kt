@@ -1,11 +1,13 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithTranslatableName
 import io.github.petercrawley.minecraftstarshipplugin.Screen
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -13,17 +15,37 @@ import kotlin.math.max
 import kotlin.math.min
 
 class AllowUndetectableScreen(private val starship: Starship, player: Player): Screen(player, 54, "Allow Undetectables") {
-	private val disallowed = defaultUndetectable.toMutableList() // A list version, we have to store it here because it must retain its order
-	private val allowed = mutableListOf<MSPMaterial>()
+	lateinit var disallowed: MutableList<MSPMaterial>
+	lateinit var allowed: MutableList<MSPMaterial>
 
-	private var topPage = 0
-	private var bottomPage = 0
+	var topPage = 0
+	var bottomPage = 0
 
-	private var topMaxPage = disallowed.size / 27
-	private var bottomMaxPage = allowed.size / 9
+	var topMaxPage = 0
+	var bottomMaxPage = 0
 
-	private var topStart = 0
-	private var bottomStart = 0
+	var topStart = 0
+	var bottomStart = 0
+
+	override fun init() {
+		disallowed = defaultUndetectable.toMutableList() // A list version, we have to store it here because it must retain its order
+		allowed = mutableListOf()
+
+		screen.setItem(1, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(2, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(3, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(4, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(5, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(6, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(7, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(37, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(38, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(39, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(40, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(41, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(42, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(43, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+	}
 
 	override fun update() {
 		topMaxPage = disallowed.size / 27
@@ -32,7 +54,8 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 		topPage = max(min(topPage, topMaxPage), 0)
 		bottomPage = max(min(bottomPage, bottomMaxPage), 0)
 
-		screen.clear()
+		for (i in 9 .. 35) screen.clear(i)
+		for (i in 45 .. 53) screen.clear(i)
 
 		topStart = topPage * 27
 		bottomStart = bottomPage * 9
@@ -60,22 +83,8 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 		// Oh boy, this is A LOT of setitem() calls.
 		// TODO: Maybe there is a less stupid way of doing this?
 		screen.setItem(0, if (topPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.RED_STAINED_GLASS_PANE))
-		screen.setItem(1, ItemStack(Material.RED_STAINED_GLASS_PANE))
-		screen.setItem(2, ItemStack(Material.RED_STAINED_GLASS_PANE))
-		screen.setItem(3, ItemStack(Material.RED_STAINED_GLASS_PANE))
-		screen.setItem(4, ItemStack(Material.RED_STAINED_GLASS_PANE))
-		screen.setItem(5, ItemStack(Material.RED_STAINED_GLASS_PANE))
-		screen.setItem(6, ItemStack(Material.RED_STAINED_GLASS_PANE))
-		screen.setItem(7, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(8, if (topPage < topMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(36, if (bottomPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(37, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(38, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(39, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(40, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(41, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(42, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(43, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 		screen.setItem(44, if (bottomPage < bottomMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 	}
 
@@ -101,8 +110,8 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 	}
 
 	override fun closed() {
-		InterfaceScreen(starship, player)
-
 		starship.allowedBlocks = allowed.toSet()
+
+		Bukkit.getScheduler().runTask(getPlugin(), Runnable {InterfaceScreen(starship, player)})
 	}
 }
