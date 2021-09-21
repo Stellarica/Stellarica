@@ -23,6 +23,8 @@ object StarshipManager: BukkitRunnable() {
 	private var currentStarship: Starship? = null
 	private var currentStarshipMoves: MutableMap<MSPBlockLocation, BlockData>? = null
 
+	private val chatMessagesToSend = ConcurrentHashMap<String, Player>()
+
 	private var tickStart = 0L
 
 	class TickInfo: Listener {
@@ -40,6 +42,12 @@ object StarshipManager: BukkitRunnable() {
 
     override fun run() {
         val targetTime = tickStart + 45
+
+	    chatMessagesToSend.forEach {
+			it.value.sendMessage(it.key)
+	    }
+
+	    chatMessagesToSend.clear()
 
 		activeStarships.forEach { starship ->
 			// TODO: This can be moved to a separate thread by using a ChunkSnapshot
@@ -112,7 +120,7 @@ object StarshipManager: BukkitRunnable() {
 
 			while (blocksToCheck.isNotEmpty()) {
 				if (starship.detectedBlocks.size > detectionLimit) {
-					starship.pilot?.sendMessage("Reached arbitrary detection limit. ($detectionLimit)") // FIXME: Potentially not thread-safe
+					chatMessagesToSend["Reached arbitrary detection limit. ($detectionLimit)"] = starship.pilot!!
 					return@Runnable
 				}
 
@@ -151,7 +159,7 @@ object StarshipManager: BukkitRunnable() {
 				}
 			}
 
-			starship.pilot?.sendMessage("Detected " + starship.detectedBlocks.size + " blocks.") // FIXME: Potentially not thread-safe
+			chatMessagesToSend["Detected " + starship.detectedBlocks.size + " blocks."] = starship.pilot!!
 		})
 	}
 }
