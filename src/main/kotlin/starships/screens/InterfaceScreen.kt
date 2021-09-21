@@ -1,7 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
-import io.github.petercrawley.minecraftstarshipplugin.Screen
+import io.github.petercrawley.minecraftstarshipplugin.misc.Screen
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.activateStarship
 import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.detectStarship

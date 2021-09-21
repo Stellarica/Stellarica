@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.starships
+package io.github.petercrawley.minecraftstarshipplugin.misc
 
 class MSPChunkLocation(val x: Int, val z: Int) {
 	constructor(block: MSPBlockLocation): this(block.x shr 4, block.z shr 4)
