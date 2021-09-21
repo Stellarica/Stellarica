@@ -110,7 +110,7 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 	}
 
 	override fun closed() {
-		starship.allowedBlocks = allowed.toSet()
+		starship.allowedBlocks = allowed.toSet() as MutableSet<MSPMaterial>
 
 		Bukkit.getScheduler().runTask(getPlugin(), Runnable {InterfaceScreen(starship, player)})
 	}
