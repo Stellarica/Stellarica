@@ -86,6 +86,8 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 		screen.setItem(8, if (topPage < topMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(36, if (bottomPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 		screen.setItem(44, if (bottomPage < bottomMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+
+		starship.allowedBlocks = allowed.toSet() // Save
 	}
 
 	override fun slotClicked(slot: Int) {
@@ -110,8 +112,6 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 	}
 
 	override fun closed() {
-		starship.allowedBlocks = allowed.toSet()
-
 		Bukkit.getScheduler().runTask(getPlugin(), Runnable {InterfaceScreen(starship, player)})
 	}
 }
