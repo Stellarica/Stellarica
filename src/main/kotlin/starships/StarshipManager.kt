@@ -1,5 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships
 
+import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
@@ -10,6 +11,8 @@ import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
 
@@ -20,12 +23,23 @@ object StarshipManager: BukkitRunnable() {
 	private var currentStarship: Starship? = null
 	private var currentStarshipMoves: MutableMap<MSPBlockLocation, BlockData>? = null
 
-	init { this.runTaskTimer(getPlugin(), 1, 1) }
+	private var tickStart = 0L
+
+	class TickInfo: Listener {
+		@EventHandler
+		fun test(event: ServerTickStartEvent) {
+			tickStart = System.currentTimeMillis()
+		}
+	}
+
+	init {
+		this.runTaskTimer(getPlugin(), 1, 1)
+
+		Bukkit.getPluginManager().registerEvents(TickInfo(), getPlugin())
+	}
 
     override fun run() {
-        val start = System.currentTimeMillis()
-
-        val targetTime = start + 40
+        val targetTime = tickStart + 45
 
 		activeStarships.forEach { starship ->
 			// TODO: This can be moved to a separate thread by using a ChunkSnapshot
