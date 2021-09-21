@@ -4,8 +4,8 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithTranslatableName
-import io.github.petercrawley.minecraftstarshipplugin.misc.Screen
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.misc.Screen
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -87,7 +87,7 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 		screen.setItem(36, if (bottomPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 		screen.setItem(44, if (bottomPage < bottomMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
 
-		starship.allowedBlocks = allowed.toSet() // Save
+		starship.allowedBlocks = allowed.toSet() as MutableSet<MSPMaterial> // Save
 	}
 
 	override fun slotClicked(slot: Int) {
