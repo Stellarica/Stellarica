@@ -9,11 +9,13 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
 
 class InterfaceScreen(private val starship: Starship, player: Player): Screen(player, InventoryType.HOPPER, "Starship Interface") {
-	override fun update() {
+	override fun init() {
 		screen.setItem(0, itemWithName(Material.MINECART, "Detect Starship", 128, 255, 128, bold = true))
 		screen.setItem(1, itemWithName(Material.COMPASS, "Pilot Starship", 128, 128, 255, bold = true))
 		screen.setItem(4, itemWithName(Material.BEDROCK, "Allow Undetectables", 255, 128, 128, bold = true))
 	}
+
+	override fun update() {}
 
 	override fun slotClicked(slot: Int) {
 		when (slot) {
