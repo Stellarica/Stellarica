@@ -1,6 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships
 
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.misc.MSPBlockLocation
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 
