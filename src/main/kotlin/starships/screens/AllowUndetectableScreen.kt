@@ -7,131 +7,103 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.Screen
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
-import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryClickEvent
-import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.ItemStack
 import kotlin.math.max
 import kotlin.math.min
 
 class AllowUndetectableScreen(private val starship: Starship, player: Player): Screen(player, 54, "Allow Undetectables") {
-	private val disallowed = defaultUndetectable.toMutableList() // A list version, we have to store it here because it must retain its order
-	private val allowed = mutableListOf<MSPMaterial>()
+	lateinit var disallowed: MutableList<MSPMaterial>
+	lateinit var allowed: MutableList<MSPMaterial>
 
-	private var leftPage = 0
-	private var rightPage = 0
+	var topPage = 0
+	var bottomPage = 0
 
-	private var leftMaxPage = disallowed.size / 24
-	private var rightMaxPage = allowed.size / 8
+	var topMaxPage = 0
+	var bottomMaxPage = 0
 
-	private var leftStart = 0
-	private var rightStart = 0
-	private var leftEnd = 0
-	private var rightEnd = 0
+	var topStart = 0
+	var bottomStart = 0
 
-	override fun update() {
-		leftMaxPage = (disallowed.size - 1) / 24
-		rightMaxPage = (allowed.size - 1) / 8
+	override fun init() {
+		disallowed = defaultUndetectable.toMutableList() // A list version, we have to store it here because it must retain its order
+		allowed = mutableListOf()
 
-		leftPage = max(min(leftPage, leftMaxPage), 0)
-		rightPage = max(min(rightPage, rightMaxPage), 0)
-
-		screen.clear()
-
-		leftStart = leftPage * 24
-        leftEnd = min(leftStart + 23, disallowed.lastIndex)
-
-		rightStart = rightPage * 8
-		rightEnd = min(rightStart + 7, allowed.lastIndex)
-
-		for (i in leftStart .. leftEnd) {
-			var id = i - leftStart + 9
-			if (id > 14) id += 3
-			if (id > 23) id += 3
-			if (id > 32) id += 3
-
-			val bukkitMaterial = disallowed[i].getBukkit()
-
-			if (bukkitMaterial == null) {
-				screen.setItem(id, itemWithName(Material.BARRIER, (disallowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
-			} else if (!bukkitMaterial.isItem) {
-				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
-			} else {
-				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
-			}
-		}
-
-		for (i in rightStart .. rightEnd) {
-			var id = i - rightStart + 16
-			if (id > 17) id += 7
-			if (id > 26) id += 7
-			if (id > 35) id += 7
-
-			val bukkitMaterial = allowed[i].getBukkit()
-
-			if (bukkitMaterial == null) {
-				screen.setItem(id, itemWithName(Material.BARRIER, (allowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
-			} else if (!bukkitMaterial.isItem) {
-				screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
-			} else {
-				screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
-			}
-		}
-
-		// Oh boy, this is A LOT of setitem() calls.
-		// TODO: Maybe there is a less stupid way of doing this?
-		screen.setItem(0, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(1, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(2, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(3, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(4, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(5, ItemStack(Material.RED_STAINED_GLASS_PANE))
-		screen.setItem(6, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(7, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(8, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
-		screen.setItem(15, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(24, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(33, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(42, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(45, if (leftPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(46, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(47, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(48, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(49, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(50, if (leftPage < leftMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(51, ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(52, if (rightPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-		screen.setItem(53, if (rightPage < rightMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.BLACK_STAINED_GLASS_PANE))
+		screen.setItem(6, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(7, ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(37, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(38, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(39, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(40, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(41, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(42, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(43, ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+	}
+
+	override fun update() {
+		topMaxPage = disallowed.size / 27
+		bottomMaxPage = allowed.size / 9
+
+		topPage = max(min(topPage, topMaxPage), 0)
+		bottomPage = max(min(bottomPage, bottomMaxPage), 0)
+
+		for (i in 9 .. 35) screen.clear(i)
+		for (i in 45 .. 53) screen.clear(i)
+
+		topStart = topPage * 27
+		bottomStart = bottomPage * 9
+
+		for (i in topStart .. min(topStart + 26, disallowed.lastIndex)) {
+			val id = i - topStart + 9
+
+			val bukkitMaterial = disallowed[i].getBukkit()
+
+			if (bukkitMaterial == null) screen.setItem(id, itemWithName(Material.BARRIER, (disallowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
+			else if (!bukkitMaterial.isItem) screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
+			else screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
+		}
+
+		for (i in bottomStart .. min(bottomStart + 8, allowed.lastIndex)) {
+			val id = i - bottomStart + 45
+
+			val bukkitMaterial = allowed[i].getBukkit()
+
+			if (bukkitMaterial == null) screen.setItem(id, itemWithName(Material.BARRIER, (allowed[i].get() as String).replace("_", " ").replaceFirstChar { it.uppercaseChar() }))
+			else if (!bukkitMaterial.isItem) screen.setItem(id, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
+			else screen.setItem(id, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
+		}
+
+		// Oh boy, this is A LOT of setitem() calls.
+		// TODO: Maybe there is a less stupid way of doing this?
+		screen.setItem(0, if (topPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(8, if (topPage < topMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.RED_STAINED_GLASS_PANE))
+		screen.setItem(36, if (bottomPage > 0) itemWithName(Material.ARROW, "Previous Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+		screen.setItem(44, if (bottomPage < bottomMaxPage) itemWithName(Material.ARROW, "Next Page", bold = true) else ItemStack(Material.GREEN_STAINED_GLASS_PANE))
+
+		starship.allowedBlocks = allowed.toSet() // Save
 	}
 
 	override fun slotClicked(slot: Int) {
 		when (slot) {
-			45 -> leftPage--
-			50 -> leftPage++
-			52 -> rightPage--
-			53 -> rightPage++
-			9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32, 36, 37, 38, 39, 40, 41 -> {
-				var id = slot - 9
-				if (id > 35) id -= 3
-				if (id > 26) id -= 3
-				if (id > 17) id -= 3
-				id += leftStart
+			0 -> topPage--
+			8 -> topPage++
+			36 -> bottomPage--
+			44 -> bottomPage++
+			9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 -> {
+				val id = slot + topStart - 9
 
 				allowed.add(disallowed[id])
 				disallowed.removeAt(id)
 			}
-			16, 17, 25, 26, 34, 35, 43, 44 -> {
-				var id = slot - 16
-				if (id > 25) id -= 7
-				if (id > 16) id -= 7
-				if (id > 7) id -= 7
-				id -= rightStart
+			45, 46, 47, 48, 49, 50, 51, 52, 53 -> {
+				val id = slot + bottomStart - 45
 
 				disallowed.add(allowed[id])
 				allowed.removeAt(id)
@@ -140,8 +112,6 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 	}
 
 	override fun closed() {
-		InterfaceScreen(starship, player)
-
-		starship.allowedBlocks = allowed.toSet()
+		Bukkit.getScheduler().runTask(getPlugin(), Runnable {InterfaceScreen(starship, player)})
 	}
 }
