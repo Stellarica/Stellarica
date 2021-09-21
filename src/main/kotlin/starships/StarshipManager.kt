@@ -17,8 +17,8 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
 
 object StarshipManager: BukkitRunnable() {
-	private val activeStarships = mutableSetOf<Starship>()
-	private val starshipMoveOrders = ConcurrentHashMap<Starship, MutableMap<MSPBlockLocation, BlockData>>()
+	private val activeStarships = mutableSetOf<Starship>() // All starships that are actively moving
+	private val starshipMoveOrders = ConcurrentHashMap<Starship, MutableMap<MSPBlockLocation, BlockData>>() // A queue containing queues of blocks to move.
 
 	private var currentStarship: Starship? = null
 	private var currentStarshipMoves: MutableMap<MSPBlockLocation, BlockData>? = null
@@ -71,16 +71,10 @@ object StarshipManager: BukkitRunnable() {
 		    currentStarshipMoves = starshipMoveOrders.remove(currentStarship)
 	    }
 
-	    val movesToRemove = mutableSetOf<MSPBlockLocation>()
-
-	    currentStarshipMoves?.forEach { move ->
-		    if (System.currentTimeMillis() > targetTime) return@forEach
-			move.key.bukkit().setBlockData(move.value, false)
-		    movesToRemove.add(move.key)
-	    }
-
-	    movesToRemove.forEach { block ->
-			currentStarshipMoves?.remove(block)
+	    while (currentStarshipMoves?.isNotEmpty() == true && System.currentTimeMillis() < targetTime) {
+		    val block = currentStarshipMoves!!.keys.first()
+		    val blockData = currentStarshipMoves!!.remove(block)
+		    block.bukkit().setBlockData(blockData!!, false)
 	    }
 
 	    if (currentStarshipMoves?.isEmpty() == true) {
@@ -118,7 +112,7 @@ object StarshipManager: BukkitRunnable() {
 
 			while (blocksToCheck.isNotEmpty()) {
 				if (starship.detectedBlocks.size > detectionLimit) {
-					starship.pilot?.sendMessage("Reached arbitrary detection limit. ($detectionLimit)")
+					starship.pilot?.sendMessage("Reached arbitrary detection limit. ($detectionLimit)") // FIXME: Potentially not thread-safe
 					return@Runnable
 				}
 
