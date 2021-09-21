@@ -29,7 +29,7 @@ class AllowUndetectableScreen(private val starship: Starship, player: Player): S
 
 	override fun init() {
 		disallowed = defaultUndetectable.toMutableList() // A list version, we have to store it here because it must retain its order
-		allowed = mutableListOf()
+		allowed = starship.allowedBlocks.toMutableList()
 
 		screen.setItem(1, ItemStack(Material.RED_STAINED_GLASS_PANE))
 		screen.setItem(2, ItemStack(Material.RED_STAINED_GLASS_PANE))
