@@ -6,8 +6,9 @@ import io.github.petercrawley.minecraftstarshipplugin.customblocks.CustomBlocksL
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.starships.InterfaceListener
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.Style
-import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.Component.translatable
+import net.kyori.adventure.text.format.Style.style
+import net.kyori.adventure.text.format.TextColor.color
 import net.kyori.adventure.text.format.TextDecoration
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -31,7 +32,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 			val itemMeta = item.itemMeta
 
-			itemMeta.displayName(Component.text(name).style(Style.style(TextColor.color(colorR, colorG, colorB)).decoration(TextDecoration.ITALIC, italic).decoration(TextDecoration.BOLD, bold)))
+			itemMeta.displayName(Component.text(name).style(style(color(colorR, colorG, colorB)).decoration(TextDecoration.ITALIC, italic).decoration(TextDecoration.BOLD, bold)))
 
 			item.itemMeta = itemMeta
 
@@ -43,7 +44,7 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 			val itemMeta = item.itemMeta
 
-			itemMeta.displayName(Component.translatable(name).style(Style.style(TextColor.color(colorR, colorG, colorB)).decoration(TextDecoration.ITALIC, italic).decoration(TextDecoration.BOLD, bold)))
+			itemMeta.displayName(translatable(name).style(style(color(colorR, colorG, colorB)).decoration(TextDecoration.ITALIC, italic).decoration(TextDecoration.BOLD, bold)))
 
 			item.itemMeta = itemMeta
 
