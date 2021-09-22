@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
 	kotlin("jvm") version "1.5.31"
 
@@ -15,7 +17,7 @@ dependencies {
 	compileOnly("org.hjson:hjson:3.0.0")
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<KotlinCompile>().configureEach {
 	kotlinOptions {
 		jvmTarget = "16"
 	}
