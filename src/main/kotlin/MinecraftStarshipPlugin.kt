@@ -4,7 +4,6 @@ import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplet
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.CustomBlocksListener
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
-import io.github.petercrawley.minecraftstarshipplugin.starships.InterfaceListener
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
@@ -68,7 +67,6 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 
 		reloadConfig()
 
-		Bukkit.getPluginManager().registerEvents(InterfaceListener(), this)
 		Bukkit.getPluginManager().registerEvents(CustomBlocksListener(), this)
 
 		plugin.getCommand("msp")!!.setExecutor(Commands())
