@@ -30,11 +30,11 @@ abstract class Screen: Listener {
 		initScreen()
 	}
 
-	fun onScreenUpdate() {}
+	open fun onScreenUpdate() {}
 
-	fun onScreenButtonClicked(slot: Int) {}
+	open fun onScreenButtonClicked(slot: Int) {}
 
-	fun onScreenClosed() {}
+	open fun onScreenClosed() {}
 
 	fun closeScreen() {
 		// Unregister handlers first, otherwise we will create a loop when we call screen.close()
