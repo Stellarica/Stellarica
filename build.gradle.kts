@@ -20,3 +20,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 		jvmTarget = "16"
 	}
 }
+
+tasks.shadowJar {
+	minimize()
+}
