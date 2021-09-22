@@ -88,7 +88,7 @@ object StarshipManager: BukkitRunnable() {
 	    }
 
 	    if (currentStarshipMoves?.isEmpty() == true) {
-			currentStarship!!.pilot!!.teleport(currentStarship!!.pilot!!.location.add(1.0, 1.0, 1.0))
+			currentStarship!!.pilot!!.teleport(currentStarship!!.pilot!!.location.add(1.0, 0.0, 0.0))
 
 			currentStarship = null
 		    currentStarshipMoves = null
