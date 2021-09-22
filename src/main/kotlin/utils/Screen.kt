@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.starships
+package io.github.petercrawley.minecraftstarshipplugin.utils
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import net.kyori.adventure.text.Component.text
