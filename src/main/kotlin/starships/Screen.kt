@@ -12,20 +12,26 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 
 abstract class Screen: Listener {
+	lateinit var player: Player
+	private set
+
 	lateinit var screen: Inventory
 	private set
 
 	private fun initScreen() {
 		onScreenUpdate()
 		Bukkit.getPluginManager().registerEvents(this, getPlugin())
+		player.openInventory(screen)
 	}
 	
 	fun createScreen(player: Player, type: InventoryType, name: String) {
+		this.player = player
 		screen = Bukkit.createInventory(player, type, text(name))
 		initScreen()
 	}
 
 	fun createScreen(player: Player, size: Int, name: String) {
+		this.player = player
 		screen = Bukkit.createInventory(player, size, text(name))
 		initScreen()
 	}
