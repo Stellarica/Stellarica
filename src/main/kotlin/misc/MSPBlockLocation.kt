@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.starships
+package io.github.petercrawley.minecraftstarshipplugin.misc
 
 import org.bukkit.World
 import org.bukkit.block.Block
