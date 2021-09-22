@@ -1,9 +1,10 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
-import io.github.petercrawley.minecraftstarshipplugin.Screen
+import io.github.petercrawley.minecraftstarshipplugin.misc.Screen
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.activateStarship
+import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipManager.detectStarship
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
@@ -19,9 +20,9 @@ class InterfaceScreen(private val starship: Starship, player: Player): Screen(pl
 
 	override fun slotClicked(slot: Int) {
 		when (slot) {
-			0 -> starship.detect()
+			0 -> detectStarship(starship)
 			1 -> {
-				activateStarship(starship, starship.owner)
+				activateStarship(starship)
 				close()
 			}
 			4 -> {
