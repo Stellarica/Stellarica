@@ -4,7 +4,7 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
-import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.customblocks.Material
 import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
 import io.github.petercrawley.minecraftstarshipplugin.utils.ChunkLocation
 import org.bukkit.Bukkit
@@ -49,7 +49,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 							world.getChunkAt(chunkCoordinate.x, chunkCoordinate.z).getChunkSnapshot(false, false, false)
 						}
 
-						val type = MSPMaterial(chunk.getBlockData(currentBlock.x - (chunkCoordinate.x shl 4), currentBlock.y, currentBlock.z - (chunkCoordinate.z shl 4)))
+						val type = Material(chunk.getBlockData(currentBlock.x - (chunkCoordinate.x shl 4), currentBlock.y, currentBlock.z - (chunkCoordinate.z shl 4)))
 
 						if (undetectables.contains(type)) continue
 
