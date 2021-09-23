@@ -32,7 +32,7 @@
 		NETHER_PORTAL
 	],
 
-	// These blocks can not be detected by default, but users can allow there detection when using the interface.
+	// These blocks can not be detected by default, but users can allow their detection when using the interface.
 	defaultUndetectable: [
 
 		######################################################
