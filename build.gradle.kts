@@ -13,6 +13,8 @@ repositories {
 }
 
 dependencies {
+	implementation("org.bstats:bstats-bukkit:2.2.1")
+
 	compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
 	compileOnly("org.hjson:hjson:3.0.0")
 }
@@ -24,5 +26,7 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 tasks.shadowJar {
+	relocate("org.bstats", "io.github.petercrawley.minecraftstarshipplugin")
+
 	minimize()
 }

@@ -9,6 +9,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextDecoration
+import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
@@ -64,6 +65,8 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 	}
 
 	override fun onEnable() {
+		Metrics(this, 12863)
+
 		plugin = this
 
 		reloadConfig()
