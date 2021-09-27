@@ -5,17 +5,25 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.Material
+import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipBlockSetter.blockSetQueueQueue
 import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
 import io.github.petercrawley.minecraftstarshipplugin.utils.ChunkLocation
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.World
+import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
+import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import kotlin.system.measureTimeMillis
 
-class Starship(private val block: BlockLocation, private var world: World, private val player: Player) {
+class Starship(private val block: BlockLocation, private var world: World, private val player: Player): BukkitRunnable() {
+	private var task: BukkitTask? = null
+
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
 	private val owner = player
+
+	private var moveTarget = BlockLocation(1, 0, 0, null)
 
 	fun detectStarship() {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
@@ -105,5 +113,74 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 			player.sendMessage("Detected " + detectedBlocks.size + " blocks.")
 			getPlugin().logger.info("Detected " + detectedBlocks.size + " blocks.")
 		})
+	}
+
+	fun activateStarship() {
+		task = this.runTaskTimerAsynchronously(getPlugin(), 0, 1)
+	}
+
+	fun deactivateStarship() {
+		task?.cancel()
+	}
+
+	override fun run() {
+		val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
+
+		// Construct the undetectable list
+		val undetectables = defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
+		undetectables.addAll(forcedUndetectable)               // Add all forced undetectables
+
+		val newDetectedBlocks = mutableSetOf<BlockLocation>()
+
+		val blocksToSet = mutableMapOf<BlockLocation, BlockData>()
+
+		detectedBlocks.forEach { cBlock ->
+			val cChunkCoord = ChunkLocation(cBlock.x shr 4, cBlock.z shr 4)
+
+			val cBlockData = chunkCache.getOrPut(cChunkCoord) {
+				world.getChunkAt(cChunkCoord.x, cChunkCoord.z).getChunkSnapshot(false, false, false)
+			}.getBlockData(cBlock.x - (cChunkCoord.x shl 4), cBlock.y, cBlock.z - (cChunkCoord.z shl 4))
+
+			val cMaterial = Material(cBlockData)
+
+			// Step 1: Confirm that there is still a detectable block there.
+			if (undetectables.contains(cMaterial)) return@forEach
+
+			val tBlock = cBlock.relative(moveTarget.x, moveTarget.y, moveTarget.z)
+
+			val tChunkCoord = ChunkLocation(tBlock.x shr 4, tBlock.z shr 4)
+
+			val tBlockData = chunkCache.getOrPut(tChunkCoord) {
+				world.getChunkAt(tChunkCoord.x, tChunkCoord.z).getChunkSnapshot(false, false, false)
+			}.getBlockData(tBlock.x - (tChunkCoord.x shl 4), tBlock.y, tBlock.z - (tChunkCoord.z shl 4))
+
+			val tMaterial = Material(tBlockData)
+
+			// Step 2: Confirm that we can move that block.
+			if (detectedBlocks.contains(tBlock) || tBlockData.material.isAir) {
+
+				// Step 3: If the current block has not already been replaced, set it to air.
+				blocksToSet.putIfAbsent(cBlock, Bukkit.createBlockData(org.bukkit.Material.AIR))
+
+				// Step 4: Set the target block to the block data of the current block.
+				blocksToSet[tBlock] = cBlockData
+
+				// Step 5: Add the target block to the new detected blocks list.
+				newDetectedBlocks.add(tBlock)
+
+			} else {
+
+				// The ship is blocked!
+				player.sendMessage("Blocked at " + tBlock.x + ", " + tBlock.y + ", " + tBlock.z + " by " + tMaterial)
+				return
+
+			}
+		}
+
+		if (detectedBlocks.size != newDetectedBlocks.size) player.sendMessage("Lost " + (newDetectedBlocks.size - detectedBlocks.size) + " blocks!")
+
+		detectedBlocks = newDetectedBlocks
+
+		blockSetQueueQueue[blocksToSet] = false
 	}
 }

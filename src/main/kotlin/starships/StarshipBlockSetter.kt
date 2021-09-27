@@ -1,13 +1,14 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
+import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
 import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
 
 object StarshipBlockSetter: BukkitRunnable() {
-	val blockSetQueueQueue = ConcurrentHashMap<Int, MutableMap<Block, BlockData>>() // Value is a blockSetQueue, Key is the amount of blocks.
+	val blockSetQueueQueue = ConcurrentHashMap<MutableMap<BlockLocation, BlockData>, Boolean>() // Value is a blockSetQueue, Key is the amount of blocks.
 
 	init {this.runTaskTimer(getPlugin(), 0, 1)} // Start running the block setter
 
@@ -17,10 +18,10 @@ object StarshipBlockSetter: BukkitRunnable() {
 		while (System.currentTimeMillis() < targetTime) {
 			if (blockSetQueueQueue.isEmpty()) break
 
-			val blockSetQueue = blockSetQueueQueue.remove(blockSetQueueQueue.keys.toTypedArray().sortedArray().first()) // Messy, should get the ship with the lowest block count.
+			val blockSetQueue = blockSetQueueQueue.keys.first()
 
 			blockSetQueue!!.forEach {
-				it.key.setBlockData(it.value, false)
+				it.key.bukkit.setBlockData(it.value, false)
 			}
 		}
 	}
