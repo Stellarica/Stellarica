@@ -25,6 +25,8 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 
 	private var moveTarget = BlockLocation(1, 0, 0, null)
 
+	var isWaiting = false
+
 	fun detectStarship() {
 		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
 			val time = measureTimeMillis {
@@ -124,6 +126,8 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 	}
 
 	override fun run() {
+		if (isWaiting) return
+
 		val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 		// Construct the undetectable list
@@ -181,6 +185,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 
 		detectedBlocks = newDetectedBlocks
 
-		blockSetQueueQueue[blocksToSet] = false
+		blockSetQueueQueue[blocksToSet] = this
+		isWaiting = true
 	}
 }
