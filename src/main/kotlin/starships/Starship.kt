@@ -138,6 +138,8 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 
 		val blocksToSet = mutableMapOf<BlockLocation, BlockData>()
 
+		val airData = Bukkit.createBlockData(org.bukkit.Material.AIR)
+
 		detectedBlocks.forEach { cBlock ->
 			val cChunkCoord = ChunkLocation(cBlock.x shr 4, cBlock.z shr 4)
 
@@ -164,7 +166,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 			if (detectedBlocks.contains(tBlock) || tBlockData.material.isAir) {
 
 				// Step 3: If the current block has not already been replaced, set it to air.
-				blocksToSet.putIfAbsent(cBlock, Bukkit.createBlockData(org.bukkit.Material.AIR))
+				blocksToSet.putIfAbsent(cBlock, airData)
 
 				// Step 4: Set the target block to the block data of the current block.
 				blocksToSet[tBlock] = cBlockData
