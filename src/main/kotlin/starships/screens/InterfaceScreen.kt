@@ -7,7 +7,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
 
-class InterfaceScreen(player: Player, val starship: Starship): Screen() {
+class InterfaceScreen(player: Player, private val starship: Starship): Screen() {
 	init {
 		createScreen(player, InventoryType.HOPPER, "Starship Interface")
 
