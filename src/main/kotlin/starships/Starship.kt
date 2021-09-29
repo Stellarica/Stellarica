@@ -25,6 +25,8 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 
 	private var moveTarget = BlockLocation(1, 0, 0, null)
 
+	var allowedBlocks = mutableSetOf<MSPMaterial>()
+
 	var isWaiting = false
 
 	fun detectStarship() {
@@ -45,6 +47,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 				// Construct the undetectable list
 				val undetectables = defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
 				undetectables.addAll(forcedUndetectable)               // Add all forced undetectables
+				undetectables.removeAll(allowedBlocks)
 
 				val detectionLimit = mainConfig.getInt("detectionLimit", 500000)
 
@@ -133,6 +136,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 		// Construct the undetectable list
 		val undetectables = defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
 		undetectables.addAll(forcedUndetectable)               // Add all forced undetectables
+		undetectables.removeAll(allowedBlocks)
 
 		val newDetectedBlocks = mutableSetOf<BlockLocation>()
 
