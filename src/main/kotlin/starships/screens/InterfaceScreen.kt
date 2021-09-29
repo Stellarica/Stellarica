@@ -19,7 +19,11 @@ class InterfaceScreen(player: Player, val starship: Starship): Screen() {
 	override fun onScreenButtonClicked(slot: Int) {
 		when (slot) {
 			0 -> starship.detectStarship()
-			1, 4 -> closeScreen()
+			1 -> {
+				starship.activateStarship()
+				closeScreen()
+			}
+			4 -> closeScreen()
 		}
 	}
 }
