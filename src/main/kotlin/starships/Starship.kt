@@ -89,16 +89,16 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 							nextBlocksToCheck.add(block2)
 						}
 						if (!checkedBlocks.contains(block3)) {
-							checkedBlocks.add(block2)
-							nextBlocksToCheck.add(block2)
-						}
-						if (!checkedBlocks.contains(block4)) {
 							checkedBlocks.add(block3)
 							nextBlocksToCheck.add(block3)
 						}
-						if (!checkedBlocks.contains(block5)) {
+						if (!checkedBlocks.contains(block4)) {
 							checkedBlocks.add(block4)
 							nextBlocksToCheck.add(block4)
+						}
+						if (!checkedBlocks.contains(block5)) {
+							checkedBlocks.add(block5)
+							nextBlocksToCheck.add(block5)
 						}
 						if (!checkedBlocks.contains(block6)) {
 							checkedBlocks.add(block6)
