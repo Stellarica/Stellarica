@@ -4,7 +4,7 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
-import io.github.petercrawley.minecraftstarshipplugin.customblocks.Material
+import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipBlockSetter.blockSetQueueQueue
 import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
 import io.github.petercrawley.minecraftstarshipplugin.utils.ChunkLocation
@@ -59,7 +59,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 							world.getChunkAt(chunkCoordinate.x, chunkCoordinate.z).getChunkSnapshot(false, false, false)
 						}
 
-						val type = Material(chunk.getBlockData(currentBlock.x - (chunkCoordinate.x shl 4), currentBlock.y, currentBlock.z - (chunkCoordinate.z shl 4)))
+						val type = MSPMaterial(chunk.getBlockData(currentBlock.x - (chunkCoordinate.x shl 4), currentBlock.y, currentBlock.z - (chunkCoordinate.z shl 4)))
 
 						if (undetectables.contains(type)) continue
 
@@ -147,7 +147,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 				world.getChunkAt(cChunkCoord.x, cChunkCoord.z).getChunkSnapshot(false, false, false)
 			}.getBlockData(cBlock.x - (cChunkCoord.x shl 4), cBlock.y, cBlock.z - (cChunkCoord.z shl 4))
 
-			val cMaterial = Material(cBlockData)
+			val cMaterial = MSPMaterial(cBlockData)
 
 			// Step 1: Confirm that there is still a detectable block there.
 			if (undetectables.contains(cMaterial)) return@forEach
@@ -160,7 +160,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 				world.getChunkAt(tChunkCoord.x, tChunkCoord.z).getChunkSnapshot(false, false, false)
 			}.getBlockData(tBlock.x - (tChunkCoord.x shl 4), tBlock.y, tBlock.z - (tChunkCoord.z shl 4))
 
-			val tMaterial = Material(tBlockData)
+			val tMaterial = MSPMaterial(tBlockData)
 
 			// Step 2: Confirm that we can move that block.
 			if (detectedBlocks.contains(tBlock) || tBlockData.material.isAir) {
