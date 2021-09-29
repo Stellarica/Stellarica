@@ -68,6 +68,6 @@ class MSPMaterial {
 	}
 
 	override fun equals(other: Any?): Boolean {
-		return if (other is MSPMaterial) material == other.material else material == other
+		return if (other is io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial) material == other.material else material == other
 	}
 }
