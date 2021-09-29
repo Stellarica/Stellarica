@@ -20,11 +20,12 @@ abstract class Screen: Listener {
 
 	private fun createScreen(player: Player, inventory: Inventory) {
 		this.player = player
+		this.screen = inventory
 		onScreenUpdate()
 		Bukkit.getPluginManager().registerEvents(this, getPlugin())
 		player.openInventory(screen)
 	}
-	
+
 	fun createScreen(player: Player, type: InventoryType, name: String) {
 		createScreen(player, Bukkit.createInventory(player, type, text(name)))
 	}
@@ -48,7 +49,7 @@ abstract class Screen: Listener {
 
 		onScreenClosed()
 	}
-	
+
 	@EventHandler fun onInventoryClickEvent(event: InventoryClickEvent) {
 		if (event.inventory == screen) {
 			event.isCancelled = true
@@ -56,7 +57,7 @@ abstract class Screen: Listener {
 			onScreenUpdate()
 		}
 	}
-	
+
 	@EventHandler fun onPlayerCloseScreenEvent(event: InventoryCloseEvent) {
 		if (event.inventory == screen) closeScreen()
 	}

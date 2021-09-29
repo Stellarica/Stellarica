@@ -23,7 +23,10 @@ class InterfaceScreen(player: Player, private val starship: Starship): Screen() 
 				starship.activateStarship()
 				closeScreen()
 			}
-			4 -> closeScreen()
+			4 -> {
+				AllowUndetectablesScreen(player, starship)
+				closeScreen()
+			}
 		}
 	}
 }
