@@ -18,22 +18,19 @@ abstract class Screen: Listener {
 	lateinit var screen: Inventory
 	private set
 
-	private fun initScreen() {
+	private fun createScreen(player: Player, inventory: Inventory) {
+		this.player = player
 		onScreenUpdate()
 		Bukkit.getPluginManager().registerEvents(this, getPlugin())
 		player.openInventory(screen)
 	}
 	
 	fun createScreen(player: Player, type: InventoryType, name: String) {
-		this.player = player
-		screen = Bukkit.createInventory(player, type, text(name))
-		initScreen()
+		createScreen(player, Bukkit.createInventory(player, type, text(name)))
 	}
 
 	fun createScreen(player: Player, size: Int, name: String) {
-		this.player = player
-		screen = Bukkit.createInventory(player, size, text(name))
-		initScreen()
+		createScreen(player, Bukkit.createInventory(player, size, text(name)))
 	}
 
 	open fun onScreenUpdate() {}
