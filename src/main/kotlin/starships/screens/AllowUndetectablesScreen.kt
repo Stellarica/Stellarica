@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack
 import kotlin.math.max
 import kotlin.math.min
 
-class AllowUndetectablesScreen(player: Player, private val starship: Starship): Screen() {
+class AllowUndetectablesScreen(player: Player, private val starship: Starship) : Screen() {
 	private val disallowed = defaultUndetectable.toMutableList()
 	private val allowed = starship.allowedBlocks.toMutableList()
 
@@ -64,45 +64,63 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship): 
 		bottomStart = bottomPage * 9
 
 		if (disallowed.isEmpty()) {
-			for (index in 9 .. 35) screen.setItem(index, gray)
+			for (index in 9..35) screen.setItem(index, gray)
 			screen.setItem(22, itemWithName(Material.BARRIER, "Undetectable list is empty!", 255, 0, 0, true))
 
 		} else {
-			for (index in topStart .. topStart + 26) {
+			for (index in topStart..topStart + 26) {
 				val inventoryIndex = index - topStart + 9
 
 				val material = disallowed.getOrNull(index)
 
 				if (material == null) screen.setItem(inventoryIndex, air)
-
 				else {
 					val bukkitMaterial = material.getBukkit()
 
-					if (bukkitMaterial == null) screen.setItem(inventoryIndex, itemWithName(Material.BARRIER, material.toString().replace("_", " ").replaceFirstChar{it.uppercaseChar()}))
-					else if (!bukkitMaterial.isItem) screen.setItem(inventoryIndex, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
-					else screen.setItem(inventoryIndex, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
+					if (bukkitMaterial == null) screen.setItem(
+						inventoryIndex,
+						itemWithName(Material.BARRIER, material.toString().replace("_", " ").replaceFirstChar { it.uppercaseChar() })
+					)
+					else if (!bukkitMaterial.isItem) screen.setItem(
+						inventoryIndex,
+						itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey)
+					)
+					else screen.setItem(
+						inventoryIndex,
+						itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey)
+					)
 				}
 			}
 		}
 
 		if (allowed.isEmpty()) {
-			for (index in 45 .. 53) screen.setItem(index, gray)
+			for (index in 45..53) screen.setItem(index, gray)
 			screen.setItem(49, itemWithName(Material.BARRIER, "Allowed undetectables list is empty!", 255, 0, 0, true))
 
 		} else {
-			for (index in bottomStart .. bottomStart + 8) {
+			for (index in bottomStart..bottomStart + 8) {
 				val inventoryIndex = index - bottomStart + 45
 
 				val material = allowed.getOrNull(index)
 
 				if (material == null) screen.setItem(inventoryIndex, air)
-
 				else {
 					val bukkitMaterial = material.getBukkit()
 
-					if (bukkitMaterial == null) screen.setItem(inventoryIndex, itemWithName(Material.BARRIER, material.toString().replace("_", " ").replaceFirstChar{it.uppercaseChar()}))
-					else if (!bukkitMaterial.isItem) screen.setItem(inventoryIndex, itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey))
-					else screen.setItem(inventoryIndex, itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey))
+					if (bukkitMaterial == null) screen.setItem(
+						inventoryIndex,
+						itemWithName(
+							Material.BARRIER,
+							material.toString().replace("_", " ").replaceFirstChar { it.uppercaseChar() })
+					)
+					else if (!bukkitMaterial.isItem) screen.setItem(
+						inventoryIndex,
+						itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey)
+					)
+					else screen.setItem(
+						inventoryIndex,
+						itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey)
+					)
 				}
 			}
 		}
@@ -134,6 +152,6 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship): 
 
 	override fun onScreenClosed() {
 		starship.allowedBlocks = allowed.toMutableSet()
-		Bukkit.getScheduler().runTask(getPlugin(), Runnable {InterfaceScreen(player, starship)})
+		Bukkit.getScheduler().runTask(getPlugin(), Runnable { InterfaceScreen(player, starship) })
 	}
 }

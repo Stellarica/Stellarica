@@ -35,7 +35,7 @@ class ParticleProjectile (val origin: Location, private val color: Color, privat
 		ProjectileRunnable(this).runTaskTimer(getPlugin(), 1, 1)
 	}
 
-	fun step(loc: Location): Boolean{
+	fun step(loc: Location): Boolean {
 		// A single particle spawn + check for damage/blocks/explosion
 		// Returns false if it hit something, otherwise true.
 		particle.location(loc).spawn() // actually spawn the particle

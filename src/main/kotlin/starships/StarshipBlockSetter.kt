@@ -2,7 +2,6 @@ package io.github.petercrawley.minecraftstarshipplugin.starships
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
-import org.bukkit.block.Block
 import org.bukkit.block.data.BlockData
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap

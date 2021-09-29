@@ -14,7 +14,7 @@ class ProjectileRunnable(private val projectileHandler: ParticleProjectile) : Bu
 		// Counter is basically how far are we toward the max range.
 		// We want to cancel when we reach that or else... big lag and eventually errors
 
-		for (i in 0..projectileHandler.speed){ // We have to do the speed number of steps per tick, otherwise its incredibly slow
+		for (i in 0..projectileHandler.speed) { // We have to do the speed number of steps per tick, otherwise its incredibly slow
 			loc.add(direction)
 
 			if (!projectileHandler.step(loc)) { // Spawn the particle and check for blocks/entities

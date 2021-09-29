@@ -5,9 +5,9 @@ import org.bukkit.block.Block
 
 data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) {
 	val bukkit: Block
-	get() {
-		return world!!.getBlockAt(x, y, z)
-	}
+		get() {
+			return world!!.getBlockAt(x, y, z)
+		}
 
 	constructor(block: Block) : this(block.x, block.y, block.z, block.world)
 

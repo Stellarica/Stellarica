@@ -17,7 +17,7 @@ import org.hjson.JsonObject
 import org.hjson.JsonValue
 import java.io.File
 
-class MinecraftStarshipPlugin: JavaPlugin() {
+class MinecraftStarshipPlugin : JavaPlugin() {
 	companion object {
 		// I spent far too long trying to do this with kotlin getters and setters... I give up.
 		private lateinit var plugin: MinecraftStarshipPlugin
@@ -26,24 +26,55 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 			return plugin
 		}
 
-		fun itemWithName(material: org.bukkit.Material, name: String, colorR: Int = 255, colorG: Int = 255, colorB: Int = 255, bold: Boolean = false, italic: Boolean = false): ItemStack {
+		fun itemWithName(
+			material: org.bukkit.Material,
+			name: String,
+			colorR: Int = 255,
+			colorG: Int = 255,
+			colorB: Int = 255,
+			bold: Boolean = false,
+			italic: Boolean = false
+		): ItemStack {
 			val item = ItemStack(material)
 
 			val itemMeta = item.itemMeta
 
-			itemMeta.displayName(Component.text(name).style(style(color(colorR, colorG, colorB)).decoration(TextDecoration.ITALIC, italic).decoration(TextDecoration.BOLD, bold)))
+			itemMeta.displayName(
+				Component.text(name).style(
+					style(color(colorR, colorG, colorB)).decoration(TextDecoration.ITALIC, italic)
+						.decoration(TextDecoration.BOLD, bold)
+				)
+			)
 
 			item.itemMeta = itemMeta
 
 			return item
 		}
 
-		fun itemWithTranslatableName(material: org.bukkit.Material, name: String, colorR: Int = 255, colorG: Int = 255, colorB: Int = 255, bold: Boolean = false, italic: Boolean = false): ItemStack {
+		fun itemWithTranslatableName(
+			material: org.bukkit.Material,
+			name: String,
+			colorR: Int = 255,
+			colorG: Int = 255,
+			colorB: Int = 255,
+			bold: Boolean = false,
+			italic: Boolean = false
+		): ItemStack {
 			val item = ItemStack(material)
 
 			val itemMeta = item.itemMeta
 
-			itemMeta.displayName(translatable(name).style(style(color(colorR, colorG, colorB)).decoration(TextDecoration.ITALIC, italic).decoration(TextDecoration.BOLD, bold)))
+			itemMeta.displayName(
+				translatable(name).style(
+					style(
+						color(
+							colorR,
+							colorG,
+							colorB
+						)
+					).decoration(TextDecoration.ITALIC, italic).decoration(TextDecoration.BOLD, bold)
+				)
+			)
 
 			item.itemMeta = itemMeta
 
@@ -51,13 +82,14 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		}
 
 		var forcedUndetectable = mutableSetOf<io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial>()
-		var defaultUndetectable = mutableSetOf<io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial>()
+		var defaultUndetectable =
+			mutableSetOf<io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial>()
 
 		var mainConfig: JsonObject = JsonObject()
 	}
 
-	private fun saveDefault(name:String) {
-		if (!File(plugin.dataFolder, name).exists()){
+	private fun saveDefault(name: String) {
+		if (!File(plugin.dataFolder, name).exists()) {
 			// Although it won't overwrite it creates some useless warnings
 			plugin.saveResource(name, false)
 		}

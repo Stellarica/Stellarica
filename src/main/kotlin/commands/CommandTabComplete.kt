@@ -5,7 +5,12 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 
 class CommandTabComplete : TabCompleter {
-	override fun onTabComplete(sender: CommandSender, cmd: Command, alias: String, args: Array<String>): MutableList<String> {
+	override fun onTabComplete(
+		sender: CommandSender,
+		cmd: Command,
+		alias: String,
+		args: Array<String>
+	): MutableList<String> {
 		val subcommands: MutableList<String> = ArrayList()
 		if (args.size == 1) {
 			// /msp <x>
@@ -20,7 +25,7 @@ class CommandTabComplete : TabCompleter {
 				if (sender.hasPermission("msp.config.reload")) {
 					subcommands.add("reload")
 				}
-				if (sender.hasPermission("msp.config.reset")){
+				if (sender.hasPermission("msp.config.reset")) {
 					subcommands.add("reset")
 				}
 			}
