@@ -62,7 +62,13 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 							world.getChunkAt(chunkCoordinate.x, chunkCoordinate.z).getChunkSnapshot(false, false, false)
 						}
 
-						val type = MSPMaterial(chunk.getBlockData(currentBlock.x - (chunkCoordinate.x shl 4), currentBlock.y, currentBlock.z - (chunkCoordinate.z shl 4)))
+						val type = MSPMaterial(
+							chunk.getBlockData(
+								currentBlock.x - (chunkCoordinate.x shl 4),
+								currentBlock.y,
+								currentBlock.z - (chunkCoordinate.z shl 4)
+							)
+						)
 
 						if (undetectables.contains(type)) continue
 
@@ -76,12 +82,12 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 
 						detectedBlocks.add(currentBlock)
 
-						val block1 = currentBlock.relative( 1,  0,  0)
-						val block2 = currentBlock.relative(-1,  0,  0)
-						val block3 = currentBlock.relative( 0,  1,  0)
-						val block4 = currentBlock.relative( 0, -1,  0)
-						val block5 = currentBlock.relative( 0,  0,  1)
-						val block6 = currentBlock.relative( 0,  0, -1)
+						val block1 = currentBlock.relative(1, 0, 0)
+						val block2 = currentBlock.relative(-1, 0, 0)
+						val block3 = currentBlock.relative(0, 1, 0)
+						val block4 = currentBlock.relative(0, -1, 0)
+						val block5 = currentBlock.relative(0, 0, 1)
+						val block6 = currentBlock.relative(0, 0, -1)
 
 						if (!checkedBlocks.contains(block1)) {
 							checkedBlocks.add(block1)

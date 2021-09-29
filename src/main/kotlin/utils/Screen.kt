@@ -11,12 +11,12 @@ import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 
-abstract class Screen: Listener {
+abstract class Screen : Listener {
 	lateinit var player: Player
-	private set
+		private set
 
 	lateinit var screen: Inventory
-	private set
+		private set
 
 	private fun createScreen(player: Player, inventory: Inventory) {
 		this.player = player
@@ -50,7 +50,8 @@ abstract class Screen: Listener {
 		onScreenClosed()
 	}
 
-	@EventHandler fun onInventoryClickEvent(event: InventoryClickEvent) {
+	@EventHandler
+	fun onInventoryClickEvent(event: InventoryClickEvent) {
 		if (event.inventory == screen) {
 			event.isCancelled = true
 			onScreenButtonClicked(event.rawSlot)
@@ -58,7 +59,8 @@ abstract class Screen: Listener {
 		}
 	}
 
-	@EventHandler fun onPlayerCloseScreenEvent(event: InventoryCloseEvent) {
+	@EventHandler
+	fun onPlayerCloseScreenEvent(event: InventoryCloseEvent) {
 		if (event.inventory == screen) closeScreen()
 	}
 }

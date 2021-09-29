@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent
 import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
 
-class CustomBlocksListener: Listener {
+class CustomBlocksListener : Listener {
 	// For our purposes BlockPistonExtendEvent and BlockPistonRetractEvent can be handled the same way.
 	private fun mushroomBlockMovedByPiston(blocks: List<Block>, direction: BlockFace) {
 		val blocksToChange = mutableMapOf<Block, BlockData>()
@@ -31,17 +31,20 @@ class CustomBlocksListener: Listener {
 		}
 	}
 
-	@EventHandler fun mushroomBlockPushedByPiston(event: BlockPistonExtendEvent) {
+	@EventHandler
+	fun mushroomBlockPushedByPiston(event: BlockPistonExtendEvent) {
 		mushroomBlockMovedByPiston(event.blocks, event.direction)
 	}
 
-	@EventHandler fun mushroomBlockPulledByPiston(event: BlockPistonRetractEvent) {
+	@EventHandler
+	fun mushroomBlockPulledByPiston(event: BlockPistonRetractEvent) {
 		mushroomBlockMovedByPiston(event.blocks, event.direction)
 	}
 
 	// If a mushroom block is placed force its faces to all be true.
 	// This allows us to keep allowing the use of the blocks in builds.
-	@EventHandler fun mushroomBlockPlaced(event: BlockPlaceEvent) {
+	@EventHandler
+	fun mushroomBlockPlaced(event: BlockPlaceEvent) {
 		val block = event.blockPlaced
 
 		if (block.type != Material.MUSHROOM_STEM) return // If it's not a mushroom stem, ignore it.
@@ -52,7 +55,8 @@ class CustomBlocksListener: Listener {
 	// Prevent the block faces from changing.
 	// This has to be done on the main thread as doing it async will cause issues.
 	// TODO: On the client the mushroom blocks flash with the incorrect faces very briefly, see if this can be avoided.
-	@EventHandler fun mushroomBlockPhysicsEvent(event: BlockPhysicsEvent) {
+	@EventHandler
+	fun mushroomBlockPhysicsEvent(event: BlockPhysicsEvent) {
 		if (event.changedType == Material.MUSHROOM_STEM) {
 			event.isCancelled = true
 

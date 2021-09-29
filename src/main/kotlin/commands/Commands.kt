@@ -10,7 +10,7 @@ class Commands : CommandExecutor {
 	private val plugin = getPlugin()
 
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-		if (args.isEmpty()){
+		if (args.isEmpty()) {
 			sender.sendMessage("Please input at least one argument!")
 			return false;
 		}
@@ -31,7 +31,7 @@ class Commands : CommandExecutor {
 		return false
 	}
 
-	private fun resetConfig(sender: CommandSender): Boolean{
+	private fun resetConfig(sender: CommandSender): Boolean {
 		File(plugin.dataFolder, "undetectables.hjson").delete()
 		File(plugin.dataFolder, "config.hjson").delete()
 		plugin.reloadConfig()
@@ -39,7 +39,7 @@ class Commands : CommandExecutor {
 		return true
 	}
 
-	private fun reloadConfig(sender: CommandSender): Boolean{
+	private fun reloadConfig(sender: CommandSender): Boolean {
 		plugin.reloadConfig()
 		sender.sendMessage("Reloaded config")
 		return true
