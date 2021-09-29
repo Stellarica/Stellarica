@@ -50,8 +50,8 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 			return item
 		}
 
-		var forcedUndetectable = mutableSetOf<io.github.petercrawley.minecraftstarshipplugin.customblocks.Material>()
-		var defaultUndetectable = mutableSetOf<io.github.petercrawley.minecraftstarshipplugin.customblocks.Material>()
+		var forcedUndetectable = mutableSetOf<io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial>()
+		var defaultUndetectable = mutableSetOf<io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial>()
 
 		var mainConfig: JsonObject = JsonObject()
 	}
@@ -88,14 +88,14 @@ class MinecraftStarshipPlugin: JavaPlugin() {
 		val configFile = JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()
 
 		configFile["forcedUndetectable"].asArray().forEach {
-			val value = io.github.petercrawley.minecraftstarshipplugin.customblocks.Material(it.asString())
+			val value = io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial(it.asString())
 
 			if (value == null) logger.warning("No Material for $value! Make sure all forced undetectable blocks are correctly named!")
 			else forcedUndetectable.add(value)
 		}
 
 		configFile["defaultUndetectable"].asArray().forEach {
-			val value = io.github.petercrawley.minecraftstarshipplugin.customblocks.Material(it.asString())
+			val value = io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial(it.asString())
 
 			if (value == null) logger.warning("No Material for $value! Make sure all default undetectable blocks are correctly named!")
 			else defaultUndetectable.add(value)

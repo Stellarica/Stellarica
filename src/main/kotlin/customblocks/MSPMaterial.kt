@@ -6,7 +6,7 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.MultipleFacing
 
-class Material {
+class MSPMaterial {
 	private val customBlocks = mutableMapOf(
 		Pair(0b000000, "INTERFACE")
 	)
@@ -68,6 +68,6 @@ class Material {
 	}
 
 	override fun equals(other: Any?): Boolean {
-		return if (other is io.github.petercrawley.minecraftstarshipplugin.customblocks.Material) material == other.material else material == other
+		return if (other is io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial) material == other.material else material == other
 	}
 }
