@@ -1,9 +1,9 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithTranslatableName
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import io.github.petercrawley.minecraftstarshipplugin.utils.Screen
 import org.bukkit.Bukkit
@@ -152,6 +152,6 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 
 	override fun onScreenClosed() {
 		starship.allowedBlocks = allowed.toMutableSet()
-		Bukkit.getScheduler().runTask(getPlugin(), Runnable { InterfaceScreen(player, starship) })
+		Bukkit.getScheduler().runTask(plugin, Runnable { InterfaceScreen(player, starship) })
 	}
 }

@@ -1,25 +1,23 @@
 package io.github.petercrawley.minecraftstarshipplugin.commands
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import java.io.File
 
 class Commands : CommandExecutor {
-	private val plugin = getPlugin()
-
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
 		if (args.isEmpty()) {
 			sender.sendMessage("Please input at least one argument!")
-			return false;
+			return false
 		}
 		if (args[0].equals("config",ignoreCase = true) &&
 			(sender.hasPermission("msp.config.reset") || sender.hasPermission("msp.config.reload"))) {
 
 			if (args.size == 1) {
 				sender.sendMessage("Not enough arguments for command!")
-				return false;
+				return false
 			}
 			if (args[1].equals("reset", ignoreCase = true)) {
 				return resetConfig(sender)

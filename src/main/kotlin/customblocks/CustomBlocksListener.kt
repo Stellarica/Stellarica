@@ -1,6 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin.customblocks
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -25,7 +25,7 @@ class CustomBlocksListener : Listener {
 
 		if (blocksToChange.isNotEmpty()) {
 			// Create a task to correct the blocks after the piston is done doing its thing.
-			Bukkit.getScheduler().runTask(MinecraftStarshipPlugin.getPlugin(), Runnable {
+			Bukkit.getScheduler().runTask(plugin, Runnable {
 				blocksToChange.forEach { it.key.setBlockData(it.value, false) }
 			})
 		}
