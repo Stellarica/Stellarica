@@ -30,6 +30,6 @@ class CommandTabComplete : TabCompleter {
 				}
 			}
 		}
-		return subcommands;
+		return subcommands
 	}
 }

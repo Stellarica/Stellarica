@@ -2,8 +2,8 @@ package io.github.petercrawley.minecraftstarshipplugin.starships
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipBlockSetter.blockSetQueueQueue
 import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
@@ -19,21 +19,18 @@ import kotlin.system.measureTimeMillis
 
 class Starship(private val block: BlockLocation, private var world: World, private val player: Player): BukkitRunnable() {
 	private var task: BukkitTask? = null
-
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
 	private val owner = player
-
 	private var moveTarget = BlockLocation(1, 0, 0, null)
-
 	var allowedBlocks = mutableSetOf<MSPMaterial>()
 
 	var isWaiting = false
 
 	fun detectStarship() {
-		Bukkit.getScheduler().runTaskAsynchronously(getPlugin(), Runnable {
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
 			val time = measureTimeMillis {
 				player.sendMessage("Detecting Starship")
-				getPlugin().logger.info("Detecting Starship for " + player.name)
+				plugin.logger.info("Detecting Starship for " + player.name)
 
 				detectedBlocks.add(block) // Add the interface to the ship
 
@@ -74,7 +71,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 
 						if (detectedBlocks.size > detectionLimit) {
 							player.sendMessage("Detection limit reached. ($detectionLimit)")
-							getPlugin().logger.info("Detection limit reached. ($detectionLimit)")
+							plugin.logger.info("Detection limit reached. ($detectionLimit)")
 							nextBlocksToCheck.clear()
 							detectedBlocks.clear()
 							break
@@ -118,16 +115,16 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 			}
 
 			if (mainConfig.getBoolean("timeOperations", false)) {
-				getPlugin().logger.info("Starship Detection took $time ms.")
+				plugin.logger.info("Starship Detection took $time ms.")
 			}
 
 			player.sendMessage("Detected " + detectedBlocks.size + " blocks.")
-			getPlugin().logger.info("Detected " + detectedBlocks.size + " blocks.")
+			plugin.logger.info("Detected " + detectedBlocks.size + " blocks.")
 		})
 	}
 
 	fun activateStarship() {
-		task = this.runTaskTimerAsynchronously(getPlugin(), 0, 1)
+		task = this.runTaskTimerAsynchronously(plugin, 0, 1)
 	}
 
 	fun deactivateStarship() {

@@ -1,6 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin.utils
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import net.kyori.adventure.text.Component.text
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -22,7 +22,7 @@ abstract class Screen : Listener {
 		this.player = player
 		this.screen = inventory
 		onScreenUpdate()
-		Bukkit.getPluginManager().registerEvents(this, getPlugin())
+		Bukkit.getPluginManager().registerEvents(this, plugin)
 		player.openInventory(screen)
 	}
 

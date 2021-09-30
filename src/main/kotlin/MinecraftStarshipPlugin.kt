@@ -19,12 +19,8 @@ import java.io.File
 
 class MinecraftStarshipPlugin : JavaPlugin() {
 	companion object {
-		// I spent far too long trying to do this with kotlin getters and setters... I give up.
-		private lateinit var plugin: MinecraftStarshipPlugin
-
-		fun getPlugin(): MinecraftStarshipPlugin {
-			return plugin
-		}
+		lateinit var plugin: MinecraftStarshipPlugin
+			private set
 
 		fun itemWithName(
 			material: org.bukkit.Material,

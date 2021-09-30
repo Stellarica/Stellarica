@@ -1,7 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin.projectiles
 
 import com.destroystokyo.paper.ParticleBuilder
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.getPlugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -32,7 +32,7 @@ class ParticleProjectile (val origin: Location, private val color: Color, privat
 
 	fun shootProjectile() {
 		// Start the Runnable that will handle projectile mode
-		ProjectileRunnable(this).runTaskTimer(getPlugin(), 1, 1)
+		ProjectileRunnable(this).runTaskTimer(plugin, 1, 1)
 	}
 
 	fun step(loc: Location): Boolean {
