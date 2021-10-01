@@ -92,9 +92,9 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 	}
 
 	override fun onEnable() {
-		Metrics(this, 12863)
-
 		plugin = this
+		
+		Metrics(this, 12863)
 
 		reloadConfig()
 
