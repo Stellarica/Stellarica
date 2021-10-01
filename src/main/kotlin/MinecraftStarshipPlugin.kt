@@ -3,6 +3,7 @@ package io.github.petercrawley.minecraftstarshipplugin
 import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplete
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.CustomBlocksListener
+import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.starships.InterfaceListener
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.translatable
@@ -77,10 +78,8 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 			return item
 		}
 
-		var forcedUndetectable = mutableSetOf<io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial>()
-		var defaultUndetectable =
-			mutableSetOf<io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial>()
-
+		var forcedUndetectable = mutableSetOf<MSPMaterial>()
+		var defaultUndetectable = mutableSetOf<MSPMaterial>()
 		var mainConfig: JsonObject = JsonObject()
 	}
 
@@ -93,7 +92,7 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 
 	override fun onEnable() {
 		plugin = this
-		
+
 		Metrics(this, 12863)
 
 		reloadConfig()
@@ -116,14 +115,14 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 		val configFile = JsonValue.readHjson(File(plugin.dataFolder, "undetectables.hjson").bufferedReader()).asObject()
 
 		configFile["forcedUndetectable"].asArray().forEach {
-			val value = io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial(it.asString())
+			val value = MSPMaterial(it.asString())
 
 			if (value == null) logger.warning("No Material for $value! Make sure all forced undetectable blocks are correctly named!")
 			else forcedUndetectable.add(value)
 		}
 
 		configFile["defaultUndetectable"].asArray().forEach {
-			val value = io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial(it.asString())
+			val value = MSPMaterial(it.asString())
 
 			if (value == null) logger.warning("No Material for $value! Make sure all default undetectable blocks are correctly named!")
 			else defaultUndetectable.add(value)
