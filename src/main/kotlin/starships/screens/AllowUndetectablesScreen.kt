@@ -75,7 +75,7 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 
 				if (material == null) screen.setItem(inventoryIndex, air)
 				else {
-					val bukkitMaterial = material.getBukkit()
+					val bukkitMaterial = material.bukkit()
 
 					if (bukkitMaterial == null) screen.setItem(
 						inventoryIndex,
@@ -105,7 +105,7 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 
 				if (material == null) screen.setItem(inventoryIndex, air)
 				else {
-					val bukkitMaterial = material.getBukkit()
+					val bukkitMaterial = material.bukkit()
 
 					if (bukkitMaterial == null) screen.setItem(
 						inventoryIndex,
