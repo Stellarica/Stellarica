@@ -23,8 +23,10 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 	private val owner = player
 	private var moveTarget = BlockLocation(1, 0, 0, null)
 	var allowedBlocks = mutableSetOf<MSPMaterial>()
+	var nextMoveCheckTick = 0
 
-	var isWaiting = false
+	val blockCount: Int
+		get() { return detectedBlocks.size }
 
 	fun detectStarship() {
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
@@ -115,6 +117,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 			}
 
 			if (mainConfig.getBoolean("timeOperations", false)) {
+				player.sendMessage("Starship Detection took $time ms.")
 				plugin.logger.info("Starship Detection took $time ms.")
 			}
 
@@ -132,7 +135,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 	}
 
 	override fun run() {
-		if (isWaiting) return
+		if (Bukkit.getCurrentTick() < nextMoveCheckTick) return
 
 		val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
@@ -195,6 +198,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 		detectedBlocks = newDetectedBlocks
 
 		blockSetQueueQueue[blocksToSet] = this
-		isWaiting = true
+
+		nextMoveCheckTick = Int.MAX_VALUE
 	}
 }

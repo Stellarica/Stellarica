@@ -2,6 +2,7 @@ package io.github.petercrawley.minecraftstarshipplugin.starships
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
+import org.bukkit.Bukkit
 import org.bukkit.block.data.BlockData
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
@@ -24,7 +25,7 @@ object StarshipBlockSetter: BukkitRunnable() {
 				it.key.bukkit.setBlockData(it.value, false)
 			}
 
-			starship!!.isWaiting = false
+			starship!!.nextMoveCheckTick = Bukkit.getCurrentTick() + 1 + starship.blockCount / 20000 // This 20000 should be defined in a config file
 		}
 	}
 }
