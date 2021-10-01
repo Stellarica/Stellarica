@@ -8,23 +8,22 @@ import java.io.File
 
 class Commands : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-		// TODO: Use kotlin when statement
-                if (args.isEmpty()) {
+		if (args.isEmpty()) {
 			sender.sendMessage("Please input at least one argument!")
 			return false
 		}
-		if (args[0].equals("config",ignoreCase = true) &&
-			(sender.hasPermission("msp.config.reset") || sender.hasPermission("msp.config.reload"))) {
-
+		if (args[0].lowercase() == "config") {
 			if (args.size == 1) {
 				sender.sendMessage("Not enough arguments for command!")
 				return false
 			}
-			if (args[1].equals("reset", ignoreCase = true)) {
-				return resetConfig(sender)
-			}
-			if (args[1].equals("reload", ignoreCase = true) && sender.hasPermission("msp.config.reload")) {
-				return reloadConfig(sender)
+			return when (args[1].lowercase()) {
+				"reset" -> if (sender.hasPermission("msp.config.reset")) resetConfig(sender) else false
+				"reload" -> if (sender.hasPermission("msp.config.reload")) reloadConfig(sender) else false
+				else -> {
+					sender.sendMessage("Invalid argument(s)!")
+					false
+				}
 			}
 		}
 		return false
