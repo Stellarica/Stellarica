@@ -8,7 +8,8 @@ import java.io.File
 
 class Commands : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-		if (args.isEmpty()) {
+		// TODO: Use kotlin when statement
+                if (args.isEmpty()) {
 			sender.sendMessage("Please input at least one argument!")
 			return false
 		}
