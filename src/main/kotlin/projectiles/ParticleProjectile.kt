@@ -9,7 +9,7 @@ import org.bukkit.Particle
 import org.bukkit.entity.LivingEntity
 import org.bukkit.util.Vector
 
-class ParticleProjectile (val origin: Location, private val color: Color, private val particleDensity: Int,
+data class ParticleProjectile (val origin: Location, private val color: Color, private val particleDensity: Int,
                           val range: Int, private val minRange: Double, val speed: Int,
                           private val damage: Double, private val explosion: Float) // Yikes that's a lot of arguments
 {
