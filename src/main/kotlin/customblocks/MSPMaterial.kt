@@ -11,7 +11,7 @@ class MSPMaterial(material: Any?) {
 		Pair(0b000000, "INTERFACE")
 	)
 
-	var material = material
+	var material: Any? = null
 		set(value) {
 			when (value) {
 				is Block, is BlockData -> {
@@ -41,6 +41,8 @@ class MSPMaterial(material: Any?) {
 				else -> field = null
 			}
 		}
+
+	init { this.material = material }
 
 	fun bukkit(): Material? {
 		return if (material is Material) material as Material else null
