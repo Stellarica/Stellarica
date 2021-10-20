@@ -15,6 +15,9 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 	// ParticleBuilder that we can spawn later when we need to
 
 	fun shootBeam() {
+		val event = ParticleProjectileLaunchEvent(this, origin)
+		Bukkit.getPluginManager().callEvent(event)
+
 		// Simple beam mode, do it all on the same server tick
 		val loc = origin.clone() // Don't want to modify the origin, so we clone it
 		val direction: Vector = origin.direction // Main reason this uses Locations (even though they are slow) is for this
@@ -30,6 +33,9 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 
 	fun shootProjectile() {
 		// Start the Runnable that will handle projectile mode
+		val event = ParticleProjectileLaunchEvent(this, origin)
+		Bukkit.getPluginManager().callEvent(event)
+
 		ProjectileRunnable(this).runTaskTimer(plugin, 1, 1)
 	}
 
