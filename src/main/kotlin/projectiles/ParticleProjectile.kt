@@ -2,10 +2,8 @@ package io.github.petercrawley.minecraftstarshipplugin.projectiles
 
 import com.destroystokyo.paper.ParticleBuilder
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
-import org.bukkit.Color
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.Particle
+import io.github.petercrawley.minecraftstarshipplugin.events.*
+import org.bukkit.*
 import org.bukkit.entity.LivingEntity
 import org.bukkit.util.Vector
 
@@ -48,6 +46,10 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 				// player who shot it.
 				e.damage(damage)
 				if (explosion > 0) loc.world.createExplosion(loc, explosion)
+
+				val event = ParticleProjectileHitEntityEvent(this, loc, e)
+				Bukkit.getPluginManager().callEvent(event)
+
 				return false // damage one entity only
 			}
 		}
@@ -58,6 +60,11 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 					loc.world.createExplosion(loc, explosion) // As far as I can tell this is the main cause of lag when spamming these
 				}
 			}
+
+			// Alert any listeners
+			val event = ParticleProjectileHitBlockEvent(this, loc)
+			Bukkit.getPluginManager().callEvent(event)
+
 			return false
 		}
 		return true
