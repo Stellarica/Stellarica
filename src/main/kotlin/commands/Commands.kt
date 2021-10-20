@@ -18,7 +18,7 @@ class Commands : CommandExecutor {
 				return false
 			}
 			return when (args[1].lowercase()) {
-				"reset" -> if (sender.hasPermission("msp.config.reset")) resetConfig(sender) else false
+				"reset" -> if (sender.hasPermission("msp.config.reset")) resetConfig(sender, args.getOrNull(2)) else false
 				"reload" -> if (sender.hasPermission("msp.config.reload")) reloadConfig(sender) else false
 				else -> {
 					sender.sendMessage("Invalid argument(s)!")
@@ -29,11 +29,21 @@ class Commands : CommandExecutor {
 		return false
 	}
 
-	private fun resetConfig(sender: CommandSender): Boolean {
-		File(plugin.dataFolder, "undetectables.hjson").delete()
-		File(plugin.dataFolder, "config.hjson").delete()
+	private fun resetConfig(sender: CommandSender, config: String?): Boolean {
+		if (config == null){
+			sender.sendMessage("Please specify the config file to reset!")
+			return true
+		}
+
+		val file = File(plugin.dataFolder, config)
+		if (!file.exists()){
+			sender.sendMessage("That config file does not exist!")
+			return true
+		}
+		file.delete()
+
 		plugin.reloadConfig()
-		sender.sendMessage("Reset config")
+		sender.sendMessage("Reset config $config")
 		return true
 	}
 
