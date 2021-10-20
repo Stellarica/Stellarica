@@ -1,7 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin.events
 import io.github.petercrawley.minecraftstarshipplugin.projectiles.ParticleProjectile
 import org.bukkit.Location
-import org.bukkit.entity.Entity
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
