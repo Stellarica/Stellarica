@@ -5,7 +5,11 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.events.ParticleProjectileHitBlockEvent
 import io.github.petercrawley.minecraftstarshipplugin.events.ParticleProjectileHitEntityEvent
 import io.github.petercrawley.minecraftstarshipplugin.events.ParticleProjectileLaunchEvent
-import org.bukkit.*
+import org.bukkit.Bukkit
+import org.bukkit.Color
+import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.Particle
 import org.bukkit.entity.LivingEntity
 import org.bukkit.util.Vector
 
