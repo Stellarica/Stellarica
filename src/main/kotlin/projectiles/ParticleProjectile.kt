@@ -2,6 +2,10 @@ package io.github.petercrawley.minecraftstarshipplugin.projectiles
 
 import com.destroystokyo.paper.ParticleBuilder
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
+import io.github.petercrawley.minecraftstarshipplugin.events.ParticleProjectileHitBlockEvent
+import io.github.petercrawley.minecraftstarshipplugin.events.ParticleProjectileHitEntityEvent
+import io.github.petercrawley.minecraftstarshipplugin.events.ParticleProjectileLaunchEvent
+import org.bukkit.Bukkit
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Material
@@ -17,6 +21,9 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 	// ParticleBuilder that we can spawn later when we need to
 
 	fun shootBeam() {
+		val event = ParticleProjectileLaunchEvent(this, origin)
+		Bukkit.getPluginManager().callEvent(event)
+
 		// Simple beam mode, do it all on the same server tick
 		val loc = origin.clone() // Don't want to modify the origin, so we clone it
 		val direction: Vector = origin.direction // Main reason this uses Locations (even though they are slow) is for this
@@ -32,6 +39,9 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 
 	fun shootProjectile() {
 		// Start the Runnable that will handle projectile mode
+		val event = ParticleProjectileLaunchEvent(this, origin)
+		Bukkit.getPluginManager().callEvent(event)
+
 		ProjectileRunnable(this).runTaskTimer(plugin, 1, 1)
 	}
 
@@ -48,6 +58,10 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 				// player who shot it.
 				e.damage(damage)
 				if (explosion > 0) loc.world.createExplosion(loc, explosion)
+
+				val event = ParticleProjectileHitEntityEvent(this, loc, e)
+				Bukkit.getPluginManager().callEvent(event)
+
 				return false // damage one entity only
 			}
 		}
@@ -58,6 +72,11 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 					loc.world.createExplosion(loc, explosion) // As far as I can tell this is the main cause of lag when spamming these
 				}
 			}
+
+			// Alert any listeners
+			val event = ParticleProjectileHitBlockEvent(this, loc)
+			Bukkit.getPluginManager().callEvent(event)
+
 			return false
 		}
 		return true
