@@ -5,6 +5,7 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.events.StarshipDetectEvent
 import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipBlockSetter.blockSetQueueQueue
 import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
 import io.github.petercrawley.minecraftstarshipplugin.utils.ChunkLocation
@@ -29,6 +30,10 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 		get() { return detectedBlocks.size }
 
 	fun detectStarship() {
+		// Create a new event
+		val event = StarshipDetectEvent(this, player)
+		Bukkit.getPluginManager().callEvent(event)
+
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
 			val time = measureTimeMillis {
 				player.sendMessage("Detecting Starship")
