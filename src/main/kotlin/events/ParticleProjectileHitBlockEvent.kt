@@ -6,7 +6,6 @@ import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
 class ParticleProjectileHitBlockEvent(val projectile: ParticleProjectile, val location: Location) : Event() {
-
 	override fun getHandlers(): HandlerList {
 		return handlerList
 	}
