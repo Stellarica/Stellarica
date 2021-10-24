@@ -1,11 +1,8 @@
-# **Contributing To *Minecraft Starship Plugin***
+# Contributing to Minecraft Starship Plugin
 
-# Pull Requests
-1. The owner of this repository considers spaces for indentations the act of a person who is 'pure evil', so please use the TAB key instead.
-2. Always comment your code and use appropriate names for functions/variables/et cetera so that the pull request is easier to be reviewed.
-3. Provide a suitable title and description for your pull request. 
-4. Do not use * when importing.
+1. Do not use spaces for indentation.
+2. Do not use * when importing.
+3. Use descriptive variable names.
+4. If the purpose of a line can not be explained in 1 sentence, it's too long.
 
-Thank you.
-
-If you have any queries, please consult the [Discord Server](https://discord.gg/yhduWCPCrU "Discord Server").
+If you have any queries, please ask in the [MSP Discord Server](https://discord.gg/yhduWCPCrU "MSP Discord Server").
