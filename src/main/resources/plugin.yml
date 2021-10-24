@@ -1,7 +1,7 @@
 main: io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 name: Minecraft-Starship-Plugin
 version: 0.1.0-dev
-description: An open-source plugin that accommodates starships on minecraft servers. `A shameless rip-off of Star Legacy`s plguins.`
+description: An open-source plugin that accommodates starships on minecraft servers.
 api-version: 1.16
 load: STARTUP
 authors: [ "Peter-Crawley", "trainb0y1", "DoctorXeno" ]
@@ -22,6 +22,5 @@ commands:
     description: Base Minecraft Starship Plugin command
     usage: /<command> [config]
     permission: msp
-    permission-message: You do not have permission to use this command! # might be redundant
 libraries:
   - org.hjson:hjson:3.0.0
