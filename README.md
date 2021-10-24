@@ -1,6 +1,16 @@
 # Minecraft Starship Plugin
 An open-source plugin that accommodates starships on minecraft servers.
 
-*'A shameless rip-off of Star Legacy's plugins.'*
+The name is a work in progress, please suggest new names in the discord server if you can think of anything better.
 
-[*Minecraft Starship Plugin* Discord Server]( https://discord.gg/yhduWCPCrU "*Minecraft Starship Plugin* Discord Server")
+This plugin aims to implement the following features:
+- Starships
+- Automation
+- Guns
+- Armour
+- Storage Systems
+- Shields
+- Planets
+- Star Systems
+
+[MSP Discord Server](https://discord.gg/yhduWCPCrU "MSP Discord Server")
