@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	kotlin("jvm") version "1.5.31"
 
-	id("com.github.johnrengelman.shadow") version "7.0.0"
+	id("com.github.johnrengelman.shadow") version "7.1.0"
 }
 
 repositories {
@@ -15,7 +15,7 @@ repositories {
 dependencies {
 	implementation("org.bstats:bstats-bukkit:2.2.1")
 
-	compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
+	compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
 	compileOnly("org.hjson:hjson:3.0.0")
 }
 
