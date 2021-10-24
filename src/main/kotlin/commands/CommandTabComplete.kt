@@ -4,7 +4,6 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
-import java.io.File
 
 class CommandTabComplete : TabCompleter {
 	override fun onTabComplete(
