@@ -1,6 +1,5 @@
 package io.github.petercrawley.minecraftstarshipplugin.commands
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
@@ -25,15 +24,6 @@ class CommandTabComplete : TabCompleter {
 				// /msp config <x>
 				if (sender.hasPermission("msp.config.reload")) subcommands.add("reload")
 				if (sender.hasPermission("msp.config.reset")) subcommands.add("reset")
-			}
-		}
-
-		if (args.size == 3){
-			if (args[0].equals("config",ignoreCase = true) && args[1].equals("reset",ignoreCase = true)){
-				// /msp config reset <x>
-				MinecraftStarshipPlugin.plugin.dataFolder.walkTopDown().forEach {
-					if (it.isFile) subcommands.add(it.name) // might list non config files, but not a problem for now
-				}
 			}
 		}
 

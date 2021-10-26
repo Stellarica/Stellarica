@@ -1,10 +1,9 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithName
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.itemWithTranslatableName
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
+import io.github.petercrawley.minecraftstarshipplugin.utils.NamedItem
 import io.github.petercrawley.minecraftstarshipplugin.utils.Screen
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -31,8 +30,8 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 	private val green = ItemStack(Material.GREEN_STAINED_GLASS_PANE)
 	private val gray = ItemStack(Material.GRAY_STAINED_GLASS_PANE)
 	private val air = ItemStack(Material.AIR)
-	private val last = itemWithName(Material.ARROW, "Previous Page", bold = true)
-	private val next = itemWithName(Material.ARROW, "Next Page", bold = true)
+	private val last = NamedItem(Material.ARROW, "Previous Page", false, bold = true)
+	private val next = NamedItem(Material.ARROW, "Next Page", false, bold = true)
 
 	init {
 		createScreen(player, 54, "Allow Undetectable Blocks")
@@ -65,7 +64,7 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 
 		if (disallowed.isEmpty()) {
 			for (index in 9..35) screen.setItem(index, gray)
-			screen.setItem(22, itemWithName(Material.BARRIER, "Undetectable list is empty!", 255, 0, 0, true))
+			screen.setItem(22, NamedItem(Material.BARRIER, "Undetectable list is empty!", false, 255, 0, 0, true))
 
 		} else {
 			for (index in topStart..topStart + 26) {
@@ -79,15 +78,15 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 
 					if (bukkitMaterial == null) screen.setItem(
 						inventoryIndex,
-						itemWithName(Material.BARRIER, material.toString().replace("_", " ").replaceFirstChar { it.uppercaseChar() })
+						NamedItem(Material.BARRIER, material.toString().replace("_", " ").replaceFirstChar { it.uppercaseChar() }, false)
 					)
 					else if (!bukkitMaterial.isItem) screen.setItem(
 						inventoryIndex,
-						itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey)
+						NamedItem(Material.BARRIER, bukkitMaterial.translationKey, true)
 					)
 					else screen.setItem(
 						inventoryIndex,
-						itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey)
+						NamedItem(bukkitMaterial, bukkitMaterial.translationKey, true)
 					)
 				}
 			}
@@ -95,7 +94,7 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 
 		if (allowed.isEmpty()) {
 			for (index in 45..53) screen.setItem(index, gray)
-			screen.setItem(49, itemWithName(Material.BARRIER, "Allowed undetectables list is empty!", 255, 0, 0, true))
+			screen.setItem(49, NamedItem(Material.BARRIER, "Allowed undetectables list is empty!", false, 255, 0, 0, true))
 
 		} else {
 			for (index in bottomStart..bottomStart + 8) {
@@ -109,17 +108,15 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 
 					if (bukkitMaterial == null) screen.setItem(
 						inventoryIndex,
-						itemWithName(
-							Material.BARRIER,
-							material.toString().replace("_", " ").replaceFirstChar { it.uppercaseChar() })
+						NamedItem(Material.BARRIER, material.toString().replace("_", " ").replaceFirstChar { it.uppercaseChar() }, false)
 					)
 					else if (!bukkitMaterial.isItem) screen.setItem(
 						inventoryIndex,
-						itemWithTranslatableName(Material.BARRIER, bukkitMaterial.translationKey)
+						NamedItem(Material.BARRIER, bukkitMaterial.translationKey, true)
 					)
 					else screen.setItem(
 						inventoryIndex,
-						itemWithTranslatableName(bukkitMaterial, bukkitMaterial.translationKey)
+						NamedItem(bukkitMaterial, bukkitMaterial.translationKey, true)
 					)
 				}
 			}

@@ -22,5 +22,3 @@ commands:
     description: Base Minecraft Starship Plugin command
     usage: /<command> [config]
     permission: msp
-libraries:
-  - org.hjson:hjson:3.0.0

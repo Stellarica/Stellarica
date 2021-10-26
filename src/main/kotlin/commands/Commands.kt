@@ -18,8 +18,8 @@ class Commands : CommandExecutor {
 				return false
 			}
 			return when (args[1].lowercase()) {
-				"reset" -> if (sender.hasPermission("msp.config.reset")) resetConfig(sender, args.getOrNull(2)) else false
-				"reload" -> if (sender.hasPermission("msp.config.reload")) reloadConfig(sender) else false
+				"reset" -> if (sender.hasPermission("msp.config.reset")) reset(sender) else false
+				"reload" -> if (sender.hasPermission("msp.config.reload")) reload(sender) else false
 				else -> {
 					sender.sendMessage("Invalid argument(s)!")
 					false
@@ -29,26 +29,21 @@ class Commands : CommandExecutor {
 		return false
 	}
 
-	private fun resetConfig(sender: CommandSender, config: String?): Boolean {
-		if (config == null){
-			sender.sendMessage("Please specify the config file to reset!")
-			return true
-		}
-
-		val file = File(plugin.dataFolder, config)
-		if (!file.exists()){
-			sender.sendMessage("That config file does not exist!")
-			return true
-		}
+	private fun reset(sender: CommandSender): Boolean {
+		val file = File(plugin.dataFolder, "config.yml")
 		file.delete()
 
+		plugin.saveDefaultConfig()
 		plugin.reloadConfig()
-		sender.sendMessage("Reset config $config")
+
+		sender.sendMessage("Reset config")
 		return true
 	}
 
-	private fun reloadConfig(sender: CommandSender): Boolean {
+	private fun reload(sender: CommandSender): Boolean {
+		plugin.saveDefaultConfig()
 		plugin.reloadConfig()
+
 		sender.sendMessage("Reloaded config")
 		return true
 	}

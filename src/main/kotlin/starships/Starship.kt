@@ -1,9 +1,10 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.detectionLimit
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.mainConfig
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.timeOperations
 import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.events.StarshipDetectEvent
 import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipBlockSetter.blockSetQueueQueue
@@ -52,8 +53,6 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 				val undetectables = defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
 				undetectables.addAll(forcedUndetectable)               // Add all forced undetectables
 				undetectables.removeAll(allowedBlocks)
-
-				val detectionLimit = mainConfig.getInt("detectionLimit", 500000)
 
 				while (nextBlocksToCheck.size > 0) {
 					val blocksToCheck = nextBlocksToCheck
@@ -121,7 +120,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 				}
 			}
 
-			if (mainConfig.getBoolean("timeOperations", false)) {
+			if (timeOperations) {
 				player.sendMessage("Starship Detection took $time ms.")
 				plugin.logger.info("Starship Detection took $time ms.")
 			}
