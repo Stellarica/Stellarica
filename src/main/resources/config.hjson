@@ -1,7 +1,0 @@
-{
-	// Output how long it takes to detect/move a ship
-	timeOperations: false
-
-	// Detection Limit
-	detectionLimit: 500000
-}
