@@ -46,15 +46,18 @@ class MSPMaterial(material: Any?) {
 		return if (material is Material) material as Material else null
 	}
 
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as MSPMaterial
+
+		if (material != other.material) return false
+
+		return true
+	}
+
 	override fun hashCode(): Int {
 		return material?.hashCode() ?: 0
-	}
-
-	override fun toString(): String {
-		return material.toString()
-	}
-
-	override fun equals(other: Any?): Boolean {
-		return if (other is MSPMaterial) material == other.material else material == other
 	}
 }
