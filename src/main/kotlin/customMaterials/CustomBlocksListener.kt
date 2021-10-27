@@ -2,6 +2,7 @@ package io.github.petercrawley.minecraftstarshipplugin.customMaterials
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import org.bukkit.Bukkit
+import org.bukkit.Bukkit.getOnlinePlayers
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -77,7 +78,19 @@ class CustomBlocksListener : Listener {
 
 			if (block.type != Material.MUSHROOM_STEM) continue
 
-			block.state.update(true, false)
+			getOnlinePlayers().forEach {
+				if (it.world != event.block.world) return@forEach
+
+				val minX = it.chunk.x - it.viewDistance
+				val maxX = it.chunk.x + it.viewDistance
+				val minZ = it.chunk.z - it.viewDistance
+				val maxZ = it.chunk.z + it.viewDistance
+
+				if (event.block.chunk.x !in minX .. maxX) return@forEach
+				if (event.block.chunk.z !in minZ .. maxZ) return@forEach
+
+				it.sendBlockChange(event.block.location, event.block.blockData)
+			}
 
 			blocksToUpdate.add(block.getRelative( 1,  0,  0))
 			blocksToUpdate.add(block.getRelative(-1,  0,  0))
