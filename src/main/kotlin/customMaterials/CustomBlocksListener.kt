@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.customblocks
+package io.github.petercrawley.minecraftstarshipplugin.customMaterials
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import org.bukkit.Bukkit

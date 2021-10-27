@@ -2,8 +2,8 @@ package io.github.petercrawley.minecraftstarshipplugin
 
 import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplete
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
-import io.github.petercrawley.minecraftstarshipplugin.customblocks.CustomBlocksListener
-import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.customMaterials.CustomBlocksListener
+import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin

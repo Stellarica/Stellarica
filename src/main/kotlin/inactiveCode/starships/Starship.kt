@@ -5,7 +5,7 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.timeOperations
-import io.github.petercrawley.minecraftstarshipplugin.customblocks.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.events.StarshipDetectEvent
 import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipBlockSetter.blockSetQueueQueue
 import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation

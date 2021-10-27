@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.customblocks
+package io.github.petercrawley.minecraftstarshipplugin.customMaterials
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.customBlocks
 import org.bukkit.Material
@@ -7,7 +7,7 @@ import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.MultipleFacing
 
-class MSPMaterial(material: Any?) {
+class MSPMaterial(material: Any?) {	
 	var material: Any? = material
 		set(value) {
 			when (value) {
