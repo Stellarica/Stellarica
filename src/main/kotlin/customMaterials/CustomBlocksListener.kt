@@ -57,34 +57,34 @@ class CustomBlocksListener : Listener {
 	// TODO: On the client the mushroom blocks flash with the incorrect faces very briefly, see if this can be avoided.
 	@EventHandler
 	fun mushroomBlockPhysicsEvent(event: BlockPhysicsEvent) {
-		if (event.changedType == Material.MUSHROOM_STEM) {
-			event.isCancelled = true
+		if (event.changedType != Material.MUSHROOM_STEM) return
 
-			val blocksToUpdate = mutableSetOf<Block>()
-			val checkedBlocks = mutableSetOf<Block>()
+		event.isCancelled = true
 
-			blocksToUpdate.add(event.block)
+		val blocksToUpdate = mutableSetOf<Block>()
+		val checkedBlocks = mutableSetOf<Block>()
 
-			// It is important to find every block that changed as these changes will be processed client side, so we need to update ALL of them to ensure they are all correct client side.
-			while (blocksToUpdate.isNotEmpty()) {
-				val block = blocksToUpdate.first()
-				blocksToUpdate.remove(block)
+		blocksToUpdate.add(event.block)
 
-				if (checkedBlocks.contains(block)) continue
+		// It is important to find every block that changed as these changes will be processed client side, so we need to update ALL of them to ensure they are all correct client side.
+		while (blocksToUpdate.isNotEmpty()) {
+			val block = blocksToUpdate.first()
+			blocksToUpdate.remove(block)
 
-				checkedBlocks.add(block)
+			if (checkedBlocks.contains(block)) continue
 
-				if (block.type != Material.MUSHROOM_STEM) continue
+			checkedBlocks.add(block)
 
-				block.state.update(true, false)
+			if (block.type != Material.MUSHROOM_STEM) continue
 
-				blocksToUpdate.add(block.getRelative(1, 0, 0))
-				blocksToUpdate.add(block.getRelative(-1, 0, 0))
-				blocksToUpdate.add(block.getRelative(0, 1, 0))
-				blocksToUpdate.add(block.getRelative(0, -1, 0))
-				blocksToUpdate.add(block.getRelative(0, 0, 1))
-				blocksToUpdate.add(block.getRelative(0, 0, -1))
-			}
+			block.state.update(true, false)
+
+			blocksToUpdate.add(block.getRelative( 1,  0,  0))
+			blocksToUpdate.add(block.getRelative(-1,  0,  0))
+			blocksToUpdate.add(block.getRelative( 0,  1,  0))
+			blocksToUpdate.add(block.getRelative( 0, -1,  0))
+			blocksToUpdate.add(block.getRelative( 0,  0,  1))
+			blocksToUpdate.add(block.getRelative( 0,  0, -1))
 		}
 	}
 }
