@@ -5,7 +5,7 @@ import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.CustomBlocksListener
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
 import org.bstats.bukkit.Metrics
-import org.bukkit.Bukkit
+import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.plugin.java.JavaPlugin
 
 class MinecraftStarshipPlugin : JavaPlugin() {
@@ -37,7 +37,7 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 		saveDefaultConfig()
 		reloadConfig()
 
-		Bukkit.getPluginManager().registerEvents(CustomBlocksListener(), this)
+		getPluginManager().registerEvents(CustomBlocksListener(), this)
 
 		plugin.getCommand("msp")!!.setExecutor(Commands())
 		plugin.getCommand("msp")!!.tabCompleter = CommandTabComplete()
