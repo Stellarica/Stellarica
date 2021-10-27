@@ -44,17 +44,17 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 	override fun reloadConfig() {
 		super.reloadConfig()
 
-		timeOperations = plugin.config.getBoolean("timeOperations", false)
-		detectionLimit = plugin.config.getInt("detectionLimit", 500000)
+		timeOperations = config.getBoolean("timeOperations", false)
+		detectionLimit = config.getInt("detectionLimit", 500000)
 
 		val newForcedUndetectable = mutableSetOf<MSPMaterial>()
-		plugin.config.getStringList("forcedUndetectable").forEach {
+		config.getStringList("forcedUndetectable").forEach {
 			newForcedUndetectable.add(MSPMaterial(it))
 		}
 		forcedUndetectable = newForcedUndetectable
 
 		val newDefaultUndetectable = mutableSetOf<MSPMaterial>()
-		plugin.config.getStringList("defaultUndetectable").forEach {
+		config.getStringList("defaultUndetectable").forEach {
 			newDefaultUndetectable.add(MSPMaterial(it))
 		}
 		defaultUndetectable = newDefaultUndetectable
