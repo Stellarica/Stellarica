@@ -7,6 +7,16 @@ timeOperations: false
 # Detection Limit
 detectionLimit: 500000
 
+# Custom Blocks
+customBlocks:
+    interface:
+        north: false
+        east:  false
+        south: false
+        west:  false
+        up:    false
+        down:  false
+
 # These blocks can not be detected at all.
 forcedUndetectable:
   - AIR
