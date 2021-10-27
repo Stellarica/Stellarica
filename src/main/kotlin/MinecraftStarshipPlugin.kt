@@ -37,7 +37,6 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 		saveDefaultConfig()
 		reloadConfig()
 
-//		Bukkit.getPluginManager().registerEvents(InterfaceListener(), this)
 		Bukkit.getPluginManager().registerEvents(CustomBlocksListener(), this)
 
 		plugin.getCommand("msp")!!.setExecutor(Commands())
