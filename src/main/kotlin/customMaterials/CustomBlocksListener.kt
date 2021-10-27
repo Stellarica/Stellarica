@@ -1,8 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin.customMaterials
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
-import org.bukkit.Bukkit
-import org.bukkit.Bukkit.getOnlinePlayers
+import org.bukkit.Bukkit.*
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -26,7 +25,7 @@ class CustomBlocksListener : Listener {
 
 		if (blocksToChange.isNotEmpty()) {
 			// Create a task to correct the blocks after the piston is done doing its thing.
-			Bukkit.getScheduler().runTask(plugin, Runnable {
+			getScheduler().runTask(plugin, Runnable {
 				blocksToChange.forEach { it.key.setBlockData(it.value, false) }
 			})
 		}
@@ -50,7 +49,7 @@ class CustomBlocksListener : Listener {
 
 		if (block.type != Material.MUSHROOM_STEM) return // If it's not a mushroom stem, ignore it.
 
-		block.setBlockData(Bukkit.getServer().createBlockData(Material.MUSHROOM_STEM), false) // A blank block data will have all sides set to true.
+		block.setBlockData(getServer().createBlockData(Material.MUSHROOM_STEM), false) // A blank block data will have all sides set to true.
 	}
 
 	// Prevent the block faces from changing.
