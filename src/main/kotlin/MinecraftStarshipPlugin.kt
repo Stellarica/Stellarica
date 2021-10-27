@@ -19,6 +19,9 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 		var detectionLimit: Int = 500000
 			private set
 
+		var customBlocks = mapOf<Byte, String>()
+			private set
+
 		var forcedUndetectable = setOf<MSPMaterial>()
 			private set
 
@@ -58,5 +61,20 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 			newDefaultUndetectable.add(MSPMaterial(it))
 		}
 		defaultUndetectable = newDefaultUndetectable
+
+		val newCustomBlocks = mutableMapOf<Byte, String>()
+		config.getStringList("customBlocks").forEach {
+			var id = 0
+
+			id += if (config.getBoolean("customBlocks.$it.north")) 32 else 0
+			id += if (config.getBoolean("customBlocks.$it.east"))  16 else 0
+			id += if (config.getBoolean("customBlocks.$it.south"))  8 else 0
+			id += if (config.getBoolean("customBlocks.$it.west"))   4 else 0
+			id += if (config.getBoolean("customBlocks.$it.up"))     2 else 0
+			id += if (config.getBoolean("customBlocks.$it.down"))   1 else 0
+
+			newCustomBlocks[id.toByte()] = it.uppercase()
+		}
+
 	}
 }

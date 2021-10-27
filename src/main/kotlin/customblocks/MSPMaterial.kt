@@ -1,5 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin.customblocks
 
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.customBlocks
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -7,10 +8,6 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.MultipleFacing
 
 class MSPMaterial(material: Any?) {
-	private val customBlocks = mutableMapOf(
-		Pair(0b000000, "INTERFACE")
-	)
-
 	var material: Any? = material
 		set(value) {
 			when (value) {
@@ -30,7 +27,7 @@ class MSPMaterial(material: Any?) {
 						if (block.hasFace(BlockFace.UP)) id += 2
 						if (block.hasFace(BlockFace.DOWN)) id += 1
 
-						field = customBlocks.getOrDefault(id, "MUSHROOM_STEM")
+						field = customBlocks.getOrDefault(id.toByte(), "MUSHROOM_STEM")
 
 						if (material == "MUSHROOM_STEM") field = originalMaterial
 
