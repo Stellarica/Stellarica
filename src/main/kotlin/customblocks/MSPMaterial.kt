@@ -23,12 +23,12 @@ class MSPMaterial(material: Any?) {
 						val block = blockData as MultipleFacing
 						var id = 0
 
-						if (block.hasFace(BlockFace.DOWN)) id += 32
+						if (block.hasFace(BlockFace.NORTH)) id += 32
 						if (block.hasFace(BlockFace.EAST)) id += 16
-						if (block.hasFace(BlockFace.NORTH)) id += 8
-						if (block.hasFace(BlockFace.SOUTH)) id += 4
+						if (block.hasFace(BlockFace.SOUTH)) id += 8
+						if (block.hasFace(BlockFace.WEST)) id += 4
 						if (block.hasFace(BlockFace.UP)) id += 2
-						if (block.hasFace(BlockFace.WEST)) id += 1
+						if (block.hasFace(BlockFace.DOWN)) id += 1
 
 						field = customBlocks.getOrDefault(id, "MUSHROOM_STEM")
 
