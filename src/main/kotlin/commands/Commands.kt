@@ -8,25 +8,30 @@ import java.io.File
 
 class Commands : CommandExecutor {
 	override fun onCommand(sender: CommandSender, command: Command, label: String, args: Array<String>): Boolean {
-		if (args.isEmpty()) {
+
+		if (args.isEmpty()){
 			sender.sendMessage("Please input at least one argument!")
 			return false
 		}
-		if (args[0].lowercase() == "config") {
-			if (args.size == 1) {
-				sender.sendMessage("Not enough arguments for command!")
-				return false
-			}
-			return when (args[1].lowercase()) {
-				"reset" -> if (sender.hasPermission("msp.config.reset")) reset(sender) else false
-				"reload" -> if (sender.hasPermission("msp.config.reload")) reload(sender) else false
-				else -> {
-					sender.sendMessage("Invalid argument(s)!")
-					false
+
+		return when (args[0].lowercase()) {
+
+			"config" -> {
+				if (args.size == 1){
+					sender.sendMessage("Not enough arguments for command!")
+					return false
+				}
+				return when (args[1].lowercase()) {
+					"reset" -> if (sender.hasPermission("msp.config.reset")) reset(sender) else false
+					"reload" -> if (sender.hasPermission("msp.config.reload")) reload(sender) else false
+					else -> {
+						sender.sendMessage("Invalid argument(s)!")
+						false
+					}
 				}
 			}
+			else -> false
 		}
-		return false
 	}
 
 	private fun reset(sender: CommandSender): Boolean {
