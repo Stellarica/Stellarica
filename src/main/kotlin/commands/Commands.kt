@@ -25,7 +25,7 @@ class Commands : CommandExecutor {
 					"reset" -> if (sender.hasPermission("msp.config.reset")) reset(sender) else false
 					"reload" -> if (sender.hasPermission("msp.config.reload")) reload(sender) else false
 					else -> {
-						sender.sendMessage("Invalid argument(s)!")
+						sender.sendMessage("Invalid argument(s) for /msp config!")
 						false
 					}
 				}
