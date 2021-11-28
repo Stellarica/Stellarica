@@ -114,6 +114,14 @@ customBlocks:
         up:    false
         down:  false
 
+  starship_computer:
+    north: false
+    east:  false
+    south: false
+    west:  false
+    up:    false
+    down:  true
+
 # These blocks can not be detected at all.
 forcedUndetectable:
   - AIR
