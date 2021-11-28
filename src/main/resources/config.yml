@@ -91,18 +91,16 @@ multiblocks:
       0:
         - "grg"
         - "rdr"
-        - "grg"
-        - " m "
+        - "gig"
       1:
         - "grg"
         - "rdr"
         - "grg"
-        - "   "
     key:
       g: "RED_STAINED_GLASS"
       r: "REDSTONE_BLOCK"
       d: "DIAMOND_BLOCK"
-      m: "MUTLIBLOCK_SIGN"
+      i: "INTERFACE"
 
 # Custom Blocks
 customBlocks:
