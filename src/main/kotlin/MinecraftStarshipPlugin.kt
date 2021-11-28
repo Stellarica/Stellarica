@@ -76,7 +76,5 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 		}
 
 		customBlocks = newCustomBlocks
-
-		logger.info(customBlocks.toString())
 	}
 }
