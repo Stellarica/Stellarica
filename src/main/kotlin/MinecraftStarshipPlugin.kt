@@ -75,5 +75,6 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 			newCustomBlocks[id.toByte()] = it.uppercase()
 		}
 
+		customBlocks = newCustomBlocks
 	}
 }
