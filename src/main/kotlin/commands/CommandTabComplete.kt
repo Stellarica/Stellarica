@@ -5,13 +5,8 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.TabCompleter
 
 class CommandTabComplete : TabCompleter {
-	override fun onTabComplete(
-		sender: CommandSender,
-		cmd: Command,
-		alias: String,
-		args: Array<String>
-	): MutableList<String> {
-		val subcommands: MutableList<String> = ArrayList()
+	override fun onTabComplete(sender: CommandSender, cmd: Command, alias: String, args: Array<String>): MutableList<String> {
+		val subcommands = mutableListOf<String>()
 		when (args.size) {
 			1 -> {
 				// /msp <x>
