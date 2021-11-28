@@ -59,10 +59,10 @@ multiblocks:
         - "grg"
         - "   "
     key:
-      g: "red_stained_glass"
-      r: "restone_block"
-      d: "diamond_block"
-      m: "multiblock_sign"
+      g: "RED_STAINED_GLASS"
+      r: "REDSTONE_BLOCK"
+      d: "DIAMOND_BLOCK"
+      m: "MUTLIBLOCK_SIGN"
 
 # Custom Blocks
 customBlocks:
