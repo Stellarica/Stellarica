@@ -91,34 +91,28 @@ multiblocks:
       0:
         - "grg"
         - "rdr"
-        - "gig"
+        - "grg"
+        - " m "
       1:
         - "grg"
         - "rdr"
         - "grg"
+        - "   "
     key:
-      g: "RED_STAINED_GLASS"
-      r: "REDSTONE_BLOCK"
-      d: "DIAMOND_BLOCK"
-      i: "INTERFACE"
+      g: "red_stained_glass"
+      r: "restone_block"
+      d: "diamond_block"
+      m: "multiblock_sign"
 
 # Custom Blocks
 customBlocks:
-  interface:
-    north: false
-    east:  false
-    south: false
-    west:  false
-    up:    false
-    down:  false
-
-  starship_computer:
-    north: false
-    east:  false
-    south: false
-    west:  false
-    up:    false
-    down:  true
+    interface:
+        north: false
+        east:  false
+        south: false
+        west:  false
+        up:    false
+        down:  false
 
 # These blocks can not be detected at all.
 forcedUndetectable:
@@ -381,5 +375,3 @@ defaultUndetectable:
   - WHEAT
   - WHITE_TULIP
   - WITHER_ROSE
-
-
