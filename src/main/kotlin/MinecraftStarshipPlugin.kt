@@ -13,20 +13,20 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 		lateinit var plugin: MinecraftStarshipPlugin
 			private set
 
-		var timeOperations: Boolean = false
-			private set
-
-		var detectionLimit: Int = 500000
-			private set
+//		var timeOperations: Boolean = false
+//			private set
+//
+//		var detectionLimit: Int = 500000
+//			private set
 
 		var customBlocks = mapOf<Byte, String>()
 			private set
 
-		var forcedUndetectable = setOf<MSPMaterial>()
-			private set
-
-		var defaultUndetectable = setOf<MSPMaterial>()
-			private set
+//		var forcedUndetectable = setOf<MSPMaterial>()
+//			private set
+//
+//		var defaultUndetectable = setOf<MSPMaterial>()
+//			private set
 	}
 
 	override fun onEnable() {
@@ -46,20 +46,20 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 	override fun reloadConfig() {
 		super.reloadConfig()
 
-		timeOperations = config.getBoolean("timeOperations", false)
-		detectionLimit = config.getInt("detectionLimit", 500000)
-
-		val newForcedUndetectable = mutableSetOf<MSPMaterial>()
-		config.getStringList("forcedUndetectable").forEach {
-			newForcedUndetectable.add(MSPMaterial(it))
-		}
-		forcedUndetectable = newForcedUndetectable
-
-		val newDefaultUndetectable = mutableSetOf<MSPMaterial>()
-		config.getStringList("defaultUndetectable").forEach {
-			newDefaultUndetectable.add(MSPMaterial(it))
-		}
-		defaultUndetectable = newDefaultUndetectable
+//		timeOperations = config.getBoolean("timeOperations", false)
+//		detectionLimit = config.getInt("detectionLimit", 500000)
+//
+//		val newForcedUndetectable = mutableSetOf<MSPMaterial>()
+//		config.getStringList("forcedUndetectable").forEach {
+//			newForcedUndetectable.add(MSPMaterial(it))
+//		}
+//		forcedUndetectable = newForcedUndetectable
+//
+//		val newDefaultUndetectable = mutableSetOf<MSPMaterial>()
+//		config.getStringList("defaultUndetectable").forEach {
+//			newDefaultUndetectable.add(MSPMaterial(it))
+//		}
+//		defaultUndetectable = newDefaultUndetectable
 
 		val newCustomBlocks = mutableMapOf<Byte, String>()
 		config.getStringList("customBlocks").forEach {
