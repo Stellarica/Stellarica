@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 
 class CustomBlocksListener : Listener {
 	// For our purposes BlockPistonExtendEvent and BlockPistonRetractEvent can be handled the same way.
+	// TODO: There are some occasions where the block still changes, this needs to be resolved.
 	private fun mushroomBlockMovedByPiston(blocks: List<Block>, direction: BlockFace) {
 		val blocksToChange = mutableMapOf<Block, BlockData>()
 
