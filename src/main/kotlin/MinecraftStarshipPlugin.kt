@@ -62,7 +62,7 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 //		defaultUndetectable = newDefaultUndetectable
 
 		val newCustomBlocks = mutableMapOf<Byte, String>()
-		config.getStringList("customBlocks").forEach {
+		config.getConfigurationSection("customBlocks")?.getKeys(false)?.forEach {
 			var id = 0
 
 			id += if (config.getBoolean("customBlocks.$it.north")) 32 else 0
@@ -76,5 +76,7 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 		}
 
 		customBlocks = newCustomBlocks
+
+		logger.info(customBlocks.toString())
 	}
 }
