@@ -84,13 +84,35 @@ timeOperations: true
 # Detection Limit
 detectionLimit: 500000
 
-  starship_computer:
+# Multiblocks
+multiblocks:
+  testMultiblock:
+    layers:
+      0:
+        - "grg"
+        - "rdr"
+        - "grg"
+        - " m "
+      1:
+        - "grg"
+        - "rdr"
+        - "grg"
+        - "   "
+    key:
+      g: "red_stained_glass"
+      r: "restone_block"
+      d: "diamond_block"
+      m: "multiblock_sign"
+
+# Custom Blocks
+customBlocks:
+  interface:
     north: false
     east:  false
     south: false
     west:  false
     up:    false
-    down:  true
+    down:  false
 
 # These blocks can not be detected at all.
 forcedUndetectable:
@@ -353,4 +375,5 @@ defaultUndetectable:
   - WHEAT
   - WHITE_TULIP
   - WITHER_ROSE
+
 
