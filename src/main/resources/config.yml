@@ -86,6 +86,14 @@ timeOperations: true
 # Detection Limit
 detectionLimit: 500000
 
+  starship_computer:
+    north: false
+    east:  false
+    south: false
+    west:  false
+    up:    false
+    down:  true
+
 # These blocks can not be detected at all.
 forcedUndetectable:
   - AIR
