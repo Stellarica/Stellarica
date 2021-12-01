@@ -1,5 +1,6 @@
 package io.github.petercrawley.minecraftstarshipplugin.customMaterials
 
+import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.customBlocks
 import org.bukkit.Bukkit.createBlockData
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
@@ -30,6 +31,18 @@ class MSPMaterial {
 	constructor(material: Int) {
 		this.materialType = MaterialType.CustomItem
 		this.material = material
+	}
+
+	constructor(material: String) {
+		for (i in customBlocks) {
+			if (i.value == material) {
+				this.materialType = MaterialType.CustomBlock
+				this.material = i.key
+				return
+			}
+		}
+
+		this.material = Material.getMaterial(material) ?: Material.AIR
 	}
 
 	fun getBukkitMaterial(): Material {
