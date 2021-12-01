@@ -2,7 +2,9 @@ package io.github.petercrawley.minecraftstarshipplugin.customMaterials
 
 import org.bukkit.Bukkit.createBlockData
 import org.bukkit.Material
+import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
+import org.bukkit.block.data.MultipleFacing
 import org.bukkit.inventory.ItemStack
 
 enum class MaterialType {
@@ -39,12 +41,31 @@ class MSPMaterial {
 	}
 
 	fun getBukkitBlockData(): BlockData {
-		return createBlockData(Material.AIR)
+		return when (materialType) {
+			MaterialType.Bukkit -> createBlockData(material as Material)
+			MaterialType.CustomBlock -> {
+				val returnValue = createBlockData(Material.MUSHROOM_STEM) as MultipleFacing
+
+				returnValue.setFace(BlockFace.NORTH, bitOfByte(material as Byte, 5))
+				returnValue.setFace(BlockFace.EAST,  bitOfByte(material as Byte, 4))
+				returnValue.setFace(BlockFace.SOUTH, bitOfByte(material as Byte, 3))
+				returnValue.setFace(BlockFace.WEST,  bitOfByte(material as Byte, 2))
+				returnValue.setFace(BlockFace.UP,    bitOfByte(material as Byte, 1))
+				returnValue.setFace(BlockFace.DOWN,  bitOfByte(material as Byte, 0))
+
+				returnValue
+			}
+			MaterialType.CustomItem -> createBlockData(Material.AIR)
+		}
 	}
 
 	fun getBukkitItemStack(): ItemStack {
 		return ItemStack(Material.AIR)
 	}
+}
+
+private fun bitOfByte(byte: Byte, bit: Int) : Boolean {
+	return ((byte.toInt() shr bit) and 1) == 1
 }
 
 //	var material: Any? = material
