@@ -60,7 +60,27 @@ class MSPMaterial {
 	}
 
 	fun getBukkitItemStack(): ItemStack {
-		return ItemStack(Material.AIR)
+		return when (materialType) {
+			MaterialType.Bukkit -> ItemStack(material as Material)
+			MaterialType.CustomBlock -> {
+				val returnValue = ItemStack(Material.STICK)
+
+				val itemMeta = returnValue.itemMeta
+				itemMeta.setCustomModelData(material as Int)
+				returnValue.itemMeta = itemMeta
+
+				returnValue
+			}
+			MaterialType.CustomItem -> {
+				val returnValue = ItemStack(Material.STICK)
+
+				val itemMeta = returnValue.itemMeta
+				itemMeta.setCustomModelData(material as Int + 192) // Offset by 192 to avoid conflicts with custom blocks
+				returnValue.itemMeta = itemMeta
+
+				returnValue
+			}
+		}
 	}
 }
 
