@@ -82,6 +82,22 @@ class MSPMaterial {
 			}
 		}
 	}
+
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as MSPMaterial
+
+		if (materialType != other.materialType) return false
+		if (material != other.material) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		return 31 * materialType.hashCode() + material.hashCode()
+	}
 }
 
 private fun bitOfByte(byte: Byte, bit: Int) : Boolean {
