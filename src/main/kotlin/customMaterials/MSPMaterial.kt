@@ -31,7 +31,11 @@ class MSPMaterial {
 	}
 
 	fun getBukkitMaterial(): Material {
-		return Material.AIR
+		return when (materialType) {
+			MaterialType.Bukkit -> material as Material
+			MaterialType.CustomBlock -> Material.MUSHROOM_STEM
+			MaterialType.CustomItem -> Material.STICK
+		}
 	}
 
 	fun getBukkitBlockData(): BlockData {
