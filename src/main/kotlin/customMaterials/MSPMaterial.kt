@@ -8,12 +8,6 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.MultipleFacing
 import org.bukkit.inventory.ItemStack
 
-enum class MaterialType {
-	CustomBlock,
-	CustomItem,
-	Bukkit
-}
-
 class MSPMaterial {
 	private var materialType: MaterialType = MaterialType.Bukkit
 	private var material: Any = Material.AIR
@@ -111,8 +105,4 @@ class MSPMaterial {
 	override fun hashCode(): Int {
 		return 31 * materialType.hashCode() + material.hashCode()
 	}
-}
-
-private fun bitOfByte(byte: Byte, bit: Int) : Boolean {
-	return ((byte.toInt() shr bit) and 1) == 1
 }
