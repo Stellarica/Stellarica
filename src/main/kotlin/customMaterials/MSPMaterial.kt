@@ -1,6 +1,5 @@
 package io.github.petercrawley.minecraftstarshipplugin.customMaterials
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.customBlocks
 import org.bukkit.Bukkit.createBlockData
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
@@ -9,6 +8,10 @@ import org.bukkit.block.data.MultipleFacing
 import org.bukkit.inventory.ItemStack
 
 class MSPMaterial {
+	companion object {
+		var customBlocks = mapOf<Byte, String>()
+	}
+
 	private var materialType: MaterialType = MaterialType.Bukkit
 	private var material: Any = Material.AIR
 
