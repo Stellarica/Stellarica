@@ -4,6 +4,7 @@ import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplet
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.CustomBlocksListener
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
+import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.plugin.java.JavaPlugin
@@ -45,6 +46,8 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 
 	override fun reloadConfig() {
 		super.reloadConfig()
+
+		getPluginManager().callEvent(MSPConfigReloadEvent())
 
 //		timeOperations = config.getBoolean("timeOperations", false)
 //		detectionLimit = config.getInt("detectionLimit", 500000)
