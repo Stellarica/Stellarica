@@ -10,8 +10,10 @@ class MultiblockDetectionListener: Listener {
 	fun onMultiblockDetection(event: PlayerInteractEvent) {
 		if (event.clickedBlock == null) return // Interacted with air, we don't care
 
-		val block = MSPMaterial(event.clickedBlock!!.blockData)
+		// TODO: MSPMaterial needs a BlockData constructor
 
-		if (block != MSPMaterial("INTERFACE")) return // Not an interface block
+//		val block = MSPMaterial(event.clickedBlock!!.blockData)
+
+//		if (block != MSPMaterial("INTERFACE")) return // Not an interface block
 	}
 }
