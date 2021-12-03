@@ -31,10 +31,13 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 
 		Metrics(this, 12863)
 
+		getPluginManager().registerEvents(CustomBlocksListener(), this)
+
+		//   /-\
+		//  / ! \  MUST BE CALLED AFTER REGISTERING EVENTS!
+		// /_____\
 		saveDefaultConfig()
 		reloadConfig()
-
-		getPluginManager().registerEvents(CustomBlocksListener(), this)
 
 		plugin.getCommand("msp")!!.setExecutor(Commands())
 		plugin.getCommand("msp")!!.tabCompleter = CommandTabComplete()
