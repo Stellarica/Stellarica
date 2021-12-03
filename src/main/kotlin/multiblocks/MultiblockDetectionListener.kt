@@ -5,6 +5,7 @@ import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMateria
 import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.TextColor.color
+import org.bukkit.NamespacedKey
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -66,6 +67,17 @@ class MultiblockDetectionListener: Listener {
 		}
 
 		event.player.sendMessage(text("Found Multiblock: ${multiblock.key.name}").color(color(0x008800)))
+
+		val multiblockNamespacedKey = NamespacedKey(plugin, "multiblocks")
+
+		// Convert Java to Kotlin
+		val multiblockArray = clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPersistentDataContainer())?.toMutableSet() ?: mutableSetOf()
+
+		// Add the multiblock to the list
+		multiblockArray.add(Multiblock(multiblock.key.name, clickedBlock.x, clickedBlock.y, clickedBlock.z, multiblock.value))
+
+		// Save it
+		clickedBlock.chunk.persistentDataContainer.set(multiblockNamespacedKey, MultiblockPersistentDataContainer(), multiblockArray.toTypedArray())
 	}
 
 	@EventHandler
