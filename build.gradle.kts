@@ -18,6 +18,10 @@ dependencies {
 	compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
 }
 
+java {
+	toolchain.languageVersion.set(JavaLanguageVersion.of(16))
+}
+
 tasks.withType<KotlinCompile>().configureEach {
 	kotlinOptions {
 		jvmTarget = "16"
