@@ -20,9 +20,7 @@ class MultiblockDetectionListener: Listener {
 
 	@EventHandler
 	fun onMultiblockDetection(event: PlayerInteractEvent) {
-		if (event.action != Action.RIGHT_CLICK_BLOCK) return
-		if (event.hand != EquipmentSlot.HAND) return
-		if (event.player.isSneaking) return
+		if (event.action != Action.RIGHT_CLICK_BLOCK || event.hand != EquipmentSlot.HAND || event.player.isSneaking) return
 
 		val clickedBlock = event.clickedBlock!!
 		val clickedBlockMaterial = MSPMaterial(clickedBlock)
@@ -35,21 +33,20 @@ class MultiblockDetectionListener: Listener {
 		val potentialMultiblocks = mutableMapOf<MultiblockConfiguration, Byte>()
 
 		// Start by iterating over each multiblock
-		multiblocks.forEach multiblockLoop@ { multiblockConfiguration ->
+		multiblocks.forEach { multiblockConfiguration ->
+
+			// In order to check for possible rotations of the multiblock, we create a function which accepts a lambda which does the rotation
+			// We then call this function 4 times, with a different lambda each time, to check for all possible rotations
 			fun check(rotation: Byte, rotationFunction: (MultiblockOriginRelativeLocation) -> MultiblockOriginRelativeLocation) {
-				// Then check each block in the multiblock
 				multiblockConfiguration.blocks.forEach {
-					// Rotated location
 					val rotatedLocation = rotationFunction(it.key)
 
-					// Get the block relative to the interface block
 					val relativeBlock = MSPMaterial(clickedBlock.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
 
-					// Check if the actual material of the block matches the expected material
-					if (relativeBlock != it.value) return // If it does not match then we have the wrong multiblock.
+					if (relativeBlock != it.value) return // A block we were expecting is missing, so break the function.
 				}
 
-				potentialMultiblocks[multiblockConfiguration] = rotation
+				potentialMultiblocks[multiblockConfiguration] = rotation // Valid, save it and keep looking.
 			}
 
 			check(1) { it }
@@ -58,7 +55,8 @@ class MultiblockDetectionListener: Listener {
 			check(4) { MultiblockOriginRelativeLocation(it.z, it.y, -it.x) }
 		}
 
-		// Tiebreaker
+		// If a smaller multiblock exists as part of a larger multiblock, we may end up detecting the wrong one.
+		// We use the amount of blocks as a tiebreaker.
 		val multiblock = potentialMultiblocks.maxByOrNull { it.key.blocks.size }
 
 		if (multiblock == null) {
@@ -70,7 +68,7 @@ class MultiblockDetectionListener: Listener {
 
 		val multiblockNamespacedKey = NamespacedKey(plugin, "multiblocks")
 
-		// Convert Java to Kotlin
+		// Get the multiblock list, or create it if it doesn't exist
 		val multiblockArray = clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPersistentDataContainer())?.toMutableSet() ?: mutableSetOf()
 
 		// Add the multiblock to the list
