@@ -4,7 +4,6 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
 import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.format.TextColor.color
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -24,9 +23,10 @@ class MultiblockDetectionListener: Listener {
 		if (event.hand != EquipmentSlot.HAND) return
 		if (event.player.isSneaking) return
 
-		val block = MSPMaterial(event.clickedBlock!!)
+		val clickedBlock = event.clickedBlock!!
+		val clickedBlockMaterial = MSPMaterial(clickedBlock)
 
-		if (block != MSPMaterial("INTERFACE")) return // Not an interface block
+		if (clickedBlockMaterial != MSPMaterial("INTERFACE")) return // Not an interface block
 
 		event.isCancelled = true
 
@@ -42,7 +42,7 @@ class MultiblockDetectionListener: Listener {
 					val rotatedLocation = rotationFunction(it.key)
 
 					// Get the block relative to the interface block
-					val relativeBlock = MSPMaterial(event.clickedBlock!!.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
+					val relativeBlock = MSPMaterial(clickedBlock.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
 
 					// Check if the actual material of the block matches the expected material
 					if (relativeBlock != it.value) return // If it does not match then we have the wrong multiblock.
