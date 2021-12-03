@@ -9,7 +9,7 @@ class MSPConfigReloadEvent : Event() {
 	}
 
 	companion object {
-		var handlerList = HandlerList()
-			private set
+		@JvmStatic // Apparently this is required for Paper to recognize this
+		val handlerList = HandlerList()
 	}
 }
