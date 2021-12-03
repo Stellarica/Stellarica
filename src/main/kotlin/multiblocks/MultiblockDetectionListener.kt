@@ -3,6 +3,9 @@ package io.github.petercrawley.minecraftstarshipplugin.multiblocks
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.TextColor.color
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -42,10 +45,7 @@ class MultiblockDetectionListener: Listener {
 					val relativeBlock = MSPMaterial(event.clickedBlock!!.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
 
 					// Check if the actual material of the block matches the expected material
-					if (relativeBlock != it.value) { // If it does not match then we have the wrong multiblock.
-						plugin.logger.info("Found unexpected block! Found $relativeBlock expected ${it.value}")
-						return
-					}
+					if (relativeBlock != it.value) return // If it does not match then we have the wrong multiblock.
 				}
 
 				potentialMultiblocks.add(multiblockConfiguration)
@@ -61,11 +61,11 @@ class MultiblockDetectionListener: Listener {
 		val multiblock = potentialMultiblocks.sortedBy { it.blocks.size }.lastOrNull()
 
 		if (multiblock == null) {
-			plugin.logger.info("No multiblock found")
+			event.player.sendMessage(text("Multiblock is invalid.").color(color(0xcc0000)))
 			return
 		}
 
-		plugin.logger.info("Found multiblock! ${multiblock.name}")
+		event.player.sendMessage(text("Found Multiblock: ${multiblock.name}").color(color(0x008800)))
 	}
 
 	@EventHandler
