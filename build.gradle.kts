@@ -16,7 +16,6 @@ dependencies {
 	implementation("org.bstats:bstats-bukkit:2.2.1")
 
 	compileOnly("io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT")
-	compileOnly("org.hjson:hjson:3.0.0")
 }
 
 tasks.withType<KotlinCompile>().configureEach {
