@@ -32,22 +32,29 @@ class MultiblockDetectionListener: Listener {
 
 		// Start by iterating over each multiblock
 		multiblocks.forEach multiblockLoop@ { multiblockConfiguration ->
-			// Then check each block in the multiblock
-			multiblockConfiguration.blocks.forEach {
-				// Get the block relative to the interface block
-				val relativeBlock = MSPMaterial(event.clickedBlock!!.getRelative(it.key.x, it.key.y, it.key.z))
+			fun check(rotationFunction: (MultiblockOriginRelativeLocation) -> MultiblockOriginRelativeLocation) {
+				// Then check each block in the multiblock
+				multiblockConfiguration.blocks.forEach {
+					// Rotated location
+					val rotatedLocation = rotationFunction(it.key)
 
-				// Check if the actual material of the block matches the expected material
-				if (relativeBlock != it.value) { // If it does not match then we have the wrong multiblock.
-					plugin.logger.info("Found unexpected block! Found $relativeBlock expected ${it.value}")
-					return@multiblockLoop
+					// Get the block relative to the interface block
+					val relativeBlock = MSPMaterial(event.clickedBlock!!.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
+
+					// Check if the actual material of the block matches the expected material
+					if (relativeBlock != it.value) { // If it does not match then we have the wrong multiblock.
+						plugin.logger.info("Found unexpected block! Found $relativeBlock expected ${it.value}")
+						return
+					}
 				}
+
+				potentialMultiblocks.add(multiblockConfiguration)
 			}
 
-			// If we get here then we have found a match, however we may not have found the multiblock.
-			// This is because a multiblock may have part of another multiblock in it, causing confusion.
-			// We will just keep looking, using the number of blocks as a tiebreaker.
-			potentialMultiblocks.add(multiblockConfiguration)
+			check { it }
+			check { MultiblockOriginRelativeLocation(-it.z, it.y, it.x) }
+			check { MultiblockOriginRelativeLocation(-it.x, it.y, -it.z) }
+			check { MultiblockOriginRelativeLocation(it.z, it.y, -it.x) }
 		}
 
 		// Tiebreaker
