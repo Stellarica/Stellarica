@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlot
 
 class MultiblockDetectionListener: Listener {
 	companion object {
@@ -17,8 +18,10 @@ class MultiblockDetectionListener: Listener {
 	@EventHandler
 	fun onMultiblockDetection(event: PlayerInteractEvent) {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
+		if (event.hand != EquipmentSlot.HAND) return
+		if (event.player.isSneaking) return
 
-		val block = MSPMaterial(event.clickedBlock!!.blockData)
+		val block = MSPMaterial(event.clickedBlock!!)
 
 		if (block != MSPMaterial("INTERFACE")) return // Not an interface block
 
@@ -27,25 +30,33 @@ class MultiblockDetectionListener: Listener {
 		// Actually detect it
 		val potentialMultiblocks = mutableSetOf<MultiblockConfiguration>()
 
-		// Start by itterating over each multiblock
-		multiblocks.forEach multiblockLoop@ {
+		// Start by iterating over each multiblock
+		multiblocks.forEach multiblockLoop@ { multiblockConfiguration ->
 			// Then check each block in the multiblock
-			it.blocks.forEach {
+			multiblockConfiguration.blocks.forEach {
 				// Get the block relative to the interface block
-				val relativeBlock = event.clickedBlock!!.getRelative(it.key.x, it.key.y, it.key.z)
+				val relativeBlock = MSPMaterial(event.clickedBlock!!.getRelative(it.key.x, it.key.y, it.key.z))
 
 				// Check if the actual material of the block matches the expected material
-				if (MSPMaterial(relativeBlock.blockData) != it.value) return@multiblockLoop // If it does not match then we have the wrong multiblock.
+				if (relativeBlock != it.value) { // If it does not match then we have the wrong multiblock.
+					plugin.logger.info("Found unexpected block! Found $relativeBlock expected ${it.value}")
+					return@multiblockLoop
+				}
 			}
 
 			// If we get here then we have found a match, however we may not have found the multiblock.
 			// This is because a multiblock may have part of another multiblock in it, causing confusion.
 			// We will just keep looking, using the number of blocks as a tiebreaker.
-			potentialMultiblocks.add(it)
+			potentialMultiblocks.add(multiblockConfiguration)
 		}
 
 		// Tiebreaker
-		var multiblock = potentialMultiblocks.maxByOrNull { it.blocks.size }!!
+		val multiblock = potentialMultiblocks.sortedBy { it.blocks.size }.lastOrNull()
+
+		if (multiblock == null) {
+			plugin.logger.info("No multiblock found")
+			return
+		}
 
 		plugin.logger.info("Found multiblock! ${multiblock.name}")
 	}
