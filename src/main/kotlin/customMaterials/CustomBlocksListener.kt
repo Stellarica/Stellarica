@@ -104,19 +104,20 @@ class CustomBlocksListener : Listener {
 	}
 
 	@EventHandler
-	fun mspConfigReloaded(event: MSPConfigReloadEvent) {
+	fun onMSPConfigReload(event: MSPConfigReloadEvent) {
 		val newCustomBlocks = mutableMapOf<Byte, String>()
+
 		plugin.config.getConfigurationSection("customBlocks")?.getKeys(false)?.forEach {
-			var id = 0
+			val id = (
+				if (plugin.config.getBoolean("customBlocks.$it.north")) 32 else 0 +
+				if (plugin.config.getBoolean("customBlocks.$it.east" )) 16 else 0 +
+				if (plugin.config.getBoolean("customBlocks.$it.south"))  8 else 0 +
+				if (plugin.config.getBoolean("customBlocks.$it.west" ))  4 else 0 +
+				if (plugin.config.getBoolean("customBlocks.$it.up"   ))  2 else 0 +
+				if (plugin.config.getBoolean("customBlocks.$it.down" ))  1 else 0
+			).toByte()
 
-			id += if (plugin.config.getBoolean("customBlocks.$it.north")) 32 else 0
-			id += if (plugin.config.getBoolean("customBlocks.$it.east"))  16 else 0
-			id += if (plugin.config.getBoolean("customBlocks.$it.south"))  8 else 0
-			id += if (plugin.config.getBoolean("customBlocks.$it.west"))   4 else 0
-			id += if (plugin.config.getBoolean("customBlocks.$it.up"))     2 else 0
-			id += if (plugin.config.getBoolean("customBlocks.$it.down"))   1 else 0
-
-			newCustomBlocks[id.toByte()] = it.uppercase()
+			newCustomBlocks[id] = it.uppercase()
 		}
 
 		MSPMaterial.customBlocks = newCustomBlocks
