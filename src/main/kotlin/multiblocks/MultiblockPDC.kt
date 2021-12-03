@@ -6,7 +6,7 @@ import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
-class MultiblockPersistentDataContainer: PersistentDataType<Array<PersistentDataContainer>, Array<Multiblock>> {
+class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, Array<Multiblock>> {
 	override fun getPrimitiveType(): Class<Array<PersistentDataContainer>> {
 		return Array<PersistentDataContainer>::class.java
 	}
