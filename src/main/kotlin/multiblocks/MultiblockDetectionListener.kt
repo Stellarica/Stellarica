@@ -31,11 +31,11 @@ class MultiblockDetectionListener: Listener {
 		event.isCancelled = true
 
 		// Actually detect it
-		val potentialMultiblocks = mutableSetOf<MultiblockConfiguration>()
+		val potentialMultiblocks = mutableMapOf<MultiblockConfiguration, Byte>()
 
 		// Start by iterating over each multiblock
 		multiblocks.forEach multiblockLoop@ { multiblockConfiguration ->
-			fun check(rotationFunction: (MultiblockOriginRelativeLocation) -> MultiblockOriginRelativeLocation) {
+			fun check(rotation: Byte, rotationFunction: (MultiblockOriginRelativeLocation) -> MultiblockOriginRelativeLocation) {
 				// Then check each block in the multiblock
 				multiblockConfiguration.blocks.forEach {
 					// Rotated location
@@ -48,24 +48,24 @@ class MultiblockDetectionListener: Listener {
 					if (relativeBlock != it.value) return // If it does not match then we have the wrong multiblock.
 				}
 
-				potentialMultiblocks.add(multiblockConfiguration)
+				potentialMultiblocks[multiblockConfiguration] = rotation
 			}
 
-			check { it }
-			check { MultiblockOriginRelativeLocation(-it.z, it.y, it.x) }
-			check { MultiblockOriginRelativeLocation(-it.x, it.y, -it.z) }
-			check { MultiblockOriginRelativeLocation(it.z, it.y, -it.x) }
+			check(1) { it }
+			check(2) { MultiblockOriginRelativeLocation(-it.z, it.y, it.x) }
+			check(3) { MultiblockOriginRelativeLocation(-it.x, it.y, -it.z) }
+			check(4) { MultiblockOriginRelativeLocation(it.z, it.y, -it.x) }
 		}
 
 		// Tiebreaker
-		val multiblock = potentialMultiblocks.maxByOrNull { it.blocks.size }
+		val multiblock = potentialMultiblocks.maxByOrNull { it.key.blocks.size }
 
 		if (multiblock == null) {
 			event.player.sendMessage(text("Multiblock is invalid.").color(color(0xcc0000)))
 			return
 		}
 
-		event.player.sendMessage(text("Found Multiblock: ${multiblock.name}").color(color(0x008800)))
+		event.player.sendMessage(text("Found Multiblock: ${multiblock.key.name}").color(color(0x008800)))
 	}
 
 	@EventHandler
