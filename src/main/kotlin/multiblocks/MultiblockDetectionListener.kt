@@ -58,7 +58,7 @@ class MultiblockDetectionListener: Listener {
 		}
 
 		// Tiebreaker
-		val multiblock = potentialMultiblocks.sortedBy { it.blocks.size }.lastOrNull()
+		val multiblock = potentialMultiblocks.maxByOrNull { it.blocks.size }
 
 		if (multiblock == null) {
 			event.player.sendMessage(text("Multiblock is invalid.").color(color(0xcc0000)))
