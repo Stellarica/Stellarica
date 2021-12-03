@@ -9,6 +9,7 @@ class MSPConfigReloadEvent : Event() {
 	}
 
 	companion object {
-		val handlerList = HandlerList()
+		var handlerList = HandlerList()
+			private set
 	}
 }
