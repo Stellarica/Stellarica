@@ -12,9 +12,9 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 
-class MultiblockDetectionListener: Listener {
+class MultiblockListener: Listener {
 	companion object {
-		var multiblocks = setOf<MultiblockConfiguration>()
+		var multiblocks = setOf<MultiblockLayout>()
 			private set
 	}
 
@@ -30,14 +30,14 @@ class MultiblockDetectionListener: Listener {
 		event.isCancelled = true
 
 		// Actually detect it
-		val potentialMultiblocks = mutableMapOf<MultiblockConfiguration, Byte>()
+		val potentialMultiblocks = mutableMapOf<MultiblockLayout, Byte>()
 
 		// Start by iterating over each multiblock
 		multiblocks.forEach { multiblockConfiguration ->
 
 			// In order to check for possible rotations of the multiblock, we create a function which accepts a lambda which does the rotation
 			// We then call this function 4 times, with a different lambda each time, to check for all possible rotations
-			fun check(rotation: Byte, rotationFunction: (MultiblockOriginRelativeLocation) -> MultiblockOriginRelativeLocation) {
+			fun check(rotation: Byte, rotationFunction: (MultiblockOriginRelative) -> MultiblockOriginRelative) {
 				multiblockConfiguration.blocks.forEach {
 					val rotatedLocation = rotationFunction(it.key)
 
@@ -50,9 +50,9 @@ class MultiblockDetectionListener: Listener {
 			}
 
 			check(1) { it }
-			check(2) { MultiblockOriginRelativeLocation(-it.z, it.y, it.x) }
-			check(3) { MultiblockOriginRelativeLocation(-it.x, it.y, -it.z) }
-			check(4) { MultiblockOriginRelativeLocation(it.z, it.y, -it.x) }
+			check(2) { MultiblockOriginRelative(-it.z, it.y, it.x) }
+			check(3) { MultiblockOriginRelative(-it.x, it.y, -it.z) }
+			check(4) { MultiblockOriginRelative(it.z, it.y, -it.x) }
 		}
 
 		// If a smaller multiblock exists as part of a larger multiblock, we may end up detecting the wrong one.
@@ -69,18 +69,18 @@ class MultiblockDetectionListener: Listener {
 		val multiblockNamespacedKey = NamespacedKey(plugin, "multiblocks")
 
 		// Get the multiblock list, or create it if it doesn't exist
-		val multiblockArray = clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPersistentDataContainer())?.toMutableSet() ?: mutableSetOf()
+		val multiblockArray = clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPDC())?.toMutableSet() ?: mutableSetOf()
 
 		// Add the multiblock to the list
 		multiblockArray.add(Multiblock(multiblock.key.name, clickedBlock.x, clickedBlock.y, clickedBlock.z, multiblock.value))
 
 		// Save it
-		clickedBlock.chunk.persistentDataContainer.set(multiblockNamespacedKey, MultiblockPersistentDataContainer(), multiblockArray.toTypedArray())
+		clickedBlock.chunk.persistentDataContainer.set(multiblockNamespacedKey, MultiblockPDC(), multiblockArray.toTypedArray())
 	}
 
 	@EventHandler
 	fun onMSPConfigReload(event: MSPConfigReloadEvent) {
-		val newMultiblocks = mutableSetOf<MultiblockConfiguration>()
+		val newMultiblocks = mutableSetOf<MultiblockLayout>()
 		plugin.config.getConfigurationSection("multiblocks")?.getKeys(false)?.forEach multiblockLoop@{ multiblock ->
 			// The first thing that needs to be done is we need to get all the keys for the multiblock
 			// This way we know what blocks are in the multiblock
@@ -132,7 +132,7 @@ class MultiblockDetectionListener: Listener {
 			}
 
 			// Create a MultiblockConfiguration
-			val multiblockConfiguration = MultiblockConfiguration(multiblock)
+			val multiblockLayout = MultiblockLayout(multiblock)
 
 			// Now we need to get all the blocks relative to the origin (interface)
 			layers.forEachIndexed { y, yName ->
@@ -147,15 +147,15 @@ class MultiblockDetectionListener: Listener {
 						val material = keys[xChar.toString()]
 
 						// Construct a MultiblockOriginRelativeLocation
-						val location = MultiblockOriginRelativeLocation(relativeX, relativeY, relativeZ)
+						val location = MultiblockOriginRelative(relativeX, relativeY, relativeZ)
 
 						// Add the block to the multiblock configuration
-						multiblockConfiguration.blocks[location] = material!!
+						multiblockLayout.blocks[location] = material!!
 					}
 				}
 			}
 
-			newMultiblocks.add(multiblockConfiguration)
+			newMultiblocks.add(multiblockLayout)
 		}
 
 		multiblocks = newMultiblocks
