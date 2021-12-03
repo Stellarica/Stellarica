@@ -24,7 +24,30 @@ class MultiblockDetectionListener: Listener {
 
 		event.isCancelled = true
 
-		plugin.logger.info("Interface Activation")
+		// Actually detect it
+		val potentialMultiblocks = mutableSetOf<MultiblockConfiguration>()
+
+		// Start by itterating over each multiblock
+		multiblocks.forEach multiblockLoop@ {
+			// Then check each block in the multiblock
+			it.blocks.forEach {
+				// Get the block relative to the interface block
+				val relativeBlock = event.clickedBlock!!.getRelative(it.key.x, it.key.y, it.key.z)
+
+				// Check if the actual material of the block matches the expected material
+				if (MSPMaterial(relativeBlock.blockData) != it.value) return@multiblockLoop // If it does not match then we have the wrong multiblock.
+			}
+
+			// If we get here then we have found a match, however we may not have found the multiblock.
+			// This is because a multiblock may have part of another multiblock in it, causing confusion.
+			// We will just keep looking, using the number of blocks as a tiebreaker.
+			potentialMultiblocks.add(it)
+		}
+
+		// Tiebreaker
+		var multiblock = potentialMultiblocks.maxByOrNull { it.blocks.size }!!
+
+		plugin.logger.info("Found multiblock! ${multiblock.name}")
 	}
 
 	@EventHandler
