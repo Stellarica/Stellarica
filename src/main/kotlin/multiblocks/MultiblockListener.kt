@@ -1,11 +1,14 @@
 package io.github.petercrawley.minecraftstarshipplugin.multiblocks
 
+import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.TextColor.color
+import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
+import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -16,6 +19,26 @@ class MultiblockListener: Listener {
 	companion object {
 		var multiblocks = setOf<MultiblockLayout>()
 			private set
+	}
+
+	private fun validate(rotation: Byte, layout: MultiblockLayout, origin: Block) : Boolean {
+		fun rotationFunction(it: MultiblockOriginRelative) = when (rotation) {
+			1.toByte() -> { it }
+			2.toByte() -> { MultiblockOriginRelative(-it.z, it.y, it.x) }
+			3.toByte() -> { MultiblockOriginRelative(-it.x, it.y, -it.z) }
+			4.toByte() -> { MultiblockOriginRelative(it.z, it.y, -it.x) }
+			else -> throw IllegalArgumentException("Invalid rotation: $rotation")
+		}
+
+		layout.blocks.forEach {
+			val rotatedLocation = rotationFunction(it.key)
+
+			val relativeBlock = MSPMaterial(origin.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
+
+			if (relativeBlock != it.value) return false // A block we were expecting is missing, so break the function.
+		}
+
+		return true // Valid, save it and keep looking.
 	}
 
 	@EventHandler
@@ -34,25 +57,10 @@ class MultiblockListener: Listener {
 
 		// Start by iterating over each multiblock
 		multiblocks.forEach { multiblockConfiguration ->
-
-			// In order to check for possible rotations of the multiblock, we create a function which accepts a lambda which does the rotation
-			// We then call this function 4 times, with a different lambda each time, to check for all possible rotations
-			fun check(rotation: Byte, rotationFunction: (MultiblockOriginRelative) -> MultiblockOriginRelative) {
-				multiblockConfiguration.blocks.forEach {
-					val rotatedLocation = rotationFunction(it.key)
-
-					val relativeBlock = MSPMaterial(clickedBlock.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
-
-					if (relativeBlock != it.value) return // A block we were expecting is missing, so break the function.
-				}
-
-				potentialMultiblocks[multiblockConfiguration] = rotation // Valid, save it and keep looking.
-			}
-
-			check(1) { it }
-			check(2) { MultiblockOriginRelative(-it.z, it.y, it.x) }
-			check(3) { MultiblockOriginRelative(-it.x, it.y, -it.z) }
-			check(4) { MultiblockOriginRelative(it.z, it.y, -it.x) }
+			if (validate(1, multiblockConfiguration, clickedBlock)) potentialMultiblocks[multiblockConfiguration] = 1
+			if (validate(2, multiblockConfiguration, clickedBlock)) potentialMultiblocks[multiblockConfiguration] = 2
+			if (validate(3, multiblockConfiguration, clickedBlock)) potentialMultiblocks[multiblockConfiguration] = 3
+			if (validate(4, multiblockConfiguration, clickedBlock)) potentialMultiblocks[multiblockConfiguration] = 4
 		}
 
 		// If a smaller multiblock exists as part of a larger multiblock, we may end up detecting the wrong one.
@@ -69,13 +77,49 @@ class MultiblockListener: Listener {
 		val multiblockNamespacedKey = NamespacedKey(plugin, "multiblocks")
 
 		// Get the multiblock list, or create it if it doesn't exist
-		val multiblockArray = clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPDC())?.toMutableSet() ?: mutableSetOf()
+		val multiblockArray = clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPDC()) ?: mutableSetOf()
 
 		// Add the multiblock to the list
 		multiblockArray.add(Multiblock(multiblock.key.name, clickedBlock.x, clickedBlock.y, clickedBlock.z, multiblock.value))
 
 		// Save it
-		clickedBlock.chunk.persistentDataContainer.set(multiblockNamespacedKey, MultiblockPDC(), multiblockArray.toTypedArray())
+		clickedBlock.chunk.persistentDataContainer.set(multiblockNamespacedKey, MultiblockPDC(), multiblockArray)
+	}
+
+	@EventHandler
+	fun onChunkTick(event: ServerTickStartEvent) {
+		Bukkit.getWorlds().forEach { world ->
+			world.loadedChunks.forEach chunk@ { chunk ->
+				// Get the multiblock list of a chunk
+				val multiblockArray = chunk.persistentDataContainer.get(NamespacedKey(plugin, "multiblocks"), MultiblockPDC()) ?: return@chunk
+
+				// Iterate over each multiblock
+				multiblockArray.forEach multiblock@ { multiblock ->
+					// Get the layout
+					val multiblockLayout = multiblocks.find { it.name == multiblock.name }
+
+					// If the layout does not exist, undetect the multiblock
+					if (multiblockLayout == null) {
+						plugin.logger.warning("Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock: ${multiblock.name}, it has been undetected.")
+
+						multiblockArray.remove(multiblock)
+						chunk.persistentDataContainer.set(NamespacedKey(plugin, "multiblocks"), MultiblockPDC(), multiblockArray)
+
+						return@multiblock
+					}
+
+					// Validate the layout
+					if (!validate(multiblock.r, multiblockLayout, world.getBlockAt(multiblock.x, multiblock.y, multiblock.z))) {
+						plugin.logger.warning("Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: ${multiblock.name}, it has been undetected.")
+
+						multiblockArray.remove(multiblock)
+						chunk.persistentDataContainer.set(NamespacedKey(plugin, "multiblocks"), MultiblockPDC(), multiblockArray)
+
+						return@multiblock
+					}
+				}
+			}
+		}
 	}
 
 	@EventHandler
