@@ -79,8 +79,17 @@ class MultiblockListener: Listener {
 		// Get the multiblock list, or create it if it doesn't exist
 		val multiblockArray = clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPDC()) ?: mutableSetOf()
 
+		// Create Multiblock
+		val multiblockData = Multiblock(multiblock.key.name, clickedBlock.x, clickedBlock.y, clickedBlock.z, multiblock.value)
+
+		// Check if the multiblock is already in the list
+		if (multiblockArray.contains(multiblockData)) {
+			event.player.sendMessage(text("Multiblock is already detected.").color(color(0xcc0000)))
+			return
+		}
+
 		// Add the multiblock to the list
-		multiblockArray.add(Multiblock(multiblock.key.name, clickedBlock.x, clickedBlock.y, clickedBlock.z, multiblock.value))
+		multiblockArray.add(multiblockData)
 
 		// Save it
 		clickedBlock.chunk.persistentDataContainer.set(multiblockNamespacedKey, MultiblockPDC(), multiblockArray)
