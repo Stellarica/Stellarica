@@ -6,16 +6,16 @@ import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
-class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, Array<Multiblock>> {
+class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, MutableSet<Multiblock>> {
 	override fun getPrimitiveType(): Class<Array<PersistentDataContainer>> {
 		return Array<PersistentDataContainer>::class.java
 	}
 
-	override fun getComplexType(): Class<Array<Multiblock>> {
-		return Array<Multiblock>::class.java
+	override fun getComplexType(): Class<MutableSet<Multiblock>> {
+		return mutableSetOf<Multiblock>().javaClass
 	}
 
-	override fun toPrimitive(complex: Array<Multiblock>, context: PersistentDataAdapterContext): Array<PersistentDataContainer> {
+	override fun toPrimitive(complex: MutableSet<Multiblock>, context: PersistentDataAdapterContext): Array<PersistentDataContainer> {
 		val result = arrayOfNulls<PersistentDataContainer>(complex.size)
 
 		complex.forEachIndexed { index, multiblock ->
@@ -33,19 +33,19 @@ class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, Array<Mu
 		return result.requireNoNulls()
 	}
 
-	override fun fromPrimitive(primitive: Array<PersistentDataContainer>, context: PersistentDataAdapterContext): Array<Multiblock> {
-		val result = arrayOfNulls<Multiblock>(primitive.size)
+	override fun fromPrimitive(primitive: Array<PersistentDataContainer>, context: PersistentDataAdapterContext): MutableSet<Multiblock> {
+		val result = mutableSetOf<Multiblock>()
 
-		primitive.forEachIndexed { index, persistentDataContainer ->
+		primitive.forEach { persistentDataContainer ->
 			val name = persistentDataContainer.get(NamespacedKey(plugin, "name"), PersistentDataType.STRING)!!
 			val x = persistentDataContainer.get(NamespacedKey(plugin, "x"), PersistentDataType.INTEGER)!!
 			val y = persistentDataContainer.get(NamespacedKey(plugin, "y"), PersistentDataType.INTEGER)!!
 			val z = persistentDataContainer.get(NamespacedKey(plugin, "z"), PersistentDataType.INTEGER)!!
 			val r = persistentDataContainer.get(NamespacedKey(plugin, "r"), PersistentDataType.BYTE)!!
 
-			result[index] = Multiblock(name, x, y, z, r)
+			result.add(Multiblock(name, x, y, z, r))
 		}
 
-		return result.requireNoNulls()
+		return result
 	}
 }
