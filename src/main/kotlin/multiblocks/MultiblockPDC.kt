@@ -25,6 +25,7 @@ class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, MutableS
 			container.set(NamespacedKey(plugin, "x"), PersistentDataType.INTEGER, multiblock.x)
 			container.set(NamespacedKey(plugin, "y"), PersistentDataType.INTEGER, multiblock.y)
 			container.set(NamespacedKey(plugin, "z"), PersistentDataType.INTEGER, multiblock.z)
+			container.set(NamespacedKey(plugin, "t"), PersistentDataType.INTEGER, multiblock.t)
 			container.set(NamespacedKey(plugin, "r"), PersistentDataType.BYTE, multiblock.r)
 
 			result[index] = container
@@ -41,9 +42,10 @@ class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, MutableS
 			val x = persistentDataContainer.get(NamespacedKey(plugin, "x"), PersistentDataType.INTEGER)!!
 			val y = persistentDataContainer.get(NamespacedKey(plugin, "y"), PersistentDataType.INTEGER)!!
 			val z = persistentDataContainer.get(NamespacedKey(plugin, "z"), PersistentDataType.INTEGER)!!
+			val t = persistentDataContainer.get(NamespacedKey(plugin, "t"), PersistentDataType.INTEGER)!!
 			val r = persistentDataContainer.get(NamespacedKey(plugin, "r"), PersistentDataType.BYTE)!!
 
-			result.add(Multiblock(name, x, y, z, r))
+			result.add(Multiblock(name, x, y, z, r, t))
 		}
 
 		return result
