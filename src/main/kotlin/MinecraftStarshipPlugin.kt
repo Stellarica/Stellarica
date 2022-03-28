@@ -29,7 +29,7 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 	override fun onEnable() {
 		plugin = this
 
-		Metrics(this, 12863)
+// 		Metrics(this, 12863)
 
 		getPluginManager().registerEvents(CustomBlocksListener(), this)
 
