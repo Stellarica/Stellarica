@@ -1,8 +1,8 @@
 main: io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
-name: Minecraft-Starship-Plugin
+name: Hydrazine
 version: 0.1.0-dev
-description: An open-source plugin that accommodates starships on minecraft servers.
-api-version: 1.17
+description: The primary plguin for the Hydrazine minecraft server.
+api-version: 1.18
 load: STARTUP
 authors: [ "Peter-Crawley", "trainb0y1", "DoctorXeno" ]
 website: https://github.com/Peter-Crawley/Minecraft-Starship-Plugin
