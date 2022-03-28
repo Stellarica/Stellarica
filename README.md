@@ -1,16 +1,5 @@
-# Minecraft Starship Plugin
-An open-source plugin that accommodates starships on minecraft servers.
+# Hydrazine
 
-The name is a work in progress, please suggest new names in the discord server if you can think of anything better.
+The primary plugin for the Hydrazine Minecraft Server, this plugin aims to add various science fiction mechanics to Minecraft. These include Starships, Space, and more.
 
-This plugin aims to implement the following features:
-- Starships
-- Automation
-- Guns
-- Armour
-- Storage Systems
-- Shields
-- Planets
-- Star Systems
-
-[MSP Discord Server](https://discord.gg/yhduWCPCrU "MSP Discord Server")
+Originally a fork of PeterCrawley's [Minecraft Starship Plugin](https://github.com/peter-crawley/minecraft-starship-plugin)
