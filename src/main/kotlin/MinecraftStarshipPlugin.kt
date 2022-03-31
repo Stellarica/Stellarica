@@ -3,10 +3,10 @@ package io.github.petercrawley.minecraftstarshipplugin
 import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplete
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.CustomBlocksListener
-import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
 import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
 import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit.getPluginManager
+import org.bukkit.Material
 import org.bukkit.plugin.java.JavaPlugin
 
 class MinecraftStarshipPlugin : JavaPlugin() {
@@ -19,10 +19,10 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 
 		var detectionLimit: Int = 500000
 			private set
-		var forcedUndetectable = setOf<MSPMaterial>()
+		var forcedUndetectable = setOf<Material>()
 			private set
 
-		var defaultUndetectable = setOf<MSPMaterial>()
+		var defaultUndetectable = setOf<Material>()
 			private set
 	}
 
@@ -48,19 +48,18 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 
 		getPluginManager().callEvent(MSPConfigReloadEvent())
 
-//		timeOperations = config.getBoolean("timeOperations", false)
-//		detectionLimit = config.getInt("detectionLimit", 500000)
-//
-//		val newForcedUndetectable = mutableSetOf<MSPMaterial>()
-//		config.getStringList("forcedUndetectable").forEach {
-//			newForcedUndetectable.add(MSPMaterial(it))
-//		}
-//		forcedUndetectable = newForcedUndetectable
-//
-//		val newDefaultUndetectable = mutableSetOf<MSPMaterial>()
-//		config.getStringList("defaultUndetectable").forEach {
-//			newDefaultUndetectable.add(MSPMaterial(it))
-//		}
-//		defaultUndetectable = newDefaultUndetectable
+		timeOperations = config.getBoolean("timeOperations", false)
+		detectionLimit = config.getInt("detectionLimit", 500000)
+		val newForcedUndetectable = mutableSetOf<Material>()
+		config.getStringList("forcedUndetectable").forEach {
+			newForcedUndetectable.add(Material.getMaterial(it)!!)
+		}
+		forcedUndetectable = newForcedUndetectable
+
+		val newDefaultUndetectable = mutableSetOf<Material>()
+		config.getStringList("defaultUndetectable").forEach {
+			newDefaultUndetectable.add(Material.getMaterial(it)!!)
+		}
+		defaultUndetectable = newDefaultUndetectable
 	}
 }

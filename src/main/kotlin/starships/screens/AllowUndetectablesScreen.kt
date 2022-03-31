@@ -53,6 +53,7 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 	}
 
 	override fun onScreenUpdate() {
+		/*
 		topMaxPage = (disallowed.size - 1) / 27
 		bottomMaxPage = (allowed.size - 1) / 9
 
@@ -74,7 +75,7 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 
 				if (material == null) screen.setItem(inventoryIndex, air)
 				else {
-					val bukkitMaterial = material.bukkit()
+					val bukkitMaterliial = material.bukkit()
 
 					if (bukkitMaterial == null) screen.setItem(
 						inventoryIndex,
@@ -126,6 +127,7 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 		screen.setItem(8, if (topPage < topMaxPage) next else red)
 		screen.setItem(36, if (bottomPage > 0) last else green)
 		screen.setItem(44, if (bottomPage < bottomMaxPage) next else green)
+		 */
 	}
 
 	override fun onScreenButtonClicked(slot: Int) {

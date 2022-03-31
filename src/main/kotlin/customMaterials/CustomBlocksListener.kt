@@ -120,6 +120,6 @@ class CustomBlocksListener : Listener {
 			newCustomBlocks[id] = it.uppercase()
 		}
 
-		MSPMaterial.customBlocks = newCustomBlocks
+		// MSPMaterial.customBlocks = newCustomBlocks
 	}
 }
