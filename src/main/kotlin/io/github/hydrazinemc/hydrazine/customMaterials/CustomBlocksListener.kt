@@ -1,8 +1,7 @@
-package io.github.petercrawley.minecraftstarshipplugin.customMaterials
+package io.github.hydrazinemc.hydrazine.customMaterials
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
-import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import org.bukkit.Bukkit.*
 import org.bukkit.Material
 import org.bukkit.block.Block
@@ -104,7 +103,7 @@ class CustomBlocksListener : Listener {
 	}
 
 	@EventHandler
-	fun onMSPConfigReload(event: MSPConfigReloadEvent) {
+	fun onMSPConfigReload(event: HydrazineConfigReloadEvent) {
 		val newCustomBlocks = mutableMapOf<Byte, String>()
 
 		plugin.config.getConfigurationSection("customBlocks")?.getKeys(false)?.forEach {

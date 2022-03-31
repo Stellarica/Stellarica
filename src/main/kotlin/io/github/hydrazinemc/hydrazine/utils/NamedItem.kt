@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.utils
+package io.github.hydrazinemc.hydrazine.utils
 
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable

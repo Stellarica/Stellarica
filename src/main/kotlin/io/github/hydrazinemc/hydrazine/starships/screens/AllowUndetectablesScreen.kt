@@ -1,16 +1,14 @@
-package io.github.petercrawley.minecraftstarshipplugin.starships.screens
+package io.github.hydrazinemc.hydrazine.starships.screens
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
-import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
-import io.github.petercrawley.minecraftstarshipplugin.utils.NamedItem
-import io.github.petercrawley.minecraftstarshipplugin.utils.Screen
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.defaultUndetectable
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.starships.Starship
+import io.github.hydrazinemc.hydrazine.utils.NamedItem
+import io.github.hydrazinemc.hydrazine.utils.Screen
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import kotlin.math.max
-import kotlin.math.min
 
 class AllowUndetectablesScreen(player: Player, private val starship: Starship) : Screen() {
 	private val disallowed = defaultUndetectable.toMutableList()

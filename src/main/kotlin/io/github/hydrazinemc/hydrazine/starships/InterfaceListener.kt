@@ -1,7 +1,7 @@
-package io.github.petercrawley.minecraftstarshipplugin.starships
+package io.github.hydrazinemc.hydrazine.starships
 
-import io.github.petercrawley.minecraftstarshipplugin.starships.screens.InterfaceScreen
-import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
+import io.github.hydrazinemc.hydrazine.starships.screens.InterfaceScreen
+import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

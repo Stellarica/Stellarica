@@ -1,9 +1,9 @@
-package io.github.petercrawley.minecraftstarshipplugin.events
+package io.github.hydrazinemc.hydrazine.events
 
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class MSPConfigReloadEvent : Event() {
+class HydrazineConfigReloadEvent : Event() {
 	override fun getHandlers(): HandlerList {
 		return handlerList
 	}
