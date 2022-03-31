@@ -1,13 +1,13 @@
 package io.github.hydrazinemc.hydrazine.utils
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import org.bukkit.Bukkit
+import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import java.time.ZonedDateTime
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future
 import java.util.concurrent.ThreadFactory
-import org.bukkit.Bukkit
-import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scheduler.BukkitTask
 
 object Tasks {
 	fun checkMainThread() = check(Bukkit.isPrimaryThread()) { "Attempted to call non-thread-safe method async!" }

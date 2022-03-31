@@ -87,8 +87,8 @@ abstract class Screen : Listener {
 	/**
 	 * Set the item in [slots] to be [item]
 	 */
-	fun setAll(slots: Set<Int>, item: ItemStack){
-		slots.forEach{
+	fun setAll(slots: Set<Int>, item: ItemStack) {
+		slots.forEach {
 			screen.setItem(it, item)
 		}
 	}
@@ -108,8 +108,7 @@ abstract class Screen : Listener {
 				onPlayerChangeItem(event.slot, event.currentItem, screen.getItem(event.slot))
 				onScreenUpdate()
 			}
-		}
-		else{
+		} else {
 			// Not a player-editable slot, it's probably a button
 			event.isCancelled = true
 			onScreenButtonClicked(event.rawSlot)
@@ -123,7 +122,7 @@ abstract class Screen : Listener {
 			event.isCancelled = true
 			// Might as well update screen
 			onScreenUpdate()
-		};
+		}
 	}
 
 	@EventHandler

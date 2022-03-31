@@ -10,11 +10,11 @@ import org.bukkit.command.CommandSender
 import java.io.File
 
 @CommandAlias("hydrazine config|hc")
-class ConfigCommand: BaseCommand() {
+class ConfigCommand : BaseCommand() {
 	@Subcommand("reload")
 	@Description("Reloads the Hydrazine config files")
 	@CommandPermission("hydrazine.config.reload")
-	fun onConfigReload(sender: CommandSender){
+	fun onConfigReload(sender: CommandSender) {
 		plugin.saveDefaultConfig()
 		plugin.reloadConfig()
 		sender.sendMessage("Reloaded config")

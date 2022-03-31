@@ -9,9 +9,11 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.util.Vector
 
 // TODO: use raycasts
-data class ParticleProjectile (val origin: Location, private val color: Color, private val particleDensity: Int,
-                          val range: Int, private val minRange: Double, val speed: Int,
-                          private val damage: Double, private val explosion: Float) // Yikes that's a lot of arguments
+data class ParticleProjectile(
+	val origin: Location, private val color: Color, private val particleDensity: Int,
+	val range: Int, private val minRange: Double, val speed: Int,
+	private val damage: Double, private val explosion: Float
+) // Yikes that's a lot of arguments
 {
 	private val particle = ParticleBuilder(Particle.REDSTONE).color(color).force(true).count(particleDensity)
 	// ParticleBuilder that we can spawn later when we need to
@@ -23,7 +25,8 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 		// getPluginManager().callEvent(event)
 
 		val loc = origin.clone() // Don't want to modify the origin, so we clone it
-		val direction: Vector = origin.direction // Main reason this uses Locations (even though they are slow) is for this
+		val direction: Vector =
+			origin.direction // Main reason this uses Locations (even though they are slow) is for this
 		// Basically represent the amount we move every step
 		direction.multiply(range)
 		direction.normalize()

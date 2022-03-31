@@ -11,9 +11,9 @@ class InterfaceScreen(player: Player, private val starship: Starship) : Screen()
 	init {
 		createScreen(player, InventoryType.HOPPER, "Starship Interface")
 
-		screen.setItem(0, NamedItem(Material.MINECART, "Detect Starship",     false, 128, 255, 128, bold = true))
-		screen.setItem(1, NamedItem(Material.COMPASS,  "Pilot Starship",      false, 128, 128, 255, bold = true))
-		screen.setItem(4, NamedItem(Material.BEDROCK,  "Allow Undetectables", false, 255, 128, 128, bold = true))
+		screen.setItem(0, NamedItem(Material.MINECART, "Detect Starship", false, 128, 255, 128, bold = true))
+		screen.setItem(1, NamedItem(Material.COMPASS, "Pilot Starship", false, 128, 128, 255, bold = true))
+		screen.setItem(4, NamedItem(Material.BEDROCK, "Allow Undetectables", false, 255, 128, 128, bold = true))
 	}
 
 	override fun onScreenButtonClicked(slot: Int) {

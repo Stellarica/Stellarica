@@ -2,7 +2,9 @@ package io.github.hydrazinemc.hydrazine.customMaterials
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
-import org.bukkit.Bukkit.*
+import org.bukkit.Bukkit.getOnlinePlayers
+import org.bukkit.Bukkit.getScheduler
+import org.bukkit.Bukkit.getServer
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
@@ -51,7 +53,10 @@ class CustomBlocksListener : Listener {
 
 		if (block.type != Material.MUSHROOM_STEM) return // If it's not a mushroom stem, ignore it.
 
-		block.setBlockData(getServer().createBlockData(Material.MUSHROOM_STEM), false) // A blank block data will have all sides set to true.
+		block.setBlockData(
+			getServer().createBlockData(Material.MUSHROOM_STEM),
+			false
+		) // A blank block data will have all sides set to true.
 	}
 
 	// Prevent the block faces from changing.
@@ -87,18 +92,18 @@ class CustomBlocksListener : Listener {
 				val minZ = it.chunk.z - it.viewDistance
 				val maxZ = it.chunk.z + it.viewDistance
 
-				if (event.block.chunk.x !in minX .. maxX) return@forEach
-				if (event.block.chunk.z !in minZ .. maxZ) return@forEach
+				if (event.block.chunk.x !in minX..maxX) return@forEach
+				if (event.block.chunk.z !in minZ..maxZ) return@forEach
 
 				it.sendBlockChange(event.block.location, event.block.blockData)
 			}
 
-			blocksToUpdate.add(block.getRelative( 1,  0,  0))
-			blocksToUpdate.add(block.getRelative(-1,  0,  0))
-			blocksToUpdate.add(block.getRelative( 0,  1,  0))
-			blocksToUpdate.add(block.getRelative( 0, -1,  0))
-			blocksToUpdate.add(block.getRelative( 0,  0,  1))
-			blocksToUpdate.add(block.getRelative( 0,  0, -1))
+			blocksToUpdate.add(block.getRelative(1, 0, 0))
+			blocksToUpdate.add(block.getRelative(-1, 0, 0))
+			blocksToUpdate.add(block.getRelative(0, 1, 0))
+			blocksToUpdate.add(block.getRelative(0, -1, 0))
+			blocksToUpdate.add(block.getRelative(0, 0, 1))
+			blocksToUpdate.add(block.getRelative(0, 0, -1))
 		}
 	}
 
@@ -108,13 +113,13 @@ class CustomBlocksListener : Listener {
 
 		plugin.config.getConfigurationSection("customBlocks")?.getKeys(false)?.forEach {
 			val id = (
-				if (plugin.config.getBoolean("customBlocks.$it.north")) 32 else 0 +
-				if (plugin.config.getBoolean("customBlocks.$it.east" )) 16 else 0 +
-				if (plugin.config.getBoolean("customBlocks.$it.south"))  8 else 0 +
-				if (plugin.config.getBoolean("customBlocks.$it.west" ))  4 else 0 +
-				if (plugin.config.getBoolean("customBlocks.$it.up"   ))  2 else 0 +
-				if (plugin.config.getBoolean("customBlocks.$it.down" ))  1 else 0
-			).toByte()
+					if (plugin.config.getBoolean("customBlocks.$it.north")) 32 else 0 +
+							if (plugin.config.getBoolean("customBlocks.$it.east")) 16 else 0 +
+									if (plugin.config.getBoolean("customBlocks.$it.south")) 8 else 0 +
+											if (plugin.config.getBoolean("customBlocks.$it.west")) 4 else 0 +
+													if (plugin.config.getBoolean("customBlocks.$it.up")) 2 else 0 +
+															if (plugin.config.getBoolean("customBlocks.$it.down")) 1 else 0
+					).toByte()
 
 			newCustomBlocks[id] = it.uppercase()
 		}
