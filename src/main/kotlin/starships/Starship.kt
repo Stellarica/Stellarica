@@ -5,13 +5,12 @@ import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Co
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.timeOperations
-import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
-import io.github.petercrawley.minecraftstarshipplugin.events.StarshipDetectEvent
 import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipBlockSetter.blockSetQueueQueue
 import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
 import io.github.petercrawley.minecraftstarshipplugin.utils.ChunkLocation
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
+import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Player
@@ -24,7 +23,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
 	private val owner = player
 	private var moveTarget = BlockLocation(1, 0, 0, null)
-	var allowedBlocks = mutableSetOf<MSPMaterial>()
+	var allowedBlocks = mutableSetOf<Material>()
 	var nextMoveCheckTick = 0
 
 	val blockCount: Int
@@ -32,8 +31,8 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 
 	fun detectStarship() {
 		// Create a new event
-		val event = StarshipDetectEvent(this, player)
-		Bukkit.getPluginManager().callEvent(event)
+		// val event = StarshipDetectEvent(this, player)
+		// Bukkit.getPluginManager().callEvent(event)
 
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
 			val time = measureTimeMillis {
@@ -65,13 +64,13 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 							world.getChunkAt(chunkCoordinate.x, chunkCoordinate.z).getChunkSnapshot(false, false, false)
 						}
 
-						val type = MSPMaterial(
+						val type =
 							chunk.getBlockData(
 								currentBlock.x - (chunkCoordinate.x shl 4),
 								currentBlock.y,
 								currentBlock.z - (chunkCoordinate.z shl 4)
-							)
-						)
+							).material
+
 
 						if (undetectables.contains(type)) continue
 
@@ -161,7 +160,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 				world.getChunkAt(cChunkCoord.x, cChunkCoord.z).getChunkSnapshot(false, false, false)
 			}.getBlockData(cBlock.x - (cChunkCoord.x shl 4), cBlock.y, cBlock.z - (cChunkCoord.z shl 4))
 
-			val cMaterial = MSPMaterial(cBlockData)
+			val cMaterial = cBlockData.material
 
 			// Step 1: Confirm that there is still a detectable block there.
 			if (undetectables.contains(cMaterial)) return@forEach
@@ -174,7 +173,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 				world.getChunkAt(tChunkCoord.x, tChunkCoord.z).getChunkSnapshot(false, false, false)
 			}.getBlockData(tBlock.x - (tChunkCoord.x shl 4), tBlock.y, tBlock.z - (tChunkCoord.z shl 4))
 
-			val tMaterial = MSPMaterial(tBlockData)
+			val tMaterial = tBlockData.material
 
 			// Step 2: Confirm that we can move that block.
 			if (detectedBlocks.contains(tBlock) || tBlockData.material.isAir) {

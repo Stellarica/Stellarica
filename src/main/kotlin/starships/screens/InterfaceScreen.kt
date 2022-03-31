@@ -1,6 +1,5 @@
 package io.github.petercrawley.minecraftstarshipplugin.starships.screens
 
-import io.github.petercrawley.minecraftstarshipplugin.events.StarshipPilotEvent
 import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
 import io.github.petercrawley.minecraftstarshipplugin.utils.NamedItem
 import io.github.petercrawley.minecraftstarshipplugin.utils.Screen
@@ -25,8 +24,8 @@ class InterfaceScreen(player: Player, private val starship: Starship) : Screen()
 				starship.activateStarship()
 
 				// Not exactly sure where the best place for this is, as piloting doesn't seem to be quite done, but for now, here should work
-				val event = StarshipPilotEvent(starship, player)
-				Bukkit.getPluginManager().callEvent(event)
+				// val event = StarshipPilotEvent(starship, player)
+				// Bukkit.getPluginManager().callEvent(event)
 
 				closeScreen()
 			}
