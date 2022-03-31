@@ -18,7 +18,8 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import kotlin.system.measureTimeMillis
 
-class Starship(private val block: BlockLocation, private var world: World, private val player: Player): BukkitRunnable() {
+class Starship(private val block: BlockLocation, private var world: World, private val player: Player) :
+	BukkitRunnable() {
 	private var task: BukkitTask? = null
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
 	private val owner = player
@@ -27,7 +28,9 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 	var nextMoveCheckTick = 0
 
 	val blockCount: Int
-		get() { return detectedBlocks.size }
+		get() {
+			return detectedBlocks.size
+		}
 
 	fun detectStarship() {
 		// Create a new event

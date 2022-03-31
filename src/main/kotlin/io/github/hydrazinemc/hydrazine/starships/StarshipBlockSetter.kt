@@ -7,10 +7,13 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
 
-object StarshipBlockSetter: BukkitRunnable() {
-	val blockSetQueueQueue = ConcurrentHashMap<MutableMap<BlockLocation, BlockData>, Starship>() // Value is a blockSetQueue, Key is the amount of blocks.
+object StarshipBlockSetter : BukkitRunnable() {
+	val blockSetQueueQueue =
+		ConcurrentHashMap<MutableMap<BlockLocation, BlockData>, Starship>() // Value is a blockSetQueue, Key is the amount of blocks.
 
-	init {this.runTaskTimer(plugin, 0, 1)} // Start running the block setter
+	init {
+		this.runTaskTimer(plugin, 0, 1)
+	} // Start running the block setter
 
 	override fun run() {
 		val targetTime = System.currentTimeMillis() + 40
@@ -25,7 +28,8 @@ object StarshipBlockSetter: BukkitRunnable() {
 				it.key.bukkit.setBlockData(it.value, false)
 			}
 
-			starship!!.nextMoveCheckTick = Bukkit.getCurrentTick() + 1 + starship.blockCount / 20000 // This 20000 should be defined in a config file
+			starship!!.nextMoveCheckTick =
+				Bukkit.getCurrentTick() + 1 + starship.blockCount / 20000 // This 20000 should be defined in a config file
 		}
 	}
 }

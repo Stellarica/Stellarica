@@ -1,6 +1,5 @@
 package io.github.hydrazinemc.hydrazine.projectiles
 
-import io.github.hydrazinemc.hydrazine.projectiles.ParticleProjectile
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.Vector
 
