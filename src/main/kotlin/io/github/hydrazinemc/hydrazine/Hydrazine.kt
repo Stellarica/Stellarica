@@ -1,16 +1,16 @@
-package io.github.petercrawley.minecraftstarshipplugin
+package io.github.hydrazinemc.hydrazine
 
 import co.aikar.commands.PaperCommandManager
-import io.github.petercrawley.minecraftstarshipplugin.commands.ConfigCommand
-import io.github.petercrawley.minecraftstarshipplugin.customMaterials.CustomBlocksListener
-import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.commands.ConfigCommand
+import io.github.hydrazinemc.hydrazine.customMaterials.CustomBlocksListener
+import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.Material
 import org.bukkit.plugin.java.JavaPlugin
 
-class MinecraftStarshipPlugin : JavaPlugin() {
+class Hydrazine : JavaPlugin() {
 	companion object {
-		lateinit var plugin: MinecraftStarshipPlugin
+		lateinit var plugin: Hydrazine
 			private set
 
 		var timeOperations: Boolean = false
@@ -43,7 +43,7 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 	override fun reloadConfig() {
 		super.reloadConfig()
 
-		getPluginManager().callEvent(MSPConfigReloadEvent())
+		getPluginManager().callEvent(HydrazineConfigReloadEvent())
 
 		timeOperations = config.getBoolean("timeOperations", false)
 		detectionLimit = config.getInt("detectionLimit", 500000)

@@ -1,4 +1,4 @@
-package io.github.petercrawley.minecraftstarshipplugin.utils
+package io.github.hydrazinemc.hydrazine.utils
 
 import org.bukkit.World
 import org.bukkit.block.Block

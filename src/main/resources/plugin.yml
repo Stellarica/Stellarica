@@ -1,16 +1,13 @@
-main: io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin
+main: io.github.hydrazinemc.hydrazine.Hydrazine
 name: Hydrazine
 version: 0.1.0-dev
 description: The primary plguin for the Hydrazine minecraft server.
 api-version: 1.18
 load: STARTUP
 authors: [ "Peter-Crawley", "trainb0y1", "DoctorXeno" ]
-website: https://github.com/Peter-Crawley/Minecraft-Starship-Plugin
-prefix: Minecraft Starship Plugin
+website: https://github.com/HydrazineMC/Hydrazine
+prefix: Hydrazine
 permissions:
-  msp:
-    description: Base Minecraft Starship Plugin permission
-    default: op
   hydrazine.config.reload:
     description: Lets users reload the configuration file
     default: op

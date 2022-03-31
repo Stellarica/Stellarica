@@ -1,7 +1,6 @@
-package net.starlegacy.util
+package io.github.hydrazinemc.hydrazine.utils
 
-import co.aikar.timings.Timing
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import java.time.ZonedDateTime
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Future

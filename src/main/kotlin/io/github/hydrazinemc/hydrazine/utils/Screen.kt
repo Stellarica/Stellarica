@@ -1,8 +1,7 @@
-package io.github.petercrawley.minecraftstarshipplugin.utils
+package io.github.hydrazinemc.hydrazine.utils
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import net.kyori.adventure.text.Component.text
-import net.starlegacy.util.Tasks
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler

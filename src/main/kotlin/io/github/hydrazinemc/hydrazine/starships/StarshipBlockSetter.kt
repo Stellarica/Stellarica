@@ -1,7 +1,7 @@
-package io.github.petercrawley.minecraftstarshipplugin.starships
+package io.github.hydrazinemc.hydrazine.starships
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
-import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import org.bukkit.Bukkit
 import org.bukkit.block.data.BlockData
 import org.bukkit.scheduler.BukkitRunnable

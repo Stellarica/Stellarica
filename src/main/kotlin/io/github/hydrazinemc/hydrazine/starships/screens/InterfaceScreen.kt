@@ -1,9 +1,8 @@
-package io.github.petercrawley.minecraftstarshipplugin.starships.screens
+package io.github.hydrazinemc.hydrazine.starships.screens
 
-import io.github.petercrawley.minecraftstarshipplugin.starships.Starship
-import io.github.petercrawley.minecraftstarshipplugin.utils.NamedItem
-import io.github.petercrawley.minecraftstarshipplugin.utils.Screen
-import org.bukkit.Bukkit
+import io.github.hydrazinemc.hydrazine.starships.Starship
+import io.github.hydrazinemc.hydrazine.utils.NamedItem
+import io.github.hydrazinemc.hydrazine.utils.Screen
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType

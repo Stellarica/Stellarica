@@ -1,7 +1,7 @@
-package io.github.petercrawley.minecraftstarshipplugin.projectiles
+package io.github.hydrazinemc.hydrazine.projectiles
 
 import com.destroystokyo.paper.ParticleBuilder
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle

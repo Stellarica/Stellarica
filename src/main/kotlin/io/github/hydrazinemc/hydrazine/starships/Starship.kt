@@ -1,13 +1,13 @@
-package io.github.petercrawley.minecraftstarshipplugin.starships
+package io.github.hydrazinemc.hydrazine.starships
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.defaultUndetectable
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.detectionLimit
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.forcedUndetectable
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.timeOperations
-import io.github.petercrawley.minecraftstarshipplugin.starships.StarshipBlockSetter.blockSetQueueQueue
-import io.github.petercrawley.minecraftstarshipplugin.utils.BlockLocation
-import io.github.petercrawley.minecraftstarshipplugin.utils.ChunkLocation
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.defaultUndetectable
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.detectionLimit
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.forcedUndetectable
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.timeOperations
+import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter.blockSetQueueQueue
+import io.github.hydrazinemc.hydrazine.utils.BlockLocation
+import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
