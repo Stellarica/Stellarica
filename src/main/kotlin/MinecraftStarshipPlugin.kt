@@ -14,16 +14,16 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 		lateinit var plugin: MinecraftStarshipPlugin
 			private set
 
-//		var timeOperations: Boolean = false
-//			private set
-//
-//		var detectionLimit: Int = 500000
-//			private set
-//		var forcedUndetectable = setOf<MSPMaterial>()
-//			private set
-//
-//		var defaultUndetectable = setOf<MSPMaterial>()
-//			private set
+		var timeOperations: Boolean = false
+			private set
+
+		var detectionLimit: Int = 500000
+			private set
+		var forcedUndetectable = setOf<MSPMaterial>()
+			private set
+
+		var defaultUndetectable = setOf<MSPMaterial>()
+			private set
 	}
 
 	override fun onEnable() {
