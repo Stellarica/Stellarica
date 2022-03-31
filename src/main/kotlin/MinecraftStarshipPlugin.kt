@@ -1,7 +1,7 @@
 package io.github.petercrawley.minecraftstarshipplugin
 
-import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplete
-import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
+import co.aikar.commands.PaperCommandManager
+import io.github.petercrawley.minecraftstarshipplugin.commands.ConfigCommand
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.CustomBlocksListener
 import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
 import org.bukkit.Bukkit.getPluginManager
@@ -36,8 +36,8 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 		saveDefaultConfig()
 		reloadConfig()
 
-		plugin.getCommand("msp")!!.setExecutor(Commands())
-		plugin.getCommand("msp")!!.tabCompleter = CommandTabComplete()
+		val commandManager = PaperCommandManager(this)
+		commandManager.registerCommand(ConfigCommand())
 	}
 
 	override fun reloadConfig() {

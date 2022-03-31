@@ -11,14 +11,9 @@ permissions:
   msp:
     description: Base Minecraft Starship Plugin permission
     default: op
-  msp.config.reload:
+  hydrazine.config.reload:
     description: Lets users reload the configuration file
     default: op
-  msp.config.reset:
+  hydrazine.config.reset:
     description: Lets users reset the configuration file
     default: op
-commands:
-  msp:
-    description: Base Minecraft Starship Plugin command
-    usage: /<command> [config]
-    permission: msp
