@@ -1,8 +1,8 @@
 package io.github.hydrazinemc.hydrazine.starships.screens
 
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.defaultUndetectable
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.starships.Starship
+import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.NamedItem
 import io.github.hydrazinemc.hydrazine.utils.Screen
 import org.bukkit.Bukkit
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 class AllowUndetectablesScreen(player: Player, private val starship: Starship) : Screen() {
-	private val disallowed = defaultUndetectable.toMutableList()
+	private val disallowed = ConfigurableValues.defaultUndetectable.toMutableList()
 	private val allowed = starship.allowedBlocks.toMutableList()
 
 	private var topPage = 0

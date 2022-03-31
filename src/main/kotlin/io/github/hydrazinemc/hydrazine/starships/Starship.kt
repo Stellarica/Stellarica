@@ -1,13 +1,10 @@
 package io.github.hydrazinemc.hydrazine.starships
 
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.defaultUndetectable
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.detectionLimit
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.forcedUndetectable
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.timeOperations
 import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter.blockSetQueueQueue
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
+import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
@@ -52,8 +49,8 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 				val checkedBlocks = nextBlocksToCheck.toMutableSet()
 
 				// Construct the undetectable list
-				val undetectables = defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
-				undetectables.addAll(forcedUndetectable)               // Add all forced undetectables
+				val undetectables = ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
+				undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
 				undetectables.removeAll(allowedBlocks)
 
 				while (nextBlocksToCheck.size > 0) {
@@ -77,9 +74,9 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 
 						if (undetectables.contains(type)) continue
 
-						if (detectedBlocks.size > detectionLimit) {
-							player.sendMessage("Detection limit reached. ($detectionLimit)")
-							plugin.logger.info("Detection limit reached. ($detectionLimit)")
+						if (detectedBlocks.size > ConfigurableValues.detectionLimit) {
+							player.sendMessage("Detection limit reached. (${ConfigurableValues.detectionLimit})")
+							plugin.logger.info("Detection limit reached. (${ConfigurableValues.detectionLimit})")
 							nextBlocksToCheck.clear()
 							detectedBlocks.clear()
 							break
@@ -122,7 +119,7 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 				}
 			}
 
-			if (timeOperations) {
+			if (ConfigurableValues.timeOperations) {
 				player.sendMessage("Starship Detection took $time ms.")
 				plugin.logger.info("Starship Detection took $time ms.")
 			}
@@ -146,8 +143,8 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 		val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 		// Construct the undetectable list
-		val undetectables = defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
-		undetectables.addAll(forcedUndetectable)               // Add all forced undetectables
+		val undetectables = ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
+		undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
 		undetectables.removeAll(allowedBlocks)
 
 		val newDetectedBlocks = mutableSetOf<BlockLocation>()
