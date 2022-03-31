@@ -30,5 +30,5 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 tasks.shadowJar {
-	minimize()
+	minimize() // if there are reflection issues, this is why
 }
