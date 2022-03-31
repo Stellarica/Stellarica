@@ -4,7 +4,6 @@ import io.github.petercrawley.minecraftstarshipplugin.commands.CommandTabComplet
 import io.github.petercrawley.minecraftstarshipplugin.commands.Commands
 import io.github.petercrawley.minecraftstarshipplugin.customMaterials.CustomBlocksListener
 import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
-import org.bstats.bukkit.Metrics
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.Material
 import org.bukkit.plugin.java.JavaPlugin
@@ -28,8 +27,6 @@ class MinecraftStarshipPlugin : JavaPlugin() {
 
 	override fun onEnable() {
 		plugin = this
-
-// 		Metrics(this, 12863)
 
 		getPluginManager().registerEvents(CustomBlocksListener(), this)
 
