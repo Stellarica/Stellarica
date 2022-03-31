@@ -43,8 +43,6 @@ object Tasks {
 	inline fun syncRepeatTask(delay: Long, interval: Long, crossinline block: () -> Unit): BukkitTask =
 		Bukkit.getScheduler().runTaskTimer(plugin, Runnable { block() }, delay, interval)
 
-	fun syncTimed(timing: Timing, block: () -> Unit): Unit = sync { timing.time(block) }
-
 	/**
 	 * @param hour Hour of day, 0-23
 	 */
