@@ -1,4 +1,4 @@
-package net.horizonsend.ion.server
+package io.github.petercrawley.minecraftstarshipplugin.utils
 
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
 import net.kyori.adventure.text.Component.text
