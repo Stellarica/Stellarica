@@ -2,10 +2,6 @@ package io.github.petercrawley.minecraftstarshipplugin.projectiles
 
 import com.destroystokyo.paper.ParticleBuilder
 import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
-import io.github.petercrawley.minecraftstarshipplugin.events.ParticleProjectileHitBlockEvent
-import io.github.petercrawley.minecraftstarshipplugin.events.ParticleProjectileHitEntityEvent
-import io.github.petercrawley.minecraftstarshipplugin.events.ParticleProjectileLaunchEvent
-import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
@@ -23,8 +19,8 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 	fun shootBeam() {
 		// Simple beam mode, do it all on the same server tick
 
-		val event = ParticleProjectileLaunchEvent(this, origin)
-		getPluginManager().callEvent(event)
+		// val event = ParticleProjectileLaunchEvent(this, origin)
+		// getPluginManager().callEvent(event)
 
 		val loc = origin.clone() // Don't want to modify the origin, so we clone it
 		val direction: Vector = origin.direction // Main reason this uses Locations (even though they are slow) is for this
@@ -41,8 +37,8 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 	fun shootProjectile() {
 		// Start the Runnable that will handle projectile mode
 
-		val event = ParticleProjectileLaunchEvent(this, origin)
-		getPluginManager().callEvent(event)
+		// val event = ParticleProjectileLaunchEvent(this, origin)
+		// getPluginManager().callEvent(event)
 
 		ProjectileRunnable(this).runTaskTimer(plugin, 1, 1)
 	}
@@ -64,8 +60,8 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 				e.damage(damage)
 				if (explosion > 0) loc.world.createExplosion(loc, explosion)
 
-				val event = ParticleProjectileHitEntityEvent(this, loc, e)
-				getPluginManager().callEvent(event)
+				// val event = ParticleProjectileHitEntityEvent(this, loc, e)
+				// getPluginManager().callEvent(event)
 
 				return false // damage one entity only
 			}
@@ -77,8 +73,8 @@ data class ParticleProjectile (val origin: Location, private val color: Color, p
 			}
 
 			// Alert any listeners
-			val event = ParticleProjectileHitBlockEvent(this, loc)
-			getPluginManager().callEvent(event)
+			// val event = ParticleProjectileHitBlockEvent(this, loc)
+			// getPluginManager().callEvent(event)
 
 			return false
 		}
