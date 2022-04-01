@@ -3,6 +3,7 @@ package io.github.hydrazinemc.hydrazine.utils
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.Block
+import kotlin.math.roundToInt
 
 data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) {
 	val bukkit: Block

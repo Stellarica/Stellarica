@@ -7,6 +7,7 @@ import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.starships.Starship
 import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter
+import io.github.hydrazinemc.hydrazine.starships.listeners.StarshipControlListener
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.plugin.java.JavaPlugin
@@ -24,6 +25,7 @@ class Hydrazine : JavaPlugin() {
 
 		getPluginManager().registerEvents(CustomBlocksListener(), this)
 		getPluginManager().registerEvents(InterfaceListener(), this)
+		getPluginManager().registerEvents(StarshipControlListener(), this)
 
 		//   /-\
 		//  / ! \  MUST BE CALLED AFTER REGISTERING EVENTS!

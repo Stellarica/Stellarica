@@ -6,7 +6,7 @@ import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter.blockSetQue
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
-import io.github.hydrazinemc.hydrazine.utils.ConnectionUtils
+import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
@@ -22,6 +22,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 	private var owner: Player? = null
 	var pilot: Player? = null
+	var isMoving = false
 
 	var passengers = mutableSetOf<Entity>()
 	var allowedBlocks = mutableSetOf<Material>()
@@ -131,6 +132,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 	fun activateStarship(pilot: Player) {
 		// Determine passengers, pilot
 		passengers.add(pilot)
+		this.pilot = pilot
 		activeStarships.add(this)
 	}
 
@@ -153,7 +155,6 @@ class Starship(private val block: BlockLocation, private var world: World) {
 	}
 
 	fun queueMovement(offset: BlockLocation) {
-		movePassengers(offset) // do we need to delay this?
 		Tasks.async {
 			// TODO: check if we've arrived before trying to move
 			// TODO: handle unloaded chunks
@@ -210,8 +211,8 @@ class Starship(private val block: BlockLocation, private var world: World) {
 			if (detectedBlocks.size != newDetectedBlocks.size) pilot?.sendMessage("Lost " + (newDetectedBlocks.size - detectedBlocks.size) + " blocks!")
 
 			detectedBlocks = newDetectedBlocks
-
-			blockSetQueueQueue[blocksToSet] = this
+			isMoving = true
+			blockSetQueueQueue[blocksToSet] = Pair(this, offset)
 		}
 	}
 }

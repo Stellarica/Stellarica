@@ -12,4 +12,4 @@ val Player.starship: Starship?
 		return null
 	}
 val Player.isPilotingShip: Boolean
-	get() = this.starship?.pilot == player
+	get() = this.starship?.pilot == this
