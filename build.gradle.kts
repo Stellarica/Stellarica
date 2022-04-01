@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
 	kotlin("jvm") version "1.6.10"
-
+	id("io.papermc.paperweight.userdev") version "1.3.5"
 	id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
@@ -16,6 +16,7 @@ dependencies {
 	implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 
 	compileOnly("io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT")
+	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
 }
 
 java {
@@ -29,6 +30,12 @@ tasks.withType<KotlinCompile>().configureEach {
 	}
 }
 
-tasks.shadowJar {
-	minimize() // if there are reflection issues, this is why
+tasks{
+	build {
+		dependsOn(reobfJar)
+	}
+	reobfJar {
+		outputJar.set(file(rootProject.projectDir.absolutePath + "/build/Hydrazine.jar"))
+	}
 }
+
