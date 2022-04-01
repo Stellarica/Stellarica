@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.utils
+package io.github.hydrazinemc.hydrazine.utils.nms
 
 import java.lang.reflect.Field
 import net.minecraft.server.network.ServerGamePacketListenerImpl
