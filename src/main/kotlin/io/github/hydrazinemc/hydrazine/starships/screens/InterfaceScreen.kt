@@ -18,9 +18,9 @@ class InterfaceScreen(player: Player, private val starship: Starship) : Screen()
 
 	override fun onScreenButtonClicked(slot: Int) {
 		when (slot) {
-			0 -> starship.detectStarship()
+			0 -> starship.detectStarship(player)
 			1 -> {
-				starship.activateStarship()
+				starship.activateStarship(player)
 
 				// Not exactly sure where the best place for this is, as piloting doesn't seem to be quite done, but for now, here should work
 				// val event = StarshipPilotEvent(starship, player)

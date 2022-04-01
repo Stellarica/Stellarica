@@ -19,3 +19,5 @@ data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) 
 	val asLocation: Location
 		get() = Location(world, x.toDouble(), y.toDouble() ,z.toDouble())
 }
+
+data class ChunkLocation(var x: Int, var z: Int)

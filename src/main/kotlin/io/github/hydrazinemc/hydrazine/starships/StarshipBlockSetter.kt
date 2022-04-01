@@ -16,14 +16,11 @@ object StarshipBlockSetter : BukkitRunnable() {
 			if (blockSetQueueQueue.isEmpty()) break
 
 			val blockSetQueue = blockSetQueueQueue.keys.first()
-			val starship = blockSetQueueQueue.remove(blockSetQueue)
+			blockSetQueueQueue.remove(blockSetQueue)
 
 			blockSetQueue!!.forEach {
 				it.key.bukkit.setBlockData(it.value, false)
 			}
-
-			starship!!.nextMoveCheckTick =
-				Bukkit.getCurrentTick() + 1 + starship.blockCount / 20000 // This 20000 should be defined in a config file
 		}
 	}
 }

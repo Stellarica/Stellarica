@@ -1,5 +1,6 @@
 package io.github.hydrazinemc.hydrazine.starships
 
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.activeStarships
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter.blockSetQueueQueue
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
@@ -20,7 +21,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
 
 	private var owner: Player? = null
-	private var pilot: Player? = null
+	var pilot: Player? = null
 
 	var passengers = mutableSetOf<Entity>()
 	var allowedBlocks = mutableSetOf<Material>()
@@ -73,7 +74,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 						if (undetectables.contains(type)) continue
 
 						if (detectedBlocks.size > ConfigurableValues.detectionLimit) {
-							player.sendMessage("Detection limit reached. (${ConfigurableValues.detectionLimit})")
+							player?.sendMessage("Detection limit reached. (${ConfigurableValues.detectionLimit})")
 							plugin.logger.info("Detection limit reached. (${ConfigurableValues.detectionLimit})")
 							nextBlocksToCheck.clear()
 							detectedBlocks.clear()
@@ -130,10 +131,12 @@ class Starship(private val block: BlockLocation, private var world: World) {
 	fun activateStarship(pilot: Player) {
 		// Determine passengers, pilot
 		passengers.add(pilot)
+		activeStarships.add(this)
 	}
 
 	fun deactivateStarship() {
 		pilot = null
+		activeStarships.remove(this)
 	}
 
 	fun movePassengers(offset: BlockLocation) {
@@ -150,6 +153,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 	}
 
 	fun queueMovement(offset: BlockLocation) {
+		movePassengers(offset) // do we need to delay this?
 		Tasks.async {
 			// TODO: check if we've arrived before trying to move
 			// TODO: handle unloaded chunks
@@ -169,24 +173,19 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 			detectedBlocks.forEach { cBlock ->
 				val cChunkCoord = ChunkLocation(cBlock.x shr 4, cBlock.z shr 4)
-
 				val cBlockData = chunkCache.getOrPut(cChunkCoord) {
 					world.getChunkAt(cChunkCoord.x, cChunkCoord.z).getChunkSnapshot(false, false, false)
 				}.getBlockData(cBlock.x - (cChunkCoord.x shl 4), cBlock.y, cBlock.z - (cChunkCoord.z shl 4))
-
 				val cMaterial = cBlockData.material
 
 				// Step 1: Confirm that there is still a detectable block there.
 				if (undetectables.contains(cMaterial)) return@forEach
 
 				val tBlock = cBlock.relative(offset.x, offset.y, offset.z)
-
 				val tChunkCoord = ChunkLocation(tBlock.x shr 4, tBlock.z shr 4)
-
 				val tBlockData = chunkCache.getOrPut(tChunkCoord) {
 					world.getChunkAt(tChunkCoord.x, tChunkCoord.z).getChunkSnapshot(false, false, false)
 				}.getBlockData(tBlock.x - (tChunkCoord.x shl 4), tBlock.y, tBlock.z - (tChunkCoord.z shl 4))
-
 				val tMaterial = tBlockData.material
 
 				// Step 2: Confirm that we can move that block.
@@ -202,11 +201,9 @@ class Starship(private val block: BlockLocation, private var world: World) {
 					newDetectedBlocks.add(tBlock)
 
 				} else {
-
 					// The ship is blocked!
 					pilot?.sendMessage("Blocked at " + tBlock.x + ", " + tBlock.y + ", " + tBlock.z + " by " + tMaterial)
-					return
-
+					return@async
 				}
 			}
 
@@ -216,6 +213,5 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 			blockSetQueueQueue[blocksToSet] = this
 		}
-		movePassengers(offset)
 	}
 }
