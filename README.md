@@ -6,6 +6,7 @@
 The primary plugin for the Hydrazine Minecraft Server, this plugin aims to add various science fiction mechanics to Minecraft. These include Starships, Space, and more.
 
 Originally a fork of PeterCrawley's [Minecraft Starship Plugin](https://github.com/peter-crawley/minecraft-starship-plugin)  
-Uses some code from [Horizon's End](https://github.com/horizonsendmc)'s OldIon codebase, licensed under GPL-3.  
+Uses some code from [Horizon's End](https://github.com/horizonsendmc)'s OldIon codebase, licensed under GPL-3.
+Also uses some code from the IonCore codebase, under the MIT license. 
   
 Join the [Discord](https://discord.gg/jYqX9s9FCj)!
