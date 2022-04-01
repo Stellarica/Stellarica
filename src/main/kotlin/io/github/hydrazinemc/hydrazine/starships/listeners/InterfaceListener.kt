@@ -1,5 +1,6 @@
-package io.github.hydrazinemc.hydrazine.starships
+package io.github.hydrazinemc.hydrazine.starships.listeners
 
+import io.github.hydrazinemc.hydrazine.starships.Starship
 import io.github.hydrazinemc.hydrazine.starships.screens.InterfaceScreen
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import org.bukkit.Material
@@ -16,7 +17,7 @@ class InterfaceListener : Listener {
 			if (event.clickedBlock!!.type == Material.JUKEBOX) {
 				InterfaceScreen(
 					event.player,
-					Starship(BlockLocation(event.clickedBlock!!), event.player.world, event.player)
+					Starship(BlockLocation(event.clickedBlock!!), event.player.world)
 				)
 
 				event.isCancelled = true
