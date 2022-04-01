@@ -5,39 +5,37 @@ import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter.blockSetQue
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
+import io.github.hydrazinemc.hydrazine.utils.ConnectionUtils
+import io.github.hydrazinemc.hydrazine.utils.Tasks
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.data.BlockData
+import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scheduler.BukkitTask
 import kotlin.system.measureTimeMillis
 
-class Starship(private val block: BlockLocation, private var world: World, private val player: Player) :
-	BukkitRunnable() {
-	private var task: BukkitTask? = null
+class Starship(private val block: BlockLocation, private var world: World) {
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
-	private val owner = player
-	private var moveTarget = BlockLocation(1, 0, 0, null)
+
+	private var owner: Player? = null
+	private var pilot: Player? = null
+
+	var passengers = mutableSetOf<Entity>()
 	var allowedBlocks = mutableSetOf<Material>()
-	var nextMoveCheckTick = 0
+
 
 	val blockCount: Int
 		get() {
 			return detectedBlocks.size
 		}
 
-	fun detectStarship() {
-		// Create a new event
-		// val event = StarshipDetectEvent(this, player)
-		// Bukkit.getPluginManager().callEvent(event)
-
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, Runnable {
+	fun detectStarship(player: Player?) {
+		Tasks.async {
 			val time = measureTimeMillis {
-				player.sendMessage("Detecting Starship")
-				plugin.logger.info("Detecting Starship for " + player.name)
+				player?.sendMessage("Detecting Starship")
+				plugin.logger.info("Detecting Starship for " + player?.name)
 
 				detectedBlocks.add(block) // Add the interface to the ship
 
@@ -120,88 +118,104 @@ class Starship(private val block: BlockLocation, private var world: World, priva
 			}
 
 			if (ConfigurableValues.timeOperations) {
-				player.sendMessage("Starship Detection took $time ms.")
+				player?.sendMessage("Starship Detection took $time ms.")
 				plugin.logger.info("Starship Detection took $time ms.")
 			}
 
-			player.sendMessage("Detected " + detectedBlocks.size + " blocks.")
+			player?.sendMessage("Detected " + detectedBlocks.size + " blocks.")
 			plugin.logger.info("Detected " + detectedBlocks.size + " blocks.")
-		})
+		}
 	}
 
-	fun activateStarship() {
-		task = this.runTaskTimerAsynchronously(plugin, 0, 1)
+	fun activateStarship(pilot: Player) {
+		// Determine passengers, pilot
+		passengers.add(pilot)
 	}
 
 	fun deactivateStarship() {
-		task?.cancel()
+		pilot = null
 	}
 
-	override fun run() {
-		if (Bukkit.getCurrentTick() < nextMoveCheckTick) return
-
-		val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
-
-		// Construct the undetectable list
-		val undetectables = ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
-		undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
-		undetectables.removeAll(allowedBlocks)
-
-		val newDetectedBlocks = mutableSetOf<BlockLocation>()
-
-		val blocksToSet = mutableMapOf<BlockLocation, BlockData>()
-
-		val airData = Bukkit.createBlockData(org.bukkit.Material.AIR)
-
-		detectedBlocks.forEach { cBlock ->
-			val cChunkCoord = ChunkLocation(cBlock.x shr 4, cBlock.z shr 4)
-
-			val cBlockData = chunkCache.getOrPut(cChunkCoord) {
-				world.getChunkAt(cChunkCoord.x, cChunkCoord.z).getChunkSnapshot(false, false, false)
-			}.getBlockData(cBlock.x - (cChunkCoord.x shl 4), cBlock.y, cBlock.z - (cChunkCoord.z shl 4))
-
-			val cMaterial = cBlockData.material
-
-			// Step 1: Confirm that there is still a detectable block there.
-			if (undetectables.contains(cMaterial)) return@forEach
-
-			val tBlock = cBlock.relative(moveTarget.x, moveTarget.y, moveTarget.z)
-
-			val tChunkCoord = ChunkLocation(tBlock.x shr 4, tBlock.z shr 4)
-
-			val tBlockData = chunkCache.getOrPut(tChunkCoord) {
-				world.getChunkAt(tChunkCoord.x, tChunkCoord.z).getChunkSnapshot(false, false, false)
-			}.getBlockData(tBlock.x - (tChunkCoord.x shl 4), tBlock.y, tBlock.z - (tChunkCoord.z shl 4))
-
-			val tMaterial = tBlockData.material
-
-			// Step 2: Confirm that we can move that block.
-			if (detectedBlocks.contains(tBlock) || tBlockData.material.isAir) {
-
-				// Step 3: If the current block has not already been replaced, set it to air.
-				blocksToSet.putIfAbsent(cBlock, airData)
-
-				// Step 4: Set the target block to the block data of the current block.
-				blocksToSet[tBlock] = cBlockData
-
-				// Step 5: Add the target block to the new detected blocks list.
-				newDetectedBlocks.add(tBlock)
-
-			} else {
-
-				// The ship is blocked!
-				player.sendMessage("Blocked at " + tBlock.x + ", " + tBlock.y + ", " + tBlock.z + " by " + tMaterial)
-				return
-
+	fun movePassengers(offset: BlockLocation) {
+		val offsetLoc = offset.asLocation
+		offsetLoc.world = world
+		passengers.forEach {
+			if (it is Player) {
+				ConnectionUtils.teleport(it, it.location.add(offsetLoc))
+			}
+			else {
+				it.teleport(it.location.add(offsetLoc))
 			}
 		}
+	}
 
-		if (detectedBlocks.size != newDetectedBlocks.size) player.sendMessage("Lost " + (newDetectedBlocks.size - detectedBlocks.size) + " blocks!")
+	fun queueMovement(offset: BlockLocation) {
+		Tasks.async {
+			// TODO: check if we've arrived before trying to move
+			// TODO: handle unloaded chunks
+			val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
-		detectedBlocks = newDetectedBlocks
+			// Construct the undetectable list
+			val undetectables =
+				ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
+			undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
+			undetectables.removeAll(allowedBlocks)
 
-		blockSetQueueQueue[blocksToSet] = this
+			val newDetectedBlocks = mutableSetOf<BlockLocation>()
 
-		nextMoveCheckTick = Int.MAX_VALUE
+			val blocksToSet = mutableMapOf<BlockLocation, BlockData>()
+
+			val airData = Bukkit.createBlockData(org.bukkit.Material.AIR)
+
+			detectedBlocks.forEach { cBlock ->
+				val cChunkCoord = ChunkLocation(cBlock.x shr 4, cBlock.z shr 4)
+
+				val cBlockData = chunkCache.getOrPut(cChunkCoord) {
+					world.getChunkAt(cChunkCoord.x, cChunkCoord.z).getChunkSnapshot(false, false, false)
+				}.getBlockData(cBlock.x - (cChunkCoord.x shl 4), cBlock.y, cBlock.z - (cChunkCoord.z shl 4))
+
+				val cMaterial = cBlockData.material
+
+				// Step 1: Confirm that there is still a detectable block there.
+				if (undetectables.contains(cMaterial)) return@forEach
+
+				val tBlock = cBlock.relative(offset.x, offset.y, offset.z)
+
+				val tChunkCoord = ChunkLocation(tBlock.x shr 4, tBlock.z shr 4)
+
+				val tBlockData = chunkCache.getOrPut(tChunkCoord) {
+					world.getChunkAt(tChunkCoord.x, tChunkCoord.z).getChunkSnapshot(false, false, false)
+				}.getBlockData(tBlock.x - (tChunkCoord.x shl 4), tBlock.y, tBlock.z - (tChunkCoord.z shl 4))
+
+				val tMaterial = tBlockData.material
+
+				// Step 2: Confirm that we can move that block.
+				if (detectedBlocks.contains(tBlock) || tBlockData.material.isAir) {
+
+					// Step 3: If the current block has not already been replaced, set it to air.
+					blocksToSet.putIfAbsent(cBlock, airData)
+
+					// Step 4: Set the target block to the block data of the current block.
+					blocksToSet[tBlock] = cBlockData
+
+					// Step 5: Add the target block to the new detected blocks list.
+					newDetectedBlocks.add(tBlock)
+
+				} else {
+
+					// The ship is blocked!
+					pilot?.sendMessage("Blocked at " + tBlock.x + ", " + tBlock.y + ", " + tBlock.z + " by " + tMaterial)
+					return
+
+				}
+			}
+
+			if (detectedBlocks.size != newDetectedBlocks.size) pilot?.sendMessage("Lost " + (newDetectedBlocks.size - detectedBlocks.size) + " blocks!")
+
+			detectedBlocks = newDetectedBlocks
+
+			blockSetQueueQueue[blocksToSet] = this
+		}
+		movePassengers(offset)
 	}
 }

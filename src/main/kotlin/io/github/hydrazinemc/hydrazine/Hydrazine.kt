@@ -4,6 +4,8 @@ import co.aikar.commands.PaperCommandManager
 import io.github.hydrazinemc.hydrazine.commands.ConfigCommand
 import io.github.hydrazinemc.hydrazine.customMaterials.CustomBlocksListener
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.starships.InterfaceListener
+import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.Material
@@ -19,6 +21,7 @@ class Hydrazine : JavaPlugin() {
 		plugin = this
 
 		getPluginManager().registerEvents(CustomBlocksListener(), this)
+		getPluginManager().registerEvents(InterfaceListener(), this)
 
 		//   /-\
 		//  / ! \  MUST BE CALLED AFTER REGISTERING EVENTS!
@@ -28,6 +31,8 @@ class Hydrazine : JavaPlugin() {
 
 		val commandManager = PaperCommandManager(this)
 		commandManager.registerCommand(ConfigCommand())
+
+		StarshipBlockSetter.runTaskTimer(plugin, 0, 1)
 	}
 
 	override fun reloadConfig() {

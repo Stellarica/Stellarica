@@ -1,6 +1,5 @@
 package io.github.hydrazinemc.hydrazine.starships
 
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import org.bukkit.Bukkit
 import org.bukkit.block.data.BlockData
@@ -11,13 +10,8 @@ object StarshipBlockSetter : BukkitRunnable() {
 	val blockSetQueueQueue =
 		ConcurrentHashMap<MutableMap<BlockLocation, BlockData>, Starship>() // Value is a blockSetQueue, Key is the amount of blocks.
 
-	init {
-		this.runTaskTimer(plugin, 0, 1)
-	} // Start running the block setter
-
 	override fun run() {
 		val targetTime = System.currentTimeMillis() + 40
-
 		while (System.currentTimeMillis() < targetTime) {
 			if (blockSetQueueQueue.isEmpty()) break
 
