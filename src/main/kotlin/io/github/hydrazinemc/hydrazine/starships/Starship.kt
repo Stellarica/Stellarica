@@ -3,6 +3,7 @@ package io.github.hydrazinemc.hydrazine.starships
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.activeStarships
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter.blockSetQueueQueue
+import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
@@ -26,6 +27,8 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 	var passengers = mutableSetOf<Entity>()
 	var allowedBlocks = mutableSetOf<Material>()
+
+	var undetectables = mutableSetOf<Material>()
 
 
 	val blockCount: Int
@@ -134,10 +137,12 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		passengers.add(pilot)
 		this.pilot = pilot
 		activeStarships.add(this)
+		updateUndetectables()
 	}
 
 	fun deactivateStarship() {
 		pilot = null
+		passengers.clear()
 		activeStarships.remove(this)
 	}
 
@@ -154,9 +159,17 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		}
 	}
 
+	fun updateUndetectables() {
+		// Construct the undetectable list
+		undetectables =
+			ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
+		undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
+		undetectables.removeAll(allowedBlocks)
+	}
+
 	fun queueMovement(offset: BlockLocation) {
+		if (isMoving) throw AlreadyMovingException("Starship attempted to queue movement, but it is already moving!")
 		Tasks.async {
-			// TODO: check if we've arrived before trying to move
 			// TODO: handle unloaded chunks
 			val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
