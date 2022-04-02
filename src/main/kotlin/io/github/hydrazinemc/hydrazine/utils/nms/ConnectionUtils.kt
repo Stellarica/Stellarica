@@ -14,7 +14,7 @@ import org.bukkit.craftbukkit.v1_18_R2.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.util.Vector
 
-// This entire file taken from Horizon's End's IonCore, under GPL-3 as noted in the readme
+// This entire file taken from Horizon's End's IonCore, under MIT as noted in the readme
 // Updated version based on https://www.spigotmc.org/threads/teleport-player-smoothly.317416/page-2#post-4186516
 
 object ConnectionUtils {
