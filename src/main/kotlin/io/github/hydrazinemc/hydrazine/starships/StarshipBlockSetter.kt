@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hydrazine.starships
 
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
+import io.github.hydrazinemc.hydrazine.utils.nms.setBlockFast
 import org.bukkit.Bukkit
 import org.bukkit.block.data.BlockData
 import org.bukkit.scheduler.BukkitRunnable
@@ -23,7 +24,7 @@ object StarshipBlockSetter : BukkitRunnable() {
 
 			starship.movePassengers(offset)
 			blockSetQueue!!.forEach {
-				it.key.bukkit.setBlockData(it.value, false)
+				setBlockFast(it.key.asLocation, it.value)
 			}
 			starship.isMoving = false
 		}
