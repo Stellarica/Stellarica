@@ -195,7 +195,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 				val targetBlockData = chunkCache.getOrPut(targetChunkCoord) {
 					world.getChunkAt(targetChunkCoord.x, targetChunkCoord.z).getChunkSnapshot(false, false, false)
 				}.getBlockData(targetBlock.x - (targetChunkCoord.x shl 4), targetBlock.y, targetBlock.z - (targetChunkCoord.z shl 4))
-				val tMaterial = targetBlockData.material
+				val targetMaterial = targetBlockData.material
 
 				// Step 2: Confirm that we can move that block.
 				if (detectedBlocks.contains(targetBlock) || targetBlockData.material.isAir) {
@@ -211,7 +211,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 				} else {
 					// The ship is blocked!
-					pilot?.sendMessage("Blocked at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z + " by " + tMaterial)
+					pilot?.sendMessage("Blocked at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z + " by " + targetMaterial)
 					return@async
 				}
 			}
