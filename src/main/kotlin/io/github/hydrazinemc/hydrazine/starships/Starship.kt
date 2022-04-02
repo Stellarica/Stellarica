@@ -185,38 +185,38 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 			val airData = Bukkit.createBlockData(org.bukkit.Material.AIR)
 
-			detectedBlocks.forEach { cBlock ->
-				val cChunkCoord = ChunkLocation(cBlock.x shr 4, cBlock.z shr 4)
-				val cBlockData = chunkCache.getOrPut(cChunkCoord) {
-					world.getChunkAt(cChunkCoord.x, cChunkCoord.z).getChunkSnapshot(false, false, false)
-				}.getBlockData(cBlock.x - (cChunkCoord.x shl 4), cBlock.y, cBlock.z - (cChunkCoord.z shl 4))
-				val cMaterial = cBlockData.material
+			detectedBlocks.forEach { currentBlock ->
+				val currentChunkCoord = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
+				val currentBlockData = chunkCache.getOrPut(currentChunkCoord) {
+					world.getChunkAt(currentChunkCoord.x, currentChunkCoord.z).getChunkSnapshot(false, false, false)
+				}.getBlockData(currentBlock.x - (currentChunkCoord.x shl 4), currentBlock.y, currentBlock.z - (currentChunkCoord.z shl 4))
+				val currentMaterial = currentBlockData.material
 
 				// Step 1: Confirm that there is still a detectable block there.
-				if (undetectables.contains(cMaterial)) return@forEach
+				if (undetectables.contains(currentMaterial)) return@forEach
 
-				val tBlock = cBlock.relative(offset.x, offset.y, offset.z)
-				val tChunkCoord = ChunkLocation(tBlock.x shr 4, tBlock.z shr 4)
-				val tBlockData = chunkCache.getOrPut(tChunkCoord) {
-					world.getChunkAt(tChunkCoord.x, tChunkCoord.z).getChunkSnapshot(false, false, false)
-				}.getBlockData(tBlock.x - (tChunkCoord.x shl 4), tBlock.y, tBlock.z - (tChunkCoord.z shl 4))
-				val tMaterial = tBlockData.material
+				val targetBlock = currentBlock.relative(offset.x, offset.y, offset.z)
+				val targetChunkCoord = ChunkLocation(targetBlock.x shr 4, targetBlock.z shr 4)
+				val targetBlockData = chunkCache.getOrPut(targetChunkCoord) {
+					world.getChunkAt(targetChunkCoord.x, targetChunkCoord.z).getChunkSnapshot(false, false, false)
+				}.getBlockData(targetBlock.x - (targetChunkCoord.x shl 4), targetBlock.y, targetBlock.z - (targetChunkCoord.z shl 4))
+				val tMaterial = targetBlockData.material
 
 				// Step 2: Confirm that we can move that block.
-				if (detectedBlocks.contains(tBlock) || tBlockData.material.isAir) {
+				if (detectedBlocks.contains(targetBlock) || targetBlockData.material.isAir) {
 
 					// Step 3: If the current block has not already been replaced, set it to air.
-					blocksToSet.putIfAbsent(cBlock, airData)
+					blocksToSet.putIfAbsent(currentBlock, airData)
 
 					// Step 4: Set the target block to the block data of the current block.
-					blocksToSet[tBlock] = cBlockData
+					blocksToSet[targetBlock] = currentBlockData
 
 					// Step 5: Add the target block to the new detected blocks list.
-					newDetectedBlocks.add(tBlock)
+					newDetectedBlocks.add(targetBlock)
 
 				} else {
 					// The ship is blocked!
-					pilot?.sendMessage("Blocked at " + tBlock.x + ", " + tBlock.y + ", " + tBlock.z + " by " + tMaterial)
+					pilot?.sendMessage("Blocked at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z + " by " + tMaterial)
 					return@async
 				}
 			}
