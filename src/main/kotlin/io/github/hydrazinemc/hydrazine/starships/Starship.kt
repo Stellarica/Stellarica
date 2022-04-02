@@ -37,6 +37,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		}
 
 	fun detectStarship(player: Player?) {
+		if (isMoving) throw AlreadyMovingException("Ship attempted to detect, but is currently moving!")
 		Tasks.async {
 			val time = measureTimeMillis {
 				player?.sendMessage("Detecting Starship")
@@ -173,17 +174,11 @@ class Starship(private val block: BlockLocation, private var world: World) {
 			// TODO: handle unloaded chunks
 			val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
-			// Construct the undetectable list
-			val undetectables =
-				ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
-			undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
-			undetectables.removeAll(allowedBlocks)
-
 			val newDetectedBlocks = mutableSetOf<BlockLocation>()
 
 			val blocksToSet = mutableMapOf<BlockLocation, BlockData>()
 
-			val airData = Bukkit.createBlockData(org.bukkit.Material.AIR)
+			val airData = Bukkit.createBlockData(Material.AIR)
 
 			detectedBlocks.forEach { currentBlock ->
 				val currentChunkCoord = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
