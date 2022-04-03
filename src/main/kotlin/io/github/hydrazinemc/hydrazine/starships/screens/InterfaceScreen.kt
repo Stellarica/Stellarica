@@ -3,7 +3,7 @@ package io.github.hydrazinemc.hydrazine.starships.screens
 import io.github.hydrazinemc.hydrazine.starships.Starship
 import io.github.hydrazinemc.hydrazine.utils.NamedItem
 import io.github.hydrazinemc.hydrazine.utils.Screen
-import io.github.hydrazinemc.hydrazine.utils.isPilotingShip
+import io.github.hydrazinemc.hydrazine.utils.extensions.isPilotingShip
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType

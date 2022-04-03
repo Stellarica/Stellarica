@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.utils
+package io.github.hydrazinemc.hydrazine.utils.extensions
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.activeStarships
 import io.github.hydrazinemc.hydrazine.starships.Starship
