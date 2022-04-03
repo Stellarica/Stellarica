@@ -7,8 +7,8 @@ import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
-import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import io.github.hydrazinemc.hydrazine.utils.Tasks
+import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
@@ -16,6 +16,9 @@ import org.bukkit.World
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import kotlin.math.cos
+import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlin.system.measureTimeMillis
 
 class Starship(private val block: BlockLocation, private var world: World) {
@@ -53,7 +56,8 @@ class Starship(private val block: BlockLocation, private var world: World) {
 				val checkedBlocks = nextBlocksToCheck.toMutableSet()
 
 				// Construct the undetectable list
-				val undetectables = ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
+				val undetectables =
+					ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
 				undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
 				undetectables.removeAll(allowedBlocks)
 
@@ -88,12 +92,12 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 						detectedBlocks.add(currentBlock)
 
-						val block1 = currentBlock.relative(1, 0, 0)
-						val block2 = currentBlock.relative(-1, 0, 0)
-						val block3 = currentBlock.relative(0, 1, 0)
-						val block4 = currentBlock.relative(0, -1, 0)
-						val block5 = currentBlock.relative(0, 0, 1)
-						val block6 = currentBlock.relative(0, 0, -1)
+						val block1 = currentBlock + BlockLocation(1, 0, 0, null)
+						val block2 = currentBlock + BlockLocation(-1, 0, 0, null)
+						val block3 = currentBlock + BlockLocation(0, 1, 0, null)
+						val block4 = currentBlock + BlockLocation(0, -1, 0, null)
+						val block5 = currentBlock + BlockLocation(0, 0, 1, null)
+						val block6 = currentBlock + BlockLocation(0, 0, -1, null)
 
 						if (!checkedBlocks.contains(block1)) {
 							checkedBlocks.add(block1)
@@ -147,15 +151,12 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		activeStarships.remove(this)
 	}
 
-	fun movePassengers(offset: BlockLocation) {
-		val offsetLoc = offset.asLocation
-		offsetLoc.world = world
+	fun movePassengers(offset: (BlockLocation) -> BlockLocation) {
 		passengers.forEach {
 			if (it is Player) {
-				ConnectionUtils.teleport(it, it.location.add(offsetLoc))
-			}
-			else {
-				it.teleport(it.location.add(offsetLoc))
+				ConnectionUtils.teleport(it, offset(BlockLocation(it.location)).asLocation)
+			} else {
+				it.teleport(offset(BlockLocation(it.location)).asLocation)
 			}
 		}
 	}
@@ -169,7 +170,20 @@ class Starship(private val block: BlockLocation, private var world: World) {
 	}
 
 	fun queueMovement(offset: BlockLocation) {
+		queueChange({ current ->
+			return@queueChange current + offset
+		}, "Movement")
+	}
+	fun queueRotation(theta: Double) {
+		val origin = BlockLocation(pilot!!.location) // TODO: fix
+		queueChange({ current ->
+			return@queueChange rotateCoordinates(current, origin, theta)
+		}, "Rotation")
+	}
+
+	fun queueChange(modifier: (BlockLocation) -> BlockLocation, name: String) {
 		if (isMoving) throw AlreadyMovingException("Starship attempted to queue movement, but it is already moving!")
+		isMoving = true
 		Tasks.async {
 			// TODO: handle unloaded chunks
 			val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
@@ -184,17 +198,29 @@ class Starship(private val block: BlockLocation, private var world: World) {
 				val currentChunkCoord = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
 				val currentBlockData = chunkCache.getOrPut(currentChunkCoord) {
 					world.getChunkAt(currentChunkCoord.x, currentChunkCoord.z).getChunkSnapshot(false, false, false)
-				}.getBlockData(currentBlock.x - (currentChunkCoord.x shl 4), currentBlock.y, currentBlock.z - (currentChunkCoord.z shl 4))
+				}.getBlockData(
+					currentBlock.x - (currentChunkCoord.x shl 4),
+					currentBlock.y,
+					currentBlock.z - (currentChunkCoord.z shl 4)
+				)
 				val currentMaterial = currentBlockData.material
 
 				// Step 1: Confirm that there is still a detectable block there.
-				if (undetectables.contains(currentMaterial)) return@forEach
+				if (undetectables.contains(currentMaterial)) {
+					pilot?.sendMessage("One of your detected blocks is not pilotable! This is probably a bug.")
+					return@forEach
+				}
 
-				val targetBlock = currentBlock.relative(offset.x, offset.y, offset.z)
+
+				val targetBlock = modifier(currentBlock)
 				val targetChunkCoord = ChunkLocation(targetBlock.x shr 4, targetBlock.z shr 4)
 				val targetBlockData = chunkCache.getOrPut(targetChunkCoord) {
 					world.getChunkAt(targetChunkCoord.x, targetChunkCoord.z).getChunkSnapshot(false, false, false)
-				}.getBlockData(targetBlock.x - (targetChunkCoord.x shl 4), targetBlock.y, targetBlock.z - (targetChunkCoord.z shl 4))
+				}.getBlockData(
+					targetBlock.x - (targetChunkCoord.x shl 4),
+					targetBlock.y,
+					targetBlock.z - (targetChunkCoord.z shl 4)
+				)
 				val targetMaterial = targetBlockData.material
 
 				// Step 2: Confirm that we can move that block.
@@ -211,16 +237,22 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 				} else {
 					// The ship is blocked!
-					pilot?.sendMessage("Blocked at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z + " by " + targetMaterial)
+					pilot?.sendMessage("$name blocked at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z + " by " + targetMaterial)
 					return@async
 				}
 			}
 
-			if (detectedBlocks.size != newDetectedBlocks.size) pilot?.sendMessage("Lost " + (newDetectedBlocks.size - detectedBlocks.size) + " blocks!")
+			if (detectedBlocks.size != newDetectedBlocks.size) pilot?.sendMessage("Lost " + (newDetectedBlocks.size - detectedBlocks.size) + " blocks while queueing $name!")
 
 			detectedBlocks = newDetectedBlocks
-			isMoving = true
-			blockSetQueueQueue[blocksToSet] = Pair(this, offset)
+			blockSetQueueQueue[blocksToSet] = Pair(this, modifier)
 		}
 	}
+
+	private fun rotateCoordinates(loc: BlockLocation, origin: BlockLocation, theta: Double): BlockLocation = BlockLocation(
+		(origin.x + (loc.x - origin.x) * cos(theta) - (loc.y - origin.y) * sin(theta)).roundToInt(),
+		loc.y,
+		(origin.z + (loc.x - origin.x) * sin(theta) + (loc.z - origin.z) * cos(theta)).roundToInt(),
+		loc.world
+	)
 }

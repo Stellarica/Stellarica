@@ -12,13 +12,18 @@ data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) 
 		}
 
 	constructor(block: Block) : this(block.x, block.y, block.z, block.world)
+	constructor(loc: Location) : this(loc.x.roundToInt(), loc.y.roundToInt(), loc.z.roundToInt(), loc.world)
 
-	fun relative(x: Int, y: Int, z: Int): BlockLocation {
-		return BlockLocation(this.x + x, this.y + y, this.z + z, this.world)
-	}
+	operator fun plus(loc: BlockLocation) = BlockLocation(this.x + loc.x, this.y + loc.y, this.z + loc.z, this.world)
+	operator fun minus(loc: BlockLocation) = BlockLocation(this.x - loc.x, this.y - loc.y, this.z - loc.z, this.world)
 
 	val asLocation: Location
 		get() = Location(world, x.toDouble(), y.toDouble() ,z.toDouble())
 }
 
+
 data class ChunkLocation(var x: Int, var z: Int)
+
+enum class Direction {
+	NORTH, SOUTH, WEST, EAST
+}
