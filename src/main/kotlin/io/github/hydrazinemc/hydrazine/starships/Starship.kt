@@ -8,6 +8,7 @@ import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.Tasks
+import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
@@ -151,12 +152,12 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		activeStarships.remove(this)
 	}
 
-	fun movePassengers(offset: (BlockLocation) -> BlockLocation) {
+	fun movePassengers(offset: (Vector3) -> Vector3) {
 		passengers.forEach {
 			if (it is Player) {
-				ConnectionUtils.teleport(it, offset(BlockLocation(it.location)).asLocation)
+				ConnectionUtils.teleport(it, offset(Vector3(it.location)).asLocation)
 			} else {
-				it.teleport(offset(BlockLocation(it.location)).asLocation)
+				it.teleport(offset(Vector3(it.location)).asLocation)
 			}
 		}
 	}
@@ -171,17 +172,17 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 	fun queueMovement(offset: BlockLocation) {
 		queueChange({ current ->
-			return@queueChange current + offset
+			return@queueChange current + Vector3(offset)
 		}, "Movement")
 	}
 	fun queueRotation(theta: Double) {
-		val origin = BlockLocation(pilot!!.location) // TODO: fix
+		val origin = Vector3(BlockLocation(pilot!!.location)) // TODO: fix
 		queueChange({ current ->
 			return@queueChange rotateCoordinates(current, origin, theta)
 		}, "Rotation")
 	}
 
-	fun queueChange(modifier: (BlockLocation) -> BlockLocation, name: String) {
+	fun queueChange(modifier: (Vector3) -> Vector3, name: String) {
 		if (isMoving) throw AlreadyMovingException("Starship attempted to queue movement, but it is already moving!")
 		isMoving = true
 		Tasks.async {
@@ -212,7 +213,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 				}
 
 
-				val targetBlock = modifier(currentBlock)
+				val targetBlock = modifier(Vector3(currentBlock)).asBlockLocation
 				val targetChunkCoord = ChunkLocation(targetBlock.x shr 4, targetBlock.z shr 4)
 				val targetBlockData = chunkCache.getOrPut(targetChunkCoord) {
 					world.getChunkAt(targetChunkCoord.x, targetChunkCoord.z).getChunkSnapshot(false, false, false)
@@ -249,10 +250,9 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		}
 	}
 
-	private fun rotateCoordinates(loc: BlockLocation, origin: BlockLocation, theta: Double): BlockLocation = BlockLocation(
-		(origin.x + (loc.x - origin.x) * cos(theta) - (loc.y - origin.y) * sin(theta)).roundToInt(),
+	private fun rotateCoordinates(loc: Vector3, origin: Vector3, theta: Double): Vector3 = Vector3(
+		(origin.x + (loc.x - origin.x) * cos(theta) - (loc.y - origin.y) * sin(theta)),
 		loc.y,
-		(origin.z + (loc.x - origin.x) * sin(theta) + (loc.z - origin.z) * cos(theta)).roundToInt(),
-		loc.world
+		(origin.z + (loc.x - origin.x) * sin(theta) + (loc.z - origin.z) * cos(theta)),
 	)
 }

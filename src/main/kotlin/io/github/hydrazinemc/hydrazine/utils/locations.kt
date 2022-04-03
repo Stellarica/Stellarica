@@ -23,7 +23,3 @@ data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) 
 
 
 data class ChunkLocation(var x: Int, var z: Int)
-
-enum class Direction {
-	NORTH, SOUTH, WEST, EAST
-}
