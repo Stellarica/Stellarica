@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.utils
+package io.github.hydrazinemc.hydrazine.utils.gui
 
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.Component.translatable

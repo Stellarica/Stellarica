@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 
 class InterfaceListener : Listener {
+	// Opens the starship interface Screen when a jukebox is clicked on
 	@EventHandler
 	fun onPlayerInteractEvent(event: PlayerInteractEvent) {
 		if (event.hand == EquipmentSlot.HAND && event.action == Action.RIGHT_CLICK_BLOCK && !event.player.isSneaking) {

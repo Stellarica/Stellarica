@@ -3,8 +3,8 @@ package io.github.hydrazinemc.hydrazine.starships.screens
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.starships.Starship
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
-import io.github.hydrazinemc.hydrazine.utils.NamedItem
-import io.github.hydrazinemc.hydrazine.utils.Screen
+import io.github.hydrazinemc.hydrazine.utils.gui.NamedItem
+import io.github.hydrazinemc.hydrazine.utils.gui.Screen
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player

@@ -1,6 +1,7 @@
-package io.github.hydrazinemc.hydrazine.utils
+package io.github.hydrazinemc.hydrazine.utils.gui
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.utils.Tasks
 import net.kyori.adventure.text.Component.text
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player

@@ -1,8 +1,8 @@
 package io.github.hydrazinemc.hydrazine.starships.screens
 
 import io.github.hydrazinemc.hydrazine.starships.Starship
-import io.github.hydrazinemc.hydrazine.utils.NamedItem
-import io.github.hydrazinemc.hydrazine.utils.Screen
+import io.github.hydrazinemc.hydrazine.utils.gui.NamedItem
+import io.github.hydrazinemc.hydrazine.utils.gui.Screen
 import io.github.hydrazinemc.hydrazine.utils.extensions.isPilotingShip
 import org.bukkit.Material
 import org.bukkit.entity.Player

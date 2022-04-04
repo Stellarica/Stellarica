@@ -4,6 +4,7 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.activeStarships
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter.blockSetQueueQueue
 import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
+import io.github.hydrazinemc.hydrazine.utils.AlreadyPilotedException
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
@@ -22,7 +23,7 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.system.measureTimeMillis
 
-class Starship(private val block: BlockLocation, private var world: World) {
+class Starship(private val interfaceBlock: BlockLocation, private var world: World) {
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
 
 	private var owner: Player? = null
@@ -34,11 +35,15 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 	var undetectables = mutableSetOf<Material>()
 
-
 	val blockCount: Int
 		get() = detectedBlocks.size
 
 
+	/**
+	 * Detect this starship
+	 * @param player the person detecting; the [owner]
+	 * @throws AlreadyMovingException
+	 */
 	fun detectStarship(player: Player?) {
 		if (isMoving) throw AlreadyMovingException("Ship attempted to detect, but is currently moving!")
 		Tasks.async {
@@ -46,7 +51,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 				player?.sendMessage("Detecting Starship")
 				plugin.logger.info("Detecting Starship for " + player?.name)
 
-				detectedBlocks.add(block) // Add the interface to the ship
+				detectedBlocks.add(interfaceBlock) // Add the interface to the ship
 
 				val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
@@ -138,8 +143,14 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		}
 	}
 
+	/**
+	 * Activates the starship and registers it in [activeStarships]
+	 * @param pilot the pilot, who controls the ship
+	 * @throws AlreadyPilotedException if the ship is already piloted
+	 */
 	fun activateStarship(pilot: Player) {
 		// Determine passengers, pilot
+		if (this.pilot != null) throw AlreadyPilotedException(this, pilot)
 		passengers.add(pilot)
 		this.pilot = pilot
 		activeStarships.add(this)
@@ -147,17 +158,26 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		pilot.sendMessage("Piloted starship!")
 	}
 
-	fun deactivateStarship() {
+	/**
+	 * Deactivate the starship and remove it from [activeStarships]
+	 * @return whether the ship successfully deactivated
+	 */
+	fun deactivateStarship(): Boolean {
 		if (isMoving) {
 			pilot?.sendMessage("Cannot unpilot a moving ship!")
-			return // maybe throw something?
+			return false// maybe throw something?
 		}
 		pilot?.sendMessage("Unpiloting starship")
 		pilot = null
 		passengers.clear()
 		activeStarships.remove(this)
+		return true
 	}
 
+	/**
+	 * Move all passengers by offset.
+	 * Uses bukkit to teleport entities, and NMS to move players.
+	 */
 	fun movePassengers(offset: (Vector3) -> Vector3) {
 		passengers.forEach {
 			if (it is Player) {
@@ -168,6 +188,9 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		}
 	}
 
+	/**
+	 * Update this ship's undetectables.
+	 */
 	fun updateUndetectables() {
 		// Construct the undetectable list
 		undetectables =
@@ -176,24 +199,53 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		undetectables.removeAll(allowedBlocks)
 	}
 
+	/**
+	 * Translate the ship by [offset] blocks
+	 * @throws AlreadyMovingException if ship movement is currently queued.
+	 * @see queueChange
+	 */
 	fun queueMovement(offset: BlockLocation) {
 		queueChange({ current ->
 			return@queueChange current + Vector3(offset)
 		}, "Movement", offset.world!!)
 	}
 
+	/**
+	 * Move the ship to another world
+	 * @throws AlreadyMovingException if ship movement is currently queued.
+	 * @see queueChange
+	 */
 	fun queueWorldChange() {
 		TODO()
 	}
 
+	/**
+	 * Rotate the ship and contents by [theta] radians
+	 * @throws AlreadyMovingException if ship movement is currently queued.
+	 * @see queueChange
+	 */
 	fun queueRotation(theta: Double) {
-		val origin = Vector3(BlockLocation(pilot!!.location)) // TODO: fix
+		val origin = Vector3(interfaceBlock) // TODO: use COM
 		queueChange({ current ->
 			return@queueChange rotateCoordinates(current, origin, theta)
-		}, "Rotation", pilot!!.location.world) // also fix
+		}, "Rotation", interfaceBlock.world!!)
 	}
 
-	fun queueChange(modifier: (Vector3) -> Vector3, name: String, world: World) {
+	/**
+	 * Queue a starship move in [StarshipBlockSetter].
+	 * Asynchronously calculates where the ship needs to move to, and queues
+	 * block placements in [blockSetQueueQueue].
+	 *
+	 * @param modifier the function through which block coordinates are passed
+	 * @param name the name of the change (e.g "Rotation" or "Translation")
+	 * @param world the world in which to place the target blocks
+	 * @param rotation the rotation (in radians) applied. Not used to move blocks, but rotates entities and rotational blocks
+	 * @see queueMovement
+	 * @see queueWorldChange
+	 * @see queueRotation
+	 * @throws AlreadyMovingException if this ship already has movement queued.
+	 */
+	fun queueChange(modifier: (Vector3) -> Vector3, name: String, world: World, rotation: Double = 0.0) {
 		if (isMoving) throw AlreadyMovingException("Starship attempted to queue movement, but it is already moving!")
 		isMoving = true
 		Tasks.async {
