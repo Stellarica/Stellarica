@@ -10,6 +10,7 @@ import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
+import io.github.hydrazinemc.hydrazine.utils.rotateCoordinates
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
@@ -18,7 +19,6 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import kotlin.math.cos
-import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.system.measureTimeMillis
 
@@ -36,9 +36,8 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 
 	val blockCount: Int
-		get() {
-			return detectedBlocks.size
-		}
+		get() = detectedBlocks.size
+
 
 	fun detectStarship(player: Player?) {
 		if (isMoving) throw AlreadyMovingException("Ship attempted to detect, but is currently moving!")
@@ -93,6 +92,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 						detectedBlocks.add(currentBlock)
 
+						// TODO: condense this nonsense
 						val block1 = currentBlock + BlockLocation(1, 0, 0, null)
 						val block2 = currentBlock + BlockLocation(-1, 0, 0, null)
 						val block3 = currentBlock + BlockLocation(0, 1, 0, null)
@@ -144,9 +144,15 @@ class Starship(private val block: BlockLocation, private var world: World) {
 		this.pilot = pilot
 		activeStarships.add(this)
 		updateUndetectables()
+		pilot.sendMessage("Piloted starship!")
 	}
 
 	fun deactivateStarship() {
+		if (isMoving) {
+			pilot?.sendMessage("Cannot unpilot a moving ship!")
+			return // maybe throw something?
+		}
+		pilot?.sendMessage("Unpiloting starship")
 		pilot = null
 		passengers.clear()
 		activeStarships.remove(this)
@@ -173,16 +179,21 @@ class Starship(private val block: BlockLocation, private var world: World) {
 	fun queueMovement(offset: BlockLocation) {
 		queueChange({ current ->
 			return@queueChange current + Vector3(offset)
-		}, "Movement")
+		}, "Movement", offset.world!!)
 	}
+
+	fun queueWorldChange() {
+		TODO()
+	}
+
 	fun queueRotation(theta: Double) {
 		val origin = Vector3(BlockLocation(pilot!!.location)) // TODO: fix
 		queueChange({ current ->
 			return@queueChange rotateCoordinates(current, origin, theta)
-		}, "Rotation")
+		}, "Rotation", pilot!!.location.world) // also fix
 	}
 
-	fun queueChange(modifier: (Vector3) -> Vector3, name: String) {
+	fun queueChange(modifier: (Vector3) -> Vector3, name: String, world: World) {
 		if (isMoving) throw AlreadyMovingException("Starship attempted to queue movement, but it is already moving!")
 		isMoving = true
 		Tasks.async {
@@ -214,6 +225,7 @@ class Starship(private val block: BlockLocation, private var world: World) {
 
 
 				val targetBlock = modifier(Vector3(currentBlock)).asBlockLocation
+				targetBlock.world = world
 				val targetChunkCoord = ChunkLocation(targetBlock.x shr 4, targetBlock.z shr 4)
 				val targetBlockData = chunkCache.getOrPut(targetChunkCoord) {
 					world.getChunkAt(targetChunkCoord.x, targetChunkCoord.z).getChunkSnapshot(false, false, false)
@@ -234,7 +246,10 @@ class Starship(private val block: BlockLocation, private var world: World) {
 					blocksToSet[targetBlock] = currentBlockData
 
 					// Step 5: Add the target block to the new detected blocks list.
-					newDetectedBlocks.add(targetBlock)
+					if (!newDetectedBlocks.add(targetBlock)) {
+						plugin.logger.warning("A new detected block was overwritten while queueing $name!")
+					}
+					// pilot?.sendMessage("\n\nMoving block:\n  From: ${currentBlock}\n  To: $targetBlock")
 
 				} else {
 					// The ship is blocked!
@@ -249,10 +264,4 @@ class Starship(private val block: BlockLocation, private var world: World) {
 			blockSetQueueQueue[blocksToSet] = Pair(this, modifier)
 		}
 	}
-
-	private fun rotateCoordinates(loc: Vector3, origin: Vector3, theta: Double): Vector3 = Vector3(
-		(origin.x + (loc.x - origin.x) * cos(theta) - (loc.y - origin.y) * sin(theta)),
-		loc.y,
-		(origin.z + (loc.x - origin.x) * sin(theta) + (loc.z - origin.z) * cos(theta)),
-	)
 }
