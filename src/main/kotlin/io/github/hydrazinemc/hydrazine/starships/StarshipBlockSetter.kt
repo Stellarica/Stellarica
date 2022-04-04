@@ -7,6 +7,7 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
 
+// Moves as many starships as it can in 40 ms or less
 object StarshipBlockSetter : BukkitRunnable() {
 	val blockSetQueueQueue =
 		ConcurrentHashMap<MutableMap<BlockLocation, BlockData>, Pair<Starship, (Vector3) -> Vector3>>() // Value is a blockSetQueue, Key is the amount of blocks.
