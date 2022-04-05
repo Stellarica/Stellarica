@@ -1,10 +1,10 @@
-package io.github.hydrazinemc.hydrazine.starships.screens
+package io.github.hydrazinemc.hydrazine.starships.control
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.starships.Starship
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
-import io.github.hydrazinemc.hydrazine.utils.gui.NamedItem
 import io.github.hydrazinemc.hydrazine.utils.gui.Screen
+import io.github.hydrazinemc.hydrazine.utils.namedItem
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -28,8 +28,8 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 	private val green = ItemStack(Material.GREEN_STAINED_GLASS_PANE)
 	private val gray = ItemStack(Material.GRAY_STAINED_GLASS_PANE)
 	private val air = ItemStack(Material.AIR)
-	private val last = NamedItem(Material.ARROW, "Previous Page", false, bold = true)
-	private val next = NamedItem(Material.ARROW, "Next Page", false, bold = true)
+	private val last = namedItem(Material.ARROW, "Previous Page", null)
+	private val next = namedItem(Material.ARROW, "Next Page", null)
 
 	init {
 		createScreen(player, 54, "Allow Undetectable Blocks")

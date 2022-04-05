@@ -1,7 +1,7 @@
 package io.github.hydrazinemc.hydrazine.starships.listeners
 
 import io.github.hydrazinemc.hydrazine.starships.Starship
-import io.github.hydrazinemc.hydrazine.starships.screens.InterfaceScreen
+import io.github.hydrazinemc.hydrazine.starships.control.InterfaceScreen
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
