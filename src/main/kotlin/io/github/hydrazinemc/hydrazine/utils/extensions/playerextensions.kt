@@ -28,18 +28,8 @@ val Player.starship: Starship?
 val Player.isPilotingShip: Boolean
 	get() = this.starship?.pilot == this
 
-fun Player.setHotbar(bar: MutableList<ItemStack?>) {
-	for (i in 0..9) {
-		this.inventory.setItem(i, bar[i])
-	}
-}
-
-val Player.hotbar: MutableList<ItemStack?>
-	get() {
-		// this could be code golfed
-		val bar = mutableListOf<ItemStack?>()
-		for (i in 0..9) {
-			bar[i] = this.inventory.getItem(i)
-		}
-		return bar
+var Player.hotbar: MutableList<ItemStack?>
+	get()  = MutableList(9) { index -> this.inventory.getItem(index) }
+	set(value) {
+		for (i in 0..8) this.inventory.setItem(i, value[i])
 	}
