@@ -34,6 +34,7 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 	init {
 		createScreen(player, 54, "Allow Undetectable Blocks")
 
+		// TODO: fix
 		screen.setItem(1, red)
 		screen.setItem(2, red)
 		screen.setItem(3, red)
