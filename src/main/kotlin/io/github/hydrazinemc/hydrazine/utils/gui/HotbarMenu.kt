@@ -6,7 +6,8 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.InventoryOpenEvent
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
@@ -49,9 +50,7 @@ abstract class HotbarMenu: Listener {
 	 * Called when the player toggles between this and the normal hotbar.=
 	 * @see toggleable
 	 */
-	open fun onMenuToggled(player: Player) {
-
-	}
+	open fun onMenuToggled(player: Player) {}
 
 
 	fun openMenu(player: Player) {
@@ -60,8 +59,8 @@ abstract class HotbarMenu: Listener {
 	}
 
 	fun closeMenu(player: Player) {
-		val status = players[player]!!
-		if (status.menuOpen) {
+		val status = players[player] ?: return
+		if (status.isMenuOpen) {
 			player.hotbar = status.originalHotbar
 		}
 		onMenuClosed(player)
@@ -76,25 +75,26 @@ abstract class HotbarMenu: Listener {
 	@EventHandler
 	fun onPlayerToggleMenu(event: PlayerDropItemEvent) {
 		val status = players[event.player] ?: return
-		if (status.menuOpen && !toggleable) {
+		if (status.isMenuOpen && !toggleable) {
 			event.isCancelled = true
 			return
-		}
+		} // else warn?
 
-		if (status.menuOpen) {
+		if (status.isMenuOpen) {
 			// set the hotbar back to the original, store the menu hotbar
 			status.menuHotbar = event.player.hotbar
+			event.player.inventory.setItemInMainHand(null) // without this the item in the hand carries over
 			event.player.hotbar = status.originalHotbar
 		}
 		else {
 			// set the hotbar to the menu, store the original
 			status.originalHotbar = event.player.hotbar
+			event.player.inventory.setItemInMainHand(null)
 			event.player.hotbar = status.menuHotbar
 		}
 
-		status.menuOpen = !status.menuOpen
+		status.isMenuOpen = !status.isMenuOpen
 		players[event.player] = status
-		event.player.hotbar = if (status.menuOpen) {status.menuHotbar} else {status.originalHotbar}
 		onMenuToggled(event.player)
 		event.isCancelled = true
 	}
@@ -107,17 +107,24 @@ abstract class HotbarMenu: Listener {
 	}
 
 	@EventHandler
-	fun onPlayerOpenInventory(event: InventoryOpenEvent) {
+	fun onPlayerClick(event: PlayerInteractEvent) {
 		val status = players[event.player] ?: return
-		if (status.menuOpen) event.isCancelled = true
+		if (status.isMenuOpen) event.isCancelled = true
+		onButtonClicked(event.player.inventory.heldItemSlot, event.player)
 	}
 
 	@EventHandler
-	fun onPlayerClick(event: PlayerInteractEvent) {
-		val status = players[event.player] ?: return
-		if (status.menuOpen) event.isCancelled = true
-		onButtonClicked(event.player.inventory.heldItemSlot, event.player)
+	fun onInventoryClickEvent(event: InventoryClickEvent) {
+		val status = players[event.whoClicked] ?: return
+		if (status.isMenuOpen) event.isCancelled = true
 	}
+
+	@EventHandler
+	fun onPlayerDragItemEvent(event: InventoryDragEvent) {
+		val status = players[event.whoClicked] ?: return
+		if (status.isMenuOpen) event.isCancelled = true
+	}
+
 }
 
-data class HotbarState(var originalHotbar: MutableList<ItemStack?>, var menuHotbar: MutableList<ItemStack?>, var menuOpen: Boolean)
+data class HotbarState(var originalHotbar: MutableList<ItemStack?>, var menuHotbar: MutableList<ItemStack?>, var isMenuOpen: Boolean)
