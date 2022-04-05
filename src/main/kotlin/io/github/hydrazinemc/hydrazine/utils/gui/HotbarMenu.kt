@@ -1,13 +1,16 @@
 package io.github.hydrazinemc.hydrazine.utils.gui
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.extensions.hotbar
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
@@ -79,30 +82,23 @@ abstract class HotbarMenu: Listener {
 			event.isCancelled = true
 			return
 		} // else warn?
-
-		if (status.isMenuOpen) {
-			// set the hotbar back to the original, store the menu hotbar
-			status.menuHotbar = event.player.hotbar
-			event.player.inventory.setItemInMainHand(null) // without this the item in the hand carries over
-			event.player.hotbar = status.originalHotbar
-		}
-		else {
-			// set the hotbar to the menu, store the original
-			status.originalHotbar = event.player.hotbar
-			event.player.inventory.setItemInMainHand(null)
-			event.player.hotbar = status.menuHotbar
-		}
-
-		status.isMenuOpen = !status.isMenuOpen
-		players[event.player] = status
-		onMenuToggled(event.player)
 		event.isCancelled = true
-	}
 
-	@EventHandler
-	fun onPlayerLeave(event: PlayerQuitEvent) {
-		if (event.player in players.keys) {
-			closeMenu(event.player)
+		Tasks.syncDelay(1) {
+			if (status.isMenuOpen) {
+				// set the hotbar back to the original, store the menu hotbar
+				status.menuHotbar = event.player.hotbar
+				event.player.hotbar = status.originalHotbar
+			} else {
+				// set the hotbar to the menu, store the original
+				status.originalHotbar = event.player.hotbar
+				event.player.hotbar = status.menuHotbar
+			}
+
+			status.isMenuOpen = !status.isMenuOpen
+			players[event.player] = status
+
+			onMenuToggled(event.player)
 		}
 	}
 
@@ -114,17 +110,34 @@ abstract class HotbarMenu: Listener {
 	}
 
 	@EventHandler
-	fun onInventoryClickEvent(event: InventoryClickEvent) {
+	fun onInventoryClick(event: InventoryClickEvent) {
 		val status = players[event.whoClicked] ?: return
 		if (status.isMenuOpen) event.isCancelled = true
 	}
 
 	@EventHandler
-	fun onPlayerDragItemEvent(event: InventoryDragEvent) {
+	fun onPlayerDragItem(event: InventoryDragEvent) {
 		val status = players[event.whoClicked] ?: return
 		if (status.isMenuOpen) event.isCancelled = true
 	}
 
+	@EventHandler
+	fun onPlayerDragItem(event: PlayerAttemptPickupItemEvent) {
+		val status = players[event.player] ?: return
+		if (status.isMenuOpen) event.isCancelled = true
+	}
+
+	@EventHandler
+	fun onPlayerDie(event: PlayerDeathEvent) {
+		players[event.player] ?: return
+		closeMenu(event.player)
+	}
+
+	@EventHandler
+	fun onPlayerLeave(event: PlayerQuitEvent) {
+		players[event.player] ?: return
+		closeMenu(event.player)
+	}
 }
 
 data class HotbarState(var originalHotbar: MutableList<ItemStack?>, var menuHotbar: MutableList<ItemStack?>, var isMenuOpen: Boolean)
