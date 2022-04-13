@@ -89,14 +89,7 @@ object ConnectionUtils {
 	fun teleportRotate(player: Player, loc: Location, theta: Float) = move(player, loc, theta, null)
 
 	fun teleportRotate(player: Player, loc: Location, rotation: RotationAmount) =
-		move(
-			player, loc, when (rotation) {
-				RotationAmount.NONE -> 0.0
-				RotationAmount.REVERSE -> 180
-				RotationAmount.CLOCKWISE -> 90
-				RotationAmount.COUNTERCLOCKWISE -> -90
-			}.toFloat()
-		)
+		move(player, loc, rotation.asDegrees)
 
 	fun move(player: Player, loc: Location, dx: Double, dy: Double, dz: Double) =
 		move(player, loc, 0.0f, Vector(dx, dy, dz))
