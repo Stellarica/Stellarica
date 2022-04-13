@@ -83,15 +83,18 @@ object ConnectionUtils {
 
 	fun teleport(player: Player, loc: Location) = move(player, loc, 0.0f, null)
 
+	/**
+	 * Teleport the [player] to [loc], and rotate them by [theta] degrees
+	 */
 	fun teleportRotate(player: Player, loc: Location, theta: Float) = move(player, loc, theta, null)
 
 	fun teleportRotate(player: Player, loc: Location, rotation: RotationAmount) =
 		move(
 			player, loc, when (rotation) {
 				RotationAmount.NONE -> 0.0
-				RotationAmount.REVERSE -> Math.PI
-				RotationAmount.CLOCKWISE -> Math.PI / -2
-				RotationAmount.COUNTERCLOCKWISE -> Math.PI / 2
+				RotationAmount.REVERSE -> 180
+				RotationAmount.CLOCKWISE -> 90
+				RotationAmount.COUNTERCLOCKWISE -> -90
 			}.toFloat()
 		)
 
