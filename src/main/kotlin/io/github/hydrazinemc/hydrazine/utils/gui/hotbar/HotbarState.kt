@@ -6,4 +6,4 @@ data class HotbarState(
 	var originalHotbar: MutableList<ItemStack?>,
 	var menuHotbar: MutableList<ItemStack?>,
 	var isMenuOpen: Boolean
-	)
+)

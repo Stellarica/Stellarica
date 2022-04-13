@@ -25,7 +25,7 @@ data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) 
 	operator fun minus(loc: BlockLocation) = BlockLocation(this.x - loc.x, this.y - loc.y, this.z - loc.z, this.world)
 
 	val asLocation: Location
-		get() = Location(world, x.toDouble(), y.toDouble() ,z.toDouble())
+		get() = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
 }
 
 

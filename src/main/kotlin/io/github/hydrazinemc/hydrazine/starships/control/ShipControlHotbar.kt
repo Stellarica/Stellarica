@@ -8,7 +8,7 @@ import io.github.hydrazinemc.hydrazine.utils.namedItem
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
-object ShipControlHotbar: HotbarMenu() {
+object ShipControlHotbar : HotbarMenu() {
 	override val toggleable = true
 
 	val menuEntries = mutableListOf(
