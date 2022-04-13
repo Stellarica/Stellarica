@@ -83,6 +83,8 @@ abstract class HotbarMenu : Listener {
 		} // else warn?
 		event.isCancelled = true
 
+		// Without a delay here, the player's held item overwrites the new hotbar
+		// Do I know why? No.
 		Tasks.syncDelay(1) {
 			if (status.isMenuOpen) {
 				// set the hotbar back to the original, store the menu hotbar
