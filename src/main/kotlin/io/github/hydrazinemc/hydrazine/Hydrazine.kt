@@ -4,9 +4,9 @@ import co.aikar.commands.PaperCommandManager
 import io.github.hydrazinemc.hydrazine.commands.ConfigCommand
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocksListener
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
-import io.github.hydrazinemc.hydrazine.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.starships.Starship
 import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter
+import io.github.hydrazinemc.hydrazine.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.plugin.java.JavaPlugin

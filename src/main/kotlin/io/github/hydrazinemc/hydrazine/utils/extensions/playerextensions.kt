@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack
  */
 val Player.starship: Starship?
 	get() {
-		activeStarships.forEach{ship ->
+		activeStarships.forEach { ship ->
 			if (ship.passengers.contains(this)) return ship
 		}
 		return null
@@ -29,7 +29,7 @@ val Player.isPilotingShip: Boolean
 	get() = this.starship?.pilot == this
 
 var Player.hotbar: MutableList<ItemStack?>
-	get()  = MutableList(9) { index -> this.inventory.getItem(index) }
+	get() = MutableList(9) { index -> this.inventory.getItem(index) }
 	set(value) {
 		for (i in 0..8) this.inventory.setItem(i, value[i])
 	}
