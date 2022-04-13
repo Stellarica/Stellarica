@@ -13,6 +13,7 @@ import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import io.github.hydrazinemc.hydrazine.utils.rotateCoordinates
+import io.github.hydrazinemc.hydrazine.utils.sendMiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
@@ -135,11 +136,11 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 			}
 
 			if (ConfigurableValues.timeOperations) {
-				player?.sendMessage("Starship Detection took $time ms.")
+				player?.sendMiniMessage("<gray>Starship Detection took <bold>$time</bold> ms.")
 				plugin.logger.info("Starship Detection took $time ms.")
 			}
 
-			player?.sendMessage("Detected " + detectedBlocks.size + " blocks.")
+			player?.sendMiniMessage("<green>Detected <bold>${detectedBlocks.size}</bold> blocks.")
 			plugin.logger.info("Detected " + detectedBlocks.size + " blocks.")
 		}
 	}
@@ -156,7 +157,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 		this.pilot = pilot
 		activeStarships.add(this)
 		updateUndetectables()
-		pilot.sendMessage("Piloted starship!")
+		pilot.sendMiniMessage("<green>Piloted starship!")
 	}
 
 	/**
@@ -165,10 +166,10 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	 */
 	fun deactivateStarship(): Boolean {
 		if (isMoving) {
-			pilot?.sendMessage("Cannot unpilot a moving ship!")
+			pilot?.sendMiniMessage("<red>Cannot unpilot a moving ship!")
 			return false// maybe throw something?
 		}
-		pilot?.sendMessage("Unpiloting starship")
+		pilot?.sendMiniMessage("<green>Unpiloting starship")
 		pilot = null
 		passengers.clear()
 		activeStarships.remove(this)
@@ -277,7 +278,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 
 				// Step 1: Confirm that there is still a detectable block there.
 				if (undetectables.contains(currentMaterial)) {
-					pilot?.sendMessage("One of your detected blocks is not pilotable! This is probably a bug.")
+					pilot?.sendMiniMessage("<red>One of your detected blocks is not pilotable! This is probably a bug.")
 					return@forEach
 				}
 
@@ -312,12 +313,13 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 
 				} else {
 					// The ship is blocked!
-					pilot?.sendMessage("$name blocked at " + targetBlock.x + ", " + targetBlock.y + ", " + targetBlock.z + " by " + targetMaterial)
+					pilot?.sendMiniMessage("<gold>$name blocked at <bold>(${targetBlock.x}, ${targetBlock.y}</bold>, ${targetBlock.z})  by $targetMaterial")
 					return@async
 				}
 			}
 
-			if (detectedBlocks.size != newDetectedBlocks.size) pilot?.sendMessage("Lost " + (newDetectedBlocks.size - detectedBlocks.size) + " blocks while queueing $name!")
+			if (detectedBlocks.size != newDetectedBlocks.size)
+				pilot?.sendMiniMessage("<red>Lost <bold>${newDetectedBlocks.size - detectedBlocks.size}</bold> blocks while queueing $name!")
 
 			detectedBlocks = newDetectedBlocks
 			blockSetQueueQueue[blocksToSet] = StarshipMoveData(this, modifier, rotation)
