@@ -1,5 +1,6 @@
 package io.github.hydrazinemc.hydrazine.starships.control
 
+import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.extensions.hotbar
 import io.github.hydrazinemc.hydrazine.utils.extensions.starship
 import io.github.hydrazinemc.hydrazine.utils.gui.HotbarMenu
@@ -30,10 +31,10 @@ object ShipControlHotbar: HotbarMenu() {
 		val ship = player.starship ?: return // warn here?
 		when (index) {
 			4 -> {
-				ship.queueRotation(Math.PI / -2)
+				ship.queueRotation(RotationAmount.COUNTERCLOCKWISE)
 			}
 			5 -> {
-				ship.queueRotation(Math.PI / 2)
+				ship.queueRotation(RotationAmount.CLOCKWISE)
 			}
 			8 -> {
 				closeMenu(player)

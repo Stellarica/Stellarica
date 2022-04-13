@@ -48,3 +48,13 @@ fun rotateCoordinates(loc: Vector3, origin: Vector3, theta: Double): Vector3 = V
 	loc.y,  // too many parentheses is better than too few
 	origin.z + (((loc.x - origin.x) * sin(theta)) + ((loc.z - origin.z) * cos(theta))),
 )
+
+fun rotateCoordinates(loc: Vector3, origin: Vector3, rotation: RotationAmount): Vector3 {
+	// todo: be smart, aka not this
+	return rotateCoordinates(loc, origin, when(rotation) {
+		RotationAmount.NONE -> 0.0
+		RotationAmount.REVERSE -> Math.PI
+		RotationAmount.CLOCKWISE -> Math.PI / 2.0
+		RotationAmount.COUNTERCLOCKWISE -> -Math.PI / 2.0
+	})
+}
