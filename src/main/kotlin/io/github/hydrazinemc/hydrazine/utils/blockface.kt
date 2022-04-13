@@ -1,13 +1,12 @@
+import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import org.bukkit.block.BlockFace
 
-fun rotateBlockFace(face: BlockFace, theta: Double): BlockFace? {
-	return when (theta) {
-		Math.PI / 2 -> rotateCardinalFaceRight(face)
-		Math.PI / -2 -> rotateCardinalFaceLeft(face)
-		Math.PI -> rotateCardinalFaceOpposite(face)
-		0.0 -> face
-		Math.PI * 2 -> face
-		else -> null
+fun rotateBlockFace(face: BlockFace, rotationAmount: RotationAmount): BlockFace {
+	return when (rotationAmount) {
+		RotationAmount.CLOCKWISE -> rotateCardinalFaceRight(face)!!
+		RotationAmount.COUNTERCLOCKWISE -> rotateCardinalFaceLeft(face)!!
+		RotationAmount.REVERSE -> rotateCardinalFaceOpposite(face)!!
+		RotationAmount.NONE -> face
 	}
 }
 

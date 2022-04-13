@@ -2,7 +2,7 @@ package io.github.hydrazinemc.hydrazine
 
 import co.aikar.commands.PaperCommandManager
 import io.github.hydrazinemc.hydrazine.commands.ConfigCommand
-import io.github.hydrazinemc.hydrazine.customMaterials.CustomBlocksListener
+import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocksListener
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.starships.Starship

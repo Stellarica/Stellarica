@@ -3,11 +3,14 @@ package io.github.hydrazinemc.hydrazine.utils.nms
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
+import net.minecraft.world.level.block.DirectionalBlock
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.chunk.LevelChunk
 import org.bukkit.Location
 import org.bukkit.block.data.BlockData
+import org.bukkit.block.data.Directional
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld
+import org.bukkit.craftbukkit.v1_18_R2.block.CraftBlockState
 import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData
 
 // A modified, kotlin-ified version of the block placement from

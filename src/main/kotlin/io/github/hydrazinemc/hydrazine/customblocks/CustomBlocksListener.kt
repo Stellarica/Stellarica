@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.customMaterials
+package io.github.hydrazinemc.hydrazine.customblocks
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
