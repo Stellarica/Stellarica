@@ -229,11 +229,11 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	 * @throws AlreadyMovingException if ship movement is currently queued.
 	 * @see queueChange
 	 */
-	fun queueRotation(theta: Double) {
+	fun queueRotation(rotation: RotationAmount) {
 		val origin = Vector3(interfaceBlock) // TODO: use COM
 		queueChange({ current ->
-			return@queueChange rotateCoordinates(current, origin, theta)
-		}, "Rotation", interfaceBlock.world!!)
+			return@queueChange rotateCoordinates(current, origin, rotation)
+		}, "Rotation", interfaceBlock.world!!, rotation)
 	}
 
 	/**
