@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.utils.gui
+package io.github.hydrazinemc.hydrazine.utils.gui.hotbar
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.utils.Tasks
@@ -139,5 +139,3 @@ abstract class HotbarMenu: Listener {
 		closeMenu(event.player)
 	}
 }
-
-data class HotbarState(var originalHotbar: MutableList<ItemStack?>, var menuHotbar: MutableList<ItemStack?>, var isMenuOpen: Boolean)
