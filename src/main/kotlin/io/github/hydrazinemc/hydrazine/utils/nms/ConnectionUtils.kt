@@ -1,5 +1,6 @@
 package io.github.hydrazinemc.hydrazine.utils.nms
 
+import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket.RelativeArgument.X
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket.RelativeArgument.X_ROT
@@ -83,6 +84,16 @@ object ConnectionUtils {
 	fun teleport(player: Player, loc: Location) = move(player, loc, 0.0f, null)
 
 	fun teleportRotate(player: Player, loc: Location, theta: Float) = move(player, loc, theta, null)
+
+	fun teleportRotate(player: Player, loc: Location, rotation: RotationAmount) =
+		move(
+			player, loc, when (rotation) {
+				RotationAmount.NONE -> 0.0
+				RotationAmount.REVERSE -> Math.PI
+				RotationAmount.CLOCKWISE -> Math.PI / -2
+				RotationAmount.COUNTERCLOCKWISE -> Math.PI / 2
+			}.toFloat()
+		)
 
 	fun move(player: Player, loc: Location, dx: Double, dy: Double, dz: Double) =
 		move(player, loc, 0.0f, Vector(dx, dy, dz))
