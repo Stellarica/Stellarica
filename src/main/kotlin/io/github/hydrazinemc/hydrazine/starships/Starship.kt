@@ -8,17 +8,22 @@ import io.github.hydrazinemc.hydrazine.utils.AlreadyPilotedException
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
+import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import io.github.hydrazinemc.hydrazine.utils.rotateCoordinates
+import net.minecraft.core.Direction
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.data.BlockData
+import org.bukkit.block.data.Rotatable
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import org.bukkit.material.Directional
+import rotateBlockFace
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.system.measureTimeMillis
@@ -245,7 +250,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	 * @see queueRotation
 	 * @throws AlreadyMovingException if this ship already has movement queued.
 	 */
-	fun queueChange(modifier: (Vector3) -> Vector3, name: String, world: World, rotation: Double = 0.0) {
+	fun queueChange(modifier: (Vector3) -> Vector3, name: String, world: World, rotation: RotationAmount = RotationAmount.NONE) {
 		if (isMoving) throw AlreadyMovingException("Starship attempted to queue movement, but it is already moving!")
 		isMoving = true
 		Tasks.async {
@@ -275,7 +280,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 					return@forEach
 				}
 
-
+				// todo: don't repeat this over here
 				val targetBlock = modifier(Vector3(currentBlock)).asBlockLocation
 				targetBlock.world = world
 				val targetChunkCoord = ChunkLocation(targetBlock.x shr 4, targetBlock.z shr 4)
@@ -295,13 +300,14 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 					blocksToSet.putIfAbsent(currentBlock, airData)
 
 					// Step 4: Set the target block to the block data of the current block.
+					if (currentBlockData is Directional) {
+						println("haha go brrr")
+						currentBlockData.setFacingDirection(rotateBlockFace(currentBlockData.facing, rotation))
+					}
 					blocksToSet[targetBlock] = currentBlockData
 
 					// Step 5: Add the target block to the new detected blocks list.
-					if (!newDetectedBlocks.add(targetBlock)) {
-						plugin.logger.warning("A new detected block was overwritten while queueing $name!")
-					}
-					// pilot?.sendMessage("\n\nMoving block:\n  From: ${currentBlock}\n  To: $targetBlock")
+					if (!newDetectedBlocks.add(targetBlock)) plugin.logger.warning("A new detected block was overwritten while queueing $name!")
 
 				} else {
 					// The ship is blocked!

@@ -27,3 +27,11 @@ fun namedItem(material: Material, name: String, lore: MutableList<String>?): Ite
 	stack.itemMeta = meta
 	return stack
 }
+
+fun bitOfByte(byte: Byte, bit: Int): Boolean {
+	return ((byte.toInt() shr bit) and 1) == 1
+}
+
+enum class RotationAmount {
+	CLOCKWISE, COUNTERCLOCKWISE, REVERSE, NONE
+}

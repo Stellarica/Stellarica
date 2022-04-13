@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hydrazine.starships.control
 
 import io.github.hydrazinemc.hydrazine.utils.extensions.hotbar
+import io.github.hydrazinemc.hydrazine.utils.extensions.starship
 import io.github.hydrazinemc.hydrazine.utils.gui.HotbarMenu
 import io.github.hydrazinemc.hydrazine.utils.namedItem
 import org.bukkit.Material
@@ -26,8 +27,18 @@ object ShipControlHotbar: HotbarMenu() {
 	}
 
 	override fun onButtonClicked(index: Int, player: Player) {
+		val ship = player.starship ?: return // warn here?
 		when (index) {
-
+			4 -> {
+				ship.queueRotation(Math.PI / -2)
+			}
+			5 -> {
+				ship.queueRotation(Math.PI / 2)
+			}
+			8 -> {
+				closeMenu(player)
+				ship.deactivateStarship()
+			}
 		}
 	}
 }
