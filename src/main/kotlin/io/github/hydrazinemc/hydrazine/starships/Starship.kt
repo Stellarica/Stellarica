@@ -221,7 +221,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	}
 
 	/**
-	 * Rotate the ship and contents by [theta] radians
+	 * Rotate the ship and contents by [rotation]
 	 * @throws AlreadyMovingException if ship movement is currently queued.
 	 * @see queueChange
 	 */
