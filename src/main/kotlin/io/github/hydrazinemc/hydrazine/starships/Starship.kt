@@ -13,19 +13,15 @@ import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import io.github.hydrazinemc.hydrazine.utils.rotateCoordinates
-import net.minecraft.core.Direction
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.data.BlockData
-import org.bukkit.block.data.Rotatable
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.material.Directional
 import rotateBlockFace
-import kotlin.math.cos
-import kotlin.math.sin
 import kotlin.system.measureTimeMillis
 
 class Starship(private val interfaceBlock: BlockLocation, private var world: World) {
@@ -183,10 +179,10 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	 * Move all passengers by offset.
 	 * Uses bukkit to teleport entities, and NMS to move players.
 	 */
-	fun movePassengers(offset: (Vector3) -> Vector3) {
+	fun movePassengers(offset: (Vector3) -> Vector3, rotation: RotationAmount = RotationAmount.NONE) {
 		passengers.forEach {
 			if (it is Player) {
-				ConnectionUtils.teleport(it, offset(Vector3(it.location)).asLocation)
+				ConnectionUtils.teleportRotate(it, offset(Vector3(it.location)).asLocation, rotation)
 			} else {
 				it.teleport(offset(Vector3(it.location)).asLocation)
 			}
@@ -250,7 +246,12 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	 * @see queueRotation
 	 * @throws AlreadyMovingException if this ship already has movement queued.
 	 */
-	fun queueChange(modifier: (Vector3) -> Vector3, name: String, world: World, rotation: RotationAmount = RotationAmount.NONE) {
+	fun queueChange(
+		modifier: (Vector3) -> Vector3,
+		name: String,
+		world: World,
+		rotation: RotationAmount = RotationAmount.NONE
+	) {
 		if (isMoving) throw AlreadyMovingException("Starship attempted to queue movement, but it is already moving!")
 		isMoving = true
 		Tasks.async {
@@ -319,7 +320,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 			if (detectedBlocks.size != newDetectedBlocks.size) pilot?.sendMessage("Lost " + (newDetectedBlocks.size - detectedBlocks.size) + " blocks while queueing $name!")
 
 			detectedBlocks = newDetectedBlocks
-			blockSetQueueQueue[blocksToSet] = Pair(this, modifier)
+			blockSetQueueQueue[blocksToSet] = StarshipMoveData(this, modifier, rotation)
 		}
 	}
 }
