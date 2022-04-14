@@ -6,7 +6,14 @@ import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
 
+/**
+ * Alias for sendMessage(<message>.asMiniMessage)
+ */
 fun CommandSender.sendMiniMessage(message: String) = sendMessage(message.asMiniMessage)
+
+/**
+ * This string as a Component, using MiniMessage formatting
+ */
 val String.asMiniMessage: Component get() = miniMessage().deserialize(this.trimIndent())
 
 /**
@@ -28,6 +35,10 @@ fun namedItem(material: Material, name: String, lore: MutableList<String>?): Ite
 	return stack
 }
 
+/**
+ * I have 0 idea what this does.
+ * Blame Peter.
+ */
 fun bitOfByte(byte: Byte, bit: Int): Boolean {
 	return ((byte.toInt() shr bit) and 1) == 1
 }

@@ -10,6 +10,7 @@ import java.util.concurrent.Future
 import java.util.concurrent.ThreadFactory
 
 // Modified version of Tasks.kt from the IonCore/StarLegacy codebase, under MIT as noted in readme
+// Easy to use wrapper around bukkit runnables, for delays and going async
 
 object Tasks {
 	fun checkMainThread() = check(Bukkit.isPrimaryThread()) { "Attempted to call non-thread-safe method async!" }

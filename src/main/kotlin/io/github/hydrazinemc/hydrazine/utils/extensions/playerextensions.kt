@@ -28,6 +28,9 @@ val Player.starship: Starship?
 val Player.isPilotingShip: Boolean
 	get() = this.starship?.pilot == this
 
+/**
+ * The player's current hotbar
+ */
 var Player.hotbar: MutableList<ItemStack?>
 	get() = MutableList(9) { index -> this.inventory.getItem(index) }
 	set(value) {
