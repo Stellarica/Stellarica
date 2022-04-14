@@ -1,6 +1,10 @@
 import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import org.bukkit.block.BlockFace
 
+/**
+ * Rotate [face] by [RotationAmount]
+ * Only works with cardinal faces (north, east, etc.)
+ */
 fun rotateBlockFace(face: BlockFace, rotationAmount: RotationAmount): BlockFace {
 	return when (rotationAmount) {
 		RotationAmount.CLOCKWISE -> rotateCardinalFaceRight(face)!!
@@ -10,7 +14,9 @@ fun rotateBlockFace(face: BlockFace, rotationAmount: RotationAmount): BlockFace 
 	}
 }
 
-
+/**
+ * @see rotateBlockFace
+ */
 fun rotateCardinalFaceLeft(face: BlockFace): BlockFace? {
 	return when (face) {
 		BlockFace.EAST -> BlockFace.NORTH
@@ -21,6 +27,9 @@ fun rotateCardinalFaceLeft(face: BlockFace): BlockFace? {
 	}
 }
 
+/**
+ * @see rotateBlockFace
+ */
 fun rotateCardinalFaceRight(face: BlockFace): BlockFace? {
 	return when (face) {
 		BlockFace.WEST -> BlockFace.NORTH
@@ -31,6 +40,9 @@ fun rotateCardinalFaceRight(face: BlockFace): BlockFace? {
 	}
 }
 
+/**
+ * @see rotateBlockFace
+ */
 fun rotateCardinalFaceOpposite(face: BlockFace): BlockFace? {
 	return when (face) {
 		BlockFace.WEST -> BlockFace.EAST

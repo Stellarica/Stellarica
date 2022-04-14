@@ -8,6 +8,9 @@ import io.github.hydrazinemc.hydrazine.utils.namedItem
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
+/**
+ * Hotbar menu for basic ship control and movement functions
+ */
 object ShipControlHotbar : HotbarMenu() {
 	override val toggleable = true
 
