@@ -1,7 +1,7 @@
 pluginManagement {
 	repositories {
 		gradlePluginPortal()
-		maven("https://papermc.io/repo/repository/maven-public/")
+		maven("https://papermc.io/repo/repository/maven-public/") // paper-api, paperweight-userdev
 	}
 }
 
