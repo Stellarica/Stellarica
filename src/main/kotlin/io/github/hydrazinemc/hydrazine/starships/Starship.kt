@@ -302,11 +302,8 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 					blocksToSet.putIfAbsent(currentBlock, airData)
 
 					// Step 4: Set the target block to the block data of the current block.
-					if (currentBlockData is Directional) {
-						println("haha go brrr")
-						currentBlockData.setFacingDirection(rotateBlockFace(currentBlockData.facing, rotation))
-					}
 					blocksToSet[targetBlock] = currentBlockData
+					// Rotation is handled in the block setter.
 
 					// Step 5: Add the target block to the new detected blocks list.
 					if (!newDetectedBlocks.add(targetBlock)) plugin.logger.warning("A new detected block was overwritten while queueing $name!")
