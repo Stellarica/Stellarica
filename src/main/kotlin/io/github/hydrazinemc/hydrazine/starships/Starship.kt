@@ -11,6 +11,7 @@ import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
+import io.github.hydrazinemc.hydrazine.utils.extensions.rotate
 import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import io.github.hydrazinemc.hydrazine.utils.rotateCoordinates
 import io.github.hydrazinemc.hydrazine.utils.sendMiniMessage
@@ -241,7 +242,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	 * @param modifier the function through which block coordinates are passed
 	 * @param name the name of the change (e.g "Rotation" or "Translation")
 	 * @param world the world in which to place the target blocks
-	 * @param rotation the rotation (in radians) applied. Not used to move blocks, but rotates entities and rotational blocks
+	 * @param rotation the rotation applied. Not used to move blocks, but rotates entities and rotational blocks
 	 * @see queueMovement
 	 * @see queueWorldChange
 	 * @see queueRotation
@@ -301,9 +302,11 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 					// Step 3: If the current block has not already been replaced, set it to air.
 					blocksToSet.putIfAbsent(currentBlock, airData)
 
+					// Make sure we have rotated if we need to
+					currentBlockData.rotate(rotation)
+
 					// Step 4: Set the target block to the block data of the current block.
 					blocksToSet[targetBlock] = currentBlockData
-					// Rotation is handled in the block setter.
 
 					// Step 5: Add the target block to the new detected blocks list.
 					if (!newDetectedBlocks.add(targetBlock)) plugin.logger.warning("A new detected block was overwritten while queueing $name!")

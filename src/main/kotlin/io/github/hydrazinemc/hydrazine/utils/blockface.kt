@@ -7,8 +7,9 @@ import org.bukkit.block.BlockFace
  */
 fun rotateBlockFace(face: BlockFace, rotationAmount: RotationAmount): BlockFace {
 	return when (rotationAmount) {
-		RotationAmount.CLOCKWISE -> rotateCardinalFaceRight(face)!!
-		RotationAmount.COUNTERCLOCKWISE -> rotateCardinalFaceLeft(face)!!
+		// inverting this is counter-intuitive but things dont seem to rotate correctly otherwise /shrug
+		RotationAmount.CLOCKWISE -> rotateCardinalFaceLeft(face)!! //rotateCardinalFaceRight(face)!!
+		RotationAmount.COUNTERCLOCKWISE -> rotateCardinalFaceRight(face)!! //rotateCardinalFaceLeft(face)!!
 		RotationAmount.REVERSE -> rotateCardinalFaceOpposite(face)!!
 		RotationAmount.NONE -> face
 	}

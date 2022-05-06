@@ -1,11 +1,12 @@
 package io.github.hydrazinemc.hydrazine.starships
 
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
+import io.github.hydrazinemc.hydrazine.utils.RotationAmount
+import io.github.hydrazinemc.hydrazine.utils.extensions.rotate
 import io.github.hydrazinemc.hydrazine.utils.nms.setBlockFast
+import org.bukkit.Axis
 import org.bukkit.block.data.BlockData
-import org.bukkit.block.data.Directional
 import org.bukkit.scheduler.BukkitRunnable
-import rotateBlockFace
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -39,9 +40,6 @@ object StarshipBlockSetter : BukkitRunnable() {
 			blockSetQueue!!.forEach {
 				val data = it.value
 				setBlockFast(it.key.asLocation, data)
-				if (data is Directional) {
-					data.facing = rotateBlockFace(data.facing, moveData.rotation)
-				}
 			}
 			moveData.ship.isMoving = false
 		}
