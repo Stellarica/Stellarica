@@ -4,13 +4,8 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage.miniMessage
 import org.bukkit.Axis
 import org.bukkit.Material
-import org.bukkit.block.data.BlockData
-import org.bukkit.block.data.Directional
-import org.bukkit.block.data.Orientable
-import org.bukkit.block.data.Rotatable
 import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
-import rotateBlockFace
 
 /**
  * Alias for sendMessage(<message>.asMiniMessage)
@@ -57,7 +52,7 @@ enum class RotationAmount(val asRadians: Double = 0.0, val asDegrees: Float = 0f
 }
 
 fun rotateAxis(axis: Axis, amount: RotationAmount): Axis = when (axis) {
-		Axis.X -> Axis.Z
-		Axis.Z -> Axis.X
-		Axis.Y -> Axis.Y
-	}
+	Axis.X -> Axis.Z
+	Axis.Z -> Axis.X
+	Axis.Y -> Axis.Y
+}

@@ -22,8 +22,6 @@ import org.bukkit.World
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import org.bukkit.material.Directional
-import rotateBlockFace
 import kotlin.system.measureTimeMillis
 
 class Starship(private val interfaceBlock: BlockLocation, private var world: World) {
