@@ -66,5 +66,5 @@ fun rotateCoordinates(loc: Vector3, origin: Vector3, theta: Double): Vector3 = V
  * Rotate [loc] [rotation] around [origin]
  * @see Vector3.rotateAround
  */
-fun rotateCoordinates(loc: Vector3, origin: Vector3, rotation: RotationAmount): Vector3
-	= rotateCoordinates(loc, origin, rotation.asRadians)
+fun rotateCoordinates(loc: Vector3, origin: Vector3, rotation: RotationAmount): Vector3 =
+	rotateCoordinates(loc, origin, rotation.asRadians)
