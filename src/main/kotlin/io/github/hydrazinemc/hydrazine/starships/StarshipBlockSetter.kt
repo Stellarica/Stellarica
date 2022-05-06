@@ -35,8 +35,7 @@ object StarshipBlockSetter : BukkitRunnable() {
 
 			blockSetQueueQueue.remove(blockSetQueue)
 			blockSetQueue!!.forEach {
-				val data = it.value
-				setBlockFast(it.key.asLocation, data)
+				setBlockFast(it.key.asLocation, it.value)
 			}
 			moveData.ship.isMoving = false
 		}
