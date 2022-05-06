@@ -34,10 +34,10 @@ object ShipControlHotbar : HotbarMenu() {
 		val ship = player.starship ?: return // warn here?
 		when (index) {
 			4 -> {
-				ship.queueRotation(RotationAmount.COUNTERCLOCKWISE)
+				ship.queueRotation(RotationAmount.CLOCKWISE)
 			}
 			5 -> {
-				ship.queueRotation(RotationAmount.CLOCKWISE)
+				ship.queueRotation(RotationAmount.COUNTERCLOCKWISE)
 			}
 			8 -> {
 				closeMenu(player)
