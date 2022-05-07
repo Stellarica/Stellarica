@@ -4,9 +4,9 @@ import co.aikar.commands.PaperCommandManager
 import io.github.hydrazinemc.hydrazine.commands.ConfigCommand
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocksListener
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
-import io.github.hydrazinemc.hydrazine.starships.Starship
-import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter
-import io.github.hydrazinemc.hydrazine.starships.listeners.InterfaceListener
+import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.plugin.java.JavaPlugin
@@ -16,7 +16,7 @@ class Hydrazine : JavaPlugin() {
 		lateinit var plugin: Hydrazine
 			private set
 
-		var activeStarships = mutableSetOf<Starship>()
+		var pilotedCrafts = mutableSetOf<Pilotable>()
 	}
 
 	override fun onEnable() {
@@ -34,7 +34,7 @@ class Hydrazine : JavaPlugin() {
 		val commandManager = PaperCommandManager(this)
 		commandManager.registerCommand(ConfigCommand())
 
-		StarshipBlockSetter.runTaskTimer(plugin, 0, 1)
+		CraftBlockSetter.runTaskTimer(plugin, 0, 1)
 	}
 
 	override fun reloadConfig() {

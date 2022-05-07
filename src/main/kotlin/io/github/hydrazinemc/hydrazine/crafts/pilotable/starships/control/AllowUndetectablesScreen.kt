@@ -1,7 +1,7 @@
-package io.github.hydrazinemc.hydrazine.starships.control
+package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
-import io.github.hydrazinemc.hydrazine.starships.Starship
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.gui.Screen
 import io.github.hydrazinemc.hydrazine.utils.namedItem
@@ -10,9 +10,9 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
-class AllowUndetectablesScreen(player: Player, private val starship: Starship) : Screen() {
+class AllowUndetectablesScreen(player: Player, private val craft: Pilotable) : Screen() {
 	private val disallowed = ConfigurableValues.defaultUndetectable.toMutableList()
-	private val allowed = starship.allowedBlocks.toMutableList()
+	private val allowed = craft.allowedBlocks.toMutableList()
 
 	private var topPage = 0
 	private var bottomPage = 0
@@ -149,7 +149,7 @@ class AllowUndetectablesScreen(player: Player, private val starship: Starship) :
 	}
 
 	override fun onScreenClosed() {
-		starship.allowedBlocks = allowed.toMutableSet()
-		Bukkit.getScheduler().runTask(plugin, Runnable { InterfaceScreen(player, starship) })
+		craft.allowedBlocks = allowed.toMutableSet()
+		Bukkit.getScheduler().runTask(plugin, Runnable { InterfaceScreen(player, craft) })
 	}
 }

@@ -1,10 +1,8 @@
-package io.github.hydrazinemc.hydrazine.starships
+package io.github.hydrazinemc.hydrazine.crafts
 
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.activeStarships
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
-import io.github.hydrazinemc.hydrazine.starships.StarshipBlockSetter.blockSetQueueQueue
+import io.github.hydrazinemc.hydrazine.Hydrazine
+import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter.blockSetQueueQueue
 import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
-import io.github.hydrazinemc.hydrazine.utils.AlreadyPilotedException
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
@@ -12,11 +10,11 @@ import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.rotate
-import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import io.github.hydrazinemc.hydrazine.utils.rotateCoordinates
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.data.BlockData
@@ -24,36 +22,25 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import kotlin.system.measureTimeMillis
 
-class Starship(private val interfaceBlock: BlockLocation, private var world: World) {
+open class Craft(var origin: Location) {
+
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
-
-	private var owner: Player? = null
-	var pilot: Player? = null
 	var isMoving = false
-
 	var passengers = mutableSetOf<Entity>()
 	var allowedBlocks = mutableSetOf<Material>()
-
 	var undetectables = mutableSetOf<Material>()
-
 	val blockCount: Int
 		get() = detectedBlocks.size
 
 
 	/**
-	 * Detect this starship
-	 * @param player the person detecting; the [owner]
+	 * Detect this craft
 	 * @throws AlreadyMovingException
 	 */
-	fun detectStarship(player: Player?) {
-		if (isMoving) throw AlreadyMovingException("Ship attempted to detect, but is currently moving!")
+	fun detectCraft() {
+		if (isMoving) throw AlreadyMovingException("Craft attempted to detect, but is currently moving!")
 		Tasks.async {
 			val time = measureTimeMillis {
-				player?.sendMessage("Detecting Starship")
-				plugin.logger.info("Detecting Starship for " + player?.name)
-
-				detectedBlocks.add(interfaceBlock) // Add the interface to the ship
-
 				val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 				var nextBlocksToCheck = detectedBlocks
@@ -75,7 +62,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 						val chunkCoordinate = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
 
 						val chunk = chunkCache.getOrPut(chunkCoordinate) {
-							world.getChunkAt(chunkCoordinate.x, chunkCoordinate.z).getChunkSnapshot(false, false, false)
+							origin.world.getChunkAt(chunkCoordinate.x, chunkCoordinate.z).getChunkSnapshot(false, false, false)
 						}
 
 						val type =
@@ -89,8 +76,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 						if (undetectables.contains(type)) continue
 
 						if (detectedBlocks.size > ConfigurableValues.detectionLimit) {
-							player?.sendMessage("Detection limit reached. (${ConfigurableValues.detectionLimit})")
-							plugin.logger.info("Detection limit reached. (${ConfigurableValues.detectionLimit})")
+							Hydrazine.plugin.logger.info("Detection limit reached. (${ConfigurableValues.detectionLimit})")
 							nextBlocksToCheck.clear()
 							detectedBlocks.clear()
 							break
@@ -133,46 +119,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 					}
 				}
 			}
-
-			if (ConfigurableValues.timeOperations) {
-				player?.sendMiniMessage("<gray>Starship Detection took <bold>$time</bold> ms.")
-				plugin.logger.info("Starship Detection took $time ms.")
-			}
-
-			player?.sendMiniMessage("<green>Detected <bold>${detectedBlocks.size}</bold> blocks.")
-			plugin.logger.info("Detected " + detectedBlocks.size + " blocks.")
 		}
-	}
-
-	/**
-	 * Activates the starship and registers it in [activeStarships]
-	 * @param pilot the pilot, who controls the ship
-	 * @throws AlreadyPilotedException if the ship is already piloted
-	 */
-	fun activateStarship(pilot: Player) {
-		// Determine passengers, pilot
-		if (this.pilot != null) throw AlreadyPilotedException(this, pilot)
-		passengers.add(pilot)
-		this.pilot = pilot
-		activeStarships.add(this)
-		updateUndetectables()
-		pilot.sendMiniMessage("<green>Piloted starship!")
-	}
-
-	/**
-	 * Deactivate the starship and remove it from [activeStarships]
-	 * @return whether the ship successfully deactivated
-	 */
-	fun deactivateStarship(): Boolean {
-		if (isMoving) {
-			pilot?.sendMiniMessage("<red>Cannot unpilot a moving ship!")
-			return false// maybe throw something?
-		}
-		pilot?.sendMiniMessage("<green>Unpiloting starship")
-		pilot = null
-		passengers.clear()
-		activeStarships.remove(this)
-		return true
 	}
 
 	/**
@@ -189,8 +136,9 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 		}
 	}
 
+
 	/**
-	 * Update this ship's undetectables.
+	 * Update this craft's undetectables.
 	 */
 	fun updateUndetectables() {
 		// Construct the undetectable list
@@ -201,8 +149,8 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	}
 
 	/**
-	 * Translate the ship by [offset] blocks
-	 * @throws AlreadyMovingException if ship movement is currently queued.
+	 * Translate the craft by [offset] blocks
+	 * @throws AlreadyMovingException if craft movement is currently queued.
 	 * @see queueChange
 	 */
 	fun queueMovement(offset: BlockLocation) {
@@ -212,8 +160,8 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	}
 
 	/**
-	 * Move the ship to another world
-	 * @throws AlreadyMovingException if ship movement is currently queued.
+	 * Move the craft to another world
+	 * @throws AlreadyMovingException if craft movement is currently queued.
 	 * @see queueChange
 	 */
 	fun queueWorldChange() {
@@ -221,19 +169,18 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	}
 
 	/**
-	 * Rotate the ship and contents by [rotation]
-	 * @throws AlreadyMovingException if ship movement is currently queued.
+	 * Rotate the craft and contents by [rotation]
+	 * @throws AlreadyMovingException if craft movement is currently queued.
 	 * @see queueChange
 	 */
 	fun queueRotation(rotation: RotationAmount) {
-		val origin = Vector3(interfaceBlock) // TODO: use COM
 		queueChange({ current ->
-			return@queueChange rotateCoordinates(current, origin, rotation)
-		}, "Rotation", interfaceBlock.world!!, rotation)
+			return@queueChange rotateCoordinates(current, Vector3(origin), rotation)
+		}, "Rotation", origin.world, rotation)
 	}
 
 	/**
-	 * Queue a starship move in [StarshipBlockSetter].
+	 * Queue a starships move in [StarshipBlockSetter].
 	 * Asynchronously calculates where the ship needs to move to, and queues
 	 * block placements in [blockSetQueueQueue].
 	 *
@@ -246,13 +193,13 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 	 * @see queueRotation
 	 * @throws AlreadyMovingException if this ship already has movement queued.
 	 */
-	fun queueChange(
+	private fun queueChange(
 		modifier: (Vector3) -> Vector3,
 		name: String,
 		world: World,
 		rotation: RotationAmount = RotationAmount.NONE
 	) {
-		if (isMoving) throw AlreadyMovingException("Starship attempted to queue movement, but it is already moving!")
+		if (isMoving) throw AlreadyMovingException("Craft attempted to queue movement, but it is already moving!")
 		isMoving = true
 		Tasks.async {
 			// TODO: handle unloaded chunks
@@ -277,7 +224,7 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 
 				// Step 1: Confirm that there is still a detectable block there.
 				if (undetectables.contains(currentMaterial)) {
-					pilot?.sendMiniMessage("<red>One of your detected blocks is not pilotable! This is probably a bug.")
+					// TODO: warn or throw something
 					return@forEach
 				}
 
@@ -307,20 +254,20 @@ class Starship(private val interfaceBlock: BlockLocation, private var world: Wor
 					blocksToSet[targetBlock] = currentBlockData
 
 					// Step 5: Add the target block to the new detected blocks list.
-					if (!newDetectedBlocks.add(targetBlock)) plugin.logger.warning("A new detected block was overwritten while queueing $name!")
+					if (!newDetectedBlocks.add(targetBlock)) Hydrazine.plugin.logger.warning("A new detected block was overwritten while queueing $name!")
 
 				} else {
 					// The ship is blocked!
-					pilot?.sendMiniMessage("<gold>$name blocked at <bold>(${targetBlock.x}, ${targetBlock.y}</bold>, ${targetBlock.z})  by $targetMaterial")
+					// TODO: warn or throw something
 					return@async
 				}
 			}
 
-			if (detectedBlocks.size != newDetectedBlocks.size)
-				pilot?.sendMiniMessage("<red>Lost <bold>${newDetectedBlocks.size - detectedBlocks.size}</bold> blocks while queueing $name!")
+			if (detectedBlocks.size != newDetectedBlocks.size) {}
+				// TODO: warn or throw something
 
 			detectedBlocks = newDetectedBlocks
-			blockSetQueueQueue[blocksToSet] = StarshipMoveData(this, modifier, rotation)
+			blockSetQueueQueue[blocksToSet] = CraftMoveData(this, modifier, rotation)
 		}
 	}
 }
