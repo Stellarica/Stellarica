@@ -1,21 +1,10 @@
 package io.github.hydrazinemc.hydrazine.utils
 
+import io.github.hydrazinemc.hydrazine.utils.extensions.asMiniMessage
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.minimessage.MiniMessage.miniMessage
 import org.bukkit.Axis
 import org.bukkit.Material
-import org.bukkit.command.CommandSender
 import org.bukkit.inventory.ItemStack
-
-/**
- * Alias for sendMessage(<message>.asMiniMessage)
- */
-fun CommandSender.sendMiniMessage(message: String) = sendMessage(message.asMiniMessage)
-
-/**
- * This string as a Component, using MiniMessage formatting
- */
-val String.asMiniMessage: Component get() = miniMessage().deserialize(this.trimIndent())
 
 /**
  * MiniMessage formatting is allowed in both lore and name
@@ -37,7 +26,7 @@ fun namedItem(material: Material, name: String, lore: MutableList<String>?): Ite
 }
 
 /**
- * I have 0 idea what this does.
+ * I have 0 idea what this does or why this is here.
  * Blame Peter.
  */
 fun bitOfByte(byte: Byte, bit: Int): Boolean {
