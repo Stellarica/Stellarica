@@ -1,32 +1,33 @@
 package io.github.hydrazinemc.hydrazine.utils.extensions
 
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.activeStarships
-import io.github.hydrazinemc.hydrazine.starships.Starship
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.pilotedCrafts
+import io.github.hydrazinemc.hydrazine.crafts.Craft
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
 /**
- * The starship the player is riding
- * @see Player.isPilotingShip
+ * The craft the player is in.
+ * @see Player.isPilotingCraft
  */
-val Player.starship: Starship?
+val Player.craft: Craft?
 	get() {
-		activeStarships.forEach { ship ->
+		pilotedCrafts.forEach { ship ->
 			if (ship.passengers.contains(this)) return ship
 		}
 		return null
 	}
 
 /**
- * Whether the player is currently piloting a starship.
+ * Whether the player is currently piloting a craft
  *
  * If you couldn't tell by the name, you have an issue.
  * Go get help.
  *
- * @see Player.starship
+ * @see Player.craft
  */
-val Player.isPilotingShip: Boolean
-	get() = this.starship?.pilot == this
+val Player.isPilotingCraft: Boolean
+	get() = (this.craft as? Pilotable?)?.pilot == this
 
 /**
  * The player's current hotbar

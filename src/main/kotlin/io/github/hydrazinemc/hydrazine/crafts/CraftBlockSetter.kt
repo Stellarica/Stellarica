@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.starships
+package io.github.hydrazinemc.hydrazine.crafts
 
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.nms.setBlockFast
@@ -7,13 +7,13 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Main bukkit runnable for setting starship blocks
+ * Main bukkit runnable for setting starships blocks
  */
-object StarshipBlockSetter : BukkitRunnable() {
+object CraftBlockSetter : BukkitRunnable() {
 	val blockSetQueueQueue =
 		ConcurrentHashMap<
 				MutableMap<BlockLocation, BlockData>,
-				StarshipMoveData
+				CraftMoveData
 				>()
 	//Key is the blocks to set, value is the extra data for this move operation
 
