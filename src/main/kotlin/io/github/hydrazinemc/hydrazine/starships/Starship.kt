@@ -12,9 +12,9 @@ import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.rotate
+import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import io.github.hydrazinemc.hydrazine.utils.rotateCoordinates
-import io.github.hydrazinemc.hydrazine.utils.sendMiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
