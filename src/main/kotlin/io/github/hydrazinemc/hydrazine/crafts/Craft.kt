@@ -2,6 +2,7 @@ package io.github.hydrazinemc.hydrazine.crafts
 
 import io.github.hydrazinemc.hydrazine.Hydrazine
 import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter.blockSetQueueQueue
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
 import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
@@ -10,6 +11,7 @@ import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.rotate
+import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
 import io.github.hydrazinemc.hydrazine.utils.rotateCoordinates
 import org.bukkit.Bukkit
@@ -32,6 +34,25 @@ open class Craft(var origin: Location) {
 	val blockCount: Int
 		get() = detectedBlocks.size
 
+	/**
+	 * Message this craft's pilot, if it has one.
+	 * MiniMessage formatting is allowed
+	 *
+	 * @see messagePassengers
+	 */
+	fun messagePilot(message: String) {
+		if (this is Pilotable) { pilot?.sendMiniMessage(message) }
+	}
+
+	/**
+	 * Message all passengers of this craft.
+	 * MiniMessage formatting is allowed
+	 *
+	 * @see messagePilot
+	 */
+	fun messagePassengers(message: String) {
+		passengers.forEach { it.sendMiniMessage(message) }
+	}
 
 	/**
 	 * Detect this craft
@@ -39,20 +60,17 @@ open class Craft(var origin: Location) {
 	 */
 	fun detectCraft() {
 		if (isMoving) throw AlreadyMovingException("Craft attempted to detect, but is currently moving!")
+		messagePilot("<gray>Detecting craft...")
 		Tasks.async {
 			val time = measureTimeMillis {
 				val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 				var nextBlocksToCheck = detectedBlocks
+				nextBlocksToCheck.add(BlockLocation(origin))
 				detectedBlocks = mutableSetOf()
-
 				val checkedBlocks = nextBlocksToCheck.toMutableSet()
 
-				// Construct the undetectable list
-				val undetectables =
-					ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
-				undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
-				undetectables.removeAll(allowedBlocks)
+				updateUndetectables()
 
 				while (nextBlocksToCheck.size > 0) {
 					val blocksToCheck = nextBlocksToCheck
@@ -77,6 +95,7 @@ open class Craft(var origin: Location) {
 
 						if (detectedBlocks.size > ConfigurableValues.detectionLimit) {
 							Hydrazine.plugin.logger.info("Detection limit reached. (${ConfigurableValues.detectionLimit})")
+							messagePilot("<orange>Detection limit reached. (${ConfigurableValues.detectionLimit} blocks)")
 							nextBlocksToCheck.clear()
 							detectedBlocks.clear()
 							break
@@ -119,6 +138,8 @@ open class Craft(var origin: Location) {
 					}
 				}
 			}
+			messagePilot("<green>Craft detected! (${detectedBlocks.size} blocks)")
+			messagePilot("<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. (${detectedBlocks.size / time} blocks/ms)")
 		}
 	}
 
@@ -146,6 +167,7 @@ open class Craft(var origin: Location) {
 			ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
 		undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
 		undetectables.removeAll(allowedBlocks)
+		messagePilot("<gray>Updated craft's undetectable blocks.")
 	}
 
 	/**
@@ -224,6 +246,8 @@ open class Craft(var origin: Location) {
 
 				// Step 1: Confirm that there is still a detectable block there.
 				if (undetectables.contains(currentMaterial)) {
+					messagePilot("<red>Skipping undetectable block at (${currentBlock.x},${currentBlock.y},${currentBlock.z}) - $currentMaterial.")
+					messagePassengers("<bold><gold>This is a bug, please report it.")
 					// TODO: warn or throw something
 					return@forEach
 				}
@@ -254,17 +278,19 @@ open class Craft(var origin: Location) {
 					blocksToSet[targetBlock] = currentBlockData
 
 					// Step 5: Add the target block to the new detected blocks list.
-					if (!newDetectedBlocks.add(targetBlock)) Hydrazine.plugin.logger.warning("A new detected block was overwritten while queueing $name!")
+					if (!newDetectedBlocks.add(targetBlock)) Hydrazine.plugin.logger.warning("a newly detected block was overwritten while queueing $name!")
 
 				} else {
 					// The ship is blocked!
-					// TODO: warn or throw something
+					messagePilot("<orange>$name blocked by $targetMaterial at <bold>(${targetBlock.x}, ${targetBlock.y}, ${targetBlock.z}</bold>)!")
 					return@async
 				}
 			}
 
-			if (detectedBlocks.size != newDetectedBlocks.size) {}
-				// TODO: warn or throw something
+			if (detectedBlocks.size != newDetectedBlocks.size) {
+				messagePassengers("<red>Lost <bold>${detectedBlocks.size - newDetectedBlocks.size}</bold> blocks while queuing $name!")
+				messagePassengers("<bold><gold>This is a bug, please report it.")
+			}
 
 			detectedBlocks = newDetectedBlocks
 			blockSetQueueQueue[blocksToSet] = CraftMoveData(this, modifier, rotation)

@@ -4,6 +4,7 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.extensions.craft
 import io.github.hydrazinemc.hydrazine.utils.extensions.hotbar
+import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import io.github.hydrazinemc.hydrazine.utils.gui.hotbar.HotbarMenu
 import io.github.hydrazinemc.hydrazine.utils.namedItem
 import org.bukkit.Material
@@ -32,7 +33,10 @@ object ShipControlHotbar : HotbarMenu() {
 	}
 
 	override fun onButtonClicked(index: Int, player: Player) {
-		val ship = player.craft as? Pilotable ?: return // TODO: warn here?
+		val ship = player.craft as? Pilotable ?: run {
+			player.sendMiniMessage("<red>You are not piloting a ship, yet the ship menu is open! This is a bug!")
+			return
+		}
 		when (index) {
 			4 -> {
 				ship.queueRotation(RotationAmount.CLOCKWISE)

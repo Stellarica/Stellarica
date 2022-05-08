@@ -11,6 +11,7 @@ open class Pilotable(origin: Location): Craft(origin) {
 
 	private var owner: Player? = null
 	var pilot: Player? = null
+		private set
 
 	/**
 	 * Activates the craft and registers it in [pilotedCrafts]
