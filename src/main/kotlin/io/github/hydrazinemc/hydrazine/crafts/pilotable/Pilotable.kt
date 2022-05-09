@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 
 open class Pilotable(origin: Location): Craft(origin) {
 
-	private var owner: Player? = null
+	var owner: Player? = null
 	var pilot: Player? = null
 		private set
 
