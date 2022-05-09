@@ -19,18 +19,9 @@ class InterfaceScreen(player: Player, private val craft: Pilotable) : Screen() {
 	}
 
 	override fun onScreenButtonClicked(slot: Int) {
+		if (craft.owner == null) craft.owner = player
 		when (slot) {
-			0 -> {
-				craft.pilot ?: run {
-					// This is a stupid workaround because ship detection
-					// uses messagePilot(), but at this point there shouldn't be a pilot
-					craft.activateCraft(player)
-					craft.detectCraft()
-					craft.deactivateCraft()
-				}
-				craft.detectCraft()
-
-			}
+			0 -> craft.detectCraft()
 			1 -> {
 				if (player.isPilotingCraft) craft.deactivateCraft()
 				else {
