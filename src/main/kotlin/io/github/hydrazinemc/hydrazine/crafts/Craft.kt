@@ -96,7 +96,7 @@ open class Craft(var origin: Location) {
 
 						if (detectedBlocks.size > ConfigurableValues.detectionLimit) {
 							Hydrazine.plugin.logger.info("Detection limit reached. (${ConfigurableValues.detectionLimit})")
-							messagePilot("<orange>Detection limit reached. (${ConfigurableValues.detectionLimit} blocks)")
+							messagePilot("<gold>Detection limit reached. (${ConfigurableValues.detectionLimit} blocks)")
 							nextBlocksToCheck.clear()
 							detectedBlocks.clear()
 							break
@@ -264,7 +264,7 @@ open class Craft(var origin: Location) {
 
 				} else {
 					// The ship is blocked!
-					messagePilot("<orange>$name blocked by $targetMaterial at <bold>(${targetBlock.x}, ${targetBlock.y}, ${targetBlock.z}</bold>)!")
+					messagePilot("<gold>$name blocked by $targetMaterial at <bold>(${targetBlock.x}, ${targetBlock.y}, ${targetBlock.z}</bold>)!")
 					return@async
 				}
 			}
