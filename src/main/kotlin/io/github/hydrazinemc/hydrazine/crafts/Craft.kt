@@ -261,10 +261,10 @@ open class Craft(var origin: Location) {
 
 					// Step 5: Add the target block to the new detected blocks list.
 					if (!newDetectedBlocks.add(targetBlock)) Hydrazine.plugin.logger.warning("a newly detected block was overwritten while queueing $name!")
-
 				} else {
 					// The ship is blocked!
 					messagePilot("<gold>$name blocked by $targetMaterial at <bold>(${targetBlock.x}, ${targetBlock.y}, ${targetBlock.z}</bold>)!")
+					this.isMoving = false
 					return@async
 				}
 			}
