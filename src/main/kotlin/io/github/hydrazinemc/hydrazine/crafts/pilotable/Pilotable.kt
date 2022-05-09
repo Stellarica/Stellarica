@@ -25,7 +25,7 @@ open class Pilotable(origin: Location): Craft(origin) {
 		this.pilot = pilot
 		pilotedCrafts.add(this)
 		updateUndetectables()
-		pilot.sendMiniMessage("<green>Piloted craft!")
+		messagePilot("<green>Piloted craft!")
 	}
 
 	/**
@@ -34,10 +34,10 @@ open class Pilotable(origin: Location): Craft(origin) {
 	 */
 	fun deactivateCraft(): Boolean {
 		if (isMoving) {
-			pilot?.sendMiniMessage("<red>Cannot unpilot a moving craft!")
+			messagePilot("<red>Cannot unpilot a moving craft!")
 			return false// maybe throw something?
 		}
-		pilot?.sendMiniMessage("<green>Unpiloting craft")
+		messagePilot("<green>Unpiloting craft")
 		pilot = null
 		passengers.clear()
 		pilotedCrafts.remove(this)
