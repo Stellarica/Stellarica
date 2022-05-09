@@ -50,9 +50,9 @@ class AllowUndetectablesScreen(player: Player, private val craft: Pilotable) : S
 		screen.setItem(42, green)
 		screen.setItem(43, green)
 	}
-
+	/*
 	override fun onScreenUpdate() {
-		/*
+
 		topMaxPage = (disallowed.size - 1) / 27
 		bottomMaxPage = (allowed.size - 1) / 9
 
@@ -126,7 +126,6 @@ class AllowUndetectablesScreen(player: Player, private val craft: Pilotable) : S
 		screen.setItem(8, if (topPage < topMaxPage) next else red)
 		screen.setItem(36, if (bottomPage > 0) last else green)
 		screen.setItem(44, if (bottomPage < bottomMaxPage) next else green)
-		 */
 	}
 
 	override fun onScreenButtonClicked(slot: Int) {
@@ -152,4 +151,5 @@ class AllowUndetectablesScreen(player: Player, private val craft: Pilotable) : S
 		craft.allowedBlocks = allowed.toMutableSet()
 		Bukkit.getScheduler().runTask(plugin, Runnable { InterfaceScreen(player, craft) })
 	}
+	*/
 }
