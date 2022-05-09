@@ -9,6 +9,10 @@ import kotlin.math.sin
  * A container for three Doubles, [x], [y], and [z]
  */
 data class Vector3(var x: Double, var y: Double, var z: Double) {
+	companion object {
+		val zero: Vector3
+			get() = Vector3(0.0, 0.0, 0.0)
+	}
 	constructor(loc: BlockLocation) : this(loc.x.toDouble(), loc.y.toDouble(), loc.z.toDouble())
 	constructor(loc: Location) : this(loc.x, loc.y, loc.z)
 
@@ -48,6 +52,12 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	 * @see rotateCoordinates
 	 */
 	fun rotateAround(origin: Vector3, rotation: RotationAmount) = rotateCoordinates(this, origin, rotation)
+
+	fun clamp(min: Vector3, max: Vector3) = Vector3(
+		x.coerceIn(min.x, max.x),
+		y.coerceIn(min.y, max.y),
+		z.coerceIn(min.z, max.z)
+	)
 }
 
 
