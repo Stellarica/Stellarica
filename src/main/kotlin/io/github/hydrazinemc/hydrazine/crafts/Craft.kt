@@ -36,12 +36,13 @@ open class Craft(var origin: Location) {
 
 	/**
 	 * Message this craft's pilot, if it has one.
+	 * If the ship isn't being piloted, message the owner.
 	 * MiniMessage formatting is allowed
 	 *
 	 * @see messagePassengers
 	 */
 	fun messagePilot(message: String) {
-		if (this is Pilotable) { pilot?.sendMiniMessage(message) }
+		if (this is Pilotable) { pilot?.sendMiniMessage(message) ?: owner?.sendMiniMessage(message) }
 	}
 
 	/**
@@ -103,37 +104,18 @@ open class Craft(var origin: Location) {
 
 						detectedBlocks.add(currentBlock)
 
-						// TODO: condense this nonsense
-						val block1 = currentBlock + BlockLocation(1, 0, 0, null)
-						val block2 = currentBlock + BlockLocation(-1, 0, 0, null)
-						val block3 = currentBlock + BlockLocation(0, 1, 0, null)
-						val block4 = currentBlock + BlockLocation(0, -1, 0, null)
-						val block5 = currentBlock + BlockLocation(0, 0, 1, null)
-						val block6 = currentBlock + BlockLocation(0, 0, -1, null)
-
-						if (!checkedBlocks.contains(block1)) {
-							checkedBlocks.add(block1)
-							nextBlocksToCheck.add(block1)
-						}
-						if (!checkedBlocks.contains(block2)) {
-							checkedBlocks.add(block2)
-							nextBlocksToCheck.add(block2)
-						}
-						if (!checkedBlocks.contains(block3)) {
-							checkedBlocks.add(block3)
-							nextBlocksToCheck.add(block3)
-						}
-						if (!checkedBlocks.contains(block4)) {
-							checkedBlocks.add(block4)
-							nextBlocksToCheck.add(block4)
-						}
-						if (!checkedBlocks.contains(block5)) {
-							checkedBlocks.add(block5)
-							nextBlocksToCheck.add(block5)
-						}
-						if (!checkedBlocks.contains(block6)) {
-							checkedBlocks.add(block6)
-							nextBlocksToCheck.add(block6)
+						// Slightly condensed from MSP's nonsense, but this could be improved
+						for (x in -1..1) {
+							for (y in -1..1) {
+								for (z in -1..1) {
+									if (x == y && z == y && y == 0) continue
+									val block = currentBlock + BlockLocation(x, y, z, null)
+									if (!checkedBlocks.contains(block)) {
+										checkedBlocks.add(block)
+										nextBlocksToCheck.add(block)
+									}
+								}
+							}
 						}
 					}
 				}
