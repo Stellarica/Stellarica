@@ -28,6 +28,7 @@ class Hydrazine : JavaPlugin() {
 		//   /-\
 		//  / ! \  MUST BE CALLED AFTER REGISTERING EVENTS!
 		// /_____\
+		// ^ idk why, this is a leftover from MSP
 		saveDefaultConfig()
 		reloadConfig()
 
