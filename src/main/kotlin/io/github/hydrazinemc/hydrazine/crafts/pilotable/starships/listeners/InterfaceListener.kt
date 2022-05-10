@@ -1,8 +1,7 @@
 package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners
 
-import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control.InterfaceScreen
-import io.github.hydrazinemc.hydrazine.utils.BlockLocation
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -18,7 +17,7 @@ class InterfaceListener : Listener {
 			if (event.clickedBlock!!.type == Material.JUKEBOX) {
 				InterfaceScreen(
 					event.player,
-					Pilotable(event.clickedBlock!!.location)
+					Starship(event.clickedBlock!!.location)
 				)
 
 				event.isCancelled = true
