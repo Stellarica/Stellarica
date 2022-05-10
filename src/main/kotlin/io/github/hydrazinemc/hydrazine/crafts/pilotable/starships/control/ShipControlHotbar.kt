@@ -49,8 +49,7 @@ object ShipControlHotbar : HotbarMenu() {
 				ship.queueRotation(RotationAmount.COUNTERCLOCKWISE)
 			}
 			8 -> {
-				closeMenu(player)
-				ship.deactivateCraft()
+				if (ship.deactivateCraft()) closeMenu(player)
 			}
 		}
 	}
