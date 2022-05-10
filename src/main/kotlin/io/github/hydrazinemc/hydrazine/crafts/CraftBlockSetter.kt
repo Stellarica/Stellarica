@@ -7,7 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
 
 /**
- * Main bukkit runnable for setting starships blocks
+ * Main bukkit runnable for setting craft's blocks
  */
 object CraftBlockSetter : BukkitRunnable() {
 	val blockSetQueueQueue =

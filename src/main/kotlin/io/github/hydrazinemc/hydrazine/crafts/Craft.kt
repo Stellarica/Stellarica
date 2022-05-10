@@ -27,12 +27,51 @@ import kotlin.system.measureTimeMillis
 open class Craft(var origin: Location) {
 
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
+
+	/**
+	 * Whether the ship is currently moving.
+	 * @see lastMoved
+	 */
 	var isMoving = false
+
+	/**
+	 * The.. uh.. passengers...
+	 */
 	var passengers = mutableSetOf<Entity>()
+
+	/**
+	 * Remnant from MSP, I honestly have no idea, and am
+	 * too lazy to figure it out
+	 */
 	var allowedBlocks = mutableSetOf<Material>()
+
+	/**
+	 * The blocks that this ship cannot contain
+	 */
 	var undetectables = mutableSetOf<Material>()
+
+	/**
+	 * The number of detected blocks
+	 */
 	val blockCount: Int
 		get() = detectedBlocks.size
+
+	/**
+	 * The time (in ms since epoch) that the craft last queued movement.
+	 * Don't use this to check whether the ship is moving, use isMoving instead
+	 *
+	 * @see timeSinceMoved
+	 */
+	var lastMoved: Long = 0
+
+	/**
+	 * The time (in ms) since the ship last queued movement.
+	 * Don't use this to check whether the ship is moving, use isMoving instead
+	 *
+	 * @see lastMoved
+	 */
+	val timeSinceMoved: Long
+		get() = System.currentTimeMillis() - lastMoved
 
 	/**
 	 * Message this craft's pilot, if it has one.
@@ -205,6 +244,8 @@ open class Craft(var origin: Location) {
 	) {
 		if (isMoving) throw AlreadyMovingException("Craft attempted to queue movement, but it is already moving!")
 		isMoving = true
+		lastMoved = System.currentTimeMillis()
+
 		Tasks.async {
 			// TODO: handle unloaded chunks
 			val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()

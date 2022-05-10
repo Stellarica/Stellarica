@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hydrazine.utils
 
 import org.bukkit.Location
+import org.bukkit.util.Vector
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
@@ -15,6 +16,7 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	}
 	constructor(loc: BlockLocation) : this(loc.x.toDouble(), loc.y.toDouble(), loc.z.toDouble())
 	constructor(loc: Location) : this(loc.x, loc.y, loc.z)
+	constructor(vec: Vector) : this(vec.x, vec.y, vec.z)
 
 	operator fun plus(other: Vector3) = Vector3(x + other.x, y + other.y, z + other.z)
 	operator fun minus(other: Vector3) = Vector3(x - other.x, y - other.y, z - other.z)

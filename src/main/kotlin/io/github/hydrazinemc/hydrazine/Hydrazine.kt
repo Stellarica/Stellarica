@@ -6,6 +6,7 @@ import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocksListener
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import org.bukkit.Bukkit.getPluginManager
@@ -35,7 +36,8 @@ class Hydrazine : JavaPlugin() {
 		val commandManager = PaperCommandManager(this)
 		commandManager.registerCommand(ConfigCommand())
 
-		CraftBlockSetter.runTaskTimer(plugin, 0, 1)
+		CraftBlockSetter.runTaskTimer(plugin, 1, 1)
+		StarshipMover.runTaskTimer(plugin, 1, 1)
 	}
 
 	override fun reloadConfig() {
