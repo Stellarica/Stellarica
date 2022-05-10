@@ -21,6 +21,7 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	operator fun plus(other: Vector3) = Vector3(x + other.x, y + other.y, z + other.z)
 	operator fun minus(other: Vector3) = Vector3(x - other.x, y - other.y, z - other.z)
 	operator fun times(other: Float) = Vector3(x * other, y * other, z * other)
+	operator fun div(other: Float) = Vector3(x / other, y / other, z / other)
 
 	/**
 	 * This Vector3 as a loction.
