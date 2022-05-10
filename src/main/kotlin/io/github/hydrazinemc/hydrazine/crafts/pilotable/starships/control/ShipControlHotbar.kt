@@ -1,7 +1,9 @@
 package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control
 
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
 import io.github.hydrazinemc.hydrazine.utils.RotationAmount
+import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.craft
 import io.github.hydrazinemc.hydrazine.utils.extensions.hotbar
 import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
@@ -19,8 +21,8 @@ object ShipControlHotbar : HotbarMenu() {
 	val menuEntries = mutableListOf(
 		namedItem(Material.LIME_STAINED_GLASS, "<green>Increase Speed", null),
 		namedItem(Material.ORANGE_STAINED_GLASS, "<red>Decrease Speed", null),
-		namedItem(Material.GREEN_STAINED_GLASS_PANE, "<green>Full Speed", null),
-		namedItem(Material.RED_STAINED_GLASS_PANE, "<red>Full Stop", null),
+		null,
+		null,
 		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Left", null),
 		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Right", null),
 		null,
@@ -33,11 +35,13 @@ object ShipControlHotbar : HotbarMenu() {
 	}
 
 	override fun onButtonClicked(index: Int, player: Player) {
-		val ship = player.craft as? Pilotable ?: run {
-			player.sendMiniMessage("<red>You are not piloting a ship, yet the ship menu is open! This is a bug!")
+		val ship = player.craft as? Starship ?: run {
+			player.sendMiniMessage("<red>You are not piloting a starship, yet the ship menu is open! This is a bug!")
 			return
 		}
 		when (index) {
+			0 -> ship.velocty += Vector3(player.location.direction.normalize())
+			1 -> ship.velocty -= Vector3(player.location.direction.normalize())
 			4 -> {
 				ship.queueRotation(RotationAmount.CLOCKWISE)
 			}
