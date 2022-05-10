@@ -199,7 +199,7 @@ open class Craft(var origin: Location) {
 	fun queueMovement(offset: BlockLocation) {
 		queueChange({ current ->
 			return@queueChange current + Vector3(offset)
-		}, "Movement", offset.world!!)
+		}, "Movement", origin.world!!)
 	}
 
 	/**
