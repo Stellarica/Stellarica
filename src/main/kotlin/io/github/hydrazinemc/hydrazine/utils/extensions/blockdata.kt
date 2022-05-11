@@ -16,7 +16,7 @@ fun BlockData.rotate(amount: RotationAmount) {
 	}
 	// Rotation of Orientables
 	if (this is Orientable && amount != RotationAmount.REVERSE) {
-		this.axis = rotateAxis(this.axis, amount)
+		this.axis = rotateAxis(this.axis)
 	}
 	// Rotation of Rotatables
 	if (this is Rotatable) {
