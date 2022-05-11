@@ -40,7 +40,7 @@ enum class RotationAmount(val asRadians: Double = 0.0, val asDegrees: Float = 0f
 	NONE,
 }
 
-fun rotateAxis(axis: Axis, amount: RotationAmount): Axis = when (axis) {
+fun rotateAxis(axis: Axis): Axis = when (axis) {
 	Axis.X -> Axis.Z
 	Axis.Z -> Axis.X
 	Axis.Y -> Axis.Y
