@@ -15,7 +15,6 @@ class InterfaceScreen(player: Player, private val craft: Pilotable) : Screen() {
 		screen.setItem(0, namedItem(Material.MINECART, "Detect Starship", null))
 		if (player.isPilotingCraft) screen.setItem(1, namedItem(Material.COMPASS, "Unpilot Starship", null))
 		else screen.setItem(1, namedItem(Material.COMPASS, "Pilot Starship", null))
-		screen.setItem(4, namedItem(Material.BEDROCK, "Allow Undetectables", null))
 	}
 
 	override fun onScreenButtonClicked(slot: Int) {
@@ -28,10 +27,6 @@ class InterfaceScreen(player: Player, private val craft: Pilotable) : Screen() {
 					craft.activateCraft(player)
 					ShipControlHotbar.openMenu(player)
 				}
-				closeScreen()
-			}
-			4 -> {
-				AllowUndetectablesScreen(player, craft)
 				closeScreen()
 			}
 		}
