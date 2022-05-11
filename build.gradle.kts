@@ -3,6 +3,7 @@ plugins {
 	id("org.jetbrains.kotlin.jvm") version "1.6.21"
 	id("io.papermc.paperweight.userdev") version "1.3.6"
 	id("com.github.johnrengelman.shadow") version "7.1.2"
+	id("io.gitlab.arturbosch.detekt").version("1.20.0")
 }
 
 repositories {
@@ -43,6 +44,18 @@ tasks{
 
 	runServer {
 		minecraftVersion("1.18.2")
+	}
+
+	detekt {
+		toolVersion = "1.20.0"
+		config = files("config/detekt/detekt.yml")
+		buildUponDefaultConfig = true
+	}
+	withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+		reports {
+			html.required.set(true)
+			txt.required.set(true)
+		}
 	}
 }
 
