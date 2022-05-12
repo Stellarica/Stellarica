@@ -18,7 +18,7 @@ import org.bukkit.entity.Player
 object ShipControlHotbar : HotbarMenu() {
 	override val toggleable = true
 
-	val menuEntries = mutableListOf(
+	private val menuEntries = mutableListOf(
 		namedItem(Material.LIME_STAINED_GLASS, "<green>Increase Speed", null),
 		namedItem(Material.ORANGE_STAINED_GLASS, "<red>Decrease Speed", null),
 		null,

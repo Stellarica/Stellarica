@@ -7,9 +7,19 @@ import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
+/**
+ * Base class for all pilotable Crafts.
+ */
 open class Pilotable(origin: Location): Craft(origin) {
 
+	/**
+	 * The owner of this craft
+	 */
 	var owner: Player? = null
+
+	/**
+	 * The player who is currently piloting this craft
+	 */
 	var pilot: Player? = null
 		private set
 

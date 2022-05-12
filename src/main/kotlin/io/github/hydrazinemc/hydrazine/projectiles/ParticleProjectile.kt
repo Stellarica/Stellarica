@@ -9,15 +9,39 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.util.Vector
 
 // TODO: use raycasts
+/**
+ * Handles projectile beams that deal damage to entities and optionally explode
+ */
 data class ParticleProjectile(
-	val origin: Location, private val color: Color, private val particleDensity: Int,
-	val range: Int, private val minRange: Double, val speed: Int,
+	/**
+	 * The point from which the particles shoot
+	 */
+	val origin: Location,
+	private val color: Color,
+	private val particleDensity: Int,
+	/**
+	 * The maximum distance (in blocks) that the particles can travel
+	 */
+	val range: Int,
+	/**
+	 * Within this range the projectiles will not deal damage
+	 * Hacky solution to prevent players shooting themselves.
+	 */
+	private val minRange: Double,
+	/**
+	 * The speed at which the particles travel
+	 */
+	val speed: Int,
 	private val damage: Double, private val explosion: Float
 ) // Yikes that's a lot of arguments
 {
 	private val particle = ParticleBuilder(Particle.REDSTONE).color(color).force(true).count(particleDensity)
 	// ParticleBuilder that we can spawn later when we need to
 
+	/**
+	 * Shoot a simple beam, spawning all of the particles on the same server tick
+	 * @see shootProjectile
+	 */
 	fun shootBeam() {
 		// Simple beam mode, do it all on the same server tick
 
@@ -37,6 +61,10 @@ data class ParticleProjectile(
 		}
 	}
 
+	/**
+	 * Shoot a slower moving group of particles.
+	 * @see shootBeam
+	 */
 	fun shootProjectile() {
 		// Start the Runnable that will handle projectile mode
 
@@ -46,6 +74,10 @@ data class ParticleProjectile(
 		ProjectileRunnable(this).runTaskTimer(plugin, 1, 1)
 	}
 
+	/**
+	 * Calculate the next particle location, and spawn the particle
+	 * @return whether the projectile hit an entity or block, else false
+	 */
 	fun step(loc: Location): Boolean {
 		// A single particle spawn + check for damage/blocks/explosion
 		// Returns false if it hit something, otherwise true.

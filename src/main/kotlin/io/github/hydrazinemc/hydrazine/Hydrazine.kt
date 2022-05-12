@@ -12,11 +12,21 @@ import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.plugin.java.JavaPlugin
 
+/**
+ * Base plugin class
+ */
 class Hydrazine : JavaPlugin() {
 	companion object {
+		/**
+		 * The plugin instance. Not best practice to have it static,
+		 * but the convenience is worth it.
+		 */
 		lateinit var plugin: Hydrazine
 			private set
 
+		/**
+		 * The currently piloted [Pilotable]s
+		 */
 		var pilotedCrafts = mutableSetOf<Pilotable>()
 	}
 

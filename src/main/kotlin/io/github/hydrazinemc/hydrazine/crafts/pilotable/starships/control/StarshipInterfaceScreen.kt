@@ -8,7 +8,10 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryType
 
-class InterfaceScreen(player: Player, private val craft: Pilotable) : Screen() {
+/**
+ * The GUI opened when a player clicks the starship interface block
+ */
+class StarshipInterfaceScreen(player: Player, private val craft: Pilotable) : Screen() {
 	init {
 		createScreen(player, InventoryType.HOPPER, "Starship Interface")
 
