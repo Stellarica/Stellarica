@@ -10,12 +10,15 @@ import java.util.concurrent.ConcurrentHashMap
  * Main bukkit runnable for setting craft's blocks
  */
 object CraftBlockSetter : BukkitRunnable() {
+	/**
+	 * The queue of crafts to move
+	 * Key is the blocks to set, value is the extra data for this move operation
+	 */
 	val blockSetQueueQueue =
 		ConcurrentHashMap<
 				MutableMap<BlockLocation, BlockData>,
 				CraftMoveData
 				>()
-	//Key is the blocks to set, value is the extra data for this move operation
 
 	/**
 	 * Should not be called manually, as this is part of a Bukkit runnable.
@@ -31,13 +34,13 @@ object CraftBlockSetter : BukkitRunnable() {
 			val moveData = blockSetQueueQueue.values.first()
 			val blockSetQueue = blockSetQueueQueue.keys.first()
 
-			moveData.ship.movePassengers(moveData.modifier, moveData.rotation)
+			moveData.craft.movePassengers(moveData.modifier, moveData.rotation)
 
 			blockSetQueueQueue.remove(blockSetQueue)
 			blockSetQueue!!.forEach {
 				setBlockFast(it.key.asLocation, it.value)
 			}
-			moveData.ship.isMoving = false
+			moveData.craft.isMoving = false
 		}
 	}
 }

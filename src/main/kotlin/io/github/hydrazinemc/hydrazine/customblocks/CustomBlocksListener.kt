@@ -16,7 +16,11 @@ import org.bukkit.event.block.BlockPistonExtendEvent
 import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
 
+/**
+ * handles custom blocks
+ */
 class CustomBlocksListener : Listener {
+	/*
 	// For our purposes BlockPistonExtendEvent and BlockPistonRetractEvent can be handled the same way.
 	// TODO: There are some occasions where the block still changes, this needs to be resolved.
 	private fun mushroomBlockMovedByPiston(blocks: List<Block>, direction: BlockFace) {
@@ -126,4 +130,5 @@ class CustomBlocksListener : Listener {
 
 		// MSPMaterial.customBlocks = newCustomBlocks
 	}
+	 */
 }

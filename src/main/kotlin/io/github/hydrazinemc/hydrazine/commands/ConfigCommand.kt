@@ -9,7 +9,10 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import org.bukkit.command.CommandSender
 import java.io.File
 
-@CommandAlias("hydrazine config|hc")
+/**
+ * Command handling for the configuration file related commands.
+ */
+@CommandAlias("hconfig|hc")
 class ConfigCommand : BaseCommand() {
 	@Subcommand("reload")
 	@Description("Reloads the Hydrazine config files")

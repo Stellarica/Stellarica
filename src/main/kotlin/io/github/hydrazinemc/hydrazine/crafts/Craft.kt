@@ -24,7 +24,16 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import kotlin.system.measureTimeMillis
 
-open class Craft(var origin: Location) {
+/**
+ * Base class for all Crafts; sets of moving blocks
+ */
+open class Craft(
+	/**
+	 * The point from which detection starts, and
+	 * the craft rotates around
+	 */
+	var origin: Location
+	) {
 
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
 
