@@ -1,26 +1,49 @@
 package io.github.hydrazinemc.hydrazine.utils
 
+import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
+import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
+import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import org.bukkit.Location
 import org.bukkit.util.Vector
-import kotlin.math.cos
 import kotlin.math.roundToInt
-import kotlin.math.sin
 
 /**
  * A container for three Doubles, [x], [y], and [z]
+ *
+ * @see BlockLocation
+ * @see Vector
  */
 data class Vector3(var x: Double, var y: Double, var z: Double) {
 	companion object {
+		/**
+		 * Null vector
+		 */
 		val zero: Vector3
 			get() = Vector3(0.0, 0.0, 0.0)
 	}
+
 	constructor(loc: BlockLocation) : this(loc.x.toDouble(), loc.y.toDouble(), loc.z.toDouble())
 	constructor(loc: Location) : this(loc.x, loc.y, loc.z)
 	constructor(vec: Vector) : this(vec.x, vec.y, vec.z)
 
+	/**
+	 * Add this to [other]
+	 */
 	operator fun plus(other: Vector3) = Vector3(x + other.x, y + other.y, z + other.z)
+
+	/**
+	 * Subtract this from [other]
+	 */
 	operator fun minus(other: Vector3) = Vector3(x - other.x, y - other.y, z - other.z)
+
+	/**
+	 * Multiply this by [other]
+	 */
 	operator fun times(other: Float) = Vector3(x * other, y * other, z * other)
+
+	/**
+	 * Divide this by [other]
+	 */
 	operator fun div(other: Float) = Vector3(x / other, y / other, z / other)
 
 	/**
@@ -48,7 +71,8 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	 * Get this position rotated around [origin] by [theta] radians
 	 * @see rotateCoordinates
 	 */
-	fun rotateAround(origin: Vector3, theta: Double) = rotateCoordinates(this, origin, theta)
+	fun rotateAround(origin: Vector3, theta: Double) =
+		rotateCoordinates(this, origin, theta)
 
 	/**
 	 * Get this position rotated around [origin] by [rotation]
@@ -56,28 +80,12 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	 */
 	fun rotateAround(origin: Vector3, rotation: RotationAmount) = rotateCoordinates(this, origin, rotation)
 
+	/**
+	 * Clamp this vector's components by [min] and [max]
+	 */
 	fun clamp(min: Vector3, max: Vector3) = Vector3(
 		x.coerceIn(min.x, max.x),
 		y.coerceIn(min.y, max.y),
 		z.coerceIn(min.z, max.z)
 	)
 }
-
-
-/**
- * Rotate [loc] around [origin] by [theta] radians.
- * Note, [theta] positive = clockwise, negative = counter clockwise
- * @see Vector3.rotateAround
- */
-fun rotateCoordinates(loc: Vector3, origin: Vector3, theta: Double): Vector3 = Vector3(
-	origin.x + (((loc.x - origin.x) * cos(theta)) - ((loc.z - origin.z) * sin(theta))),
-	loc.y,  // too many parentheses is better than too few
-	origin.z + (((loc.x - origin.x) * sin(theta)) + ((loc.z - origin.z) * cos(theta))),
-)
-
-/**
- * Rotate [loc] [rotation] around [origin]
- * @see Vector3.rotateAround
- */
-fun rotateCoordinates(loc: Vector3, origin: Vector3, rotation: RotationAmount): Vector3 =
-	rotateCoordinates(loc, origin, rotation.asRadians)

@@ -95,9 +95,6 @@ data class ParticleProjectile(
 				e.damage(damage)
 				if (explosion > 0) loc.world.createExplosion(loc, explosion)
 
-				// val event = ParticleProjectileHitEntityEvent(this, loc, e)
-				// getPluginManager().callEvent(event)
-
 				return false // damage one entity only
 			}
 		}
@@ -106,10 +103,6 @@ data class ParticleProjectile(
 			if (explosion > 0 && origin.distanceSquared(loc) > minRange * minRange) {
 				loc.world.createExplosion(loc, explosion)
 			}
-
-			// Alert any listeners
-			// val event = ParticleProjectileHitBlockEvent(this, loc)
-			// getPluginManager().callEvent(event)
 
 			return false
 		}

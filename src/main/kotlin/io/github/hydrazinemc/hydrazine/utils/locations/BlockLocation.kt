@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.utils
+package io.github.hydrazinemc.hydrazine.utils.locations
 
 import org.bukkit.Location
 import org.bukkit.World
@@ -6,9 +6,14 @@ import org.bukkit.block.Block
 import kotlin.math.roundToInt
 
 /**
+ * Container for the coordinates [x] [y] and [z] of a block in [world]
+ *
  * @see Vector3
  */
 data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) {
+	/**
+	 * The bukkit [Block] at this location
+	 */
 	val bukkit: Block
 		get() {
 			return world!!.getBlockAt(x, y, z)
@@ -21,12 +26,19 @@ data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) 
 	 */
 	constructor(loc: Location) : this(loc.x.roundToInt(), loc.y.roundToInt(), loc.z.roundToInt(), loc.world)
 
+	/**
+	 * Add two BlockLocations
+	 */
 	operator fun plus(loc: BlockLocation) = BlockLocation(this.x + loc.x, this.y + loc.y, this.z + loc.z, this.world)
+
+	/**
+	 * Subtract two BlockLocations
+	 */
 	operator fun minus(loc: BlockLocation) = BlockLocation(this.x - loc.x, this.y - loc.y, this.z - loc.z, this.world)
 
+	/**
+	 * This as a [Location]
+	 */
 	val asLocation: Location
 		get() = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
 }
-
-
-data class ChunkLocation(var x: Int, var z: Int)

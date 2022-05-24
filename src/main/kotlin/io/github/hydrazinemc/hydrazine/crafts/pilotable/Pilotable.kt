@@ -3,14 +3,13 @@ package io.github.hydrazinemc.hydrazine.crafts.pilotable
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.pilotedCrafts
 import io.github.hydrazinemc.hydrazine.crafts.Craft
 import io.github.hydrazinemc.hydrazine.utils.AlreadyPilotedException
-import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import org.bukkit.Location
 import org.bukkit.entity.Player
 
 /**
  * Base class for all pilotable Crafts.
  */
-open class Pilotable(origin: Location): Craft(origin) {
+open class Pilotable(origin: Location) : Craft(origin) {
 
 	/**
 	 * The owner of this craft
