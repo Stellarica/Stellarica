@@ -2,51 +2,70 @@ package io.github.hydrazinemc.hydrazine.utils
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import org.bukkit.Bukkit
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import java.time.ZonedDateTime
-import java.util.concurrent.CompletableFuture
-import java.util.concurrent.Future
-import java.util.concurrent.ThreadFactory
 
-// Modified version of Tasks.kt from the IonCore/StarLegacy codebase, under MIT as noted in readme
-// Easy to use wrapper around bukkit runnables, for delays and going async
-
+/***
+ * Wrapper around the Bukkit scheduler/runnable system
+ * for easy delays and async tasks.
+ *
+ * Modified version of Tasks.kt from the IonCore/StarLegacy codebase, under MIT as noted in readme
+ */
 object Tasks {
-	fun checkMainThread() = check(Bukkit.isPrimaryThread()) { "Attempted to call non-thread-safe method async!" }
+	/**
+	 * Run [block] as an asynchronous bukkit task
+	 *
+	 * @see BukkitScheduler.runTaskAsynchronously
+	 */
+	fun async(block: () -> Unit): BukkitTask = Bukkit.getScheduler().runTaskAsynchronously(plugin, block)
 
-	fun async(block: () -> Unit) {; asyncTask(block); }
-	fun asyncTask(block: () -> Unit): BukkitTask = Bukkit.getScheduler().runTaskAsynchronously(plugin, block)
-
-	fun asyncDelay(delay: Long, block: () -> Unit) {; asyncDelayTask(delay, block); }
-	fun asyncDelayTask(delay: Long, block: () -> Unit): BukkitTask =
+	/**
+	 * Run [block] as an asynchronous bukkit task.
+	 * Delay [delay] ticks before starting.
+	 *
+	 * @see BukkitScheduler.runTaskLaterAsynchronously
+	 */
+	fun asyncDelay(delay: Long, block: () -> Unit): BukkitTask =
 		Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, block, delay)
 
-	fun asyncRepeat(delay: Long, interval: Long, block: () -> Unit) {; asyncRepeatTask(delay, interval, block); }
-	fun asyncRepeatTask(delay: Long, interval: Long, block: () -> Unit): BukkitTask =
+	/**
+	 * Run [block] as an asynchronous bukkit task, repeating every [interval] ticks.
+	 * Delay [delay] ticks before starting.
+	 *
+	 * @see BukkitScheduler.runTaskTimerAsynchronously
+	 */
+	fun asyncRepeat(delay: Long, interval: Long, block: () -> Unit): BukkitTask =
 		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, block, delay, interval)
 
-	inline fun sync(crossinline block: () -> Unit) {; syncTask(block); }
-	inline fun syncTask(crossinline block: () -> Unit): BukkitTask {
+	/**
+	 * Run [block] as a bukkit task on the next server tick
+	 * @see BukkitScheduler.runTask
+	 * @see BukkitScheduler.callSyncMethod
+	 */
+	inline fun sync(crossinline block: () -> Unit): BukkitTask {
 		return Bukkit.getScheduler().runTask(plugin, Runnable { block() })
 	}
 
-	inline fun syncDelay(delay: Long, crossinline block: () -> Unit) {; syncDelayTask(delay, block); }
-	inline fun syncDelayTask(delay: Long, crossinline block: () -> Unit): BukkitTask {
+	/**
+	 * Run [block] as a bukkit task in [delay] ticks.
+	 * @see BukkitScheduler.runTaskLater
+	 */
+	inline fun syncDelay(delay: Long, crossinline block: () -> Unit): BukkitTask {
 		return Bukkit.getScheduler().runTaskLater(plugin, Runnable { block() }, delay)
 	}
 
-	inline fun syncRepeat(delay: Long, interval: Long, crossinline block: () -> Unit) {; syncRepeatTask(
-		delay,
-		interval,
-		block
-	); }
-
-	inline fun syncRepeatTask(delay: Long, interval: Long, crossinline block: () -> Unit): BukkitTask =
+	/**
+	 * Run [block] as a bukkit task in [delay] ticks, repeating every [interval] ticks.
+	 * @see BukkitScheduler.runTaskTimer
+	 */
+	inline fun syncRepeat(delay: Long, interval: Long, crossinline block: () -> Unit): BukkitTask =
 		Bukkit.getScheduler().runTaskTimer(plugin, Runnable { block() }, delay, interval)
 
 	/**
+	 * Run [block] as an async task once per day
 	 * @param hour Hour of day, 0-23
+	 *
+	 * Leftover from SL code
 	 */
 	fun asyncAtHour(hour: Int, block: () -> Unit) {
 		require(hour in 0..23)
@@ -59,37 +78,13 @@ object Tasks {
 			time = now.plusDays(1).withHour(hour)
 		}
 
+		// Why not toEpochMillis?
+		// this whole thing seems dumb, but I don't want to touch it if it works.
 		val delay = (time.toEpochSecond() * 1000L) - System.currentTimeMillis()
 		check(delay > 0)
 
 		println("SCHEDULED TASK FOR $time, SUPPLIED HOUR OF DAY $hour, ACTUAL HOUR OF DAY ${time.hour}")
 
 		asyncDelay(delay / 50L, block)
-	}
-
-	fun bukkitRunnable(block: BukkitRunnable.() -> Unit): BukkitRunnable = object : BukkitRunnable() {
-		override fun run(): Unit = block()
-	}
-
-	fun asyncBukkitRunnable(block: BukkitRunnable.() -> Unit): BukkitTask = object : BukkitRunnable() {
-		override fun run(): Unit = block()
-	}.runTaskAsynchronously(plugin)
-
-	fun <T> getSync(block: () -> T): Future<T> = if (Bukkit.isPrimaryThread()) {
-		CompletableFuture.completedFuture(block())
-	} else {
-		Bukkit.getScheduler().callSyncMethod(plugin, block)
-	}
-
-	fun <T> getSyncBlocking(block: () -> T): T = getSync(block).get()
-
-	fun syncBlocking(block: () -> Unit) = getSyncBlocking(block)
-
-	fun namedThreadFactory(prefix: String) = object : ThreadFactory {
-		private var counter: Int = 0
-
-		override fun newThread(r: Runnable): Thread {
-			return Thread(r, "$prefix-${counter++}")
-		}
 	}
 }

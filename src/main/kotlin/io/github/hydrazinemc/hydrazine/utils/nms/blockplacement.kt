@@ -16,6 +16,9 @@ import org.bukkit.craftbukkit.v1_18_R2.block.data.CraftBlockData
 
 // Lol I'm too dumb for NMS, and bukkit is too slow (80k block ship = tps drop)
 
+/**
+ * Set the block at [position] in [world] to [data] using NMS
+ */
 private fun setBlockFast(world: Level, position: BlockPos, data: BlockState) {
 	val chunk: LevelChunk = world.getChunkAt(position)
 	val chunkSection = (position.y shr 4) - chunk.minSection
@@ -35,6 +38,9 @@ private fun setBlockFast(world: Level, position: BlockPos, data: BlockState) {
 	chunk.isUnsaved = true
 }
 
+/**
+ * Set [data] to [location] using NMS
+ */
 fun setBlockFast(location: Location, data: BlockData) {
 	val blockData = if (data is CraftBlockData) {
 		data.state
