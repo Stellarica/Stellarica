@@ -1,6 +1,6 @@
 package io.github.hydrazinemc.hydrazine.crafts
 
-import io.github.hydrazinemc.hydrazine.utils.BlockLocation
+import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.nms.setBlockFast
 import org.bukkit.block.data.BlockData
 import org.bukkit.scheduler.BukkitRunnable

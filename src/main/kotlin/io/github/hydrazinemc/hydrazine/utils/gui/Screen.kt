@@ -14,7 +14,10 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 
-
+/**
+ * Represents a GUI screen
+ * Serves as a wrapper around common GUI-related functionality
+ */
 abstract class Screen : Listener {
 	/**
 	 * The player who this screen is displayed to
@@ -23,9 +26,9 @@ abstract class Screen : Listener {
 		private set
 
 	/**
-	 * A reference to the inventory
+	 * A reference to the inventory itself
 	 */
-	lateinit var screen: Inventory
+	lateinit var inventory: Inventory
 		private set
 
 	/**
@@ -35,18 +38,32 @@ abstract class Screen : Listener {
 	 */
 	open val playerEditableSlots = setOf<Int>()
 
+
+	//TODO: Condense this all to open(player)
+	/**
+	 * Initialize this screen for [player] and register it as a listener.
+	 * @param inventory the inventory behind this screen.
+	 */
 	private fun createScreen(player: Player, inventory: Inventory) {
 		this.player = player
-		this.screen = inventory
+		this.inventory = inventory
 		onScreenUpdate()
 		Bukkit.getPluginManager().registerEvents(this, plugin)
-		player.openInventory(screen)
+		player.openInventory(inventory)
 	}
 
+	/**
+	 * Initialize this screen for [player]
+	 * @param type the type of inventory (hopper, chest, etc.)
+	 * @param name the name of the Screen
+	 */
 	fun createScreen(player: Player, type: InventoryType, name: String) {
 		createScreen(player, Bukkit.createInventory(player, type, text(name)))
 	}
 
+	/**
+	 * Initialize this Screen for [player] with [size] slots and [name] name.
+	 */
 	fun createScreen(player: Player, size: Int, name: String) {
 		createScreen(player, Bukkit.createInventory(player, size, text(name)))
 	}
@@ -74,13 +91,16 @@ abstract class Screen : Listener {
 	 */
 	open fun onScreenClosed() {}
 
+	/**
+	 * Unregister this screen from its subscribed Events, and call onScreenClosed() hook.
+	 */
 	fun closeScreen() {
 		// Unregister handlers first, otherwise we will create a loop when we call screen.close()
 		InventoryCloseEvent.getHandlerList().unregister(this)
 		InventoryDragEvent.getHandlerList().unregister(this)
 		InventoryClickEvent.getHandlerList().unregister(this)
 
-		screen.close()
+		inventory.close()
 
 		onScreenClosed()
 	}
@@ -90,13 +110,16 @@ abstract class Screen : Listener {
 	 */
 	fun setAll(slots: Set<Int>, item: ItemStack) {
 		slots.forEach {
-			screen.setItem(it, item)
+			inventory.setItem(it, item)
 		}
 	}
 
+	/**
+	 * Handles player inventory click events
+	 */
 	@EventHandler
 	fun onInventoryClickEvent(event: InventoryClickEvent) {
-		if (event.clickedInventory != screen) {
+		if (event.clickedInventory != inventory) {
 			// Might as well still update screen
 			onScreenUpdate()
 			return
@@ -106,7 +129,7 @@ abstract class Screen : Listener {
 			// In one server tick (once the item transfer takes place) trigger any actions based on the old slot contents
 			// and the new slot contents. Honestly, we don't care about the player's cursor.
 			Tasks.syncDelay(1) {
-				onPlayerChangeItem(event.slot, event.currentItem, screen.getItem(event.slot))
+				onPlayerChangeItem(event.slot, event.currentItem, inventory.getItem(event.slot))
 				onScreenUpdate()
 			}
 		} else {
@@ -117,17 +140,23 @@ abstract class Screen : Listener {
 		}
 	}
 
+	/**
+	 * Cancels InventoryDragEvents in this Screen
+	 */
 	@EventHandler
 	fun onPlayerDragItemEvent(event: InventoryDragEvent) {
-		if (event.inventory == screen) {
+		if (event.inventory == inventory) {
 			event.isCancelled = true
 			// Might as well update screen
 			onScreenUpdate()
 		}
 	}
 
+	/**
+	 * Handles player screen close
+	 */
 	@EventHandler
 	fun onPlayerCloseScreenEvent(event: InventoryCloseEvent) {
-		if (event.inventory == screen) closeScreen()
+		if (event.inventory == inventory) closeScreen()
 	}
 }

@@ -4,16 +4,15 @@ import io.github.hydrazinemc.hydrazine.Hydrazine
 import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter.blockSetQueueQueue
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
-import io.github.hydrazinemc.hydrazine.utils.BlockLocation
-import io.github.hydrazinemc.hydrazine.utils.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
-import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
-import io.github.hydrazinemc.hydrazine.utils.extensions.rotate
 import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
-import io.github.hydrazinemc.hydrazine.utils.nms.ConnectionUtils
-import io.github.hydrazinemc.hydrazine.utils.rotateCoordinates
+import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
+import io.github.hydrazinemc.hydrazine.utils.locations.ChunkLocation
+import io.github.hydrazinemc.hydrazine.utils.nms.TeleportUtils
+import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
+import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Location
@@ -22,6 +21,7 @@ import org.bukkit.World
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import rotate
 import kotlin.system.measureTimeMillis
 
 /**
@@ -33,7 +33,7 @@ open class Craft(
 	 * the craft rotates around
 	 */
 	var origin: Location
-	) {
+) {
 
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
 
@@ -90,7 +90,9 @@ open class Craft(
 	 * @see messagePassengers
 	 */
 	fun messagePilot(message: String) {
-		if (this is Pilotable) { pilot?.sendMiniMessage(message) ?: owner?.sendMiniMessage(message) }
+		if (this is Pilotable) {
+			pilot?.sendMiniMessage(message) ?: owner?.sendMiniMessage(message)
+		}
 	}
 
 	/**
@@ -107,7 +109,7 @@ open class Craft(
 	 * Detect this craft
 	 * @throws AlreadyMovingException
 	 */
-	fun detectCraft() {
+	fun detect() {
 		if (isMoving) throw AlreadyMovingException("Craft attempted to detect, but is currently moving!")
 		messagePilot("<gray>Detecting craft...")
 		Tasks.async {
@@ -128,12 +130,13 @@ open class Craft(
 					for (currentBlock in blocksToCheck) {
 						val chunkCoordinate = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
 
-						val chunk = chunkCache.getOrPut(chunkCoordinate) {
-							origin.world.getChunkAt(chunkCoordinate.x, chunkCoordinate.z).getChunkSnapshot(false, false, false)
-						}
-
-						val type =
-							chunk.getBlockData(
+						val type = chunkCache.getOrPut(chunkCoordinate) {
+							origin.world.getChunkAt(
+								chunkCoordinate.x,
+								chunkCoordinate.z
+							)
+								.getChunkSnapshot(false, false, false)
+						}.getBlockData(
 								currentBlock.x - (chunkCoordinate.x shl 4),
 								currentBlock.y,
 								currentBlock.z - (chunkCoordinate.z shl 4)
@@ -180,7 +183,7 @@ open class Craft(
 	fun movePassengers(offset: (Vector3) -> Vector3, rotation: RotationAmount = RotationAmount.NONE) {
 		passengers.forEach {
 			if (it is Player) {
-				ConnectionUtils.teleportRotate(it, offset(Vector3(it.location)).asLocation, rotation)
+				TeleportUtils.teleportRotate(it, offset(Vector3(it.location)).asLocation, rotation)
 			} else {
 				it.teleport(offset(Vector3(it.location)).asLocation)
 			}
@@ -268,7 +271,10 @@ open class Craft(
 			detectedBlocks.forEach { currentBlock ->
 				val currentChunkCoord = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
 				val currentBlockData = chunkCache.getOrPut(currentChunkCoord) {
-					world.getChunkAt(currentChunkCoord.x, currentChunkCoord.z).getChunkSnapshot(false, false, false)
+					world.getChunkAt(
+						currentChunkCoord.x,
+						currentChunkCoord.z
+					).getChunkSnapshot(false, false, false)
 				}.getBlockData(
 					currentBlock.x - (currentChunkCoord.x shl 4),
 					currentBlock.y,
@@ -278,7 +284,10 @@ open class Craft(
 
 				// Step 1: Confirm that there is still a detectable block there.
 				if (undetectables.contains(currentMaterial)) {
-					messagePilot("<red>Skipping undetectable block at (${currentBlock.x},${currentBlock.y},${currentBlock.z}) - $currentMaterial.")
+					messagePilot(
+						"<red>Skipping undetectable block at " +
+								"(${currentBlock.x},${currentBlock.y},${currentBlock.z}) - $currentMaterial."
+					)
 					messagePassengers("<bold><gold>This is a bug, please report it.")
 					// TODO: warn or throw something
 					return@forEach
@@ -310,17 +319,25 @@ open class Craft(
 					blocksToSet[targetBlock] = currentBlockData
 
 					// Step 5: Add the target block to the new detected blocks list.
-					if (!newDetectedBlocks.add(targetBlock)) Hydrazine.plugin.logger.warning("a newly detected block was overwritten while queueing $name!")
+					if (!newDetectedBlocks.add(targetBlock)) Hydrazine.plugin.logger.warning(
+						"A newly detected block was overwritten while queueing $name!"
+					)
 				} else {
 					// The ship is blocked!
-					messagePilot("<gold>$name blocked by $targetMaterial at <bold>(${targetBlock.x}, ${targetBlock.y}, ${targetBlock.z}</bold>)!")
+					messagePilot(
+						"<gold>$name blocked by $targetMaterial at " +
+								"<bold>(${targetBlock.x}, ${targetBlock.y}, ${targetBlock.z}</bold>)!"
+					)
 					this.isMoving = false
 					return@async
 				}
 			}
 
 			if (detectedBlocks.size != newDetectedBlocks.size) {
-				messagePassengers("<red>Lost <bold>${detectedBlocks.size - newDetectedBlocks.size}</bold> blocks while queuing $name!")
+				messagePassengers(
+					"<red>Lost <bold>${detectedBlocks.size - newDetectedBlocks.size}</bold> " +
+							"blocks while queuing $name!"
+				)
 				messagePassengers("<bold><gold>This is a bug, please report it.")
 			}
 

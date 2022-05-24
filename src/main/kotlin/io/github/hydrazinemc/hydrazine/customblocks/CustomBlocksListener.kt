@@ -1,20 +1,6 @@
 package io.github.hydrazinemc.hydrazine.customblocks
 
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
-import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
-import org.bukkit.Bukkit.getOnlinePlayers
-import org.bukkit.Bukkit.getScheduler
-import org.bukkit.Bukkit.getServer
-import org.bukkit.Material
-import org.bukkit.block.Block
-import org.bukkit.block.BlockFace
-import org.bukkit.block.data.BlockData
-import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockPhysicsEvent
-import org.bukkit.event.block.BlockPistonExtendEvent
-import org.bukkit.event.block.BlockPistonRetractEvent
-import org.bukkit.event.block.BlockPlaceEvent
 
 /**
  * handles custom blocks
@@ -77,7 +63,8 @@ class CustomBlocksListener : Listener {
 
 		blocksToUpdate.add(event.block)
 
-		// It is important to find every block that changed as these changes will be processed client side, so we need to update ALL of them to ensure they are all correct client side.
+		// It is important to find every block that changed as these changes will be processed client side,
+		// so we need to update ALL of them to ensure they are all correct client side.
 		while (blocksToUpdate.isNotEmpty()) {
 			val block = blocksToUpdate.first()
 			blocksToUpdate.remove(block)

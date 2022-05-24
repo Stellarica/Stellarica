@@ -11,21 +11,22 @@ import org.bukkit.scheduler.BukkitRunnable
  */
 object StarshipMover : BukkitRunnable() {
 
-	var tickCounter = 0
+	private var tickCounter = 0
 		private set
 
-	val movesPerSecond: Float
+	private val movesPerSecond: Float
 		get() = 20 / ticksPerMove.toFloat()
 
-	var ticksPerMove = 0
-		private set
+	private var ticksPerMove = 0
+
+
 	/**
 	 * Should not be called manually, as this is part of a Bukkit runnable.
 	 */
 	override fun run() {
 		tickCounter++
 		if (tickCounter >= ticksPerMove) {
-			pilotedCrafts.forEach {ship ->
+			pilotedCrafts.forEach { ship ->
 				if (ship !is Starship) return@forEach
 				if (ship.velocty == Vector3.zero) return@forEach
 				if (ship.isMoving) return@forEach
