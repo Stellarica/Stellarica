@@ -14,6 +14,10 @@ import java.io.File
  */
 @CommandAlias("hconfig|hc")
 class ConfigCommand : BaseCommand() {
+
+	/**
+	 * Reload the configuration file
+	 */
 	@Subcommand("reload")
 	@Description("Reloads the Hydrazine config files")
 	@CommandPermission("hydrazine.config.reload")
@@ -23,6 +27,9 @@ class ConfigCommand : BaseCommand() {
 		sender.sendMessage("Reloaded config")
 	}
 
+	/**
+	 * Reset the configuration file
+	 */
 	@Subcommand("reset")
 	@Description("Resets the Hydrazine config files")
 	@CommandPermission("hydrazine.config.reset")

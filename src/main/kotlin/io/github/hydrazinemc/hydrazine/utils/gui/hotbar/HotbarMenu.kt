@@ -16,6 +16,10 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerItemHeldEvent
 import org.bukkit.event.player.PlayerQuitEvent
 
+/**
+ * Abstract Hotbar menu
+ */
+// TODO: handle opening menu when another menu is open
 abstract class HotbarMenu : Listener {
 	private val players = mutableMapOf<Player, HotbarState>()
 
@@ -28,6 +32,7 @@ abstract class HotbarMenu : Listener {
 		Bukkit.getPluginManager().registerEvents(this, plugin)
 	}
 
+	//region hooks
 	/**
 	 * Called when the player selects the item at index
 	 */
@@ -53,13 +58,19 @@ abstract class HotbarMenu : Listener {
 	 * @see toggleable
 	 */
 	open fun onMenuToggled(player: Player) {}
+	//endregion
 
-
+	/**
+	 * Open this menu for [player]
+	 */
 	fun openMenu(player: Player) {
 		players[player] = HotbarState(player.hotbar, mutableListOf(), true)
 		onMenuOpened(player)
 	}
 
+	/**
+	 * Close this menu for [player]
+	 */
 	fun closeMenu(player: Player) {
 		val status = players[player] ?: return
 		if (status.isMenuOpen) {
@@ -69,11 +80,19 @@ abstract class HotbarMenu : Listener {
 		players.remove(player)
 	}
 
+	//region handlers
+	/**
+	 * Event handler, do not call
+	 */
 	@EventHandler
 	fun onPlayerChangeSlot(event: PlayerItemHeldEvent) {
 		onChangeSelectedSlot(event.previousSlot, event.newSlot, event.player)
 	}
 
+
+	/**
+	 * Event handler, do not call
+	 */
 	@EventHandler
 	fun onPlayerToggleMenu(event: PlayerDropItemEvent) {
 		val status = players[event.player] ?: return
@@ -103,6 +122,9 @@ abstract class HotbarMenu : Listener {
 		}
 	}
 
+	/**
+	 * Event handler, do not call
+	 */
 	@EventHandler
 	fun onPlayerClick(event: PlayerInteractEvent) {
 		val status = players[event.player] ?: return
@@ -110,33 +132,50 @@ abstract class HotbarMenu : Listener {
 		onButtonClicked(event.player.inventory.heldItemSlot, event.player)
 	}
 
+
+	/**
+	 * Event handler, do not call
+	 */
 	@EventHandler
 	fun onInventoryClick(event: InventoryClickEvent) {
 		val status = players[event.whoClicked] ?: return
 		if (status.isMenuOpen) event.isCancelled = true
 	}
 
+	/**
+	 * Event handler, do not call
+	 */
 	@EventHandler
 	fun onPlayerDragItem(event: InventoryDragEvent) {
 		val status = players[event.whoClicked] ?: return
 		if (status.isMenuOpen) event.isCancelled = true
 	}
 
+	/**
+	 * Event handler, do not call
+	 */
 	@EventHandler
 	fun onPlayerDragItem(event: PlayerAttemptPickupItemEvent) {
 		val status = players[event.player] ?: return
 		if (status.isMenuOpen) event.isCancelled = true
 	}
 
+	/**
+	 * Event handler, do not call
+	 */
 	@EventHandler
 	fun onPlayerDie(event: PlayerDeathEvent) {
 		players[event.player] ?: return
 		closeMenu(event.player)
 	}
 
+	/**
+	 * Event handler, do not call
+	 */
 	@EventHandler
 	fun onPlayerLeave(event: PlayerQuitEvent) {
 		players[event.player] ?: return
 		closeMenu(event.player)
 	}
+	//endregion
 }

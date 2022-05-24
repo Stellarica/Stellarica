@@ -1,5 +1,10 @@
-import io.github.hydrazinemc.hydrazine.utils.RotationAmount
+import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
+import io.github.hydrazinemc.hydrazine.utils.rotation.rotateAxis
 import org.bukkit.block.BlockFace
+import org.bukkit.block.data.BlockData
+import org.bukkit.block.data.Directional
+import org.bukkit.block.data.Orientable
+import org.bukkit.block.data.Rotatable
 
 /**
  * Rotate [face] by [RotationAmount]
@@ -52,5 +57,27 @@ fun rotateCardinalFaceOpposite(face: BlockFace): BlockFace {
 		BlockFace.EAST -> BlockFace.WEST
 		BlockFace.SOUTH -> BlockFace.NORTH
 		else -> face
+	}
+}
+
+/**
+ * Rotate this data by [amount]
+ *
+ * Works with [Directional]s, [Orientable]s, and [Rotatable]s
+ * and will silently fail if this is not one of those.
+ */
+fun BlockData.rotate(amount: RotationAmount) {
+	if (amount == RotationAmount.NONE) return
+	// Handle rotation of Directionals
+	if (this is Directional) {
+		this.facing = rotateBlockFace(this.facing, amount)
+	}
+	// Rotation of Orientables
+	if (this is Orientable && amount != RotationAmount.REVERSE) {
+		this.axis = rotateAxis(this.axis)
+	}
+	// Rotation of Rotatables
+	if (this is Rotatable) {
+		this.rotation = rotateBlockFace(this.rotation, amount)
 	}
 }

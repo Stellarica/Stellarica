@@ -1,14 +1,13 @@
 package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control
 
-import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
-import io.github.hydrazinemc.hydrazine.utils.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.craft
 import io.github.hydrazinemc.hydrazine.utils.extensions.hotbar
 import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import io.github.hydrazinemc.hydrazine.utils.gui.hotbar.HotbarMenu
-import io.github.hydrazinemc.hydrazine.utils.namedItem
+import io.github.hydrazinemc.hydrazine.utils.gui.namedItem
+import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
@@ -45,9 +44,11 @@ object ShipControlHotbar : HotbarMenu() {
 			4 -> {
 				ship.queueRotation(RotationAmount.CLOCKWISE)
 			}
+
 			5 -> {
 				ship.queueRotation(RotationAmount.COUNTERCLOCKWISE)
 			}
+
 			8 -> {
 				if (ship.deactivateCraft()) closeMenu(player)
 			}
