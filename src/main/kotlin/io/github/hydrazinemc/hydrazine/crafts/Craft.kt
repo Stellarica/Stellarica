@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hydrazine.crafts
 
 import io.github.hydrazinemc.hydrazine.Hydrazine
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter.blockSetQueueQueue
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
@@ -146,7 +147,7 @@ open class Craft(
 						if (undetectables.contains(type)) continue
 
 						if (detectedBlocks.size > ConfigurableValues.detectionLimit) {
-							Hydrazine.plugin.logger.info("Detection limit reached. (${ConfigurableValues.detectionLimit})")
+							klogger.info {"Detection limit reached. (${ConfigurableValues.detectionLimit})"}
 							messagePilot("<gold>Detection limit reached. (${ConfigurableValues.detectionLimit} blocks)")
 							nextBlocksToCheck.clear()
 							detectedBlocks.clear()
@@ -319,9 +320,9 @@ open class Craft(
 					blocksToSet[targetBlock] = currentBlockData
 
 					// Step 5: Add the target block to the new detected blocks list.
-					if (!newDetectedBlocks.add(targetBlock)) Hydrazine.plugin.logger.warning(
+					if (!newDetectedBlocks.add(targetBlock)) klogger.warn {
 						"A newly detected block was overwritten while queueing $name!"
-					)
+					}
 				} else {
 					// The ship is blocked!
 					messagePilot(

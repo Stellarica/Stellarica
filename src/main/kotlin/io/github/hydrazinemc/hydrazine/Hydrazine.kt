@@ -9,8 +9,10 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners.Inte
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocksListener
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
+import mu.KotlinLogging
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.plugin.java.JavaPlugin
+import java.util.logging.Logger
 
 /**
  * Base plugin class
@@ -28,7 +30,17 @@ class Hydrazine : JavaPlugin() {
 		 * The currently piloted [Pilotable]s
 		 */
 		var pilotedCrafts = mutableSetOf<Pilotable>()
+
+		/**
+		 * kotlin-logging logger for Hydrazine
+		 * @see getLogger
+		 */
+		val klogger = KotlinLogging.logger("Hydrazine")
 	}
+
+	@Deprecated("Use kotlin-logging instead", ReplaceWith("klogger"))
+	override fun getLogger(): Logger = super.getLogger()
+
 
 	override fun onEnable() {
 		plugin = this
