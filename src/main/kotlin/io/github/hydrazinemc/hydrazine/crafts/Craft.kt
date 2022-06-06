@@ -1,6 +1,5 @@
 package io.github.hydrazinemc.hydrazine.crafts
 
-import io.github.hydrazinemc.hydrazine.Hydrazine
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter.blockSetQueueQueue
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
@@ -269,14 +268,17 @@ open class Craft(
 
 			val airData = Bukkit.createBlockData(Material.AIR)
 
+			val entities = mutableMapOf<BlockLocation, BlockLocation>()
+
 			detectedBlocks.forEach { currentBlock ->
 				val currentChunkCoord = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
-				val currentBlockData = chunkCache.getOrPut(currentChunkCoord) {
+				val currentChunk = chunkCache.getOrPut(currentChunkCoord) {
 					world.getChunkAt(
 						currentChunkCoord.x,
 						currentChunkCoord.z
 					).getChunkSnapshot(false, false, false)
-				}.getBlockData(
+				}
+				val currentBlockData = currentChunk.getBlockData(
 					currentBlock.x - (currentChunkCoord.x shl 4),
 					currentBlock.y,
 					currentBlock.z - (currentChunkCoord.z shl 4)
@@ -319,6 +321,11 @@ open class Craft(
 					// Step 4: Set the target block to the block data of the current block.
 					blocksToSet[targetBlock] = currentBlockData
 
+					// TODO: MAKE THIS ACTUALLY WORK FOR ALL TILE ENTITIES
+					if (currentBlockData.material == Material.CHEST) {
+						entities[currentBlock] = targetBlock
+					}
+
 					// Step 5: Add the target block to the new detected blocks list.
 					if (!newDetectedBlocks.add(targetBlock)) klogger.warn {
 						"A newly detected block was overwritten while queueing $name!"
@@ -343,7 +350,7 @@ open class Craft(
 			}
 
 			detectedBlocks = newDetectedBlocks
-			blockSetQueueQueue[blocksToSet] = CraftMoveData(this, modifier, rotation)
+			blockSetQueueQueue[blocksToSet] = CraftMoveData(this, modifier, rotation, entities)
 		}
 	}
 }
