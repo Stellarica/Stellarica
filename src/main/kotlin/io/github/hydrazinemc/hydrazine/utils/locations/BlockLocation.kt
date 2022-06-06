@@ -1,5 +1,6 @@
 package io.github.hydrazinemc.hydrazine.utils.locations
 
+import net.minecraft.core.BlockPos
 import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.Block
@@ -41,4 +42,10 @@ data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) 
 	 */
 	val asLocation: Location
 		get() = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
+
+	/**
+	 * This as an NMS [BlockPos]
+	 */
+	val asBlockPos: BlockPos
+		get() = BlockPos(x, y, z)
 }

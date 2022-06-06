@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hydrazine.crafts
 
 import io.github.hydrazinemc.hydrazine.utils.Vector3
+import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 
 /**
@@ -18,5 +19,10 @@ data class CraftMoveData(
 	/**
 	 * The amount to rotate all directional blocks and passengers.
 	 */
-	val rotation: RotationAmount
+	val rotation: RotationAmount,
+	/**
+	 * The tile entities to move.
+	 * current, target positions
+	 */
+	val entities: Map<BlockLocation, BlockLocation>
 )

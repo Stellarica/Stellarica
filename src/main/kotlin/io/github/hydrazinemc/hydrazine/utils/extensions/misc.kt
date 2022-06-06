@@ -13,3 +13,4 @@ fun CommandSender.sendMiniMessage(message: String) = sendMessage(message.asMiniM
  * This string as a Component, using MiniMessage formatting
  */
 val String.asMiniMessage: Component get() = MiniMessage.miniMessage().deserialize(this.trimIndent())
+
