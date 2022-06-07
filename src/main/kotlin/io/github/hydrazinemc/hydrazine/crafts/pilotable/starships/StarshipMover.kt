@@ -28,11 +28,11 @@ object StarshipMover : BukkitRunnable() {
 		if (tickCounter >= ticksPerMove) {
 			pilotedCrafts.forEach { ship ->
 				if (ship !is Starship) return@forEach
-				if (ship.velocty == Vector3.zero) return@forEach
+				if (ship.velocity == Vector3.zero) return@forEach
 				if (ship.isMoving) return@forEach
 
-				ship.queueMovement((ship.velocty / movesPerSecond).asBlockLocation)
-				ship.messagePilot("|Velocity: <bold>(${ship.velocty.x}, ${ship.velocty.y}, ${ship.velocty.z})")
+				ship.queueMovement((ship.velocity / movesPerSecond).asBlockLocation)
+				ship.messagePilot("|Velocity: <bold>(${ship.velocity.x}, ${ship.velocity.y}, ${ship.velocity.z})")
 				ship.messagePilot("<gray>$movesPerSecond moves per second")
 			}
 			tickCounter = 0

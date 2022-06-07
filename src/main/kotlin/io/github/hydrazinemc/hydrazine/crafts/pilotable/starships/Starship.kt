@@ -12,9 +12,9 @@ class Starship(origin: Location) : Pilotable(origin) {
 	 * The velocity (in blocks per second) of this starship
 	 * @see maxVelocity
 	 */
-	var velocty: Vector3 = Vector3.zero
+	var velocity: Vector3 = Vector3.zero
 		set(value) {
-			field = value.clamp(Vector3.zero, maxVelocity)
+			field = value.clamp(-maxVelocity, maxVelocity)
 		}
 
 	/**
@@ -23,12 +23,12 @@ class Starship(origin: Location) : Pilotable(origin) {
 	 */
 	var acceleration: Vector3 = Vector3.zero
 		set(value) {
-			field = value.clamp(Vector3.zero, maxAcceleration)
+			field = value.clamp(-maxAcceleration, maxAcceleration)
 		}
 
 	/**
 	 * The maximum velocity this starship can travel at
-	 * @see velocty
+	 * @see velocity
 	 */
 	var maxVelocity: Vector3 = Vector3(20.0, 20.0, 20.0)
 
