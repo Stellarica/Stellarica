@@ -88,4 +88,9 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 		y.coerceIn(min.y, max.y),
 		z.coerceIn(min.z, max.z)
 	)
+
+	/**
+	 * This vector, inverted
+	 */
+	operator fun unaryMinus(): Vector3 = Vector3(-x, -y, -z)
 }
