@@ -28,15 +28,10 @@ object CraftBlockSetter : BukkitRunnable() {
 
 	/**
 	 * Should not be called manually, as this is part of a Bukkit runnable.
-	 *
-	 * Moves as many blockSetQueues from [blockSetQueueQueue] as it can in 40 ms.
-	 * Can spend over 40ms running when moving large queues=
+	 * Moves blockSetQueues from [blockSetQueueQueue].
 	 */
 	override fun run() {
-		val targetTime = System.currentTimeMillis() + 40
-		// go through as many craft moves as we can within 40ms
-		while (System.currentTimeMillis() < targetTime) {
-			if (blockSetQueueQueue.isEmpty()) break
+		while (blockSetQueueQueue.isNotEmpty()) {
 
 			val moveData = blockSetQueueQueue.values.first()
 			val blockSetQueue = blockSetQueueQueue.keys.first()

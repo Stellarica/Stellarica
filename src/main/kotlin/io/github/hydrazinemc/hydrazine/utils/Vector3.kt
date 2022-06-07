@@ -68,6 +68,12 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	val asBlockLocation: BlockLocation = BlockLocation(x.roundToInt(), y.roundToInt(), z.roundToInt(), null)
 
 	/**
+	 * This Vector3 as a string with MiniMessage formatting
+	 */
+	val miniMessage: String
+		get() = "(<b>$x</b>, <b>$y</b>, <b>$z</b>)"
+
+	/**
 	 * Get this position rotated around [origin] by [theta] radians
 	 * @see rotateCoordinates
 	 */
