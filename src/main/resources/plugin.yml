@@ -24,6 +24,6 @@ permissions:
         setacceleration:
           description: Lets users set the acceleration of a starship
           default: op
-        rotate:
-          description: Lets users rotate a starship
+        get:
+          description: Lets users get the current movement data
           default: op

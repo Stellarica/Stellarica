@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover.movesPerSecond
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.craft
 import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
@@ -38,6 +39,24 @@ class StarshipDebugCommands : BaseCommand() {
 	fun onSetAcceleration(sender: Player, x: Double, y: Double, z: Double)  {
 		(getShip(sender)?: return).acceleration = Vector3(x, y, z)
 		sender.sendMiniMessage("<green>Set starship acceleration to ($x, $y, $z)")
+	}
+
+	/**
+	 * Get the ship's accel and velocity
+	 */
+	@Subcommand("get")
+	@Description("Get the starship's velocity and acceleration")
+	@CommandPermission("hydrazine.starship.debug.get")
+	fun onGetData(sender: Player) {
+		val ship = 	getShip(sender) ?: return
+		sender.sendMiniMessage("""
+			------
+			<b>Starship Movement Debug
+			Velocity</b>: ${ship.velocity.miniMessage}
+			<b>Acceleration</b>: ${ship.acceleration.miniMessage}
+			<b>Moves Per Second</b>: $movesPerSecond
+			------
+		""".trimIndent())
 	}
 
 	private fun getShip(sender: Player): Starship? {
