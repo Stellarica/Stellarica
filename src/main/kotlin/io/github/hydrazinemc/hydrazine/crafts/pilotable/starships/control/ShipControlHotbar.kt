@@ -39,8 +39,8 @@ object ShipControlHotbar : HotbarMenu() {
 			return
 		}
 		when (index) {
-			0 -> ship.velocty += Vector3(player.eyeLocation.direction.normalize())
-			1 -> ship.velocty -= Vector3(player.eyeLocation.direction.normalize())
+			0 -> ship.velocity += Vector3(player.eyeLocation.direction.normalize())
+			1 -> ship.velocity -= Vector3(player.eyeLocation.direction.normalize())
 			4 -> {
 				ship.queueRotation(RotationAmount.CLOCKWISE)
 			}
