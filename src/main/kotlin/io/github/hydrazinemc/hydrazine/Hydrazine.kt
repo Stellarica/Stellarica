@@ -5,6 +5,7 @@ import io.github.hydrazinemc.hydrazine.commands.ConfigCommand
 import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.commands.StarshipDebugCommands
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocksListener
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
@@ -57,6 +58,7 @@ class Hydrazine : JavaPlugin() {
 
 		val commandManager = PaperCommandManager(this)
 		commandManager.registerCommand(ConfigCommand())
+		commandManager.registerCommand(StarshipDebugCommands())
 
 		CraftBlockSetter.runTaskTimer(plugin, 1, 1)
 		StarshipMover.runTaskTimer(plugin, 1, 1)

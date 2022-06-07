@@ -8,9 +8,22 @@ authors: [ "Peter-Crawley", "trainb0y1", "DoctorXeno" ]
 website: https://github.com/HydrazineMC/Hydrazine
 prefix: Hydrazine
 permissions:
-  hydrazine.config.reload:
-    description: Lets users reload the configuration file
-    default: op
-  hydrazine.config.reset:
-    description: Lets users reset the configuration file
-    default: op
+  hydrazine:
+    config:
+      reload:
+        description: Lets users reload the configuration file
+        default: op
+      reset:
+        description: Lets users reset the configuration file
+        default: op
+    starship:
+      debug:
+        setvelocity:
+          description: Lets users set the velocity of a starship
+          default: op
+        setacceleration:
+          description: Lets users set the acceleration of a starship
+          default: op
+        rotate:
+          description: Lets users rotate a starship
+          default: op
