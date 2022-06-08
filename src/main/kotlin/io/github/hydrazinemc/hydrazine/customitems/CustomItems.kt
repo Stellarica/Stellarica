@@ -35,7 +35,7 @@ object CustomItems {
 				id,
 				conf.getString("$itemPath.name")!!,
 				conf.getStringList("$itemPath.lore"),
-				Material.valueOf(conf.getString("$itemPath.base")!!),
+				Material.valueOf(conf.getString("$itemPath.base")!!.uppercase()),
 				conf.getInt("$itemPath.data"),
 				conf.getInt("$itemPath.maxPower"),
 			)
