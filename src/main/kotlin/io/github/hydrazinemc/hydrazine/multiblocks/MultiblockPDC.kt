@@ -1,6 +1,6 @@
-package io.github.petercrawley.minecraftstarshipplugin.multiblocks
+package io.github.hydrazinemc.hydrazine.multiblocks
 
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import org.bukkit.NamespacedKey
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer

@@ -84,41 +84,6 @@ timeOperations: true
 # Detection Limit
 detectionLimit: 500000
 
-# Multiblocks
-multiblocks:
-  testMultiblock:
-    layers:
-      0:
-        - "grg"
-        - "rdr"
-        - "gig"
-      1:
-        - "grg"
-        - "rdr"
-        - "grg"
-    key:
-      g: "RED_STAINED_GLASS"
-      r: "REDSTONE_BLOCK"
-      d: "DIAMOND_BLOCK"
-      i: "INTERFACE"
-
-# Custom Blocks
-customBlocks:
-    interface:
-        north: false
-        east:  false
-        south: false
-        west:  false
-        up:    false
-        down:  false
-
-  starship_computer:
-    north: false
-    east:  false
-    south: false
-    west:  false
-    up:    false
-    down:  true
 
 # These blocks can not be detected at all.
 forcedUndetectable:
