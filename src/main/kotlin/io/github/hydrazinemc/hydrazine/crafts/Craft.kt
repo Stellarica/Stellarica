@@ -44,6 +44,17 @@ open class Craft(
 	var isMoving = false
 
 	/**
+	 * The time (in millis) that this craft took to move
+	 * when it was last moved.
+	 *
+	 * Note that this does not include time spent queueing movement,
+	 * but only the time to place the blocks.
+	 *
+	 * Handled by [CraftBlockSetter]
+	 */
+	var timeSpentMoving: Long = 0
+
+	/**
 	 * The.. uh.. passengers...
 	 */
 	var passengers = mutableSetOf<Entity>()
@@ -64,23 +75,6 @@ open class Craft(
 	 */
 	val blockCount: Int
 		get() = detectedBlocks.size
-
-	/**
-	 * The time (in ms since epoch) that the craft last queued movement.
-	 * Don't use this to check whether the ship is moving, use isMoving instead
-	 *
-	 * @see timeSinceMoved
-	 */
-	var lastMoved: Long = 0
-
-	/**
-	 * The time (in ms) since the ship last queued movement.
-	 * Don't use this to check whether the ship is moving, use isMoving instead
-	 *
-	 * @see lastMoved
-	 */
-	val timeSinceMoved: Long
-		get() = System.currentTimeMillis() - lastMoved
 
 	/**
 	 * Message this craft's pilot, if it has one.
@@ -256,7 +250,6 @@ open class Craft(
 	) {
 		if (isMoving) throw AlreadyMovingException("Craft attempted to queue movement, but it is already moving!")
 		isMoving = true
-		lastMoved = System.currentTimeMillis()
 
 		Tasks.async {
 			// TODO: handle unloaded chunks
