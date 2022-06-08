@@ -64,6 +64,9 @@ class CustomItemCommands : BaseCommand() {
 		)
 	}
 
+	/**
+	 * Set the power of the held custom item
+	 */
 	@Subcommand("setpower")
 	@Description("Set the power of the held item")
 	@CommandPermission("hydrazine.customitems.setpower")

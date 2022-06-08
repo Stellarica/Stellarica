@@ -10,6 +10,10 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.ShapelessRecipe
 
+/**
+ * Keeps track of registed [items]
+ * Utilities for dealing with custom items
+ */
 object CustomItems {
 	private val items = mutableMapOf<String, CustomItem>()
 
