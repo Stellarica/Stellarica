@@ -38,22 +38,33 @@ customItems:
         - "test_item"
         - "test_item"
 
+  custom_item:
+    name: "<blue>Custom Block <gold><b>WOW!"
+    base: MUSHROOM_STEM
+    data: 1
 
-# Output how long it takes to detect/move a ship
-timeOperations: false
-
-# Detection Limit
-detectionLimit: 500000
 
 # Custom Blocks
 customBlocks:
-  interface:
-    north: false
-    east: false
-    south: false
-    west: false
-    up: false
-    down: false
+  custom_block:
+    item: custom_item
+    drops:
+      count: 2
+      item: dirt
+    faces:
+      north: false
+      east: false
+      south: false
+      west: false
+      up: false
+      down: false
+
+
+# Output how long it takes to detect/move a ship
+timeOperations: true
+
+# Detection Limit
+detectionLimit: 500000
 
 # These blocks can not be detected at all.
 forcedUndetectable:

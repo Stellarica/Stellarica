@@ -1,12 +1,25 @@
 package io.github.hydrazinemc.hydrazine.customblocks
 
+import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.utils.Tasks
+import org.bukkit.Bukkit.getOnlinePlayers
+import org.bukkit.Bukkit.getServer
+import org.bukkit.Material
+import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
+import org.bukkit.block.data.BlockData
+import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockPhysicsEvent
+import org.bukkit.event.block.BlockPistonExtendEvent
+import org.bukkit.event.block.BlockPistonRetractEvent
+import org.bukkit.event.block.BlockPlaceEvent
 
 /**
- * handles custom blocks
+ * Handles mushroom stem updates for custom blocks
  */
-class CustomBlocksListener : Listener {
-	/*
+class MushroomEventListener : Listener {
+
 	// For our purposes BlockPistonExtendEvent and BlockPistonRetractEvent can be handled the same way.
 	// TODO: There are some occasions where the block still changes, this needs to be resolved.
 	private fun mushroomBlockMovedByPiston(blocks: List<Block>, direction: BlockFace) {
@@ -19,24 +32,32 @@ class CustomBlocksListener : Listener {
 
 		if (blocksToChange.isNotEmpty()) {
 			// Create a task to correct the blocks after the piston is done doing its thing.
-			getScheduler().runTask(plugin, Runnable {
+			Tasks.sync {
 				blocksToChange.forEach { it.key.setBlockData(it.value, false) }
-			})
+			}
 		}
 	}
 
+	/**
+	 * @see mushroomBlockMovedByPiston
+	 */
 	@EventHandler
 	fun mushroomBlockPushedByPiston(event: BlockPistonExtendEvent) {
 		mushroomBlockMovedByPiston(event.blocks, event.direction)
 	}
 
+	/**
+	* @see mushroomBlockMovedByPiston
+	*/
 	@EventHandler
 	fun mushroomBlockPulledByPiston(event: BlockPistonRetractEvent) {
 		mushroomBlockMovedByPiston(event.blocks, event.direction)
 	}
 
-	// If a mushroom block is placed force its faces to all be true.
-	// This allows us to keep allowing the use of the blocks in builds.
+	/**
+	 * If a mushroom block is placed force its faces to all be true.
+	 * This allows us to keep allowing the use of the blocks in builds.
+	 */
 	@EventHandler
 	fun mushroomBlockPlaced(event: BlockPlaceEvent) {
 		val block = event.blockPlaced
@@ -49,7 +70,9 @@ class CustomBlocksListener : Listener {
 		) // A blank block data will have all sides set to true.
 	}
 
-	// Prevent the block faces from changing.
+	/**
+	 * Prevents the block faces of mushroom blocks from changing
+	 */
 	// This has to be done on the main thread as doing it async will cause issues.
 	// TODO: On the client the mushroom blocks flash with the incorrect faces very briefly, see if this can be avoided.
 	@EventHandler
@@ -97,25 +120,4 @@ class CustomBlocksListener : Listener {
 			blocksToUpdate.add(block.getRelative(0, 0, -1))
 		}
 	}
-
-	@EventHandler
-	fun onMSPConfigReload(event: HydrazineConfigReloadEvent) {
-		val newCustomBlocks = mutableMapOf<Byte, String>()
-
-		plugin.config.getConfigurationSection("customBlocks")?.getKeys(false)?.forEach {
-			val id = (
-					if (plugin.config.getBoolean("customBlocks.$it.north")) 32 else 0 +
-							if (plugin.config.getBoolean("customBlocks.$it.east")) 16 else 0 +
-									if (plugin.config.getBoolean("customBlocks.$it.south")) 8 else 0 +
-											if (plugin.config.getBoolean("customBlocks.$it.west")) 4 else 0 +
-													if (plugin.config.getBoolean("customBlocks.$it.up")) 2 else 0 +
-															if (plugin.config.getBoolean("customBlocks.$it.down")) 1 else 0
-					).toByte()
-
-			newCustomBlocks[id] = it.uppercase()
-		}
-
-		// MSPMaterial.customBlocks = newCustomBlocks
-	}
-	 */
 }
