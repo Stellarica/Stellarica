@@ -1,11 +1,11 @@
 package io.github.hydrazinemc.hydrazine.customitems
 
-import io.github.hydrazinemc.hydrazine.Hydrazine
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.utils.extensions.asMiniMessage
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
@@ -29,7 +29,8 @@ data class CustomItem(
 	val lore: List<String>,
 
 	/**
-	 * The vanilla material behind this item	 */
+	 * The vanilla material behind this item
+	 */
 	val base: Material,
 
 	/**
@@ -43,7 +44,18 @@ data class CustomItem(
 	 */
 	val maxPower: Int = -1,
 
+	/**
+	 * The allowed enchants for this item
+	 */
+	val allowedEnchants: MutableSet<Enchantment> = mutableSetOf()
+
 	) {
+
+	/**
+	 * Whether this item can hold power,
+	 * @see maxPower
+	 */
+	val isPowerable: Boolean = maxPower > 0
 
 	/**
 	 * @return an [ItemStack] with [count] of this item

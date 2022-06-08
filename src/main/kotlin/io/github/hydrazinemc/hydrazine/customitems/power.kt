@@ -1,13 +1,9 @@
 package io.github.hydrazinemc.hydrazine.customitems
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
-import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.extensions.asMiniMessage
 import net.kyori.adventure.text.Component
 import org.bukkit.NamespacedKey
-import org.bukkit.event.EventHandler
-import org.bukkit.event.Listener
-import org.bukkit.event.player.PlayerItemBreakEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
@@ -18,7 +14,7 @@ import kotlin.math.roundToInt
 /**
  * Update this item's durability to match the current [power]/[maxPower]
  */
-private fun ItemStack.updatePowerDurability() {
+fun ItemStack.updatePowerDurability() {
 	if (!this.isPowerable) return // todo: throw something?
 	this.editMeta {
 		// In order to update the durability bar we need to set it to *not* be unbreakable
@@ -32,7 +28,7 @@ private fun ItemStack.updatePowerDurability() {
  * Whether this ItemStack is a powerable custom item
  */
 val ItemStack.isPowerable: Boolean
-	get() = (this.customItem?.maxPower ?: -1) > 0
+	get() = this.customItem?.isPowerable ?: false
 
 val ItemStack.maxPower: Int?
 	get() = this.customItem?.maxPower
@@ -69,16 +65,3 @@ var ItemStack.power: Int?
 		this.updatePowerDurability()
 	}
 
-/**
- * Cancels powerable items breaking, as their item durability is set by the [power]
- */
-class PowerItemBreakCanceller : Listener {
-	// Have to cancel damage on powerable items, otherwise ones at 0 power will break
-	@EventHandler
-	fun preventDamage(event: PlayerItemBreakEvent) {
-		if (!event.brokenItem.isPowerable) return
-		// https://bukkit.org/threads/playeritembreakevent-cancelling.282678/
-		event.brokenItem.amount += 1 // If there's a custom item dupe it's probably because of this
-		Tasks.syncDelay(1) { event.brokenItem.updatePowerDurability() }
-	}
-}
