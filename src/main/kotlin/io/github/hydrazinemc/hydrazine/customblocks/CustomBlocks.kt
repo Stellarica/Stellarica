@@ -8,7 +8,7 @@ import org.bukkit.block.data.MultipleFacing
 import org.bukkit.inventory.ItemStack
 
 /**
- *
+ * Loads CustomBlocks from the config and keeps track of registered [blocks]
  */
 object CustomBlocks {
 	/**

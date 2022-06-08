@@ -20,7 +20,8 @@ fun ItemStack.updatePowerDurability() {
 		// In order to update the durability bar we need to set it to *not* be unbreakable
 		it.isUnbreakable = false
 		(it as Damageable).damage =
-			(this.type.maxDurability - this.power!!.toFloat() / this.customItem!!.maxPower * this.type.maxDurability).roundToInt()
+			(this.type.maxDurability - this.power!!.toFloat() /
+					this.customItem!!.maxPower * this.type.maxDurability).roundToInt()
 	}
 }
 
@@ -30,6 +31,10 @@ fun ItemStack.updatePowerDurability() {
 val ItemStack.isPowerable: Boolean
 	get() = this.customItem?.isPowerable ?: false
 
+/**
+ * The maximum power this item can hold
+ * @see CustomItem.maxPower
+ */
 val ItemStack.maxPower: Int?
 	get() = this.customItem?.maxPower
 
