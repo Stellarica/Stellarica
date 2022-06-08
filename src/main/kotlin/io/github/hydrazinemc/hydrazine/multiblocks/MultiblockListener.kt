@@ -46,11 +46,7 @@ class MultiblockListener: Listener {
 		if (event.action != Action.RIGHT_CLICK_BLOCK || event.hand != EquipmentSlot.HAND || event.player.isSneaking) return
 
 		val clickedBlock = event.clickedBlock!!
-		// val clickedBlockMaterial = MSPMaterial(clickedBlock)
-
-		// if (clickedBlockMaterial != MSPMaterial("INTERFACE")) return // Not an interface block
-		if (clickedBlock.type != Material.MUSHROOM_STEM) return
-
+		if (getId(clickedBlock) != "interface_block") return
 
 		event.isCancelled = true
 
