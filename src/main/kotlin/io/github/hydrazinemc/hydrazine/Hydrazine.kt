@@ -13,6 +13,7 @@ import io.github.hydrazinemc.hydrazine.customitems.listeners.ItemEnchantListener
 import io.github.hydrazinemc.hydrazine.customitems.listeners.PowerItemBreakListener
 import io.github.hydrazinemc.hydrazine.customitems.commands.CustomItemCommands
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockListener
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import mu.KotlinLogging
 import org.bukkit.Bukkit.getPluginManager
@@ -55,6 +56,7 @@ class Hydrazine : JavaPlugin() {
 		getPluginManager().registerEvents(InterfaceListener(), this)
 		getPluginManager().registerEvents(PowerItemBreakListener(), this)
 		getPluginManager().registerEvents(ItemEnchantListener(), this)
+		getPluginManager().registerEvents(MultiblockListener(), this)
 
 		//   /-\
 		//  / ! \  MUST BE CALLED AFTER REGISTERING EVENTS!

@@ -43,25 +43,6 @@ customItems:
     base: MUSHROOM_STEM
     data: 1
 
-
-# Multiblocks
-multiblocks:
-  testMultiblock:
-    layers:
-      0:
-        - "grg"
-        - "rdr"
-        - "gig"
-      1:
-        - "grg"
-        - "rdr"
-        - "grg"
-    key:
-      g: "RED_STAINED_GLASS"
-      r: "REDSTONE_BLOCK"
-      d: "DIAMOND_BLOCK"
-      i: "INTERFACE"
-
 # Custom Blocks
 customBlocks:
   custom_block:
@@ -77,6 +58,26 @@ customBlocks:
       up: false
       down: false
 
+# Multiblocks
+multiblocks:
+  Test:
+    layers:
+      0:
+        - "grg"
+        - "rdr"
+        - "grg"
+        - " - "
+      1:
+        - "grg"
+        - "rdr"
+        - "grg"
+    key:
+      g: "red_stained_glass"
+      r: "redstone_block"
+      d: "diamond_block"
+      i: "custom_block"
+
+    interface: i
 
 # Output how long it takes to detect/move a ship
 timeOperations: true
