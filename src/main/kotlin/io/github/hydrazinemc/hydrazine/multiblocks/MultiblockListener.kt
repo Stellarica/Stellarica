@@ -102,7 +102,10 @@ class MultiblockListener: Listener {
 		Bukkit.getWorlds().forEach { world ->
 			world.loadedChunks.forEach chunk@ { chunk ->
 				// Get the multiblock list of a chunk
-				val multiblockArray = chunk.persistentDataContainer.get(NamespacedKey(plugin, "multiblocks"), MultiblockPDC()) ?: return@chunk
+				val multiblockArray = chunk.persistentDataContainer.get(
+					NamespacedKey(plugin, "multiblocks"),
+					MultiblockPDC()
+				) ?: return@chunk
 
 				// Iterate over each multiblock
 				multiblockArray.forEach multiblock@ { multiblock ->
@@ -111,20 +114,30 @@ class MultiblockListener: Listener {
 
 					// If the layout does not exist, undetect the multiblock
 					if (multiblockLayout == null) {
-						klogger.warn {"Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock: ${multiblock.name}, it has been undetected."}
+						klogger.warn {"Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock: " +
+								"${multiblock.name}, it has been undetected."}
 
 						multiblockArray.remove(multiblock)
-						chunk.persistentDataContainer.set(NamespacedKey(plugin, "multiblocks"), MultiblockPDC(), multiblockArray)
+						chunk.persistentDataContainer.set(
+							NamespacedKey(plugin, "multiblocks"),
+							MultiblockPDC(),
+							multiblockArray
+						)
 
 						return@multiblock
 					}
 
 					// Validate the layout
 					if (!validate(multiblock.r, multiblockLayout, world.getBlockAt(multiblock.x, multiblock.y, multiblock.z))) {
-						klogger.warn {"Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: ${multiblock.name}, it has been undetected."}
+						klogger.warn {"Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: " +
+								"${multiblock.name}, it has been undetected."}
 
 						multiblockArray.remove(multiblock)
-						chunk.persistentDataContainer.set(NamespacedKey(plugin, "multiblocks"), MultiblockPDC(), multiblockArray)
+						chunk.persistentDataContainer.set(
+							NamespacedKey(plugin, "multiblocks"),
+							MultiblockPDC(),
+							multiblockArray
+						)
 
 						return@multiblock
 					}
@@ -142,7 +155,7 @@ class MultiblockListener: Listener {
 			val keys = mutableMapOf<Char, String>()
 
 			plugin.config.getConfigurationSection("multiblocks.$multiblock.key")!!.getKeys(false).forEach {c ->
-				keys[c.first()] = plugin.config.getString("multiblocks.$multiblock.key.$c")!!
+				keys[c.first()] = plugin.config.getString("multiblocks.$multiblock.key.$c")!!.lowercase()
 			}
 
 			val interfaceKey = plugin.config.getString("multiblocks.$multiblock.interface")!!.first()

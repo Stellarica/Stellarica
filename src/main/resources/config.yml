@@ -60,16 +60,15 @@ customBlocks:
 
 # Multiblocks
 multiblocks:
-  Test:
+  Test Thingy:
     layers:
       0:
         - "grg"
         - "rdr"
         - "grg"
-        - " - "
       1:
         - "grg"
-        - "rdr"
+        - "rir"
         - "grg"
     key:
       g: "red_stained_glass"

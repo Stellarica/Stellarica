@@ -23,12 +23,5 @@ data class Multiblock(
 
 fun getId(block: Block): String = (
 		CustomBlocks[block.blockData as? MultipleFacing] ?: run {
-			return block.type.toString()
-		}).id
-
-fun getBlock(id: String): BlockData {
-	CustomBlocks[id]?.let {
-		return it.blockData
-	}
-	return Bukkit.getServer().createBlockData(Material.valueOf(id))
-}
+			return block.type.toString().lowercase()
+		}).id.lowercase()
