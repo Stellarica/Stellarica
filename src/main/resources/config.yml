@@ -1,6 +1,17 @@
 # Config file for Hydrazine
 # This config file can be reset by using the command /hconfig reset
 
+customItems:
+  test_item:
+      name: "<blue>Test Item (blue)"
+      lore:
+        - <green>Line 1 (green)
+        - <gold>Line 2 (gold)
+      base: NETHERITE_HOE
+      data: 1
+
+
+
 # Output how long it takes to detect/move a ship
 timeOperations: false
 
