@@ -55,6 +55,5 @@ object ConfigurableValues {
 			newDefaultUndetectable.add(Material.getMaterial(it)!!)
 		}
 		defaultUndetectable = newDefaultUndetectable
-		CustomItems.loadFromConfig() // todo: make this its own listener? dont put it here at least
 	}
 }

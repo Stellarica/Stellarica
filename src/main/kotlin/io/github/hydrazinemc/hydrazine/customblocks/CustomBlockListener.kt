@@ -34,13 +34,4 @@ class CustomBlockListener : Listener {
 		event.isDropItems = false // no vanilla drops
 		block.drops?.clone()?.let { event.block.location.world.dropItem(event.block.location, it) }
 	}
-
-	/**
-	 * Reloads custom block configuration on [HydrazineConfigReloadEvent]
-	 * @see CustomBlocks.loadFromConfig
-	 */
-	@EventHandler
-	fun onMSPConfigReload(event: HydrazineConfigReloadEvent) {
-		CustomBlocks.loadFromConfig()
-	}
 }

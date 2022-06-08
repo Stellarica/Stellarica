@@ -8,7 +8,9 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.commands.StarshipDebugCommands
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlockListener
+import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocks
 import io.github.hydrazinemc.hydrazine.customblocks.MushroomEventListener
+import io.github.hydrazinemc.hydrazine.customitems.CustomItems
 import io.github.hydrazinemc.hydrazine.customitems.listeners.ItemEnchantListener
 import io.github.hydrazinemc.hydrazine.customitems.listeners.PowerItemBreakListener
 import io.github.hydrazinemc.hydrazine.customitems.commands.CustomItemCommands
@@ -76,6 +78,9 @@ class Hydrazine : JavaPlugin() {
 
 	override fun reloadConfig() {
 		super.reloadConfig()
+		CustomItems.loadFromConfig() // needs to be called before custom blocks
+		CustomBlocks.loadFromConfig()
+
 		getPluginManager().callEvent(HydrazineConfigReloadEvent())
 		ConfigurableValues.loadFromConfig()
 	}
