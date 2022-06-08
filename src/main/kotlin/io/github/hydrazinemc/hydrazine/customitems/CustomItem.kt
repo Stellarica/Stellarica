@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hydrazine.customitems
 
 import io.github.hydrazinemc.hydrazine.Hydrazine
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.utils.extensions.asMiniMessage
 import net.kyori.adventure.text.Component
 import org.bukkit.Material
@@ -35,6 +36,13 @@ data class CustomItem(
 	 * Custom model data for this item
 	 */
 	val modelData: Int,
+
+	/**
+	 * The maximum power this item can hold.
+	 * -1 if this item cannot hold power
+	 */
+	val maxPower: Int = -1,
+
 	) {
 
 	/**
@@ -46,6 +54,14 @@ data class CustomItem(
 			meta.displayName(name.asMiniMessage)
 			val loreComponents = mutableListOf<Component>() // this can be code golfed
 			lore.forEach { loreComponents.add(it.asMiniMessage) }
+			if (maxPower > 0) {
+				loreComponents.add("<gray>Power: 0/$maxPower".asMiniMessage)
+				meta.persistentDataContainer.set(
+					NamespacedKey(plugin, "power"),
+					PersistentDataType.INTEGER,
+					0
+				)
+			}
 			meta.lore(loreComponents)
 			meta.setCustomModelData(modelData)
 			meta.persistentDataContainer.set(

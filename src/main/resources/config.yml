@@ -3,12 +3,20 @@
 
 customItems:
   test_item:
-      name: "<blue>Test Item (blue)"
-      lore:
-        - <green>Line 1 (green)
-        - <gold>Line 2 (gold)
-      base: NETHERITE_HOE
-      data: 1
+    name: "<blue>Test Item (blue)"
+    lore:
+      - <green>Line 1 (green)
+      - <gold>Line 2 (gold)
+    base: NETHERITE_HOE
+    data: 1
+
+  power_item:
+    name: <gold><b>POWER
+    lore:
+      - <green>yeah this can be powered
+    base: LANTERN
+    data: 1
+    maxPower: 100
 
 
 

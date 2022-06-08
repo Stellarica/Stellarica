@@ -7,6 +7,8 @@ import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.customitems.CustomItems
 import io.github.hydrazinemc.hydrazine.customitems.customItem
+import io.github.hydrazinemc.hydrazine.customitems.isPowerable
+import io.github.hydrazinemc.hydrazine.customitems.power
 import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import org.bukkit.entity.Player
 
@@ -38,7 +40,8 @@ class CustomItemCommands : BaseCommand() {
 	@Description("Check whether the held item is a custom item")
 	@CommandPermission("hydrazine.customitems.get")
 	fun onGet(sender: Player) {
-		val custom = sender.inventory.itemInMainHand.customItem ?: run {
+		val item = sender.inventory.itemInMainHand
+		val custom = item.customItem ?: run {
 			sender.sendMiniMessage("<gold>This item is not a custom item!")
 			return
 		}
@@ -50,8 +53,26 @@ class CustomItemCommands : BaseCommand() {
 			Display Name: ${custom.name}<reset>
 			Custom Model Data: ${custom.modelData}
 			Base Material: ${custom.base}
+			${if(item.isPowerable) {"Power: ${item.power}/${custom.maxPower}\n "} else {" "}}
 			""".trimIndent()
 		)
+	}
+
+	@Subcommand("setpower")
+	@Description("Set the power of the held item")
+	@CommandPermission("hydrazine.customitems.setpower")
+	fun onSetPower(sender: Player, power: Int) {
+		val item = sender.inventory.itemInMainHand
+		val custom = item.customItem ?: run {
+			sender.sendMiniMessage("<gold>This item is not a custom item!")
+			return
+		}
+		if (!item.isPowerable) {
+			sender.sendMiniMessage("<gold>This item is not powerable!")
+			return
+		}
+		item.power = power
+		sender.sendMiniMessage("<green>Set power to ${item.power}/${custom.maxPower}")
 	}
 }
 
