@@ -1,11 +1,12 @@
 package io.github.hydrazinemc.hydrazine.multiblocks
 
 import com.destroystokyo.paper.event.server.ServerTickStartEvent
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
-import net.kyori.adventure.text.Component.text
-import net.kyori.adventure.text.format.TextColor.color
+import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
@@ -32,7 +33,7 @@ class MultiblockListener: Listener {
 		layout.blocks.forEach {
 			val rotatedLocation = rotationFunction(it.key)
 
-			val relativeBlock = MSPMaterial(origin.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
+			val relativeBlock = getId(origin.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
 
 			if (relativeBlock != it.value) return false // A block we were expecting is missing, so break the function.
 		}
@@ -45,9 +46,11 @@ class MultiblockListener: Listener {
 		if (event.action != Action.RIGHT_CLICK_BLOCK || event.hand != EquipmentSlot.HAND || event.player.isSneaking) return
 
 		val clickedBlock = event.clickedBlock!!
-		val clickedBlockMaterial = MSPMaterial(clickedBlock)
+		// val clickedBlockMaterial = MSPMaterial(clickedBlock)
 
-		if (clickedBlockMaterial != MSPMaterial("INTERFACE")) return // Not an interface block
+		// if (clickedBlockMaterial != MSPMaterial("INTERFACE")) return // Not an interface block
+		if (clickedBlock.type != Material.MUSHROOM_STEM) return
+
 
 		event.isCancelled = true
 
@@ -67,11 +70,11 @@ class MultiblockListener: Listener {
 		val multiblock = potentialMultiblocks.maxByOrNull { it.key.blocks.size }
 
 		if (multiblock == null) {
-			event.player.sendMessage(text("Multiblock is invalid.").color(color(0xcc0000)))
+			event.player.sendMiniMessage("<red>Multiblock is invalid.")
 			return
 		}
 
-		event.player.sendMessage(text("Found Multiblock: ${multiblock.key.name}").color(color(0x008800)))
+		event.player.sendMiniMessage("<green>Found Multiblock: ${multiblock.key.name}")
 
 		val multiblockNamespacedKey = NamespacedKey(plugin, "multiblocks")
 
@@ -83,7 +86,7 @@ class MultiblockListener: Listener {
 
 		// Check if the multiblock is already in the list
 		if (multiblockArray.contains(multiblockData)) {
-			event.player.sendMessage(text("Multiblock is already detected.").color(color(0xcc0000)))
+			event.player.sendMiniMessage("<gold>Multiblock is already detected.")
 			return
 		}
 
@@ -108,7 +111,7 @@ class MultiblockListener: Listener {
 
 					// If the layout does not exist, undetect the multiblock
 					if (multiblockLayout == null) {
-						plugin.logger.warning("Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock: ${multiblock.name}, it has been undetected.")
+						klogger.warn {"Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock: ${multiblock.name}, it has been undetected."}
 
 						multiblockArray.remove(multiblock)
 						chunk.persistentDataContainer.set(NamespacedKey(plugin, "multiblocks"), MultiblockPDC(), multiblockArray)
@@ -118,7 +121,7 @@ class MultiblockListener: Listener {
 
 					// Validate the layout
 					if (!validate(multiblock.r, multiblockLayout, world.getBlockAt(multiblock.x, multiblock.y, multiblock.z))) {
-						plugin.logger.warning("Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: ${multiblock.name}, it has been undetected.")
+						klogger.warn {"Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: ${multiblock.name}, it has been undetected."}
 
 						multiblockArray.remove(multiblock)
 						chunk.persistentDataContainer.set(NamespacedKey(plugin, "multiblocks"), MultiblockPDC(), multiblockArray)
@@ -136,28 +139,15 @@ class MultiblockListener: Listener {
 		plugin.config.getConfigurationSection("multiblocks")?.getKeys(false)?.forEach multiblockLoop@{ multiblock ->
 			// The first thing that needs to be done is we need to get all the keys for the multiblock
 			// This way we know what blocks are in the multiblock
-			val keys = mutableMapOf<String, MSPMaterial>()
-			var interfaceKey: Char? = null
+			val keys = mutableMapOf<Char, String>()
 
-			plugin.config.getConfigurationSection("multiblocks.$multiblock.key")!!.getKeys(false).forEach {
-				val materialString = plugin.config.getString("multiblocks.$multiblock.key.$it")!!
-
-				val material = MSPMaterial(materialString)
-
-				if (keys.containsValue(material)) {
-					plugin.logger.severe("Multiblock $multiblock contains duplicate material $materialString")
-					return@multiblockLoop
-				}
-
-				// TODO: Interface should be determined by a config file.
-				if (materialString == "INTERFACE") interfaceKey = it[0]
-
-				keys[it] = material
+			plugin.config.getConfigurationSection("multiblocks.$multiblock.key")!!.getKeys(false).forEach {c ->
+				keys[c.first()] = plugin.config.getString("multiblocks.$multiblock.key.$c")!!
 			}
 
-			if (interfaceKey == null) {
-				plugin.logger.severe("Multiblock $multiblock does not have an interface block")
-				return@multiblockLoop
+			val interfaceKey = plugin.config.getString("multiblocks.$multiblock.interface")!!.first()
+			if (keys.keys.filter {it == interfaceKey}.count() > 1) {
+				klogger.error {"Multiblock $multiblock has multiple interface blocks!"}
 			}
 
 			// Now we need to find the interface as all blocks in a multtiblock are stored relative to this point.
@@ -167,6 +157,7 @@ class MultiblockListener: Listener {
 			var interfaceZ: Int? = null
 			var interfaceX: Int? = null
 
+			// Find the interface
 			run layerLoop@ {
 				layers.forEachIndexed { y, yName ->
 					plugin.config.getStringList("multiblocks.$multiblock.layers.$yName").forEachIndexed { z, zString ->
@@ -183,7 +174,7 @@ class MultiblockListener: Listener {
 				}
 			}
 
-			// Create a MultiblockConfiguration
+			// Create a layout
 			val multiblockLayout = MultiblockLayout(multiblock)
 
 			// Now we need to get all the blocks relative to the origin (interface)
@@ -196,7 +187,7 @@ class MultiblockListener: Listener {
 						val relativeX = x - interfaceX!!
 
 						// Get the material from keys
-						val material = keys[xChar.toString()]
+						val material = keys[xChar]
 
 						// Construct a MultiblockOriginRelativeLocation
 						val location = MultiblockOriginRelative(relativeX, relativeY, relativeZ)
