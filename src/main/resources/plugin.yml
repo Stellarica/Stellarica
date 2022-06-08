@@ -34,3 +34,6 @@ permissions:
       get:
         description: Lets users get whether the held item is a custom item
         default: op
+      setpower:
+        description: Lets users set the power of a custom item
+        default: op
