@@ -1,9 +1,8 @@
-package io.github.petercrawley.minecraftstarshipplugin.multiblocks
+package io.github.hydrazinemc.hydrazine.multiblocks
 
 import com.destroystokyo.paper.event.server.ServerTickStartEvent
-import io.github.petercrawley.minecraftstarshipplugin.MinecraftStarshipPlugin.Companion.plugin
-import io.github.petercrawley.minecraftstarshipplugin.customMaterials.MSPMaterial
-import io.github.petercrawley.minecraftstarshipplugin.events.MSPConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.TextColor.color
 import org.bukkit.Bukkit
@@ -132,7 +131,7 @@ class MultiblockListener: Listener {
 	}
 
 	@EventHandler
-	fun onMSPConfigReload(event: MSPConfigReloadEvent) {
+	fun onConfigReload(event: HydrazineConfigReloadEvent) {
 		val newMultiblocks = mutableSetOf<MultiblockLayout>()
 		plugin.config.getConfigurationSection("multiblocks")?.getKeys(false)?.forEach multiblockLoop@{ multiblock ->
 			// The first thing that needs to be done is we need to get all the keys for the multiblock
