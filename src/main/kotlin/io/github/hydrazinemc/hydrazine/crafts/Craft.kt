@@ -166,7 +166,8 @@ open class Craft(
 				}
 			}
 			messagePilot("<green>Craft detected! (${detectedBlocks.size} blocks)")
-			messagePilot("<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. (${detectedBlocks.size / time} blocks/ms)")
+			messagePilot("<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. " +
+					"(${detectedBlocks.size / time.coerceAtLeast(1)} blocks/ms)")
 		}
 	}
 
