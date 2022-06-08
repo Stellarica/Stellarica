@@ -1,5 +1,5 @@
-# Config file for Minecraft Starship Plugin
-# This config file can be reset by using the command /msp config reset
+# Config file for Hydrazine
+# This config file can be reset by using the command /hconfig reset
 
 # Output how long it takes to detect/move a ship
 timeOperations: false
