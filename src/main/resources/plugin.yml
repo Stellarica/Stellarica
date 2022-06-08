@@ -27,3 +27,10 @@ permissions:
         get:
           description: Lets users get the current movement data
           default: op
+    customitems:
+      give:
+        description: Lets users give custom items to players
+        default: op
+      get:
+        description: Lets users get whether the held item is a custom item
+        default: op

@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hydrazine.utils
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.customitems.CustomItems
 import org.bukkit.Material
 
 /**
@@ -54,5 +55,6 @@ object ConfigurableValues {
 			newDefaultUndetectable.add(Material.getMaterial(it)!!)
 		}
 		defaultUndetectable = newDefaultUndetectable
+		CustomItems.loadFromConfig() // todo: make this its own listener? dont put it here at least
 	}
 }
