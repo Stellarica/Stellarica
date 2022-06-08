@@ -131,16 +131,16 @@ open class Craft(
 							)
 								.getChunkSnapshot(false, false, false)
 						}.getBlockData(
-								currentBlock.x - (chunkCoordinate.x shl 4),
-								currentBlock.y,
-								currentBlock.z - (chunkCoordinate.z shl 4)
-							).material
+							currentBlock.x - (chunkCoordinate.x shl 4),
+							currentBlock.y,
+							currentBlock.z - (chunkCoordinate.z shl 4)
+						).material
 
 
 						if (undetectables.contains(type)) continue
 
 						if (detectedBlocks.size > ConfigurableValues.detectionLimit) {
-							klogger.info {"Detection limit reached. (${ConfigurableValues.detectionLimit})"}
+							klogger.info { "Detection limit reached. (${ConfigurableValues.detectionLimit})" }
 							messagePilot("<gold>Detection limit reached. (${ConfigurableValues.detectionLimit} blocks)")
 							nextBlocksToCheck.clear()
 							detectedBlocks.clear()

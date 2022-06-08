@@ -46,7 +46,8 @@ object CraftBlockSetter : BukkitRunnable() {
 				val entities = mutableMapOf<BlockEntity, Pair<Level, BlockPos>>() // pair is target
 				moveData.entities.forEach {
 					val world = (it.value.world as CraftWorld).handle
-					entities[removeBlockEntity(world, it.key.asBlockPos) ?: return@forEach] = Pair(world, it.value.asBlockPos)
+					entities[removeBlockEntity(world, it.key.asBlockPos) ?: return@forEach] =
+						Pair(world, it.value.asBlockPos)
 				}
 
 				// move blocks
@@ -55,7 +56,7 @@ object CraftBlockSetter : BukkitRunnable() {
 				}
 
 				// set entities
-				entities.forEach {(entity, pos) ->
+				entities.forEach { (entity, pos) ->
 					setBlockEntity(pos.first, pos.second, entity)
 				}
 

@@ -65,7 +65,7 @@ data class CustomItem(
 			meta.lore(loreComponents)
 			meta.setCustomModelData(modelData)
 			meta.persistentDataContainer.set(
-				NamespacedKey(Hydrazine.plugin, "custom_item_id"),
+				NamespacedKey(plugin, "custom_item_id"),
 				PersistentDataType.STRING,
 				id
 			)

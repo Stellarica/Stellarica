@@ -24,7 +24,7 @@ class StarshipDebugCommands : BaseCommand() {
 	@Description("Set the starship velocity")
 	@CommandPermission("hydrazine.starship.debug.setvelocity")
 	fun onSetVelocity(sender: Player, x: Double, y: Double, z: Double) {
-		(getShip(sender)?: return).velocity = Vector3(x, y, z)
+		(getShip(sender) ?: return).velocity = Vector3(x, y, z)
 		sender.sendMiniMessage("<green>Set starship velocity to ($x, $y, $z)")
 	}
 
@@ -35,8 +35,8 @@ class StarshipDebugCommands : BaseCommand() {
 	@Subcommand("setacceleration")
 	@Description("Set the starship acceleration")
 	@CommandPermission("hydrazine.starship.debug.setacceleration")
-	fun onSetAcceleration(sender: Player, x: Double, y: Double, z: Double)  {
-		(getShip(sender)?: return).acceleration = Vector3(x, y, z)
+	fun onSetAcceleration(sender: Player, x: Double, y: Double, z: Double) {
+		(getShip(sender) ?: return).acceleration = Vector3(x, y, z)
 		sender.sendMiniMessage("<green>Set starship acceleration to ($x, $y, $z)")
 	}
 
@@ -47,8 +47,9 @@ class StarshipDebugCommands : BaseCommand() {
 	@Description("Get the starship's velocity and acceleration")
 	@CommandPermission("hydrazine.starship.debug.get")
 	fun onGetData(sender: Player) {
-		val ship = 	getShip(sender) ?: return
-		sender.sendMiniMessage("""
+		val ship = getShip(sender) ?: return
+		sender.sendMiniMessage(
+			"""
 			<gray>------</gray>
 			<b><white>Starship Movement Debug</b><gray>
 			
@@ -58,7 +59,8 @@ class StarshipDebugCommands : BaseCommand() {
 			Ticks Since Move: ${ship.ticksSinceMove}
 			Time Spent Moving: ${ship.timeSpentMoving}
 			------</gray>
-		""".trimIndent())
+		""".trimIndent()
+		)
 	}
 
 	private fun getShip(sender: Player): Starship? {

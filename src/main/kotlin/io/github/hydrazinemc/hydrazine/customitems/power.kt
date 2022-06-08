@@ -20,7 +20,7 @@ import kotlin.math.roundToInt
  */
 private fun ItemStack.updatePowerDurability() {
 	if (!this.isPowerable) return // todo: throw something?
-	this.editMeta{
+	this.editMeta {
 		// In order to update the durability bar we need to set it to *not* be unbreakable
 		it.isUnbreakable = false
 		(it as Damageable).damage =
