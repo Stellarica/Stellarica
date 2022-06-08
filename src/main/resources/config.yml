@@ -9,6 +9,12 @@ customItems:
       - <gold>Line 2 (gold)
     base: NETHERITE_HOE
     data: 1
+    maxPower: 50
+    shapelessRecipe:
+      amount: 1
+      items:
+        - "netherite_hoe"
+        - "diamond"
 
   power_item:
     name: <gold><b>POWER
@@ -17,7 +23,20 @@ customItems:
     base: LANTERN
     data: 1
     maxPower: 100
-
+    shapedRecipe:
+      amount: 1
+      r1:
+        - "test_item"
+        - "test_item"
+        - "test_item"
+      r2:
+        - "test_item"
+        - "netherite_ingot"
+        - "test_item"
+      r3:
+        - "test_item"
+        - "test_item"
+        - "test_item"
 
 
 # Output how long it takes to detect/move a ship

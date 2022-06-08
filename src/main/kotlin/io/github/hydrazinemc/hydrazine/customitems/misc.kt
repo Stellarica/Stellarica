@@ -14,3 +14,11 @@ val ItemStack.customItem: CustomItem?
 				NamespacedKey(plugin, "custom_item_id"),
 				PersistentDataType.STRING
 			) ?: ""]
+
+/**
+ * The id (either CustomItem or Material) of the ItemStack
+ * Note: Material IDs will be lowercase
+ * @see [itemStackFromId]
+ */
+val ItemStack.id: String
+	get() = this.customItem?.id ?: this.type.toString().lowercase()

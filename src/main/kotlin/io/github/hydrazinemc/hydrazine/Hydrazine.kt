@@ -8,7 +8,8 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.commands.StarshipDebugCommands
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocksListener
-import io.github.hydrazinemc.hydrazine.customitems.PowerItemBreakCanceller
+import io.github.hydrazinemc.hydrazine.customitems.listeners.ItemEnchantListener
+import io.github.hydrazinemc.hydrazine.customitems.listeners.PowerItemBreakListener
 import io.github.hydrazinemc.hydrazine.customitems.commands.CustomItemCommands
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
@@ -50,7 +51,8 @@ class Hydrazine : JavaPlugin() {
 
 		getPluginManager().registerEvents(CustomBlocksListener(), this)
 		getPluginManager().registerEvents(InterfaceListener(), this)
-		getPluginManager().registerEvents(PowerItemBreakCanceller(), this)
+		getPluginManager().registerEvents(PowerItemBreakListener(), this)
+		getPluginManager().registerEvents(ItemEnchantListener(), this)
 
 		//   /-\
 		//  / ! \  MUST BE CALLED AFTER REGISTERING EVENTS!
