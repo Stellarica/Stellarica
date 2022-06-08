@@ -12,7 +12,7 @@ import java.io.File
 /**
  * Command handling for the configuration file related commands.
  */
-@CommandAlias("hconfig|hc")
+@CommandAlias("hconfig")
 class ConfigCommand : BaseCommand() {
 
 	/**
