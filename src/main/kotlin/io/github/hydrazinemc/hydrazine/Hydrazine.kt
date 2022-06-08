@@ -7,7 +7,8 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.commands.StarshipDebugCommands
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners.InterfaceListener
-import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocksListener
+import io.github.hydrazinemc.hydrazine.customblocks.CustomBlockListener
+import io.github.hydrazinemc.hydrazine.customblocks.MushroomEventListener
 import io.github.hydrazinemc.hydrazine.customitems.listeners.ItemEnchantListener
 import io.github.hydrazinemc.hydrazine.customitems.listeners.PowerItemBreakListener
 import io.github.hydrazinemc.hydrazine.customitems.commands.CustomItemCommands
@@ -49,7 +50,8 @@ class Hydrazine : JavaPlugin() {
 	override fun onEnable() {
 		plugin = this
 
-		getPluginManager().registerEvents(CustomBlocksListener(), this)
+		getPluginManager().registerEvents(MushroomEventListener(), this)
+		getPluginManager().registerEvents(CustomBlockListener(), this)
 		getPluginManager().registerEvents(InterfaceListener(), this)
 		getPluginManager().registerEvents(PowerItemBreakListener(), this)
 		getPluginManager().registerEvents(ItemEnchantListener(), this)
