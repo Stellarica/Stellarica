@@ -6,6 +6,9 @@ import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 
+/**
+ * PersistentDataType for storing detected multiblocks in chunk data
+ */
 class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, MutableSet<Multiblock>> {
 	override fun getPrimitiveType(): Class<Array<PersistentDataContainer>> {
 		return Array<PersistentDataContainer>::class.java
@@ -15,7 +18,8 @@ class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, MutableS
 		return mutableSetOf<Multiblock>().javaClass
 	}
 
-	override fun toPrimitive(complex: MutableSet<Multiblock>, context: PersistentDataAdapterContext): Array<PersistentDataContainer> {
+	override fun toPrimitive(complex: MutableSet<Multiblock>, context: PersistentDataAdapterContext):
+			Array<PersistentDataContainer> {
 		val result = arrayOfNulls<PersistentDataContainer>(complex.size)
 
 		complex.forEachIndexed { index, multiblock ->
@@ -34,7 +38,8 @@ class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, MutableS
 		return result.requireNoNulls()
 	}
 
-	override fun fromPrimitive(primitive: Array<PersistentDataContainer>, context: PersistentDataAdapterContext): MutableSet<Multiblock> {
+	override fun fromPrimitive(primitive: Array<PersistentDataContainer>, context: PersistentDataAdapterContext):
+			MutableSet<Multiblock> {
 		val result = mutableSetOf<Multiblock>()
 
 		primitive.forEach { persistentDataContainer ->

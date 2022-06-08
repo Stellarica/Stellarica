@@ -15,8 +15,14 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 
+/**
+ * Handles multiblock detection and ticking
+ */
 class MultiblockListener: Listener {
 	companion object {
+		/**
+		 * All valid [MultiblockLayout]'s loaded from the config
+		 */
 		var multiblocks = setOf<MultiblockLayout>()
 			private set
 	}
@@ -41,9 +47,15 @@ class MultiblockListener: Listener {
 		return true // Valid, save it and keep looking.
 	}
 
+	/**
+	 * Handles detection of multiblocks
+	 */
 	@EventHandler
 	fun onMultiblockDetection(event: PlayerInteractEvent) {
-		if (event.action != Action.RIGHT_CLICK_BLOCK || event.hand != EquipmentSlot.HAND || event.player.isSneaking) return
+		if (event.action != Action.RIGHT_CLICK_BLOCK ||
+			event.hand != EquipmentSlot.HAND ||
+			event.player.isSneaking
+		) return
 
 		val clickedBlock = event.clickedBlock!!
 		if (getId(clickedBlock) != "interface_block") return
@@ -75,7 +87,8 @@ class MultiblockListener: Listener {
 		val multiblockNamespacedKey = NamespacedKey(plugin, "multiblocks")
 
 		// Get the multiblock list, or create it if it doesn't exist
-		val multiblockArray = clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPDC()) ?: mutableSetOf()
+		val multiblockArray =
+			clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPDC()) ?: mutableSetOf()
 
 		// Create Multiblock
 		val multiblockData = Multiblock(multiblock.key.name, clickedBlock.x, clickedBlock.y, clickedBlock.z, multiblock.value)
@@ -93,6 +106,9 @@ class MultiblockListener: Listener {
 		clickedBlock.chunk.persistentDataContainer.set(multiblockNamespacedKey, MultiblockPDC(), multiblockArray)
 	}
 
+	/**
+	 * Confirm multiblocks exist and are intact
+	 */
 	@EventHandler
 	fun onChunkTick(event: ServerTickStartEvent) {
 		Bukkit.getWorlds().forEach { world ->
@@ -142,6 +158,9 @@ class MultiblockListener: Listener {
 		}
 	}
 
+	/**
+	 * Reload all [MultiblockLayout]s from the config file
+	 */
 	@EventHandler
 	fun onConfigReload(event: HydrazineConfigReloadEvent) {
 		val newMultiblocks = mutableSetOf<MultiblockLayout>()
