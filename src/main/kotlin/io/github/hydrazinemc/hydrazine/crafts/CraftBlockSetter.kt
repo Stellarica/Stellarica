@@ -11,6 +11,7 @@ import org.bukkit.block.data.BlockData
 import org.bukkit.craftbukkit.v1_18_R2.CraftWorld
 import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.system.measureTimeMillis
 
 /**
  * Main bukkit runnable for setting craft's blocks
@@ -36,29 +37,32 @@ object CraftBlockSetter : BukkitRunnable() {
 			val moveData = blockSetQueueQueue.values.first()
 			val blockSetQueue = blockSetQueueQueue.keys.first()
 
-			moveData.craft.movePassengers(moveData.modifier, moveData.rotation)
+			val timeSpent = measureTimeMillis {
+				moveData.craft.movePassengers(moveData.modifier, moveData.rotation)
 
-			blockSetQueueQueue.remove(blockSetQueue)
+				blockSetQueueQueue.remove(blockSetQueue)
 
-			// get nms tile entities, and remove them
-			val entities = mutableMapOf<BlockEntity, Pair<Level, BlockPos>>() // pair is target
-			moveData.entities.forEach {
-				val world = (it.value.world as CraftWorld).handle
-				entities[removeBlockEntity(world, it.key.asBlockPos) ?: return@forEach] = Pair(world, it.value.asBlockPos)
+				// get nms tile entities, and remove them
+				val entities = mutableMapOf<BlockEntity, Pair<Level, BlockPos>>() // pair is target
+				moveData.entities.forEach {
+					val world = (it.value.world as CraftWorld).handle
+					entities[removeBlockEntity(world, it.key.asBlockPos) ?: return@forEach] = Pair(world, it.value.asBlockPos)
+				}
+
+				// move blocks
+				blockSetQueue!!.forEach {
+					setBlockFast(it.key.asLocation, it.value)
+				}
+
+				// set entities
+				entities.forEach {(entity, pos) ->
+					setBlockEntity(pos.first, pos.second, entity)
+				}
+
+				// let the craft know we're done here
+				moveData.craft.isMoving = false
 			}
-
-			// move blocks
-			blockSetQueue!!.forEach {
-				setBlockFast(it.key.asLocation, it.value)
-			}
-
-			// set entities
-			entities.forEach {(entity, pos) ->
-				setBlockEntity(pos.first, pos.second, entity)
-			}
-
-			// let the craft know we're done here
-			moveData.craft.isMoving = false
+			moveData.craft.timeSpentMoving = timeSpent
 		}
 	}
 }

@@ -6,7 +6,6 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
-import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover.movesPerSecond
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.craft
 import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
@@ -50,12 +49,15 @@ class StarshipDebugCommands : BaseCommand() {
 	fun onGetData(sender: Player) {
 		val ship = 	getShip(sender) ?: return
 		sender.sendMiniMessage("""
-			------
-			<b>Starship Movement Debug
-			Velocity</b>: ${ship.velocity.miniMessage}
-			<b>Acceleration</b>: ${ship.acceleration.miniMessage}
-			<b>Moves Per Second</b>: $movesPerSecond
-			------
+			<gray>------</gray>
+			<b><white>Starship Movement Debug</b><gray>
+			
+			Velocity: ${ship.velocity.miniMessage}
+			Acceleration: ${ship.acceleration.miniMessage}
+			Moves Per Second: ${ship.movesPerSecond}
+			Ticks Since Move: ${ship.ticksSinceMove}
+			Time Spent Moving: ${ship.timeSpentMoving}
+			------</gray>
 		""".trimIndent())
 	}
 
