@@ -5,7 +5,6 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import org.bukkit.Location
-import kotlin.system.measureTimeMillis
 
 /**
  * Base Starship class
@@ -70,7 +69,7 @@ class Starship(origin: Location) : Pilotable(origin) {
 			velocity += acceleration / movesPerSecond
 			if (velocity == Vector3.zero) return
 			if (isMoving) {
-				klogger.warn {"A ship needs to move again, but hasn't finished moving!"}
+				klogger.warn { "A ship needs to move again, but hasn't finished moving!" }
 				return
 			}
 			queueMovement((velocity / movesPerSecond).asBlockLocation)

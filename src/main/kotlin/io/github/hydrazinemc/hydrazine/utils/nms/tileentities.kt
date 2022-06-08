@@ -43,6 +43,7 @@ fun setBlockEntity(world: Level, position: BlockPos, tile: BlockEntity) {
  */
 object UnsafeUtils {
 	private var unsafe: Unsafe? = null
+
 	init {
 		var defered: Unsafe? = null
 		try {

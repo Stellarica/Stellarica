@@ -53,7 +53,13 @@ class CustomItemCommands : BaseCommand() {
 			Display Name: ${custom.name}<reset>
 			Custom Model Data: ${custom.modelData}
 			Base Material: ${custom.base}
-			${if(item.isPowerable) {"Power: ${item.power}/${custom.maxPower}\n "} else {" "}}
+			${
+				if (item.isPowerable) {
+					"Power: ${item.power}/${custom.maxPower}\n "
+				} else {
+					" "
+				}
+			}
 			""".trimIndent()
 		)
 	}
