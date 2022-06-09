@@ -23,13 +23,15 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
 
 /**
- * Base plugin class
+ * Base plugin class for Hydrazine
  */
 class Hydrazine : JavaPlugin() {
 	companion object {
 		/**
 		 * The plugin instance. Not best practice to have it static,
 		 * but the convenience is worth it.
+		 *
+		 * Sorry :)
 		 */
 		lateinit var plugin: Hydrazine
 			private set
@@ -51,27 +53,33 @@ class Hydrazine : JavaPlugin() {
 
 
 	override fun onEnable() {
+		// Plugin init
+
 		plugin = this
 
-		getPluginManager().registerEvents(MushroomEventListener(), this)
-		getPluginManager().registerEvents(CustomBlockListener(), this)
-		getPluginManager().registerEvents(InterfaceListener(), this)
-		getPluginManager().registerEvents(PowerItemBreakListener(), this)
-		getPluginManager().registerEvents(ItemEnchantListener(), this)
-		getPluginManager().registerEvents(MultiblockListener(), this)
+		// Register listeners here
+		setOf(
+			MushroomEventListener(),
+			CustomBlockListener(),
+			InterfaceListener(),
+			PowerItemBreakListener(),
+			ItemEnchantListener(),
+			MultiblockListener()
+		).forEach { getPluginManager().registerEvents(it, this) }
 
-		//   /-\
-		//  / ! \  MUST BE CALLED AFTER REGISTERING EVENTS!
-		// /_____\
-		// ^ idk why, this is a leftover from MSP
+		// Register commands here
+		val commandManager = PaperCommandManager(this)
+		setOf(
+			ConfigCommand(),
+			StarshipDebugCommands(),
+			CustomItemCommands()
+		).forEach { commandManager.registerCommand(it) }
+
+		// Reload the config
 		saveDefaultConfig()
 		reloadConfig()
 
-		val commandManager = PaperCommandManager(this)
-		commandManager.registerCommand(ConfigCommand())
-		commandManager.registerCommand(StarshipDebugCommands())
-		commandManager.registerCommand(CustomItemCommands())
-
+		// Start the bukkit tasks
 		CraftBlockSetter.runTaskTimer(plugin, 1, 1)
 		StarshipMover.runTaskTimer(plugin, 1, 1)
 	}
