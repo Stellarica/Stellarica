@@ -2,7 +2,7 @@ main: io.github.hydrazinemc.hydrazine.Hydrazine
 name: Hydrazine
 version: 0.1.0-dev
 description: The primary plguin for the Hydrazine minecraft server.
-api-version: 1.18
+api-version: 1.19
 load: STARTUP
 authors: [ "Peter-Crawley", "trainb0y1", "DoctorXeno" ]
 website: https://github.com/HydrazineMC/Hydrazine
