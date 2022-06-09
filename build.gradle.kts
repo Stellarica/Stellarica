@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-	paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+	paperDevBundle("1.19-R0.1-SNAPSHOT")
 	implementation ("io.github.microutils:kotlin-logging-jvm:2.1.23")
 	implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 }
@@ -43,7 +43,7 @@ tasks{
 	}
 
 	runServer {
-		minecraftVersion("1.18.2")
+		minecraftVersion("1.19")
 	}
 
 	detekt {
