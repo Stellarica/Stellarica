@@ -3,6 +3,7 @@ package io.github.hydrazinemc.hydrazine
 import co.aikar.commands.PaperCommandManager
 import io.github.hydrazinemc.hydrazine.commands.ConfigCommand
 import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.ControlQueueRunnable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.commands.StarshipDebugCommands
@@ -80,6 +81,7 @@ class Hydrazine : JavaPlugin() {
 		reloadConfig()
 
 		// Start the bukkit tasks
+		ControlQueueRunnable.runTaskTimer(plugin, 1, 1)
 		CraftBlockSetter.runTaskTimer(plugin, 1, 1)
 		StarshipMover.runTaskTimer(plugin, 1, 1)
 	}

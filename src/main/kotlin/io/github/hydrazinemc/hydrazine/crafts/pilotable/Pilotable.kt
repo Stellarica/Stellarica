@@ -23,6 +23,17 @@ open class Pilotable(origin: Location) : Craft(origin) {
 		private set
 
 	/**
+	 * The queued actions from the pilot.
+	 * Exists so that movement inputs (such as turning) can be queued, so they are not ignored if the ship is moving.
+	 *
+	 * Not recommended for actions that can be done immediately (regardless of whether the ship is moving)
+	 * as they will do nothing but delay the queue.
+	 *
+	 * Each tick that the ship is not moving, will execute queued actions until the ship is moving
+	 */
+	var controlQueue = mutableListOf<() -> Unit>()
+
+	/**
 	 * Activates the craft and registers it in [pilotedCrafts]
 	 * @param pilot the pilot, who controls the ship
 	 * @throws AlreadyPilotedException if the ship is already piloted
