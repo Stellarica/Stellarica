@@ -19,8 +19,8 @@ object ShipControlHotbar : HotbarMenu() {
 
 	private val menuEntries = mutableListOf(
 		namedItem(Material.LIME_STAINED_GLASS, "<green>Increase Speed", null),
-		namedItem(Material.ORANGE_STAINED_GLASS, "<red>Decrease Speed", null),
-		null,
+		namedItem(Material.ORANGE_STAINED_GLASS, "<gold>Decrease Speed", null),
+		namedItem(Material.RED_STAINED_GLASS, "<red>Full Stop", null),
 		null,
 		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Right", null), // these might be
 		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Left", null),
@@ -41,17 +41,10 @@ object ShipControlHotbar : HotbarMenu() {
 		when (index) {
 			0 -> ship.velocity += Vector3(player.eyeLocation.direction.normalize())
 			1 -> ship.velocity -= Vector3(player.eyeLocation.direction.normalize())
-			4 -> {
-				ship.queueRotation(RotationAmount.CLOCKWISE)
-			}
-
-			5 -> {
-				ship.queueRotation(RotationAmount.COUNTERCLOCKWISE)
-			}
-
-			8 -> {
-				if (ship.deactivateCraft()) closeMenu(player)
-			}
+			2 -> ship.velocity = Vector3.zero
+			4 -> ship.controlQueue.add {ship.queueRotation(RotationAmount.CLOCKWISE)}
+			5 -> ship.controlQueue.add {ship.queueRotation(RotationAmount.COUNTERCLOCKWISE)}
+			8 -> ship.controlQueue.add {if (ship.deactivateCraft()) closeMenu(player)}
 		}
 	}
 }
