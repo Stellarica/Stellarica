@@ -3,6 +3,7 @@ package io.github.hydrazinemc.hydrazine.utils.nms
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
+import org.bukkit.Material
 import sun.misc.Unsafe
 import java.lang.reflect.Field
 
@@ -66,3 +67,25 @@ object UnsafeUtils {
 		unsafe!!.putObject(holder, unsafe!!.objectFieldOffset(field), value)
 	}
 }
+
+/**
+ * This is terrible.
+ * I feel bad about adding this.
+ * End my suffering.
+ * Save me.
+ * Save us.
+ * We're doomed.
+ */
+val tileEntities = mutableSetOf(
+	Material.CHEST,
+	Material.TRAPPED_CHEST,
+	Material.ENDER_CHEST,
+	Material.SHULKER_BOX,
+	Material.ITEM_FRAME,
+	Material.HOPPER,
+	Material.DROPPER,
+	Material.DISPENSER,
+	Material.FURNACE,
+	Material.BREWING_STAND,
+	Material.JUKEBOX
+)
