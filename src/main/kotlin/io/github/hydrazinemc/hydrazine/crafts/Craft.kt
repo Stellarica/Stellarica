@@ -11,6 +11,7 @@ import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.locations.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.nms.TeleportUtils
+import io.github.hydrazinemc.hydrazine.utils.nms.tileEntities
 import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import org.bukkit.Bukkit
@@ -315,10 +316,10 @@ open class Craft(
 					// Step 4: Set the target block to the block data of the current block.
 					blocksToSet[targetBlock] = currentBlockData
 
-					// TODO: MAKE THIS ACTUALLY WORK FOR ALL TILE ENTITIES
-					if (currentBlockData.material == Material.CHEST) {
-						entities[currentBlock] = targetBlock
-					}
+					// This is really, really, really, really, stupid.
+					// Sadly afaik there's no way to get a tile entity from a chunk snapshot
+					// and the benefits of doing this async outweigh this pain and suffering
+					if (currentBlockData.material in tileEntities) entities[currentBlock] = targetBlock
 
 					// Step 5: Add the target block to the new detected blocks list.
 					if (!newDetectedBlocks.add(targetBlock)) klogger.warn {
