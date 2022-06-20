@@ -6,6 +6,7 @@ import net.minecraft.world.level.block.entity.BlockEntity
 import org.bukkit.Material
 import sun.misc.Unsafe
 import java.lang.reflect.Field
+import java.util.EnumSet
 
 
 // Taken and modified from APDevTeam's Movecraft 8, as noted in the readme
@@ -76,7 +77,7 @@ object UnsafeUtils {
  * Save us.
  * We're doomed.
  */
-val tileEntities = mutableSetOf(
+val tileEntities: EnumSet<Material> = EnumSet.of(
 	Material.CHEST,
 	Material.TRAPPED_CHEST,
 	Material.ENDER_CHEST,
