@@ -59,7 +59,8 @@ object TeleportUtils {
 		awaitingTeleportField.set(connection, teleportAwait)
 		awaitingTeleportTimeField.set(connection, aboveGroundVehicleTickCountField.get(connection))
 
-		val packet = ClientboundPlayerPositionPacket(loc.x, loc.y, loc.z, theta, 0f, OFFSET_DIRECTION, teleportAwait, false)
+		val packet =
+			ClientboundPlayerPositionPacket(loc.x, loc.y, loc.z, theta, 0f, OFFSET_DIRECTION, teleportAwait, false)
 		connection.send(packet)
 	}
 

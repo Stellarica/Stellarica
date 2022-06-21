@@ -9,7 +9,7 @@ import org.bukkit.persistence.PersistentDataType
 /**
  * PersistentDataType for storing detected multiblocks in chunk data
  */
-class MultiblockPDC: PersistentDataType<Array<PersistentDataContainer>, MutableSet<Multiblock>> {
+class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, MutableSet<Multiblock>> {
 	override fun getPrimitiveType(): Class<Array<PersistentDataContainer>> {
 		return Array<PersistentDataContainer>::class.java
 	}

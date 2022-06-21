@@ -1,11 +1,7 @@
 package io.github.hydrazinemc.hydrazine.multiblocks
 
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocks
-import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.block.Block
-import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.MultipleFacing
 
 /**
@@ -16,7 +12,7 @@ data class MultiblockLayout(
 	 * The name of the layout
 	 */
 	val name: String
-	) {
+) {
 	/**
 	 * The ids of the origin relative blocks
 	 * @see getId

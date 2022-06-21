@@ -3,7 +3,7 @@ package io.github.hydrazinemc.hydrazine.multiblocks
 /**
  * Coordinates relative to the origin of a multiblock
  */
-data class MultiblockOriginRelative (
+data class MultiblockOriginRelative(
 	/**
 	 * The x component
 	 */
@@ -16,4 +16,4 @@ data class MultiblockOriginRelative (
 	 * The z component
 	 */
 	val z: Int
-	)
+)

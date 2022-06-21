@@ -16,7 +16,7 @@ import org.bukkit.inventory.EquipmentSlot
 /**
  * Handles multiblock detection and ticking
  */
-class MultiblockListener: Listener {
+class MultiblockListener : Listener {
 	companion object {
 		/**
 		 * All valid [MultiblockLayout]'s loaded from the config
@@ -25,12 +25,24 @@ class MultiblockListener: Listener {
 			private set
 	}
 
-	private fun validate(rotation: Byte, layout: MultiblockLayout, origin: Block) : Boolean {
+	private fun validate(rotation: Byte, layout: MultiblockLayout, origin: Block): Boolean {
 		fun rotationFunction(it: MultiblockOriginRelative) = when (rotation) {
-			1.toByte() -> { it }
-			2.toByte() -> { MultiblockOriginRelative(-it.z, it.y, it.x) }
-			3.toByte() -> { MultiblockOriginRelative(-it.x, it.y, -it.z) }
-			4.toByte() -> { MultiblockOriginRelative(it.z, it.y, -it.x) }
+			1.toByte() -> {
+				it
+			}
+
+			2.toByte() -> {
+				MultiblockOriginRelative(-it.z, it.y, it.x)
+			}
+
+			3.toByte() -> {
+				MultiblockOriginRelative(-it.x, it.y, -it.z)
+			}
+
+			4.toByte() -> {
+				MultiblockOriginRelative(it.z, it.y, -it.x)
+			}
+
 			else -> throw IllegalArgumentException("Invalid rotation: $rotation")
 		}
 
@@ -89,7 +101,8 @@ class MultiblockListener: Listener {
 			clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPDC()) ?: mutableSetOf()
 
 		// Create Multiblock
-		val multiblockData = Multiblock(multiblock.key.name, clickedBlock.x, clickedBlock.y, clickedBlock.z, multiblock.value)
+		val multiblockData =
+			Multiblock(multiblock.key.name, clickedBlock.x, clickedBlock.y, clickedBlock.z, multiblock.value)
 
 		// Check if the multiblock is already in the list
 		if (multiblockArray.contains(multiblockData)) {
@@ -110,7 +123,7 @@ class MultiblockListener: Listener {
 	@EventHandler
 	fun onChunkTick(event: ServerTickStartEvent) {
 		Bukkit.getWorlds().forEach { world ->
-			world.loadedChunks.forEach chunk@ { chunk ->
+			world.loadedChunks.forEach chunk@{ chunk ->
 				// Get the multiblock list of a chunk
 				val multiblockArray = chunk.persistentDataContainer.get(
 					NamespacedKey(plugin, "multiblocks"),
@@ -118,14 +131,16 @@ class MultiblockListener: Listener {
 				) ?: return@chunk
 
 				// Iterate over each multiblock
-				multiblockArray.forEach multiblock@ { multiblock ->
+				multiblockArray.forEach multiblock@{ multiblock ->
 					// Get the layout
 					val multiblockLayout = multiblocks.find { it.name == multiblock.name }
 
 					// If the layout does not exist, undetect the multiblock
 					if (multiblockLayout == null) {
-						klogger.warn {"Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock: " +
-								"${multiblock.name}, it has been undetected."}
+						klogger.warn {
+							"Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock: " +
+									"${multiblock.name}, it has been undetected."
+						}
 
 						multiblockArray.remove(multiblock)
 						chunk.persistentDataContainer.set(
@@ -138,9 +153,16 @@ class MultiblockListener: Listener {
 					}
 
 					// Validate the layout
-					if (!validate(multiblock.r, multiblockLayout, world.getBlockAt(multiblock.x, multiblock.y, multiblock.z))) {
-						klogger.warn {"Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: " +
-								"${multiblock.name}, it has been undetected."}
+					if (!validate(
+							multiblock.r,
+							multiblockLayout,
+							world.getBlockAt(multiblock.x, multiblock.y, multiblock.z)
+						)
+					) {
+						klogger.warn {
+							"Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: " +
+									"${multiblock.name}, it has been undetected."
+						}
 
 						multiblockArray.remove(multiblock)
 						chunk.persistentDataContainer.set(
@@ -167,13 +189,13 @@ class MultiblockListener: Listener {
 			// This way we know what blocks are in the multiblock
 			val keys = mutableMapOf<Char, String>()
 
-			plugin.config.getConfigurationSection("multiblocks.$multiblock.key")!!.getKeys(false).forEach {c ->
+			plugin.config.getConfigurationSection("multiblocks.$multiblock.key")!!.getKeys(false).forEach { c ->
 				keys[c.first()] = plugin.config.getString("multiblocks.$multiblock.key.$c")!!.lowercase()
 			}
 
 			val interfaceKey = plugin.config.getString("multiblocks.$multiblock.interface")!!.first()
-			if (keys.keys.filter {it == interfaceKey}.count() > 1) {
-				klogger.error {"Multiblock $multiblock has multiple interface blocks!"}
+			if (keys.keys.filter { it == interfaceKey }.count() > 1) {
+				klogger.error { "Multiblock $multiblock has multiple interface blocks!" }
 			}
 
 			// Now we need to find the interface as all blocks in a multtiblock are stored relative to this point.
@@ -184,7 +206,7 @@ class MultiblockListener: Listener {
 			var interfaceX: Int? = null
 
 			// Find the interface
-			run layerLoop@ {
+			run layerLoop@{
 				layers.forEachIndexed { y, yName ->
 					plugin.config.getStringList("multiblocks.$multiblock.layers.$yName").forEachIndexed { z, zString ->
 						zString.forEachIndexed { x, xChar ->

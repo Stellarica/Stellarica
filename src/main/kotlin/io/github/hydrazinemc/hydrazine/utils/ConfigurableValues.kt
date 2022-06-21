@@ -1,7 +1,6 @@
 package io.github.hydrazinemc.hydrazine.utils
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
-import io.github.hydrazinemc.hydrazine.customitems.CustomItems
 import org.bukkit.Material
 
 /**

@@ -1,6 +1,5 @@
 package io.github.hydrazinemc.hydrazine.customblocks
 
-import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import org.bukkit.Bukkit.getOnlinePlayers
 import org.bukkit.Bukkit.getServer
@@ -47,8 +46,8 @@ class MushroomEventListener : Listener {
 	}
 
 	/**
-	* @see mushroomBlockMovedByPiston
-	*/
+	 * @see mushroomBlockMovedByPiston
+	 */
 	@EventHandler
 	fun mushroomBlockPulledByPiston(event: BlockPistonRetractEvent) {
 		mushroomBlockMovedByPiston(event.blocks, event.direction)

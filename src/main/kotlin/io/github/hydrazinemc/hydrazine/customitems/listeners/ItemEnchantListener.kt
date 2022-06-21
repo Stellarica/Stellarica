@@ -18,8 +18,8 @@ class ItemEnchantListener : Listener {
 	fun onTableEnchant(event: PrepareItemEnchantEvent) {
 		val item = event.item.customItem ?: return
 		for (i in 0..2) {
-			val offer = event.offers?.get(i) ?: continue
-			if (offer.enchantment !in item.allowedEnchants) event.offers?.set(i, null)
+			val offer = event.offers.get(i) ?: continue
+			if (offer.enchantment !in item.allowedEnchants) event.offers.set(i, null)
 		}
 	}
 

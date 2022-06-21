@@ -12,9 +12,9 @@ import io.github.hydrazinemc.hydrazine.customblocks.CustomBlockListener
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocks
 import io.github.hydrazinemc.hydrazine.customblocks.MushroomEventListener
 import io.github.hydrazinemc.hydrazine.customitems.CustomItems
+import io.github.hydrazinemc.hydrazine.customitems.commands.CustomItemCommands
 import io.github.hydrazinemc.hydrazine.customitems.listeners.ItemEnchantListener
 import io.github.hydrazinemc.hydrazine.customitems.listeners.PowerItemBreakListener
-import io.github.hydrazinemc.hydrazine.customitems.commands.CustomItemCommands
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockListener
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
