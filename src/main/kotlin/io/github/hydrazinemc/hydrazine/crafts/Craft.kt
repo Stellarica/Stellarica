@@ -32,7 +32,7 @@ open class Craft(
 	 * The point from which detection starts, and
 	 * the craft rotates around
 	 */
-	var origin: Location
+	var origin: BlockLocation
 ) {
 
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
@@ -111,7 +111,7 @@ open class Craft(
 				val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 				var nextBlocksToCheck = detectedBlocks
-				nextBlocksToCheck.add(BlockLocation(origin))
+				nextBlocksToCheck.add(origin)
 				detectedBlocks = mutableSetOf()
 				val checkedBlocks = nextBlocksToCheck.toMutableSet()
 
@@ -125,7 +125,7 @@ open class Craft(
 						val chunkCoordinate = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
 
 						val type = chunkCache.getOrPut(chunkCoordinate) {
-							origin.world.getChunkAt(
+							origin.world!!.getChunkAt(
 								chunkCoordinate.x,
 								chunkCoordinate.z
 							)
@@ -226,7 +226,7 @@ open class Craft(
 	fun queueRotation(rotation: RotationAmount) {
 		queueChange({ current ->
 			return@queueChange rotateCoordinates(current, Vector3(origin), rotation)
-		}, "Rotation", origin.world, rotation)
+		}, "Rotation", origin.world!!, rotation)
 	}
 
 	/**
@@ -344,6 +344,7 @@ open class Craft(
 			}
 
 			detectedBlocks = newDetectedBlocks
+			origin = modifier(Vector3(origin)).asBlockLocation.apply { this.world = world }
 			blockSetQueueQueue[blocksToSet] = CraftMoveData(this, modifier, rotation, entities)
 		}
 	}
