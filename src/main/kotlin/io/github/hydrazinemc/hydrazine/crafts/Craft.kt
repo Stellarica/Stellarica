@@ -15,7 +15,6 @@ import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
-import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.data.BlockData
@@ -166,8 +165,10 @@ open class Craft(
 				}
 			}
 			messagePilot("<green>Craft detected! (${detectedBlocks.size} blocks)")
-			messagePilot("<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. " +
-					"(${detectedBlocks.size / time.coerceAtLeast(1)} blocks/ms)")
+			messagePilot(
+				"<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. " +
+						"(${detectedBlocks.size / time.coerceAtLeast(1)} blocks/ms)"
+			)
 		}
 	}
 

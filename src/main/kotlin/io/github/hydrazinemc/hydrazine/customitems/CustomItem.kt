@@ -49,7 +49,7 @@ data class CustomItem(
 	 */
 	val allowedEnchants: MutableSet<Enchantment> = mutableSetOf()
 
-	) {
+) {
 
 	/**
 	 * Whether this item can hold power,

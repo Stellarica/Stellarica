@@ -3,6 +3,7 @@ package io.github.hydrazinemc.hydrazine.customitems
 import io.github.hydrazinemc.hydrazine.Hydrazine
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.customitems.CustomItems.items
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -66,10 +67,10 @@ object CustomItems {
 	 */
 	private fun registerShapedRecipe(itemStack: ItemStack, matrix: List<String?>) {
 		klogger.debug { "Registering recipe for $itemStack" }
-		val key = NamespacedKey(Hydrazine.plugin, "recipe_${itemStack.id}")
+		val key = NamespacedKey(plugin, "recipe_${itemStack.id}")
 		if (Bukkit.getRecipe(key) != null) {
-			klogger.warn {"A recipe is already registered with key ${key.key}!"}
-			klogger.warn {"Cannot register bukkit shapeless recipe for ${itemStack.id}"}
+			klogger.warn { "A recipe is already registered with key ${key.key}!" }
+			klogger.warn { "Cannot register bukkit shapeless recipe for ${itemStack.id}" }
 			return
 		}
 		val recipe = ShapedRecipe(key, itemStack).shape("abc", "def", "ghi")
@@ -85,7 +86,7 @@ object CustomItems {
 		}
 		recipe.shape(*shape.chunked(3).toTypedArray())
 		Bukkit.addRecipe(recipe)
-		klogger.info{"Registered recipe $matrix for ${itemStack.id}"}
+		klogger.info { "Registered recipe $matrix for ${itemStack.id}" }
 	}
 
 	/**
@@ -96,8 +97,8 @@ object CustomItems {
 	private fun registerShapelessRecipe(itemStack: ItemStack, ingredients: List<String>) {
 		val key = NamespacedKey(plugin, "recipe_${itemStack.id}")
 		if (Bukkit.getRecipe(key) != null) {
-			klogger.warn {"A recipe is already registered with key ${key.key}!"}
-			klogger.warn {"Cannot register bukkit shapeless recipe for ${itemStack.id}"}
+			klogger.warn { "A recipe is already registered with key ${key.key}!" }
+			klogger.warn { "Cannot register bukkit shapeless recipe for ${itemStack.id}" }
 			return
 		}
 		val recipe = ShapelessRecipe(key, itemStack)
@@ -105,7 +106,7 @@ object CustomItems {
 			recipe.addIngredient(itemStackFromId(it)!!)
 		}
 		Bukkit.addRecipe(recipe)
-		klogger.info{"Registered recipe $ingredients for ${itemStack.id}"}
+		klogger.info { "Registered recipe $ingredients for ${itemStack.id}" }
 	}
 
 	/**

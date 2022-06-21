@@ -1,7 +1,6 @@
 package io.github.hydrazinemc.hydrazine.customblocks
 
 import io.github.hydrazinemc.hydrazine.customitems.customItem
-import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import org.bukkit.block.data.MultipleFacing
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority

@@ -1,11 +1,9 @@
 package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships
 
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
-import org.bukkit.Location
 
 /**
  * Base Starship class

@@ -4,7 +4,6 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.pilotedCrafts
 import io.github.hydrazinemc.hydrazine.crafts.Craft
 import io.github.hydrazinemc.hydrazine.utils.AlreadyPilotedException
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
-import org.bukkit.Location
 import org.bukkit.entity.Player
 
 /**

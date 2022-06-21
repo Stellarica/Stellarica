@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hydrazine.customblocks
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocks.blocks
 import io.github.hydrazinemc.hydrazine.customitems.CustomItem
 import io.github.hydrazinemc.hydrazine.customitems.CustomItems.itemStackFromId
 import org.bukkit.block.BlockFace
