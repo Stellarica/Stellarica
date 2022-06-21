@@ -71,8 +71,9 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 			queueMovement((velocity / movesPerSecond).asBlockLocation)
 
 			// it would be better to use the tick time of the tick we moved, but this will work for now
-			if (plugin.server.averageTickTime + timeSpentMoving < 30) movesPerSecond++
-			if (plugin.server.averageTickTime + timeSpentMoving > 40) movesPerSecond--
+			val weightedTime = plugin.server.averageTickTime + (timeSpentMoving / 2)
+			if (weightedTime < 30) movesPerSecond++
+			if (weightedTime + timeSpentMoving > 60) movesPerSecond--
 			ticksSinceMove = 0
 		}
 	}
