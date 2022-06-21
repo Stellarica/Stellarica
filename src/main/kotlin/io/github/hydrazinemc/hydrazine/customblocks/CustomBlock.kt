@@ -38,11 +38,9 @@ data class CustomBlock(
 	/**
 	 * The block data of the custom block
 	 */
-	val blockData: MultipleFacing
-		get() {
-			val blockData = Bukkit.getServer().createBlockData(Material.MUSHROOM_STEM) as MultipleFacing
-			data.forEach { (face, value) -> blockData.setFace(face, value) }
-			return blockData
-		}
-
+	val blockData: MultipleFacing by lazy {
+		val blockData = Bukkit.getServer().createBlockData(Material.MUSHROOM_STEM) as MultipleFacing
+		data.forEach { (face, value) -> blockData.setFace(face, value) }
+		blockData
+	}
 }
