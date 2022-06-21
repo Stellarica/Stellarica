@@ -4,7 +4,6 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.craft
 import io.github.hydrazinemc.hydrazine.utils.extensions.hotbar
-import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import io.github.hydrazinemc.hydrazine.utils.gui.hotbar.HotbarMenu
 import io.github.hydrazinemc.hydrazine.utils.gui.namedItem
 import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
@@ -35,7 +34,7 @@ object ShipControlHotbar : HotbarMenu() {
 
 	override fun onButtonClicked(index: Int, player: Player) {
 		val ship = player.craft as? Starship ?: run {
-			player.sendMiniMessage("<red>You are not piloting a starship, yet the ship menu is open! This is a bug!")
+			player.sendRichMessage("<red>You are not piloting a starship, yet the ship menu is open! This is a bug!")
 			return
 		}
 		when (index) {

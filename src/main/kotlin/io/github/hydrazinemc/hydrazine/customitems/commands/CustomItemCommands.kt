@@ -9,7 +9,6 @@ import io.github.hydrazinemc.hydrazine.customitems.CustomItems
 import io.github.hydrazinemc.hydrazine.customitems.customItem
 import io.github.hydrazinemc.hydrazine.customitems.isPowerable
 import io.github.hydrazinemc.hydrazine.customitems.power
-import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import org.bukkit.entity.Player
 
 /**
@@ -26,11 +25,11 @@ class CustomItemCommands : BaseCommand() {
 	@CommandPermission("hydrazine.customitems.give")
 	fun onGive(sender: Player, id: String, count: Int = 1, target: Player = sender) {
 		val item = CustomItems[id] ?: run {
-			sender.sendMiniMessage("<red>No custom item with the id '$id' found.")
+			sender.sendRichMessage("<red>No custom item with the id '$id' found.")
 			return
 		}
 		target.inventory.addItem(item.getItem(count))
-		sender.sendMiniMessage("Gave <b>$count</b> of ${item.name} to ${target.name}.")
+		sender.sendRichMessage("Gave <b>$count</b> of ${item.name} to ${target.name}.")
 	}
 
 	/**
@@ -42,10 +41,10 @@ class CustomItemCommands : BaseCommand() {
 	fun onGet(sender: Player) {
 		val item = sender.inventory.itemInMainHand
 		val custom = item.customItem ?: run {
-			sender.sendMiniMessage("<gold>This item is not a custom item!")
+			sender.sendRichMessage("<gold>This item is not a custom item!")
 			return
 		}
-		sender.sendMiniMessage(
+		sender.sendRichMessage(
 			"""
 			<green>---- Custom Item ----
 			</green>
@@ -73,15 +72,15 @@ class CustomItemCommands : BaseCommand() {
 	fun onSetPower(sender: Player, power: Int) {
 		val item = sender.inventory.itemInMainHand
 		val custom = item.customItem ?: run {
-			sender.sendMiniMessage("<gold>This item is not a custom item!")
+			sender.sendRichMessage("<gold>This item is not a custom item!")
 			return
 		}
 		if (!item.isPowerable) {
-			sender.sendMiniMessage("<gold>This item is not powerable!")
+			sender.sendRichMessage("<gold>This item is not powerable!")
 			return
 		}
 		item.power = power
-		sender.sendMiniMessage("<green>Set power to ${item.power}/${custom.maxPower}")
+		sender.sendRichMessage("<green>Set power to ${item.power}/${custom.maxPower}")
 	}
 }
 

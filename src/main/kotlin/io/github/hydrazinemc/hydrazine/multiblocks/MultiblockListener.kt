@@ -4,9 +4,7 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
-import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.event.EventHandler
@@ -78,11 +76,11 @@ class MultiblockListener: Listener {
 		val multiblock = potentialMultiblocks.maxByOrNull { it.key.blocks.size }
 
 		if (multiblock == null) {
-			event.player.sendMiniMessage("<red>Multiblock is invalid.")
+			event.player.sendRichMessage("<red>Multiblock is invalid.")
 			return
 		}
 
-		event.player.sendMiniMessage("<green>Found Multiblock: ${multiblock.key.name}")
+		event.player.sendRichMessage("<green>Found Multiblock: ${multiblock.key.name}")
 
 		val multiblockNamespacedKey = NamespacedKey(plugin, "multiblocks")
 
@@ -95,7 +93,7 @@ class MultiblockListener: Listener {
 
 		// Check if the multiblock is already in the list
 		if (multiblockArray.contains(multiblockData)) {
-			event.player.sendMiniMessage("<gold>Multiblock is already detected.")
+			event.player.sendRichMessage("<gold>Multiblock is already detected.")
 			return
 		}
 
