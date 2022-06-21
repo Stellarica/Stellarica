@@ -75,6 +75,8 @@ class Hydrazine : JavaPlugin() {
 			StarshipDebugCommands(),
 			CustomItemCommands()
 		).forEach { commandManager.registerCommand(it) }
+		commandManager.commandCompletions.registerCompletion("customitems"
+		) { CustomItems.all.keys }
 
 		// Reload the config
 		saveDefaultConfig()

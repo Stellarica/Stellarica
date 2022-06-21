@@ -2,8 +2,11 @@ package io.github.hydrazinemc.hydrazine.customitems.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
+import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
+import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
+import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.customitems.CustomItems
 import io.github.hydrazinemc.hydrazine.customitems.customItem
@@ -23,13 +26,18 @@ class CustomItemCommands : BaseCommand() {
 	@Subcommand("give")
 	@Description("Get a custom item")
 	@CommandPermission("hydrazine.customitems.give")
-	fun onGive(sender: Player, id: String, count: Int = 1, target: Player = sender) {
+	@CommandCompletion("@customitems")
+	fun onGive(
+		sender: Player,
+		id: String,
+		@Default("1") count: Int,
+		@Optional target: Player = sender) {
 		val item = CustomItems[id] ?: run {
 			sender.sendRichMessage("<red>No custom item with the id '$id' found.")
 			return
 		}
 		target.inventory.addItem(item.getItem(count))
-		sender.sendRichMessage("Gave <b>$count</b> of ${item.name} to ${target.name}.")
+		sender.sendRichMessage("Gave <b>$count</b> of ${item.name}<reset> to ${target.name}.")
 	}
 
 	/**
