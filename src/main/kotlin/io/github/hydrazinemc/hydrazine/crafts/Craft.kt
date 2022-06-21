@@ -7,7 +7,6 @@ import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
-import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.locations.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.nms.TeleportUtils
@@ -86,7 +85,7 @@ open class Craft(
 	 */
 	fun messagePilot(message: String) {
 		if (this is Pilotable) {
-			pilot?.sendMiniMessage(message) ?: owner?.sendMiniMessage(message)
+			pilot?.sendRichMessage(message) ?: owner?.sendRichMessage(message)
 		}
 	}
 
@@ -97,7 +96,7 @@ open class Craft(
 	 * @see messagePilot
 	 */
 	fun messagePassengers(message: String) {
-		passengers.forEach { it.sendMiniMessage(message) }
+		passengers.forEach { it.sendRichMessage(message) }
 	}
 
 	/**

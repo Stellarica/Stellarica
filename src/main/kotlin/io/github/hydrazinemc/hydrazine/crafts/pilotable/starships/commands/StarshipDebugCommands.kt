@@ -8,7 +8,6 @@ import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.craft
-import io.github.hydrazinemc.hydrazine.utils.extensions.sendMiniMessage
 import org.bukkit.entity.Player
 
 /**
@@ -25,7 +24,7 @@ class StarshipDebugCommands : BaseCommand() {
 	@CommandPermission("hydrazine.starship.debug.setvelocity")
 	fun onSetVelocity(sender: Player, x: Double, y: Double, z: Double) {
 		(getShip(sender) ?: return).velocity = Vector3(x, y, z)
-		sender.sendMiniMessage("<green>Set starship velocity to ($x, $y, $z)")
+		sender.sendRichMessage("<green>Set starship velocity to ($x, $y, $z)")
 	}
 
 
@@ -37,7 +36,7 @@ class StarshipDebugCommands : BaseCommand() {
 	@CommandPermission("hydrazine.starship.debug.setacceleration")
 	fun onSetAcceleration(sender: Player, x: Double, y: Double, z: Double) {
 		(getShip(sender) ?: return).acceleration = Vector3(x, y, z)
-		sender.sendMiniMessage("<green>Set starship acceleration to ($x, $y, $z)")
+		sender.sendRichMessage("<green>Set starship acceleration to ($x, $y, $z)")
 	}
 
 	/**
@@ -48,7 +47,7 @@ class StarshipDebugCommands : BaseCommand() {
 	@CommandPermission("hydrazine.starship.debug.get")
 	fun onGetData(sender: Player) {
 		val ship = getShip(sender) ?: return
-		sender.sendMiniMessage(
+		sender.sendRichMessage(
 			"""
 			<gray>------</gray>
 			<b><white>Starship Movement Debug</b><gray>
@@ -65,10 +64,10 @@ class StarshipDebugCommands : BaseCommand() {
 
 	private fun getShip(sender: Player): Starship? {
 		return ((sender.craft ?: run {
-			sender.sendMiniMessage("<red>You are not riding a craft!")
+			sender.sendRichMessage("<red>You are not riding a craft!")
 			return null
 		}) as? Starship) ?: run {
-			sender.sendMiniMessage("<gold>This craft is not a Starship!")
+			sender.sendRichMessage("<gold>This craft is not a Starship!")
 			return null
 		}
 	}
