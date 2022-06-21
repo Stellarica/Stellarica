@@ -23,6 +23,12 @@ object CustomItems {
 	 */
 	operator fun get(name: String?): CustomItem? = items[name]
 
+	/**
+	 * The registered custom items
+	 */ // id rather not expose items itself
+	val all: Map<String, CustomItem>
+		get() = items.toMap()
+
 
 	/**
 	 * Load custom items from the config file
