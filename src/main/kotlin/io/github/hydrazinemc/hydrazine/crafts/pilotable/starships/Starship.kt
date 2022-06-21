@@ -66,13 +66,10 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 	 */
 	fun move() {
 		ticksSinceMove++
+		if (isMoving) return // this might cause issues...
 		if (ticksSinceMove >= 20 / movesPerSecond) {
 			velocity += acceleration / movesPerSecond
 			if (velocity == Vector3.zero) return
-			if (isMoving) {
-				klogger.warn { "A ship needs to move again, but hasn't finished moving!" }
-				return
-			}
 			queueMovement((velocity / movesPerSecond).asBlockLocation)
 
 			// it would be better to use the tick time of the tick we moved, but this will work for now
