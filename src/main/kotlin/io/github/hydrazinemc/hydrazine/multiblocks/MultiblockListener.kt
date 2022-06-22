@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
@@ -102,7 +103,7 @@ class MultiblockListener : Listener {
 
 		// Create Multiblock
 		val multiblockData =
-			Multiblock(multiblock.key.name, clickedBlock.x, clickedBlock.y, clickedBlock.z, multiblock.value)
+			Multiblock(multiblock.key.name, BlockLocation(clickedBlock.x, clickedBlock.y, clickedBlock.z), multiblock.value)
 
 		// Check if the multiblock is already in the list
 		if (multiblockArray.contains(multiblockData)) {
@@ -156,7 +157,8 @@ class MultiblockListener : Listener {
 					if (!validate(
 							multiblock.r,
 							multiblockLayout,
-							world.getBlockAt(multiblock.x, multiblock.y, multiblock.z)
+							// not using multiblock.origin.bukkit as the world of the BlockLocation is probably null
+							world.getBlockAt(multiblock.origin.x, multiblock.origin.y, multiblock.origin.z)
 						)
 					) {
 						klogger.warn {

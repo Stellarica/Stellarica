@@ -11,7 +11,7 @@ import kotlin.math.roundToInt
  *
  * @see Vector3
  */
-data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World?) {
+data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World? = null) {
 	/**
 	 * The bukkit [Block] at this location
 	 */
