@@ -1,5 +1,7 @@
 package io.github.hydrazinemc.hydrazine.multiblocks
 
+import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
+
 /**
  * Data for a multiblock instance
  */
@@ -8,18 +10,7 @@ data class Multiblock(
 	 * The name of the [MultiblockLayout]
 	 */
 	val name: String,
-	/**
-	 * The x coordinate of the origin
-	 */
-	val x: Int,
-	/**
-	 * The y coordinate of the origin
-	 */
-	val y: Int,
-	/**
-	 * The z coordinate of the origin
-	 */
-	val z: Int,
+	val origin: BlockLocation,
 	/**
 	 * The amount of rotation
 	 */

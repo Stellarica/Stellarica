@@ -1,6 +1,7 @@
 package io.github.hydrazinemc.hydrazine.multiblocks
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.NamespacedKey
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
@@ -26,9 +27,9 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 			val container = context.newPersistentDataContainer()
 
 			container.set(NamespacedKey(plugin, "name"), PersistentDataType.STRING, multiblock.name)
-			container.set(NamespacedKey(plugin, "x"), PersistentDataType.INTEGER, multiblock.x)
-			container.set(NamespacedKey(plugin, "y"), PersistentDataType.INTEGER, multiblock.y)
-			container.set(NamespacedKey(plugin, "z"), PersistentDataType.INTEGER, multiblock.z)
+			container.set(NamespacedKey(plugin, "x"), PersistentDataType.INTEGER, multiblock.origin.x)
+			container.set(NamespacedKey(plugin, "y"), PersistentDataType.INTEGER, multiblock.origin.y)
+			container.set(NamespacedKey(plugin, "z"), PersistentDataType.INTEGER, multiblock.origin.z)
 			container.set(NamespacedKey(plugin, "t"), PersistentDataType.INTEGER, multiblock.t)
 			container.set(NamespacedKey(plugin, "r"), PersistentDataType.BYTE, multiblock.r)
 
@@ -50,7 +51,7 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 			val t = persistentDataContainer.get(NamespacedKey(plugin, "t"), PersistentDataType.INTEGER)!!
 			val r = persistentDataContainer.get(NamespacedKey(plugin, "r"), PersistentDataType.BYTE)!!
 
-			result.add(Multiblock(name, x, y, z, r, t))
+			result.add(Multiblock(name, BlockLocation(x, y, z), r, t))
 		}
 
 		return result
