@@ -1,6 +1,5 @@
 package io.github.hydrazinemc.hydrazine.customitems
 
-import io.github.hydrazinemc.hydrazine.Hydrazine
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.customitems.CustomItems.items

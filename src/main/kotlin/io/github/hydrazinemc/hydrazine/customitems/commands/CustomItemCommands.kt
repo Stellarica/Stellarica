@@ -31,7 +31,8 @@ class CustomItemCommands : BaseCommand() {
 		sender: Player,
 		id: String,
 		@Default("1") count: Int,
-		@Optional target: Player = sender) {
+		@Optional target: Player = sender
+	) {
 		val item = CustomItems[id] ?: run {
 			sender.sendRichMessage("<red>No custom item with the id '$id' found.")
 			return
