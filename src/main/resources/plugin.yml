@@ -37,3 +37,11 @@ permissions:
       setpower:
         description: Lets users set the power of a custom item
         default: op
+    multiblocks:
+      debug:
+        chunk:
+          description: Lets users get a list of multiblocks in a given chunk
+          default: op
+        multiblock:
+          description: Lets users get debug information about multiblocks
+          default: op
