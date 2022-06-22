@@ -77,7 +77,8 @@ class Hydrazine : JavaPlugin() {
 			CustomItemCommands(),
 			MultiblockCommands(),
 		).forEach { commandManager.registerCommand(it) }
-		commandManager.commandCompletions.registerCompletion("customitems"
+		commandManager.commandCompletions.registerCompletion(
+			"customitems"
 		) { CustomItems.all.keys }
 
 		// Reload the config

@@ -17,7 +17,6 @@ import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
-import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.data.BlockData
@@ -164,7 +163,7 @@ open class Craft(
 			Tasks.sync {
 				// Detect all multiblocks
 				multiblocks.clear()
-				chunkCache.keys.forEach {chunkLoc ->
+				chunkCache.keys.forEach { chunkLoc ->
 					origin.world!!.getChunkAt(chunkLoc.x, chunkLoc.z).multiblocks.forEach {
 						if (detectedBlocks.contains(BlockLocation(it.origin))) multiblocks.add(it)
 					}
@@ -278,7 +277,8 @@ open class Craft(
 					return@forEach
 				}
 
-				val targetBlockLocation = modifier(Vector3(currentBlockLocation)).asBlockLocation.apply{this.world = world}
+				val targetBlockLocation =
+					modifier(Vector3(currentBlockLocation)).asBlockLocation.apply { this.world = world }
 				val targetBlockData = getCachedBlockData(targetBlockLocation)
 
 				// Step 2: Confirm that we can move that block.
