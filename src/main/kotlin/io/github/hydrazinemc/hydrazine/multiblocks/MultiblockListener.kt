@@ -4,15 +4,15 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
-import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.Bukkit
-import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
+import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
+import java.util.UUID
 
 /**
  * Handles multiblock detection and ticking
@@ -26,25 +26,14 @@ class MultiblockListener : Listener {
 			private set
 	}
 
-	private fun validate(rotation: Byte, layout: MultiblockLayout, origin: Block): Boolean {
-		fun rotationFunction(it: MultiblockOriginRelative) = when (rotation) {
-			1.toByte() -> {
-				it
-			}
+	private fun validate(facing: BlockFace, layout: MultiblockLayout, origin: Block): Boolean {
+		fun rotationFunction(it: MultiblockOriginRelative) = when (facing) {
+			BlockFace.NORTH -> it
+			BlockFace.EAST -> MultiblockOriginRelative(-it.z, it.y, it.x)
+			BlockFace.SOUTH -> MultiblockOriginRelative(-it.x, it.y, -it.z)
+			BlockFace.WEST -> MultiblockOriginRelative(it.z, it.y, -it.x)
 
-			2.toByte() -> {
-				MultiblockOriginRelative(-it.z, it.y, it.x)
-			}
-
-			3.toByte() -> {
-				MultiblockOriginRelative(-it.x, it.y, -it.z)
-			}
-
-			4.toByte() -> {
-				MultiblockOriginRelative(it.z, it.y, -it.x)
-			}
-
-			else -> throw IllegalArgumentException("Invalid rotation: $rotation")
+			else -> throw IllegalArgumentException("Invalid facing direction: $facing")
 		}
 
 		layout.blocks.forEach {
@@ -74,14 +63,15 @@ class MultiblockListener : Listener {
 		event.isCancelled = true
 
 		// Actually detect it
-		val potentialMultiblocks = mutableMapOf<MultiblockLayout, Byte>()
+		val potentialMultiblocks = mutableMapOf<MultiblockLayout, BlockFace>()
 
 		// Start by iterating over each multiblock
 		multiblocks.forEach { multiblockConfiguration ->
-			if (validate(1, multiblockConfiguration, clickedBlock)) potentialMultiblocks[multiblockConfiguration] = 1
-			if (validate(2, multiblockConfiguration, clickedBlock)) potentialMultiblocks[multiblockConfiguration] = 2
-			if (validate(3, multiblockConfiguration, clickedBlock)) potentialMultiblocks[multiblockConfiguration] = 3
-			if (validate(4, multiblockConfiguration, clickedBlock)) potentialMultiblocks[multiblockConfiguration] = 4
+			setOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST).forEach { facing ->
+				if (validate(facing, multiblockConfiguration, clickedBlock)) {
+					potentialMultiblocks[multiblockConfiguration] = facing
+				}
+			}
 		}
 
 		// If a smaller multiblock exists as part of a larger multiblock, we may end up detecting the wrong one.
@@ -95,27 +85,31 @@ class MultiblockListener : Listener {
 
 		event.player.sendRichMessage("<green>Found Multiblock: ${multiblock.key.name}")
 
-		val multiblockNamespacedKey = NamespacedKey(plugin, "multiblocks")
-
-		// Get the multiblock list, or create it if it doesn't exist
-		val multiblockArray =
-			clickedBlock.chunk.persistentDataContainer.get(multiblockNamespacedKey, MultiblockPDC()) ?: mutableSetOf()
+		// Get the multiblock list
+		val multiblockArray = clickedBlock.chunk.multiblocks
 
 		// Create Multiblock
 		val multiblockData =
-			Multiblock(multiblock.key.name, BlockLocation(clickedBlock.x, clickedBlock.y, clickedBlock.z), multiblock.value)
+			Multiblock(
+				multiblock.key.name,
+				UUID.randomUUID(),
+				clickedBlock.location,
+				multiblock.value
+			)
 
 		// Check if the multiblock is already in the list
-		if (multiblockArray.contains(multiblockData)) {
-			event.player.sendRichMessage("<gold>Multiblock is already detected.")
-			return
+		multiblockArray.forEach { existing ->
+			if (multiblockData.origin == existing.origin && multiblockData.name == existing.name) {
+				event.player.sendRichMessage("<gold>Multiblock is already detected.")
+				return
+			}
 		}
 
 		// Add the multiblock to the list
 		multiblockArray.add(multiblockData)
 
 		// Save it
-		clickedBlock.chunk.persistentDataContainer.set(multiblockNamespacedKey, MultiblockPDC(), multiblockArray)
+		clickedBlock.chunk.multiblocks = multiblockArray
 	}
 
 	/**
@@ -126,11 +120,8 @@ class MultiblockListener : Listener {
 		Bukkit.getWorlds().forEach { world ->
 			world.loadedChunks.forEach chunk@{ chunk ->
 				// Get the multiblock list of a chunk
-				val multiblockArray = chunk.persistentDataContainer.get(
-					NamespacedKey(plugin, "multiblocks"),
-					MultiblockPDC()
-				) ?: return@chunk
-
+				val multiblockArray = chunk.multiblocks
+				val newMultiblockArray = mutableSetOf<Multiblock>()
 				// Iterate over each multiblock
 				multiblockArray.forEach multiblock@{ multiblock ->
 					// Get the layout
@@ -142,40 +133,24 @@ class MultiblockListener : Listener {
 							"Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock: " +
 									"${multiblock.name}, it has been undetected."
 						}
-
-						multiblockArray.remove(multiblock)
-						chunk.persistentDataContainer.set(
-							NamespacedKey(plugin, "multiblocks"),
-							MultiblockPDC(),
-							multiblockArray
-						)
-
 						return@multiblock
 					}
 
 					// Validate the layout
 					if (!validate(
-							multiblock.r,
+							multiblock.facing,
 							multiblockLayout,
-							// not using multiblock.origin.bukkit as the world of the BlockLocation is probably null
-							world.getBlockAt(multiblock.origin.x, multiblock.origin.y, multiblock.origin.z)
+							world.getBlockAt(multiblock.origin)
 						)
 					) {
 						klogger.warn {
 							"Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: " +
 									"${multiblock.name}, it has been undetected."
 						}
-
-						multiblockArray.remove(multiblock)
-						chunk.persistentDataContainer.set(
-							NamespacedKey(plugin, "multiblocks"),
-							MultiblockPDC(),
-							multiblockArray
-						)
-
 						return@multiblock
-					}
+					} else newMultiblockArray.add(multiblock)
 				}
+				chunk.multiblocks = newMultiblockArray
 			}
 		}
 	}
@@ -247,7 +222,6 @@ class MultiblockListener : Listener {
 					}
 				}
 			}
-
 			newMultiblocks.add(multiblockLayout)
 		}
 

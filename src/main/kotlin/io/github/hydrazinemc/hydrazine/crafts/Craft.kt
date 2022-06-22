@@ -3,6 +3,8 @@ package io.github.hydrazinemc.hydrazine.crafts
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter.blockSetQueueQueue
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
+import io.github.hydrazinemc.hydrazine.multiblocks.Multiblock
+import io.github.hydrazinemc.hydrazine.multiblocks.multiblocks
 import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.Tasks
@@ -15,6 +17,7 @@ import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.data.BlockData
@@ -35,6 +38,7 @@ open class Craft(
 ) {
 
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
+	var multiblocks = mutableSetOf<Multiblock>()
 	private var chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 	/**
@@ -101,7 +105,7 @@ open class Craft(
 
 	/**
 	 * Detect this craft
-	 * @throws AlreadyMovingException
+	 * @throws AlreadyMovingException if the craft is moving
 	 */
 	fun detect() {
 		if (isMoving) throw AlreadyMovingException("Craft attempted to detect, but is currently moving!")
@@ -141,7 +145,7 @@ open class Craft(
 							for (y in -1..1) {
 								for (z in -1..1) {
 									if (x == y && z == y && y == 0) continue
-									val block = currentBlock + BlockLocation(x, y, z, null)
+									val block = currentBlock + BlockLocation(x, y, z, currentBlock.world)
 									if (!checkedBlocks.contains(block)) {
 										checkedBlocks.add(block)
 										nextBlocksToCheck.add(block)
@@ -157,7 +161,17 @@ open class Craft(
 				"<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. " +
 						"(${detectedBlocks.size / time.coerceAtLeast(1)} blocks/ms)"
 			)
-			chunkCache.clear()
+			Tasks.sync {
+				// Detect all multiblocks
+				multiblocks.clear()
+				chunkCache.keys.forEach {chunkLoc ->
+					origin.world!!.getChunkAt(chunkLoc.x, chunkLoc.z).multiblocks.forEach {
+						if (detectedBlocks.contains(BlockLocation(it.origin))) multiblocks.add(it)
+					}
+				}
+				messagePilot("<gray>Detected ${multiblocks.size} multiblocks")
+				chunkCache.clear()
+			}
 		}
 	}
 
@@ -310,7 +324,7 @@ open class Craft(
 			chunkCache.clear()
 			detectedBlocks = newDetectedBlocks
 			origin = modifier(Vector3(origin)).asBlockLocation.apply { this.world = world }
-			blockSetQueueQueue[blocksToSet] = CraftMoveData(this, modifier, rotation, entities)
+			blockSetQueueQueue[blocksToSet] = CraftMoveData(this, modifier, rotation, entities, world)
 		}
 	}
 
