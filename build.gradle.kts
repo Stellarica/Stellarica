@@ -53,8 +53,12 @@ tasks{
 	}
 	withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 		reports {
+			// Only want .txt and .html
+			// who the heck even uses .sarif?
 			html.required.set(true)
 			txt.required.set(true)
+			xml.required.set(false)
+			sarif.required.set(false)
 		}
 	}
 }
