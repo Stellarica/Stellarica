@@ -35,6 +35,7 @@ open class Craft(
 ) {
 
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
+	private var chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 	/**
 	 * Whether the ship is currently moving.
@@ -106,8 +107,8 @@ open class Craft(
 		if (isMoving) throw AlreadyMovingException("Craft attempted to detect, but is currently moving!")
 		messagePilot("<gray>Detecting craft...")
 		Tasks.async {
+			chunkCache.clear()
 			val time = measureTimeMillis {
-				val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 				var nextBlocksToCheck = detectedBlocks
 				nextBlocksToCheck.add(origin)
@@ -121,20 +122,7 @@ open class Craft(
 					nextBlocksToCheck = mutableSetOf()
 
 					for (currentBlock in blocksToCheck) {
-						val chunkCoordinate = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
-
-						val type = chunkCache.getOrPut(chunkCoordinate) {
-							origin.world!!.getChunkAt(
-								chunkCoordinate.x,
-								chunkCoordinate.z
-							)
-								.getChunkSnapshot(false, false, false)
-						}.getBlockData(
-							currentBlock.x - (chunkCoordinate.x shl 4),
-							currentBlock.y,
-							currentBlock.z - (chunkCoordinate.z shl 4)
-						).material
-
+						val type = getCachedBlockData(currentBlock).material
 
 						if (undetectables.contains(type)) continue
 
@@ -169,6 +157,7 @@ open class Craft(
 				"<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. " +
 						"(${detectedBlocks.size / time.coerceAtLeast(1)} blocks/ms)"
 			)
+			chunkCache.clear()
 		}
 	}
 
@@ -254,84 +243,59 @@ open class Craft(
 		isMoving = true
 
 		Tasks.async {
-			// TODO: handle unloaded chunks
-			val chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
+			chunkCache.clear()
 
 			val newDetectedBlocks = mutableSetOf<BlockLocation>()
-
 			val blocksToSet = mutableMapOf<BlockLocation, BlockData>()
-
 			val airData = Bukkit.createBlockData(Material.AIR)
-
 			val entities = mutableMapOf<BlockLocation, BlockLocation>()
 
-			detectedBlocks.forEach { currentBlock ->
-				val currentChunkCoord = ChunkLocation(currentBlock.x shr 4, currentBlock.z shr 4)
-				val currentChunk = chunkCache.getOrPut(currentChunkCoord) {
-					world.getChunkAt(
-						currentChunkCoord.x,
-						currentChunkCoord.z
-					).getChunkSnapshot(false, false, false)
-				}
-				val currentBlockData = currentChunk.getBlockData(
-					currentBlock.x - (currentChunkCoord.x shl 4),
-					currentBlock.y,
-					currentBlock.z - (currentChunkCoord.z shl 4)
-				)
-				val currentMaterial = currentBlockData.material
+			detectedBlocks.forEach { currentBlockLocation ->
+				val currentBlockData = getCachedBlockData(currentBlockLocation)
 
 				// Step 1: Confirm that there is still a detectable block there.
-				if (undetectables.contains(currentMaterial)) {
+				if (undetectables.contains(currentBlockData.material)) {
 					messagePilot(
 						"<red>Skipping undetectable block at " +
-								"(${currentBlock.x},${currentBlock.y},${currentBlock.z}) - $currentMaterial."
+								"(${currentBlockLocation.x},${currentBlockLocation.y},${currentBlockLocation.z}) - ${currentBlockData.material}."
 					)
 					messagePassengers("<bold><gold>This is a bug, please report it.")
 					// TODO: warn or throw something
 					return@forEach
 				}
 
-				// todo: don't repeat this over here
-				val targetBlock = modifier(Vector3(currentBlock)).asBlockLocation
-				targetBlock.world = world
-				val targetChunkCoord = ChunkLocation(targetBlock.x shr 4, targetBlock.z shr 4)
-				val targetBlockData = chunkCache.getOrPut(targetChunkCoord) {
-					world.getChunkAt(targetChunkCoord.x, targetChunkCoord.z).getChunkSnapshot(false, false, false)
-				}.getBlockData(
-					targetBlock.x - (targetChunkCoord.x shl 4),
-					targetBlock.y,
-					targetBlock.z - (targetChunkCoord.z shl 4)
-				)
-				val targetMaterial = targetBlockData.material
+				val targetBlockLocation = modifier(Vector3(currentBlockLocation)).asBlockLocation.apply{this.world = world}
+				val targetBlockData = getCachedBlockData(targetBlockLocation)
 
 				// Step 2: Confirm that we can move that block.
-				if (detectedBlocks.contains(targetBlock) || targetBlockData.material.isAir) {
+				if (detectedBlocks.contains(targetBlockLocation) || targetBlockData.material.isAir) {
 
 					// Step 3: If the current block has not already been replaced, set it to air.
-					blocksToSet.putIfAbsent(currentBlock, airData)
+					blocksToSet.putIfAbsent(currentBlockLocation, airData)
 
 					// Make sure we have rotated if we need to
 					currentBlockData.rotate(rotation)
 
 					// Step 4: Set the target block to the block data of the current block.
-					blocksToSet[targetBlock] = currentBlockData
+					blocksToSet[targetBlockLocation] = currentBlockData
 
 					// This is really, really, really, really, stupid.
 					// Sadly afaik there's no way to get a tile entity from a chunk snapshot
 					// and the benefits of doing this async outweigh this pain and suffering
-					if (currentBlockData.material in tileEntities) entities[currentBlock] = targetBlock
+					if (currentBlockData.material in tileEntities) entities[currentBlockLocation] = targetBlockLocation
 
 					// Step 5: Add the target block to the new detected blocks list.
-					if (!newDetectedBlocks.add(targetBlock)) klogger.warn {
+					if (!newDetectedBlocks.add(targetBlockLocation)) klogger.warn {
 						"A newly detected block was overwritten while queueing $name!"
 					}
 				} else {
 					// The ship is blocked!
 					messagePilot(
-						"<gold>$name blocked by $targetMaterial at " +
-								"<bold>(${targetBlock.x}, ${targetBlock.y}, ${targetBlock.z}</bold>)!"
+						"<gold>$name blocked by ${targetBlockData.material} at " +
+								"<bold>(${targetBlockLocation.x}, ${targetBlockLocation.y}, ${targetBlockLocation.z}</bold>)!"
 					)
 					this.isMoving = false
+					chunkCache.clear()
 					return@async
 				}
 			}
@@ -343,10 +307,25 @@ open class Craft(
 				)
 				messagePassengers("<bold><gold>This is a bug, please report it.")
 			}
-
+			chunkCache.clear()
 			detectedBlocks = newDetectedBlocks
 			origin = modifier(Vector3(origin)).asBlockLocation.apply { this.world = world }
 			blockSetQueueQueue[blocksToSet] = CraftMoveData(this, modifier, rotation, entities)
 		}
+	}
+
+	private fun getCachedBlockData(block: BlockLocation): BlockData {
+		val chunkCoord = ChunkLocation(block.x shr 4, block.z shr 4)
+		val currentChunk = chunkCache.getOrPut(chunkCoord) {
+			block.world!!.getChunkAt(
+				chunkCoord.x,
+				chunkCoord.z
+			).getChunkSnapshot(false, false, false)
+		}
+		return currentChunk.getBlockData(
+			block.x - (chunkCoord.x shl 4),
+			block.y,
+			block.z - (chunkCoord.z shl 4)
+		)
 	}
 }
