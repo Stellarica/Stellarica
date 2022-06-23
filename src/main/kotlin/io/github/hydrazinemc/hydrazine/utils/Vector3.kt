@@ -5,7 +5,9 @@ import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import org.bukkit.Location
 import org.bukkit.util.Vector
+import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 /**
  * A container for three Doubles, [x], [y], and [z]
@@ -42,9 +44,19 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	operator fun times(other: Float) = Vector3(x * other, y * other, z * other)
 
 	/**
+	 * Multiply this by [other]
+	 */
+	operator fun times(other: Double) = Vector3(x * other, y * other, z * other)
+
+	/**
 	 * Divide this by [other]
 	 */
 	operator fun div(other: Float) = Vector3(x / other, y / other, z / other)
+
+	/**
+	 * Divide this by [other]
+	 */
+	operator fun div(other: Double) = Vector3(x / other, y / other, z / other)
 
 	/**
 	 * This Vector3 as a loction.
@@ -96,7 +108,40 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	)
 
 	/**
+	 * Get the distance between this and [other]
+	 * Note that this uses sqare root calculations and isn't very performant.
+	 * @see distanceSquared for comparing distances
+	 */ // todo: handle 0 distance
+	fun distance(other: Vector3) = sqrt(distanceSquared(other))
+
+	/**
+	 * The distance between this and [other], squared
+	 * @see distance
+	 */
+	fun distanceSquared(other: Vector3) =
+		(x - other.x).pow(2.0) + (y - other.y).pow(2.0) + (z - other.z).pow(2.0)
+
+
+	/**
 	 * This vector, inverted
 	 */
 	operator fun unaryMinus(): Vector3 = Vector3(-x, -y, -z)
+
+	/**
+	 * The magnetude of this vector
+	 */
+	val magnetude: Double
+		get() = if (this.length == 0.0) {0.0} else{distance(zero)}
+
+	/**
+	 * The length of this vector's components, summed
+	 */
+	val length: Double
+		get() = x + y + z
+
+	/**
+	 * This vector but with a magnitude of 1
+	 */
+	val normalized: Vector3
+		get() = this / magnetude
 }
