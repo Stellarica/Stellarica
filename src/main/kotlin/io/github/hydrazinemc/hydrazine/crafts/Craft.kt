@@ -1,7 +1,7 @@
 package io.github.hydrazinemc.hydrazine.crafts
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
-import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter.blockSetQueueQueue
+import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter.craftMoveQueue
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.multiblocks.Multiblock
 import io.github.hydrazinemc.hydrazine.multiblocks.multiblocks
@@ -324,7 +324,7 @@ open class Craft(
 			chunkCache.clear()
 			detectedBlocks = newDetectedBlocks
 			origin = modifier(Vector3(origin)).asBlockLocation.apply { this.world = world }
-			blockSetQueueQueue[blocksToSet] = CraftMoveData(this, modifier, rotation, entities, world)
+			craftMoveQueue.add(CraftMoveData(this, modifier, rotation, entities, world, blocksToSet))
 		}
 	}
 

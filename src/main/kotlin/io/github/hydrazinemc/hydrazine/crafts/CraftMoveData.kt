@@ -4,6 +4,7 @@ import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import org.bukkit.World
+import org.bukkit.block.data.BlockData
 
 /**
  * Container for extra craft move operation data
@@ -30,5 +31,10 @@ data class CraftMoveData(
 	/**
 	 * The world the craft is moving to
 	 */
-	val world: World
+	val world: World,
+
+	/**
+	 * The blocks to set
+	 */
+	val blocks: MutableMap<BlockLocation, BlockData>
 )
