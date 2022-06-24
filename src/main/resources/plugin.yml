@@ -29,8 +29,12 @@ permissions:
           default: op
     customitems:
       give:
-        description: Lets users give custom items to players
-        default: op
+        self:
+            description: Lets users give themselves custom items
+            default: op
+        other:
+            description: Lets users give other players custom items
+            default: op
       get:
         description: Lets users get whether the held item is a custom item
         default: op
