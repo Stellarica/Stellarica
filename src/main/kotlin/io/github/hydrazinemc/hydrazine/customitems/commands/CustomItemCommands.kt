@@ -25,7 +25,7 @@ class CustomItemCommands : BaseCommand() {
 	 */
 	@Subcommand("give")
 	@Description("Get a custom item")
-	@CommandPermission("hydrazine.customitems.give")
+	@CommandPermission("hydrazine.customitems.give.self")
 	@CommandCompletion("@customitems")
 	fun onGive(
 		sender: Player,
@@ -35,6 +35,10 @@ class CustomItemCommands : BaseCommand() {
 	) {
 		val item = CustomItems[id] ?: run {
 			sender.sendRichMessage("<red>No custom item with the id '$id' found.")
+			return
+		}
+		if (target != sender && !target.hasPermission("hydrazine.customitems.give.other")) {
+			sender.sendRichMessage("<red>You do not have permission to give custom items to other players.")
 			return
 		}
 		target.inventory.addItem(item.getItem(count))
