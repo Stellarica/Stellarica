@@ -181,7 +181,25 @@ open class Craft(
 	fun movePassengers(offset: (Vector3) -> Vector3, rotation: RotationAmount = RotationAmount.NONE) {
 		passengers.forEach {
 			if (it is Player) {
-				TeleportUtils.teleportRotate(it, offset(Vector3(it.location)).asLocation, rotation)
+				// TODO: FIX
+				// this is not a good solution because if there is any rotation, the player will not be translated by the offset
+				// The result is that any ship movement that attempts to rotate and move in the same action will break.
+				// For now there aren't any actions like that, but if there are in the future, this will need to be fixed.
+				//
+				// Rotating the whole ship around the adjusted origin will not work,
+				// as rotating the ship 4 times does not bring it back to the original position
+				//
+				// However, without this dumb fix players do not rotate to the proper relative location
+				//
+				if (rotation != RotationAmount.NONE)
+					TeleportUtils.teleportRotate(
+						it,
+						Vector3(it.location).rotateAround(Vector3(origin) + Vector3(0.5, 0.0, 0.5), rotation).asLocation,
+						rotation
+					)
+				else {
+					TeleportUtils.teleportRotate(it, offset(Vector3(it.location)).asLocation, rotation)
+				}
 			} else {
 				it.teleport(offset(Vector3(it.location)).asLocation)
 			}
