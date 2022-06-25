@@ -88,5 +88,6 @@ val tileEntities: EnumSet<Material> = EnumSet.of(
 	Material.DISPENSER,
 	Material.FURNACE,
 	Material.BREWING_STAND,
-	Material.JUKEBOX
+	Material.JUKEBOX,
+	Material.BELL
 )
