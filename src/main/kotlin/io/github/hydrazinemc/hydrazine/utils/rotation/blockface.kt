@@ -1,8 +1,10 @@
 import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateAxis
+import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData
 import org.bukkit.block.data.Directional
+import org.bukkit.block.data.MultipleFacing
 import org.bukkit.block.data.Orientable
 import org.bukkit.block.data.Rotatable
 
@@ -63,8 +65,10 @@ fun rotateCardinalFaceOpposite(face: BlockFace): BlockFace {
 /**
  * Rotate this data by [amount]
  *
- * Works with [Directional]s, [Orientable]s, and [Rotatable]s
+ * Works with [Directional]s, [Orientable]s, [MultipleFacing]s, and [Rotatable]s
  * and will silently fail if this is not one of those.
+ *
+ * Ignores mushroom stems as they are used for custom blocks.
  */
 fun BlockData.rotate(amount: RotationAmount) {
 	if (amount == RotationAmount.NONE) return
@@ -79,5 +83,15 @@ fun BlockData.rotate(amount: RotationAmount) {
 	// Rotation of Rotatables
 	if (this is Rotatable) {
 		this.rotation = rotateBlockFace(this.rotation, amount)
+	}
+	// Rotation of MultipleFacings (Iron Bars, etc.)
+	if (this is MultipleFacing) {
+		if (this.material == Material.MUSHROOM_STEM) return // custom blocks
+		val newFaces = mutableMapOf<BlockFace, Boolean>()
+		this.faces.forEach { face ->
+			newFaces[rotateBlockFace(face, amount)] = this.hasFace(face) // get the rotated faces
+		} // this could be code golfed
+		this.allowedFaces.forEach { this.setFace(it, false) } // set all faces false
+		newFaces.forEach { this.setFace(it.key, it.value) } // apply rotated faces
 	}
 }
