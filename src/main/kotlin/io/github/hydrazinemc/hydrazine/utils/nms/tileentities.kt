@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import org.bukkit.Material
+import org.bukkit.Tag
 import sun.misc.Unsafe
 import java.lang.reflect.Field
 import java.util.EnumSet
@@ -89,5 +90,25 @@ val tileEntities: EnumSet<Material> = EnumSet.of(
 	Material.FURNACE,
 	Material.BREWING_STAND,
 	Material.JUKEBOX,
-	Material.BELL
-)
+	Material.BELL,
+	Material.BEEHIVE,
+	Material.BEE_NEST,
+	Material.BARREL,
+	Material.NOTE_BLOCK,
+	Material.ENCHANTED_GOLDEN_APPLE,
+	Material.CONDUIT,
+	Material.SMOKER,
+	Material.BLAST_FURNACE,
+	Material.LECTERN,
+	Material.SPAWNER,
+	Material.CAMPFIRE,
+	Material.SOUL_CAMPFIRE,
+	Material.DAYLIGHT_DETECTOR
+	// also mob heads?
+
+).apply{
+	this.addAll(Tag.SIGNS.values)
+	this.addAll(Tag.BANNERS.values)
+	this.addAll(Tag.SHULKER_BOXES.values)
+	this.addAll(Tag.BEDS.values)
+}
