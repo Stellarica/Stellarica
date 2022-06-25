@@ -8,10 +8,15 @@ import io.github.hydrazinemc.hydrazine.utils.nms.setBlockFast
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
+import org.bukkit.Bukkit
+import org.bukkit.Location
+import org.bukkit.block.data.BlockData
 import org.bukkit.craftbukkit.v1_19_R1.CraftWorld
 import org.bukkit.scheduler.BukkitRunnable
 import rotateBlockFace
+import java.lang.Math.pow
 import java.util.Collections
+import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
 /**
@@ -44,8 +49,20 @@ object CraftBlockSetter : BukkitRunnable() {
 				}
 
 				// move blocks
+				val blocks = mutableMapOf<Location, BlockData>()
 				moveData.blocks.forEach {
-					setBlockFast(it.key.asLocation, it.value)
+					val loc = it.key.asLocation
+					setBlockFast(loc, it.value)
+					blocks[loc] = it.value
+				}
+
+				// use sendMultiBlockChange to avoid visual artifacts
+				Bukkit.getServer().onlinePlayers.forEach {
+					if (
+						Vector3(it.location).distanceSquared(Vector3(moveData.craft.origin)) <
+						(Bukkit.getServer().viewDistance * 16.0).pow(2))
+					// if the player can see the craft, send the change
+					it.sendMultiBlockChange(blocks)
 				}
 
 				// set entities
