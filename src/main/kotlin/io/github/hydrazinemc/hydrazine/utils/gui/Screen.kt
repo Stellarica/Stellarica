@@ -38,8 +38,6 @@ abstract class Screen : Listener {
 	 */
 	open val playerEditableSlots = setOf<Int>()
 
-
-	//TODO: Condense this all to open(player)
 	/**
 	 * Initialize this screen for [player] and register it as a listener.
 	 * @param inventory the inventory behind this screen.

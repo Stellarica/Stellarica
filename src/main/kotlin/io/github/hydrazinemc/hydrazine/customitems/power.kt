@@ -13,9 +13,10 @@ import kotlin.math.roundToInt
 
 /**
  * Update this item's durability to match the current [power]/[maxPower]
+ * @return whether it was successful
  */
-fun ItemStack.updatePowerDurability() {
-	if (!this.isPowerable) return // todo: throw something?
+fun ItemStack.updatePowerDurability(): Boolean {
+	if (!this.isPowerable || this.itemMeta !is Damageable) return false;
 	this.editMeta {
 		// In order to update the durability bar we need to set it to *not* be unbreakable
 		it.isUnbreakable = false
@@ -23,6 +24,7 @@ fun ItemStack.updatePowerDurability() {
 			(this.type.maxDurability - this.power!!.toFloat() /
 					this.customItem!!.maxPower * this.type.maxDurability).roundToInt()
 	}
+	return true
 }
 
 /**

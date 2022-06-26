@@ -231,15 +231,6 @@ open class Craft(
 	}
 
 	/**
-	 * Move the craft to another world
-	 * @throws AlreadyMovingException if craft movement is currently queued.
-	 * @see queueChange
-	 */
-	fun queueWorldChange() {
-		TODO()
-	}
-
-	/**
 	 * Rotate the craft and contents by [rotation]
 	 * @throws AlreadyMovingException if craft movement is currently queued.
 	 * @see queueChange
@@ -288,10 +279,11 @@ open class Craft(
 				if (undetectables.contains(currentBlockData.material)) {
 					messagePilot(
 						"<red>Skipping undetectable block at " +
-								"(${currentBlockLocation.x},${currentBlockLocation.y},${currentBlockLocation.z}) - ${currentBlockData.material}."
+								"${currentBlockLocation.formattedString} - ${currentBlockData.material}."
 					)
 					messagePassengers("<bold><gold>This is a bug, please report it.")
-					// TODO: warn or throw something
+					klogger.warn { "A ship had an undetectable block detected! " +
+							"${currentBlockData.material} at ${currentBlockLocation.formattedString}" }
 					return@forEach
 				}
 
