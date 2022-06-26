@@ -48,4 +48,7 @@ data class BlockLocation(var x: Int, var y: Int, var z: Int, var world: World? =
 	 */
 	val asBlockPos: BlockPos
 		get() = BlockPos(x, y, z)
+
+	val formattedString: String
+		get() = "($x, $y, $z)"
 }

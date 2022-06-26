@@ -111,8 +111,12 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	 * Get the distance between this and [other]
 	 * Note that this uses sqare root calculations and isn't very performant.
 	 * @see distanceSquared for comparing distances
-	 */ // todo: handle 0 distance
-	fun distance(other: Vector3) = sqrt(distanceSquared(other))
+	 */
+	fun distance(other: Vector3): Double {
+		val distSquared = distanceSquared(other)
+		if (distSquared == 0.0) return 0.0
+		return sqrt(distSquared)
+	}
 
 	/**
 	 * The distance between this and [other], squared
