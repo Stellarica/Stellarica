@@ -2,6 +2,7 @@ package io.github.hydrazinemc.hydrazine.utils
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import org.bukkit.Material
+import java.util.EnumSet
 
 /**
  * Stores the values that can be configured in config.yml
@@ -25,7 +26,7 @@ object ConfigurableValues {
 	 *
 	 * @see defaultUndetectable
 	 */
-	var forcedUndetectable = setOf<Material>()
+	lateinit var forcedUndetectable: EnumSet<Material>
 		private set
 
 	/**
@@ -34,7 +35,7 @@ object ConfigurableValues {
 	 *
 	 * @see forcedUndetectable
 	 */
-	var defaultUndetectable = setOf<Material>()
+	lateinit var defaultUndetectable: EnumSet<Material>
 		private set
 
 	/**
@@ -43,16 +44,13 @@ object ConfigurableValues {
 	fun loadFromConfig() {
 		timeOperations = plugin.config.getBoolean("timeOperations", false)
 		detectionLimit = plugin.config.getInt("detectionLimit", 500000)
-		val newForcedUndetectable = mutableSetOf<Material>()
-		plugin.config.getStringList("forcedUndetectable").forEach {
-			newForcedUndetectable.add(Material.getMaterial(it)!!)
-		}
-		forcedUndetectable = newForcedUndetectable
 
-		val newDefaultUndetectable = mutableSetOf<Material>()
-		plugin.config.getStringList("defaultUndetectable").forEach {
-			newDefaultUndetectable.add(Material.getMaterial(it)!!)
-		}
-		defaultUndetectable = newDefaultUndetectable
+		forcedUndetectable = EnumSet.copyOf(
+			plugin.config.getStringList("forcedUndetectable").map { Material.getMaterial(it)!! }
+		)
+
+		defaultUndetectable = EnumSet.copyOf(
+			plugin.config.getStringList("defaultUndetectable").map{ Material.getMaterial(it!!) }
+		)
 	}
 }
