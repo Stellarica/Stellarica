@@ -60,7 +60,7 @@ class Hydrazine : JavaPlugin() {
 		plugin = this
 
 		// Register listeners here
-		setOf(
+		arrayOf(
 			MushroomEventListener(),
 			CustomBlockListener(),
 			InterfaceListener(),
@@ -71,7 +71,7 @@ class Hydrazine : JavaPlugin() {
 
 		// Register commands here
 		val commandManager = PaperCommandManager(this)
-		setOf(
+		arrayOf(
 			ConfigCommand(),
 			StarshipDebugCommands(),
 			CustomItemCommands(),
