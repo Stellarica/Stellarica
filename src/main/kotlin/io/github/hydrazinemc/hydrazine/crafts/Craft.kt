@@ -11,7 +11,6 @@ import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.locations.ChunkLocation
-import io.github.hydrazinemc.hydrazine.utils.nms.TeleportUtils
 import io.github.hydrazinemc.hydrazine.utils.nms.tileEntities
 import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
@@ -22,6 +21,8 @@ import org.bukkit.World
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
+import io.papermc.paper.entity.RelativeTeleportFlag
+import org.bukkit.event.player.PlayerTeleportEvent
 import rotate
 import kotlin.system.measureTimeMillis
 
@@ -180,29 +181,33 @@ open class Craft(
 	 */
 	fun movePassengers(offset: (Vector3) -> Vector3, rotation: RotationAmount = RotationAmount.NONE) {
 		passengers.forEach {
-			if (it is Player) {
-				// TODO: FIX
-				// this is not a good solution because if there is any rotation, the player will not be translated by the offset
-				// The result is that any ship movement that attempts to rotate and move in the same action will break.
-				// For now there aren't any actions like that, but if there are in the future, this will need to be fixed.
-				//
-				// Rotating the whole ship around the adjusted origin will not work,
-				// as rotating the ship 4 times does not bring it back to the original position
-				//
-				// However, without this dumb fix players do not rotate to the proper relative location
-				//
-				if (rotation != RotationAmount.NONE)
-					TeleportUtils.teleportRotate(
-						it,
-						Vector3(it.location).rotateAround(Vector3(origin) + Vector3(0.5, 0.0, 0.5), rotation).asLocation,
-						rotation
-					)
-				else {
-					TeleportUtils.teleportRotate(it, offset(Vector3(it.location)).asLocation, rotation)
-				}
-			} else {
-				it.teleport(offset(Vector3(it.location)).asLocation)
-			}
+			// TODO: FIX
+			// this is not a good solution because if there is any rotation, the player will not be translated by the offset
+			// The result is that any ship movement that attempts to rotate and move in the same action will break.
+			// For now there aren't any actions like that, but if there are in the future, this will need to be fixed.
+			//
+			// Rotating the whole ship around the adjusted origin will not work,
+			// as rotating the ship 4 times does not bring it back to the original position
+			//
+			// However, without this dumb fix players do not rotate to the proper relative location
+			val destination =
+				if (rotation != RotationAmount.NONE) Vector3(it.location).rotateAround(Vector3(origin) + Vector3(0.5, 0.0, 0.5), rotation).asLocation
+				else offset(Vector3(it.location)).asLocation
+
+
+			destination.world = it.world // todo: fix
+
+			destination.pitch = it.location.pitch
+			destination.yaw = it.location.yaw + rotation.asDegrees
+
+			if (it is Player) it.teleport(
+				destination,
+				PlayerTeleportEvent.TeleportCause.PLUGIN,
+				false,
+				true,
+				*RelativeTeleportFlag.values(),
+			)
+			else it.teleport(destination)
 		}
 	}
 
