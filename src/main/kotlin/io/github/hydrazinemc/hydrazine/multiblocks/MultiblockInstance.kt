@@ -24,9 +24,4 @@ data class MultiblockInstance(
 	 * The direction it is facing/oriented
 	 */
 	var facing: BlockFace,
-	/**
-	 * The number of ticks since the multiblock did something?
-	 * Not sure; leftover from MSP
-	 */
-	var t: Int = 0
 )
