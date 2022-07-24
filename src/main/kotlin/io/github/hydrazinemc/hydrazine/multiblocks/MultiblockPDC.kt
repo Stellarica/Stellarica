@@ -34,7 +34,6 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 			container.set(NamespacedKey(plugin, "x"), PersistentDataType.DOUBLE, multiblock.origin.x) // unnecessary
 			container.set(NamespacedKey(plugin, "y"), PersistentDataType.DOUBLE, multiblock.origin.y) // double
 			container.set(NamespacedKey(plugin, "z"), PersistentDataType.DOUBLE, multiblock.origin.z) // alert
-			container.set(NamespacedKey(plugin, "t"), PersistentDataType.INTEGER, multiblock.t)
 			container.set(NamespacedKey(plugin, "facing"), PersistentDataType.STRING, multiblock.facing.toString())
 			container.set(NamespacedKey(plugin, "world"), PersistentDataType.STRING, multiblock.origin.world.name)
 
@@ -55,7 +54,6 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 			val x = persistentDataContainer.get(NamespacedKey(plugin, "x"), PersistentDataType.DOUBLE)!!
 			val y = persistentDataContainer.get(NamespacedKey(plugin, "y"), PersistentDataType.DOUBLE)!!
 			val z = persistentDataContainer.get(NamespacedKey(plugin, "z"), PersistentDataType.DOUBLE)!!
-			val t = persistentDataContainer.get(NamespacedKey(plugin, "t"), PersistentDataType.INTEGER)!!
 			val f = BlockFace.valueOf(
 				persistentDataContainer.get(
 					NamespacedKey(plugin, "facing"),
@@ -64,7 +62,7 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 			)
 			val w = persistentDataContainer.get(NamespacedKey(plugin, "world"), PersistentDataType.STRING)!!
 
-			result.add(MultiblockInstance(name, uuid, Location(Bukkit.getWorld(w), x, y, z), f, t))
+			result.add(MultiblockInstance(name, uuid, Location(Bukkit.getWorld(w), x, y, z), f))
 		}
 
 		return result
