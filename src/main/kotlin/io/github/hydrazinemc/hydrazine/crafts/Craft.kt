@@ -13,6 +13,7 @@ import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.locations.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.nms.tileEntities
 import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
+import io.github.hydrazinemc.hydrazine.utils.rotation.rotate
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
@@ -23,7 +24,6 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import io.papermc.paper.entity.RelativeTeleportFlag
 import org.bukkit.event.player.PlayerTeleportEvent
-import rotate
 import kotlin.system.measureTimeMillis
 
 /**
