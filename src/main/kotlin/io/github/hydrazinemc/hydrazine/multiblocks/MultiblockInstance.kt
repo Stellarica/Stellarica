@@ -7,7 +7,7 @@ import java.util.UUID
 /**
  * Data for a multiblock instance
  */
-data class Multiblock(
+data class MultiblockInstance(
 	/**
 	 * The name of the [MultiblockLayout]
 	 */

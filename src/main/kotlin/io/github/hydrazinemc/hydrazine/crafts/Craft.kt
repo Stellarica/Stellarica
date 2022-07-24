@@ -3,7 +3,7 @@ package io.github.hydrazinemc.hydrazine.crafts
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.crafts.CraftBlockSetter.craftMoveQueue
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
-import io.github.hydrazinemc.hydrazine.multiblocks.Multiblock
+import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockInstance
 import io.github.hydrazinemc.hydrazine.multiblocks.multiblocks
 import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
@@ -37,7 +37,7 @@ open class Craft(
 ) {
 
 	private var detectedBlocks = mutableSetOf<BlockLocation>()
-	var multiblocks = mutableSetOf<Multiblock>()
+	var multiblocks = mutableSetOf<MultiblockInstance>()
 	private var chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 	/**

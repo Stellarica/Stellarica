@@ -20,7 +20,7 @@ fun getId(block: Block): String = (
  * The multiblocks in this chunk
  * Backed by the Chunk's PDC
  */
-var Chunk.multiblocks: MutableSet<Multiblock>
+var Chunk.multiblocks: MutableSet<MultiblockInstance>
 	get() = this.persistentDataContainer.get(
 		NamespacedKey(Hydrazine.plugin, "multiblocks"),
 		MultiblockPDC()

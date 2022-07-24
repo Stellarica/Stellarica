@@ -13,16 +13,16 @@ import java.util.UUID
 /**
  * PersistentDataType for storing detected multiblocks in chunk data
  */
-class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, MutableSet<Multiblock>> {
+class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, MutableSet<MultiblockInstance>> {
 	override fun getPrimitiveType(): Class<Array<PersistentDataContainer>> {
 		return Array<PersistentDataContainer>::class.java
 	}
 
-	override fun getComplexType(): Class<MutableSet<Multiblock>> {
-		return mutableSetOf<Multiblock>().javaClass
+	override fun getComplexType(): Class<MutableSet<MultiblockInstance>> {
+		return mutableSetOf<MultiblockInstance>().javaClass
 	}
 
-	override fun toPrimitive(complex: MutableSet<Multiblock>, context: PersistentDataAdapterContext):
+	override fun toPrimitive(complex: MutableSet<MultiblockInstance>, context: PersistentDataAdapterContext):
 			Array<PersistentDataContainer> {
 		val result = arrayOfNulls<PersistentDataContainer>(complex.size)
 
@@ -45,8 +45,8 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 	}
 
 	override fun fromPrimitive(primitive: Array<PersistentDataContainer>, context: PersistentDataAdapterContext):
-			MutableSet<Multiblock> {
-		val result = mutableSetOf<Multiblock>()
+			MutableSet<MultiblockInstance> {
+		val result = mutableSetOf<MultiblockInstance>()
 
 		primitive.forEach { persistentDataContainer ->
 			val name = persistentDataContainer.get(NamespacedKey(plugin, "name"), PersistentDataType.STRING)!!
@@ -64,7 +64,7 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 			)
 			val w = persistentDataContainer.get(NamespacedKey(plugin, "world"), PersistentDataType.STRING)!!
 
-			result.add(Multiblock(name, uuid, Location(Bukkit.getWorld(w), x, y, z), f, t))
+			result.add(MultiblockInstance(name, uuid, Location(Bukkit.getWorld(w), x, y, z), f, t))
 		}
 
 		return result

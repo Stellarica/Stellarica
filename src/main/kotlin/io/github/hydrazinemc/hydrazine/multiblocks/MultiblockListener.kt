@@ -90,7 +90,7 @@ class MultiblockListener : Listener {
 
 		// Create Multiblock
 		val multiblockData =
-			Multiblock(
+			MultiblockInstance(
 				multiblock.key.name,
 				UUID.randomUUID(),
 				clickedBlock.location,
@@ -121,7 +121,7 @@ class MultiblockListener : Listener {
 			world.loadedChunks.forEach chunk@{ chunk ->
 				// Get the multiblock list of a chunk
 				val multiblockArray = chunk.multiblocks
-				val newMultiblockArray = mutableSetOf<Multiblock>()
+				val newMultiblockArray = mutableSetOf<MultiblockInstance>()
 				// Iterate over each multiblock
 				multiblockArray.forEach multiblock@{ multiblock ->
 					// Get the layout
