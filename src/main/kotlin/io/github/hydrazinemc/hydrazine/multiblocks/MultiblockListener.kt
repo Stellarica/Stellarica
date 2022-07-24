@@ -20,13 +20,13 @@ import java.util.UUID
 class MultiblockListener : Listener {
 	companion object {
 		/**
-		 * All valid [MultiblockLayout]'s loaded from the config
+		 * All valid [MultiblockType]'s loaded from the config
 		 */
-		var multiblocks = setOf<MultiblockLayout>()
+		var multiblocks = setOf<MultiblockType>()
 			private set
 	}
 
-	private fun validate(facing: BlockFace, layout: MultiblockLayout, origin: Block): Boolean {
+	private fun validate(facing: BlockFace, layout: MultiblockType, origin: Block): Boolean {
 		fun rotationFunction(it: MultiblockOriginRelative) = when (facing) {
 			BlockFace.NORTH -> it
 			BlockFace.EAST -> MultiblockOriginRelative(-it.z, it.y, it.x)
@@ -63,7 +63,7 @@ class MultiblockListener : Listener {
 		event.isCancelled = true
 
 		// Actually detect it
-		val potentialMultiblocks = mutableMapOf<MultiblockLayout, BlockFace>()
+		val potentialMultiblocks = mutableMapOf<MultiblockType, BlockFace>()
 
 		// Start by iterating over each multiblock
 		multiblocks.forEach { multiblockConfiguration ->
@@ -156,27 +156,27 @@ class MultiblockListener : Listener {
 	}
 
 	/**
-	 * Reload all [MultiblockLayout]s from the config file
+	 * Reload all [MultiblockType]s from the config file
 	 */
 	@EventHandler
 	fun onConfigReload(event: HydrazineConfigReloadEvent) {
-		val newMultiblocks = mutableSetOf<MultiblockLayout>()
-		plugin.config.getConfigurationSection("multiblocks")?.getKeys(false)?.forEach multiblockLoop@{ multiblock ->
+		val newMultiblocks = mutableSetOf<MultiblockType>()
+		plugin.config.getConfigurationSection("multiblocks")?.getKeys(false)?.forEach multiblockLoop@{ multiblockName ->
 			// The first thing that needs to be done is we need to get all the keys for the multiblock
 			// This way we know what blocks are in the multiblock
 			val keys = mutableMapOf<Char, String>()
 
-			plugin.config.getConfigurationSection("multiblocks.$multiblock.key")!!.getKeys(false).forEach { c ->
-				keys[c.first()] = plugin.config.getString("multiblocks.$multiblock.key.$c")!!.lowercase()
+			plugin.config.getConfigurationSection("multiblocks.$multiblockName.key")!!.getKeys(false).forEach { c ->
+				keys[c.first()] = plugin.config.getString("multiblocks.$multiblockName.key.$c")!!.lowercase()
 			}
 
-			val interfaceKey = plugin.config.getString("multiblocks.$multiblock.interface")!!.first()
+			val interfaceKey = plugin.config.getString("multiblocks.$multiblockName.interface")!!.first()
 			if (keys.keys.filter { it == interfaceKey }.count() > 1) {
-				klogger.error { "Multiblock $multiblock has multiple interface blocks!" }
+				klogger.error { "Multiblock $multiblockName has multiple interface blocks!" }
 			}
 
 			// Now we need to find the interface as all blocks in a multtiblock are stored relative to this point.
-			val layers = plugin.config.getConfigurationSection("multiblocks.$multiblock.layers")!!.getKeys(false)
+			val layers = plugin.config.getConfigurationSection("multiblocks.$multiblockName.layers")!!.getKeys(false)
 
 			var interfaceY: Int? = null
 			var interfaceZ: Int? = null
@@ -185,7 +185,7 @@ class MultiblockListener : Listener {
 			// Find the interface
 			run layerLoop@{
 				layers.forEachIndexed { y, yName ->
-					plugin.config.getStringList("multiblocks.$multiblock.layers.$yName").forEachIndexed { z, zString ->
+					plugin.config.getStringList("multiblocks.$multiblockName.layers.$yName").forEachIndexed { z, zString ->
 						zString.forEachIndexed { x, xChar ->
 							if (xChar == interfaceKey) {
 								interfaceY = y
@@ -199,12 +199,10 @@ class MultiblockListener : Listener {
 				}
 			}
 
-			// Create a layout
-			val multiblockLayout = MultiblockLayout(multiblock)
-
 			// Now we need to get all the blocks relative to the origin (interface)
+			val blocks = mutableMapOf<MultiblockOriginRelative, String>()
 			layers.forEachIndexed { y, yName ->
-				plugin.config.getStringList("multiblocks.$multiblock.layers.$yName").forEachIndexed { z, zString ->
+				plugin.config.getStringList("multiblocks.$multiblockName.layers.$yName").forEachIndexed { z, zString ->
 					zString.forEachIndexed { x, xChar ->
 						// Find relative position
 						val relativeY = y - interfaceY!!
@@ -218,11 +216,15 @@ class MultiblockListener : Listener {
 						val location = MultiblockOriginRelative(relativeX, relativeY, relativeZ)
 
 						// Add the block to the multiblock configuration
-						multiblockLayout.blocks[location] = material!!
+						blocks[location] = material!!
 					}
 				}
 			}
-			newMultiblocks.add(multiblockLayout)
+			newMultiblocks.add(MultiblockType(
+					multiblockName,
+					blocks,
+					{}
+			))
 		}
 
 		multiblocks = newMultiblocks

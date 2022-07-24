@@ -9,7 +9,7 @@ import java.util.UUID
  */
 data class MultiblockInstance(
 	/**
-	 * The name of the [MultiblockLayout]
+	 * The name of the [MultiblockType]
 	 */
 	val name: String,
 	/**
