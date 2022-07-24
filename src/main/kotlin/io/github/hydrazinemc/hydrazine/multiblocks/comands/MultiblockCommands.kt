@@ -31,7 +31,7 @@ class MultiblockCommands : BaseCommand() {
 			<green>---- Multiblock ----
 			</green>
 			UUID: ${mb.uuid}
-			Type: ${mb.name}
+			Type: ${mb.type.name}
 			Facing: ${mb.facing}
 			
 			""".trimIndent()
