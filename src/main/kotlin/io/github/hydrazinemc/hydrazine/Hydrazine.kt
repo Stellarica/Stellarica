@@ -16,7 +16,7 @@ import io.github.hydrazinemc.hydrazine.customitems.commands.CustomItemCommands
 import io.github.hydrazinemc.hydrazine.customitems.listeners.ItemEnchantListener
 import io.github.hydrazinemc.hydrazine.customitems.listeners.PowerItemBreakListener
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
-import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockListener
+import io.github.hydrazinemc.hydrazine.multiblocks.Multiblocks
 import io.github.hydrazinemc.hydrazine.multiblocks.comands.MultiblockCommands
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import mu.KotlinLogging
@@ -66,7 +66,7 @@ class Hydrazine : JavaPlugin() {
 			InterfaceListener(),
 			PowerItemBreakListener(),
 			ItemEnchantListener(),
-			MultiblockListener()
+			Multiblocks()
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		// Register commands here

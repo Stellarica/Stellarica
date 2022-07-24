@@ -9,9 +9,9 @@ import java.util.UUID
  */
 data class MultiblockInstance(
 	/**
-	 * The name of the [MultiblockType]
+	 * The [MultiblockType] of this instance
 	 */
-	val name: String,
+	val type: MultiblockType,
 	/**
 	 * Unique ID for this multiblock
 	 */

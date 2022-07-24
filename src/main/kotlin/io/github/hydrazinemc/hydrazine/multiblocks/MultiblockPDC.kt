@@ -29,7 +29,7 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 		complex.forEachIndexed { index, multiblock ->
 			val container = context.newPersistentDataContainer()
 
-			container.set(NamespacedKey(plugin, "name"), PersistentDataType.STRING, multiblock.name)
+			container.set(NamespacedKey(plugin, "type"), PersistentDataType.STRING, multiblock.type.name)
 			container.set(NamespacedKey(plugin, "uuid"), PersistentDataType.STRING, multiblock.uuid.toString())
 			container.set(NamespacedKey(plugin, "x"), PersistentDataType.DOUBLE, multiblock.origin.x) // unnecessary
 			container.set(NamespacedKey(plugin, "y"), PersistentDataType.DOUBLE, multiblock.origin.y) // double
@@ -48,7 +48,7 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 		val result = mutableSetOf<MultiblockInstance>()
 
 		primitive.forEach { persistentDataContainer ->
-			val name = persistentDataContainer.get(NamespacedKey(plugin, "name"), PersistentDataType.STRING)!!
+			val name = persistentDataContainer.get(NamespacedKey(plugin, "type"), PersistentDataType.STRING)!!
 			val uuid =
 				UUID.fromString(persistentDataContainer.get(NamespacedKey(plugin, "uuid"), PersistentDataType.STRING)!!)
 			val x = persistentDataContainer.get(NamespacedKey(plugin, "x"), PersistentDataType.DOUBLE)!!
@@ -62,7 +62,11 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 			)
 			val w = persistentDataContainer.get(NamespacedKey(plugin, "world"), PersistentDataType.STRING)!!
 
-			result.add(MultiblockInstance(name, uuid, Location(Bukkit.getWorld(w), x, y, z), f))
+			result.add(MultiblockInstance(
+				Multiblocks.types.first { it.name == name },
+				uuid,
+				Location(Bukkit.getWorld(w), x, y, z), f)
+			)
 		}
 
 		return result

@@ -17,12 +17,12 @@ import java.util.UUID
 /**
  * Handles multiblock detection and ticking
  */
-class MultiblockListener : Listener {
+class Multiblocks : Listener {
 	companion object {
 		/**
 		 * All valid [MultiblockType]'s loaded from the config
 		 */
-		var multiblocks = setOf<MultiblockType>()
+		var types = setOf<MultiblockType>()
 			private set
 	}
 
@@ -66,7 +66,7 @@ class MultiblockListener : Listener {
 		val potentialMultiblocks = mutableMapOf<MultiblockType, BlockFace>()
 
 		// Start by iterating over each multiblock
-		multiblocks.forEach { multiblockConfiguration ->
+		types.forEach { multiblockConfiguration ->
 			setOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST).forEach { facing ->
 				if (validate(facing, multiblockConfiguration, clickedBlock)) {
 					potentialMultiblocks[multiblockConfiguration] = facing
@@ -91,7 +91,7 @@ class MultiblockListener : Listener {
 		// Create Multiblock
 		val multiblockData =
 			MultiblockInstance(
-				multiblock.key.name,
+				types.first {multiblock.key.name == it.name},
 				UUID.randomUUID(),
 				clickedBlock.location,
 				multiblock.value
@@ -99,7 +99,7 @@ class MultiblockListener : Listener {
 
 		// Check if the multiblock is already in the list
 		multiblockArray.forEach { existing ->
-			if (multiblockData.origin == existing.origin && multiblockData.name == existing.name) {
+			if (multiblockData == existing) { // haha data class go brrrrr
 				event.player.sendRichMessage("<gold>Multiblock is already detected.")
 				return
 			}
@@ -125,13 +125,13 @@ class MultiblockListener : Listener {
 				// Iterate over each multiblock
 				multiblockArray.forEach multiblock@{ multiblock ->
 					// Get the layout
-					val multiblockLayout = multiblocks.find { it.name == multiblock.name }
+					val multiblockLayout = types.find { it.name == multiblock.type.name }
 
 					// If the layout does not exist, undetect the multiblock
 					if (multiblockLayout == null) {
 						klogger.warn {
-							"Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock: " +
-									"${multiblock.name}, it has been undetected."
+							"Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock type: " +
+									"${multiblock.type.name}, it has been undetected."
 						}
 						return@multiblock
 					}
@@ -145,10 +145,13 @@ class MultiblockListener : Listener {
 					) {
 						klogger.warn {
 							"Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: " +
-									"${multiblock.name}, it has been undetected."
+									"${multiblock.type.name} (${multiblock.uuid}), it has been undetected."
 						}
 						return@multiblock
-					} else newMultiblockArray.add(multiblock)
+					} else {
+						newMultiblockArray.add(multiblock)
+						multiblock.type.onTick(multiblock) // tick the multiblock
+					}
 				}
 				chunk.multiblocks = newMultiblockArray
 			}
@@ -172,7 +175,7 @@ class MultiblockListener : Listener {
 
 			val interfaceKey = plugin.config.getString("multiblocks.$multiblockName.interface")!!.first()
 			if (keys.keys.filter { it == interfaceKey }.count() > 1) {
-				klogger.error { "Multiblock $multiblockName has multiple interface blocks!" }
+				klogger.error { "Multiblock type $multiblockName has multiple interface blocks!" }
 			}
 
 			// Now we need to find the interface as all blocks in a multtiblock are stored relative to this point.
@@ -227,6 +230,6 @@ class MultiblockListener : Listener {
 			))
 		}
 
-		multiblocks = newMultiblocks
+		types = newMultiblocks
 	}
 }
