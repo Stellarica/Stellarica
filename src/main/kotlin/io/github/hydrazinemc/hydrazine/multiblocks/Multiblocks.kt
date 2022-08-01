@@ -99,13 +99,18 @@ class Multiblocks : Listener {
 
 		// Check if the multiblock is already in the list
 		multiblockArray.forEach { existing ->
-			if (multiblockData == existing) { // haha data class go brrrrr
+			// Cant do equality check because the UUID will be different
+			if (
+				multiblockData.type == existing.type &&
+				multiblockData.origin == existing.origin &&
+				multiblockData.facing == existing.facing
+			) {
 				event.player.sendRichMessage("<gold>Multiblock is already detected.")
 				return
 			}
 		}
 
-		// Add the multiblock to the list
+		// Add the multiblock to the list if it wasn't already detected
 		multiblockArray.add(multiblockData)
 
 		// Save it
