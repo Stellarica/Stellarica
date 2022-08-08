@@ -4,7 +4,9 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.utils.extensions.asMiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
@@ -12,6 +14,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 
 /**
@@ -94,7 +97,8 @@ class Multiblocks : Listener {
 				types.first {multiblock.key.name == it.name},
 				UUID.randomUUID(),
 				clickedBlock.location,
-				multiblock.value
+				multiblock.value,
+				null
 			)
 
 		// Check if the multiblock is already in the list
@@ -230,11 +234,13 @@ class Multiblocks : Listener {
 			}
 			newMultiblocks.add(MultiblockType(
 					multiblockName,
-					blocks,
-					{}
-			))
+					blocks
+			) { instance ->
+				val times = instance.data?.getOrDefault(NamespacedKey(plugin, "timesticked"), PersistentDataType.INTEGER, 0) ?: 0
+				if (plugin.server.currentTick % 40 == 0) plugin.server.broadcast("${instance.uuid} has ticked $times times!".asMiniMessage)
+				instance.data?.set(NamespacedKey(plugin, "timesticked"), PersistentDataType.INTEGER, times + 1)
+			})
 		}
-
 		types = newMultiblocks
 	}
 }

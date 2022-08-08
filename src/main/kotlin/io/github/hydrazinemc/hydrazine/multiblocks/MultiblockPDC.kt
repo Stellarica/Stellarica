@@ -13,7 +13,7 @@ import java.util.UUID
 /**
  * PersistentDataType for storing detected multiblocks in chunk data
  */
-class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, MutableSet<MultiblockInstance>> {
+object MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, MutableSet<MultiblockInstance>> {
 	override fun getPrimitiveType(): Class<Array<PersistentDataContainer>> {
 		return Array<PersistentDataContainer>::class.java
 	}
@@ -36,7 +36,8 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 			container.set(NamespacedKey(plugin, "z"), PersistentDataType.DOUBLE, multiblock.origin.z) // alert
 			container.set(NamespacedKey(plugin, "facing"), PersistentDataType.STRING, multiblock.facing.toString())
 			container.set(NamespacedKey(plugin, "world"), PersistentDataType.STRING, multiblock.origin.world.name)
-
+			container.set(NamespacedKey(plugin, "data"), PersistentDataType.TAG_CONTAINER,
+				multiblock.data ?: context.newPersistentDataContainer())
 			result[index] = container
 		}
 
@@ -62,10 +63,13 @@ class MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutable
 			)
 			val w = persistentDataContainer.get(NamespacedKey(plugin, "world"), PersistentDataType.STRING)!!
 
-			result.add(MultiblockInstance(
+			result.add(
+				MultiblockInstance(
 				Multiblocks.types.first { it.name == name },
 				uuid,
-				Location(Bukkit.getWorld(w), x, y, z), f)
+				Location(Bukkit.getWorld(w), x, y, z), f,
+				persistentDataContainer.get(NamespacedKey(plugin, "data"), PersistentDataType.TAG_CONTAINER)
+				)
 			)
 		}
 

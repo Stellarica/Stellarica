@@ -1,7 +1,7 @@
 package io.github.hydrazinemc.hydrazine.multiblocks
 
 /**
- * A layout of blocks that represents a valid multiblock shape
+ * A type of multiblock
  */
 data class MultiblockType(
 	/**
@@ -10,7 +10,7 @@ data class MultiblockType(
 	val name: String,
 
 	/**
-	 * The ids of the origin relative blocks
+	 * The ids of the origin relative blocks that define the shape of this type
 	 * @see getId
 	 */
 	val blocks: Map<MultiblockOriginRelative, String>,

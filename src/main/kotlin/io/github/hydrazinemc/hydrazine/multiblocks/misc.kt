@@ -23,11 +23,10 @@ fun getId(block: Block): String = (
 var Chunk.multiblocks: MutableSet<MultiblockInstance>
 	get() = this.persistentDataContainer.get(
 		NamespacedKey(Hydrazine.plugin, "multiblocks"),
-		MultiblockPDC()
+		MultiblockPDC
 	) ?: mutableSetOf()
 	set(value) = this.persistentDataContainer.set(
 		NamespacedKey(Hydrazine.plugin, "multiblocks"),
-		MultiblockPDC(),
+		MultiblockPDC,
 		value
 	)
-
