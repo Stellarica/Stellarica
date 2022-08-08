@@ -2,6 +2,7 @@ package io.github.hydrazinemc.hydrazine.multiblocks
 
 import org.bukkit.Location
 import org.bukkit.block.BlockFace
+import org.bukkit.persistence.PersistentDataContainer
 import java.util.UUID
 
 /**
@@ -24,4 +25,9 @@ data class MultiblockInstance(
 	 * The direction it is facing/oriented
 	 */
 	var facing: BlockFace,
+
+	/**
+	 * Data for this instance
+	 */
+	val data: PersistentDataContainer?
 )
