@@ -98,7 +98,7 @@ class Multiblocks : Listener {
 				UUID.randomUUID(),
 				clickedBlock.location,
 				multiblock.value,
-				null
+				clickedBlock.chunk.persistentDataContainer.adapterContext.newPersistentDataContainer()
 			)
 
 		// Check if the multiblock is already in the list

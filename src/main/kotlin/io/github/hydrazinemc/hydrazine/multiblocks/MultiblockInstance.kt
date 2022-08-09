@@ -29,5 +29,5 @@ data class MultiblockInstance(
 	/**
 	 * Data for this instance
 	 */
-	val data: PersistentDataContainer?
+	val data: PersistentDataContainer
 )
