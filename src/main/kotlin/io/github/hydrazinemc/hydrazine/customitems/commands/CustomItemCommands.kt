@@ -9,9 +9,9 @@ import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.customitems.CustomItems
-import io.github.hydrazinemc.hydrazine.customitems.customItem
 import io.github.hydrazinemc.hydrazine.customitems.isPowerable
 import io.github.hydrazinemc.hydrazine.customitems.power
+import io.github.hydrazinemc.hydrazine.utils.extensions.customItem
 import org.bukkit.entity.Player
 
 /**

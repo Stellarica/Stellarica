@@ -3,6 +3,7 @@ package io.github.hydrazinemc.hydrazine.customitems
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.customitems.CustomItems.items
+import io.github.hydrazinemc.hydrazine.utils.extensions.id
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey

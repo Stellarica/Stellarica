@@ -1,6 +1,6 @@
 package io.github.hydrazinemc.hydrazine.customitems.listeners
 
-import io.github.hydrazinemc.hydrazine.customitems.customItem
+import io.github.hydrazinemc.hydrazine.utils.extensions.customItem
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent

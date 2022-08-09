@@ -5,6 +5,7 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.utils.extensions.asMiniMessage
+import io.github.hydrazinemc.hydrazine.utils.extensions.id
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
@@ -42,7 +43,7 @@ class Multiblocks : Listener {
 		layout.blocks.forEach {
 			val rotatedLocation = rotationFunction(it.key)
 
-			val relativeBlock = getId(origin.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z))
+			val relativeBlock = origin.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z).id
 
 			if (relativeBlock != it.value) return false // A block we were expecting is missing, so break the function.
 		}
@@ -61,7 +62,7 @@ class Multiblocks : Listener {
 		) return
 
 		val clickedBlock = event.clickedBlock!!
-		if (getId(clickedBlock) != "interface_block") return
+		if (clickedBlock.id != "interface_block") return
 
 		event.isCancelled = true
 
