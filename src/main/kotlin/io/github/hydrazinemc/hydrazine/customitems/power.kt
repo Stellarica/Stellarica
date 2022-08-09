@@ -2,6 +2,7 @@ package io.github.hydrazinemc.hydrazine.customitems
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.utils.extensions.asMiniMessage
+import io.github.hydrazinemc.hydrazine.utils.extensions.customItem
 import net.kyori.adventure.text.Component
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
