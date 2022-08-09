@@ -36,8 +36,7 @@ object MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutabl
 			container.set(NamespacedKey(plugin, "z"), PersistentDataType.DOUBLE, multiblock.origin.z) // alert
 			container.set(NamespacedKey(plugin, "facing"), PersistentDataType.STRING, multiblock.facing.toString())
 			container.set(NamespacedKey(plugin, "world"), PersistentDataType.STRING, multiblock.origin.world.name)
-			container.set(NamespacedKey(plugin, "data"), PersistentDataType.TAG_CONTAINER,
-				multiblock.data ?: context.newPersistentDataContainer())
+			container.set(NamespacedKey(plugin, "data"), PersistentDataType.TAG_CONTAINER, multiblock.data)
 			result[index] = container
 		}
 
@@ -68,7 +67,7 @@ object MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutabl
 				Multiblocks.types.first { it.name == name },
 				uuid,
 				Location(Bukkit.getWorld(w), x, y, z), f,
-				persistentDataContainer.get(NamespacedKey(plugin, "data"), PersistentDataType.TAG_CONTAINER)
+				persistentDataContainer.get(NamespacedKey(plugin, "data"), PersistentDataType.TAG_CONTAINER)!!
 				)
 			)
 		}
