@@ -15,7 +15,7 @@ import kotlin.math.sqrt
  * @see BlockLocation
  * @see Vector
  */
-data class Vector3(var x: Double, var y: Double, var z: Double) {
+class Vector3(x: Double, y: Double, z: Double): Vector(x, y, z) {
 	companion object {
 		/**
 		 * Null vector
@@ -108,44 +108,7 @@ data class Vector3(var x: Double, var y: Double, var z: Double) {
 	)
 
 	/**
-	 * Get the distance between this and [other]
-	 * Note that this uses sqare root calculations and isn't very performant.
-	 * @see distanceSquared for comparing distances
-	 */
-	fun distance(other: Vector3): Double {
-		val distSquared = distanceSquared(other)
-		if (distSquared == 0.0) return 0.0
-		return sqrt(distSquared)
-	}
-
-	/**
-	 * The distance between this and [other], squared
-	 * @see distance
-	 */
-	fun distanceSquared(other: Vector3) =
-		(x - other.x).pow(2.0) + (y - other.y).pow(2.0) + (z - other.z).pow(2.0)
-
-
-	/**
 	 * This vector, inverted
 	 */
 	operator fun unaryMinus(): Vector3 = Vector3(-x, -y, -z)
-
-	/**
-	 * The magnetude of this vector
-	 */
-	val magnetude: Double
-		get() = if (this.length == 0.0) {0.0} else{distance(zero)}
-
-	/**
-	 * The length of this vector's components, summed
-	 */
-	val length: Double
-		get() = x + y + z
-
-	/**
-	 * This vector but with a magnitude of 1
-	 */
-	val normalized: Vector3
-		get() = this / magnetude
 }
