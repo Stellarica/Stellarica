@@ -55,5 +55,14 @@ class MultiblockCommands : BaseCommand() {
 			""".trimIndent()
 		)
 	}
+
+	@Subcommand("relative")
+	@Description("Get the origin relative position of the block")
+	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
+	fun onRelative(sender: Player) {
+		val mbs = sender.location.chunk.multiblocks.forEach {
+			sender.sendRichMessage(it.getOriginRelative(sender.getTargetBlock(10)!!.location).toString())
+		}
+	}
 }
 
