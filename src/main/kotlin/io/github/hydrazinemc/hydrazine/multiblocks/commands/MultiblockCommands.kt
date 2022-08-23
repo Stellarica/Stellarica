@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.multiblocks.comands
+package io.github.hydrazinemc.hydrazine.multiblocks.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias

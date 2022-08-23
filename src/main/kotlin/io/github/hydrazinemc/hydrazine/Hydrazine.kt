@@ -17,7 +17,7 @@ import io.github.hydrazinemc.hydrazine.customitems.listeners.ItemEnchantListener
 import io.github.hydrazinemc.hydrazine.customitems.listeners.PowerItemBreakListener
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.multiblocks.Multiblocks
-import io.github.hydrazinemc.hydrazine.multiblocks.comands.MultiblockCommands
+import io.github.hydrazinemc.hydrazine.multiblocks.commands.MultiblockCommands
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import mu.KotlinLogging
 import org.bukkit.Bukkit.getPluginManager
