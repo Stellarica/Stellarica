@@ -236,11 +236,7 @@ class Multiblocks : Listener {
 			newMultiblocks.add(MultiblockType(
 					multiblockName,
 					blocks
-			) { instance ->
-				val times = instance.data?.getOrDefault(NamespacedKey(plugin, "timesticked"), PersistentDataType.INTEGER, 0) ?: 0
-				if (plugin.server.currentTick % 40 == 0) plugin.server.broadcast("${instance.uuid} has ticked $times times!".asMiniMessage)
-				instance.data?.set(NamespacedKey(plugin, "timesticked"), PersistentDataType.INTEGER, times + 1)
-			})
+			) {})
 		}
 		types = newMultiblocks
 	}
