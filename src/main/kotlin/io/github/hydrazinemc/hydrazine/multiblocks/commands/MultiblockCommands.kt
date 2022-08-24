@@ -5,6 +5,7 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
+import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockOriginRelative
 import io.github.hydrazinemc.hydrazine.multiblocks.multiblocks
 import org.bukkit.entity.Player
 
@@ -63,6 +64,18 @@ class MultiblockCommands : BaseCommand() {
 		val mbs = sender.location.chunk.multiblocks.forEach {
 			sender.sendRichMessage(it.getOriginRelative(sender.getTargetBlock(10)!!.location).toString())
 		}
+	}
+
+	@Subcommand("global")
+	@Description("Get the global position of an origin relative position")
+	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
+	fun onGlobal(sender: Player, x: Int, y: Int, z: Int) {
+		val target = sender.getTargetBlock(10) ?: return // this will never happen; it will be a block of air
+		val mb = sender.location.chunk.multiblocks.firstOrNull { it.origin == target.location } ?: run {
+			sender.sendRichMessage("<gold>No multiblock found at ${target.type}")
+			return
+		}
+		sender.sendRichMessage(mb.getLocation(MultiblockOriginRelative(x,y,z)).toString())
 	}
 }
 
