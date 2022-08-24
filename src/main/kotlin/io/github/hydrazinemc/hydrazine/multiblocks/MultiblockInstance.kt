@@ -40,7 +40,7 @@ data class MultiblockInstance(
 			BlockFace.EAST -> BlockLocation(position.z, position.y, position.x)
 			BlockFace.WEST -> BlockLocation(-position.z, position.y, -position.x)
 			else -> throw Exception("wtf happened here you dummy")
-		}.asLocation.add(origin)
+		}.asLocation.apply{ this.world = origin.world}.add(origin)
 	}
 
 	fun getOriginRelative(loc: Location): MultiblockOriginRelative {
