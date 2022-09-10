@@ -33,6 +33,10 @@ data class MultiblockInstance(
 	 */
 	val data: PersistentDataContainer
 ) {
+
+	/**
+	 * @return the world location of [position]
+	 */
 	fun getLocation(position: MultiblockOriginRelative): Location {
 		return when (facing) {
 			BlockFace.NORTH -> BlockLocation(position.x, position.y, position.z, origin.world)
@@ -43,8 +47,11 @@ data class MultiblockInstance(
 		}.asLocation.apply{ this.world = origin.world}.add(origin)
 	}
 
+	/**
+	 * @return the origin relative position of [loc]
+	 */
 	fun getOriginRelative(loc: Location): MultiblockOriginRelative {
-		val relative = loc.subtract(origin)
+		val relative = loc.clone().subtract(origin)
 		return when (facing) {
 			BlockFace.NORTH -> MultiblockOriginRelative(relative.blockX, relative.blockY, relative.blockZ)
 			BlockFace.SOUTH -> MultiblockOriginRelative(-relative.blockX, relative.blockY, -relative.blockZ)
@@ -54,7 +61,14 @@ data class MultiblockInstance(
 		}
 	}
 
-	fun contains(loc: BlockLocation): Boolean {
-		return false
+	/**
+	 * @return whether this contains a block at [loc].
+	 */
+	fun contains(loc: Location): Boolean {
+		if (loc.world != origin.world) return false
+		type.blocks.keys.forEach {
+			if (it == getOriginRelative(loc)) return true;
+		}
+		return false;
 	}
 }

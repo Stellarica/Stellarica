@@ -13,6 +13,7 @@ import org.bukkit.entity.Player
  * Command handling for the multiblock related commands.
  */
 @CommandAlias("multiblock")
+@Suppress("unused")
 class MultiblockCommands : BaseCommand() {
 
 	/**
@@ -61,7 +62,7 @@ class MultiblockCommands : BaseCommand() {
 	@Description("Get the origin relative position of the block")
 	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
 	fun onRelative(sender: Player) {
-		val mbs = sender.location.chunk.multiblocks.forEach {
+		sender.location.chunk.multiblocks.forEach {
 			sender.sendRichMessage(it.getOriginRelative(sender.getTargetBlock(10)!!.location).toString())
 		}
 	}
@@ -71,11 +72,24 @@ class MultiblockCommands : BaseCommand() {
 	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
 	fun onGlobal(sender: Player, x: Int, y: Int, z: Int) {
 		val target = sender.getTargetBlock(10) ?: return // this will never happen; it will be a block of air
-		val mb = sender.location.chunk.multiblocks.firstOrNull { it.origin == target.location } ?: run {
+		val mb = target.chunk.multiblocks.firstOrNull { it.origin == target.location } ?: run {
 			sender.sendRichMessage("<gold>No multiblock found at ${target.type}")
 			return
 		}
 		sender.sendRichMessage(mb.getLocation(MultiblockOriginRelative(x,y,z)).toString())
+	}
+
+	@Subcommand("find")
+	@Description("Attempt to find a multiblock that contains the block being looked at")
+	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
+	fun onFind(sender: Player) {
+		val target = sender.getTargetBlock(10) ?: return // this will never happen; it will be a block of air
+		target.chunk.multiblocks.forEach {
+			if (it.contains(target.location)) {
+				sender.sendRichMessage("<green>Found ${it.uuid}")
+			}
+		}
+		sender.sendRichMessage("<gray>Checked ${target.location}")
 	}
 }
 
