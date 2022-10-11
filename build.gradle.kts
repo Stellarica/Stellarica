@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
 	paperDevBundle("1.19.2-R0.1-SNAPSHOT")
-	implementation ("io.github.microutils:kotlin-logging-jvm:3.0.0")
+	implementation ("io.github.microutils:kotlin-logging-jvm:3.0.2")
 	implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 }
 
