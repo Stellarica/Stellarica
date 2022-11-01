@@ -1,9 +1,9 @@
 plugins {
 	id("xyz.jpenilla.run-paper") version "1.0.6"
-	id("org.jetbrains.kotlin.jvm") version "1.7.10"
-	id("io.papermc.paperweight.userdev") version "1.3.8"
+	id("org.jetbrains.kotlin.jvm") version "1.7.20"
+	id("io.papermc.paperweight.userdev") version "1.3.9"
 	id("com.github.johnrengelman.shadow") version "7.1.2"
-	id("io.gitlab.arturbosch.detekt").version("1.20.0")
+	id("io.gitlab.arturbosch.detekt").version("1.22.0-RC2")
 }
 
 repositories {
@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
 	paperDevBundle("1.19.2-R0.1-SNAPSHOT")
-	implementation ("io.github.microutils:kotlin-logging-jvm:2.1.23")
+	implementation ("io.github.microutils:kotlin-logging-jvm:3.0.3")
 	implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 }
 
