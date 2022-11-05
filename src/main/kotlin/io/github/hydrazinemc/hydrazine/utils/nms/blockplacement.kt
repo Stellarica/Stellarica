@@ -34,7 +34,8 @@ private fun setBlockFast(world: Level, position: BlockPos, data: BlockState) {
 	}
 	section.setBlockState(position.x and 15, position.y and 15, position.z and 15, data)
 	world.sendBlockUpdated(position, data, data, 3)
-	world.lightEngine.checkBlock(position) // boolean corresponds to if chunk section empty
+	// world.lightEngine.checkBlock(position) // boolean corresponds to if chunk section empty
+	//todo: LIGHTING IS FOR CHUMPS!
 	chunk.isUnsaved = true
 }
 
