@@ -50,7 +50,7 @@ object ConfigurableValues {
 		)
 
 		defaultUndetectable = EnumSet.copyOf(
-			plugin.config.getStringList("defaultUndetectable").map{ Material.getMaterial(it!!) }
+			plugin.config.getStringList("defaultUndetectable").map { Material.getMaterial(it!!) }
 		)
 	}
 }

@@ -106,7 +106,7 @@ val tileEntities: EnumSet<Material> = EnumSet.of(
 	Material.DAYLIGHT_DETECTOR
 	// also mob heads?
 
-).apply{
+).apply {
 	this.addAll(Tag.SIGNS.values)
 	this.addAll(Tag.BANNERS.values)
 	this.addAll(Tag.SHULKER_BOXES.values)

@@ -15,6 +15,7 @@ import io.github.hydrazinemc.hydrazine.utils.nms.tileEntities
 import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotate
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
+import io.papermc.paper.entity.RelativeTeleportFlag
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
@@ -22,7 +23,6 @@ import org.bukkit.World
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
-import io.papermc.paper.entity.RelativeTeleportFlag
 import org.bukkit.event.player.PlayerTeleportEvent
 import kotlin.system.measureTimeMillis
 
@@ -191,7 +191,13 @@ open class Craft(
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
 			val destination =
-				if (rotation != RotationAmount.NONE) Vector3(it.location).rotateAround(Vector3(origin) + Vector3(0.5, 0.0, 0.5), rotation).asLocation
+				if (rotation != RotationAmount.NONE) Vector3(it.location).rotateAround(
+					Vector3(origin) + Vector3(
+						0.5,
+						0.0,
+						0.5
+					), rotation
+				).asLocation
 				else offset(Vector3(it.location)).asLocation
 
 
@@ -287,8 +293,10 @@ open class Craft(
 								"${currentBlockLocation.formattedString} - ${currentBlockData.material}."
 					)
 					messagePassengers("<bold><gold>This is a bug, please report it.")
-					klogger.warn { "A ship had an undetectable block detected! " +
-							"${currentBlockData.material} at ${currentBlockLocation.formattedString}" }
+					klogger.warn {
+						"A ship had an undetectable block detected! " +
+								"${currentBlockData.material} at ${currentBlockLocation.formattedString}"
+					}
 					return@forEach
 				}
 
