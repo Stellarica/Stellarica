@@ -4,10 +4,8 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
-import io.github.hydrazinemc.hydrazine.utils.extensions.asMiniMessage
 import io.github.hydrazinemc.hydrazine.utils.extensions.id
 import org.bukkit.Bukkit
-import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
@@ -15,7 +13,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
-import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 
 /**
@@ -95,7 +92,7 @@ class Multiblocks : Listener {
 		// Create Multiblock
 		val multiblockData =
 			MultiblockInstance(
-				types.first {multiblock.key.name == it.name},
+				types.first { multiblock.key.name == it.name },
 				UUID.randomUUID(),
 				clickedBlock.location,
 				multiblock.value,
@@ -198,17 +195,18 @@ class Multiblocks : Listener {
 			// Find the interface
 			run layerLoop@{
 				layers.forEachIndexed { y, yName ->
-					plugin.config.getStringList("multiblocks.$multiblockName.layers.$yName").forEachIndexed { z, zString ->
-						zString.forEachIndexed { x, xChar ->
-							if (xChar == interfaceKey) {
-								interfaceY = y
-								interfaceZ = z
-								interfaceX = x
+					plugin.config.getStringList("multiblocks.$multiblockName.layers.$yName")
+						.forEachIndexed { z, zString ->
+							zString.forEachIndexed { x, xChar ->
+								if (xChar == interfaceKey) {
+									interfaceY = y
+									interfaceZ = z
+									interfaceX = x
 
-								return@layerLoop
+									return@layerLoop
+								}
 							}
 						}
-					}
 				}
 			}
 
@@ -234,8 +232,8 @@ class Multiblocks : Listener {
 				}
 			}
 			newMultiblocks.add(MultiblockType(
-					multiblockName,
-					blocks
+				multiblockName,
+				blocks
 			) {})
 		}
 		types = newMultiblocks

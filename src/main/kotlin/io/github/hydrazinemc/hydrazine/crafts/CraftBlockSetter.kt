@@ -59,9 +59,10 @@ object CraftBlockSetter : BukkitRunnable() {
 				Bukkit.getServer().onlinePlayers.forEach {
 					if (
 						Vector3(it.location).distanceSquared(Vector3(moveData.craft.origin)) <
-						(Bukkit.getServer().viewDistance * 16.0).pow(2))
+						(Bukkit.getServer().viewDistance * 16.0).pow(2)
+					)
 					// if the player can see the craft, send the change
-					it.sendMultiBlockChange(blocks, true)
+						it.sendMultiBlockChange(blocks, true)
 				}
 
 				// set entities

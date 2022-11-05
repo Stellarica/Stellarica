@@ -5,9 +5,7 @@ import io.github.hydrazinemc.hydrazine.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import org.bukkit.Location
 import org.bukkit.util.Vector
-import kotlin.math.pow
 import kotlin.math.roundToInt
-import kotlin.math.sqrt
 
 /**
  * A container for three Doubles, [x], [y], and [z]
@@ -15,7 +13,7 @@ import kotlin.math.sqrt
  * @see BlockLocation
  * @see Vector
  */
-class Vector3(x: Double, y: Double, z: Double): Vector(x, y, z) {
+class Vector3(x: Double, y: Double, z: Double) : Vector(x, y, z) {
 	companion object {
 		/**
 		 * Null vector

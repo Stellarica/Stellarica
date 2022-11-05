@@ -4,7 +4,6 @@ import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.Location
 import org.bukkit.block.BlockFace
 import org.bukkit.persistence.PersistentDataContainer
-import java.lang.Exception
 import java.util.UUID
 
 /**
@@ -44,7 +43,7 @@ data class MultiblockInstance(
 			BlockFace.EAST -> BlockLocation(position.z, position.y, position.x)
 			BlockFace.WEST -> BlockLocation(-position.z, position.y, -position.x)
 			else -> throw Exception("wtf happened here you dummy")
-		}.asLocation.apply{ this.world = origin.world}.add(origin)
+		}.asLocation.apply { this.world = origin.world }.add(origin)
 	}
 
 	/**
@@ -67,8 +66,8 @@ data class MultiblockInstance(
 	fun contains(loc: Location): Boolean {
 		if (loc.world != origin.world) return false
 		type.blocks.keys.forEach {
-			if (it == getOriginRelative(loc)) return true;
+			if (it == getOriginRelative(loc)) return true
 		}
-		return false;
+		return false
 	}
 }

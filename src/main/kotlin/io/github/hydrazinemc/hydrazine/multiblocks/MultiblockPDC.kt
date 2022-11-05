@@ -64,10 +64,10 @@ object MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutabl
 
 			result.add(
 				MultiblockInstance(
-				Multiblocks.types.first { it.name == name },
-				uuid,
-				Location(Bukkit.getWorld(w), x, y, z), f,
-				persistentDataContainer.get(NamespacedKey(plugin, "data"), PersistentDataType.TAG_CONTAINER)!!
+					Multiblocks.types.first { it.name == name },
+					uuid,
+					Location(Bukkit.getWorld(w), x, y, z), f,
+					persistentDataContainer.get(NamespacedKey(plugin, "data"), PersistentDataType.TAG_CONTAINER)!!
 				)
 			)
 		}

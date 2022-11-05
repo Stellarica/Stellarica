@@ -76,7 +76,7 @@ class MultiblockCommands : BaseCommand() {
 			sender.sendRichMessage("<gold>No multiblock found at ${target.type}")
 			return
 		}
-		sender.sendRichMessage(mb.getLocation(MultiblockOriginRelative(x,y,z)).toString())
+		sender.sendRichMessage(mb.getLocation(MultiblockOriginRelative(x, y, z)).toString())
 	}
 
 	@Subcommand("find")

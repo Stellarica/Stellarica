@@ -29,9 +29,9 @@ val Block.blockLocation: BlockLocation get() = BlockLocation(this.location)
  */
 val Block.id: String
 	get() = (
-		CustomBlocks[this.blockData as? MultipleFacing] ?: run {
-			return this.type.toString().lowercase()
-		}).id.lowercase()
+			CustomBlocks[this.blockData as? MultipleFacing] ?: run {
+				return this.type.toString().lowercase()
+			}).id.lowercase()
 
 /**
  * The custom item type this ItemStack represents, if any
