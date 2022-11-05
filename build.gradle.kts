@@ -47,7 +47,6 @@ tasks{
 	}
 
 	detekt {
-		toolVersion = "1.20.0"
 		config = files("config/detekt/detekt.yml")
 		buildUponDefaultConfig = true
 	}
