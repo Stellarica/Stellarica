@@ -51,6 +51,7 @@ tasks{
 		config = files("config/detekt/detekt.yml")
 		buildUponDefaultConfig = true
 	}
+
 	withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 		reports {
 			// Only want .txt and .html
