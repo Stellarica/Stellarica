@@ -45,6 +45,13 @@ customItems:
     data: 1
     base: mushroom_stem
 
+  blaster:
+    name: "Temporary Blaster"
+    lore:
+      - "This is a temporary blaster, for testing only"
+    data: 1
+    base: bow
+
 
 # Custom Blocks
 customBlocks:
