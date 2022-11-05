@@ -52,6 +52,13 @@ customItems:
     data: 1
     base: bow
 
+  laser_drill:
+    name: "Temporary Laser Drill"
+    lore:
+      - "This is a temporary laser drill, for testing only"
+    data: 1
+    base: wooden_axe
+    maxPower: 100
 
 # Custom Blocks
 customBlocks:
