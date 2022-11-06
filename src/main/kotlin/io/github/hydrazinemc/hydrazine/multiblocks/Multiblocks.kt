@@ -5,27 +5,33 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.utils.extensions.id
-import org.bukkit.Bukkit
+import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.world.ChunkLoadEvent
+import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.inventory.EquipmentSlot
 import java.util.UUID
 
 /**
  * Handles multiblock detection and ticking
  */
-class Multiblocks : Listener {
-	companion object {
-		/**
-		 * All valid [MultiblockType]'s loaded from the config
-		 */
-		var types = setOf<MultiblockType>()
-			private set
-	}
+object Multiblocks : Listener {
+	/**
+	 * All valid [MultiblockType]'s loaded from the config
+	 */
+	var types = setOf<MultiblockType>()
+		private set
+
+	/**
+	 * All currently loaded multiblocks
+	 */
+	var activeMultiblocks = mutableSetOf<MultiblockInstance>()
+		private set
 
 	private fun validate(facing: BlockFace, layout: MultiblockType, origin: Block): Boolean {
 		fun rotationFunction(it: MultiblockOriginRelative) = when (facing) {
@@ -117,52 +123,67 @@ class Multiblocks : Listener {
 
 		// Save it
 		clickedBlock.chunk.multiblocks = multiblockArray
+		activeMultiblocks.addAll(multiblockArray) // it's a set, so we don't need to worry about duplicates
 	}
 
 	/**
-	 * Confirm multiblocks exist and are intact
+	 * Confirm multiblocks exist and are intact, and tick them
 	 */
 	@EventHandler
-	fun onChunkTick(event: ServerTickStartEvent) {
-		Bukkit.getWorlds().forEach { world ->
-			world.loadedChunks.forEach chunk@{ chunk ->
-				// Get the multiblock list of a chunk
-				val multiblockArray = chunk.multiblocks
-				val newMultiblockArray = mutableSetOf<MultiblockInstance>()
-				// Iterate over each multiblock
-				multiblockArray.forEach multiblock@{ multiblock ->
-					// Get the layout
-					val multiblockLayout = types.find { it.name == multiblock.type.name }
+	fun onServerTick(event: ServerTickStartEvent) {
+		val invalid = mutableSetOf<MultiblockInstance>()
 
-					// If the layout does not exist, undetect the multiblock
-					if (multiblockLayout == null) {
-						klogger.warn {
-							"Chunk ${chunk.x}, ${chunk.z} contains a non-existent multiblock type: " +
-									"${multiblock.type.name}, it has been undetected."
-						}
-						return@multiblock
-					}
+		activeMultiblocks.forEach { multiblock ->
+			// Get the layout
+			val multiblockLayout = types.find { it.name == multiblock.type.name }
 
-					// Validate the layout
-					if (!validate(
-							multiblock.facing,
-							multiblockLayout,
-							world.getBlockAt(multiblock.origin)
-						)
-					) {
-						klogger.warn {
-							"Chunk ${chunk.x}, ${chunk.z} contains an invalid multiblock: " +
-									"${multiblock.type.name} (${multiblock.uuid}), it has been undetected."
-						}
-						return@multiblock
-					} else {
-						newMultiblockArray.add(multiblock)
-						multiblock.type.onTick(multiblock) // tick the multiblock
-					}
+			// If the layout does not exist, undetect the multiblock
+			if (multiblockLayout == null) {
+				klogger.warn {
+					"Non-existent multiblock type at ${BlockLocation(multiblock.origin).formattedString}: " +
+							"${multiblock.type.name}, it has been undetected."
 				}
-				chunk.multiblocks = newMultiblockArray
+				invalid.add(multiblock)
+				return@forEach
+			}
+			// Validate the layout
+			if (!validate(
+					multiblock.facing,
+					multiblockLayout,
+					multiblock.origin.block
+				)
+			) {
+				klogger.warn {
+					"Invalid multiblock at ${BlockLocation(multiblock.origin).formattedString}: " +
+							"${multiblock.type.name} (${multiblock.uuid}), it has been undetected."
+				}
+				invalid.add(multiblock)
+				return@forEach
+			} else {
+				multiblock.type.onTick(multiblock) // tick the multiblock
 			}
 		}
+		invalid.forEach {
+			// Remove each multiblock from its chunk's pdc
+			it.origin.chunk.multiblocks.remove(it)
+		}
+		activeMultiblocks.removeAll(invalid)
+	}
+
+	/**
+	 * Load multiblocks when the chunk is loaded
+	 */
+	@EventHandler
+	fun onChunkLoad(event: ChunkLoadEvent) {
+		activeMultiblocks.addAll(event.chunk.multiblocks)
+	}
+
+	/**
+	 * Unload multiblocks when the chunk is unloaded
+	 */
+	@EventHandler
+	fun onChunkUnload(event: ChunkUnloadEvent) {
+		activeMultiblocks.removeAll(event.chunk.multiblocks)
 	}
 
 	/**
