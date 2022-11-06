@@ -6,6 +6,7 @@ import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockInstance
 import io.github.hydrazinemc.hydrazine.multiblocks.multiblocks
 import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
+import io.github.hydrazinemc.hydrazine.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
@@ -88,6 +89,8 @@ open class Craft(
 	val blockCount: Int
 		get() = detectedBlocks.size
 
+	private val hitbox = CraftHitbox()
+
 	/**
 	 * Message this craft's pilot, if it has one.
 	 * If the ship isn't being piloted, message the owner.
@@ -109,6 +112,13 @@ open class Craft(
 	 */
 	fun messagePassengers(message: String) {
 		passengers.forEach { it.sendRichMessage(message) }
+	}
+
+	/**
+	 * @return Whether [block] is considered to be inside this craft
+	 */
+	fun contains(block: BlockLocation): Boolean {
+		return detectedBlocks.contains(block) || hitbox.contains((block - origin).let {OriginRelative(it.x, it.y, it.z)})
 	}
 
 	/**
@@ -169,6 +179,12 @@ open class Craft(
 				"<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. " +
 						"(${detectedBlocks.size / time.coerceAtLeast(1)} blocks/ms)"
 			)
+			messagePilot("<gray>Calculated Hitbox in ${measureTimeMillis { 
+				hitbox.calculate(
+					detectedBlocks.map {pos -> (pos - origin).let {OriginRelative(it.x, it.y, it.z)}}.toSet()
+				) 
+			}
+			}ms.")
 			Tasks.sync {
 				// Detect all multiblocks
 				multiblocks.clear()
