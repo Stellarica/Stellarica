@@ -5,7 +5,7 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
-import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockOriginRelative
+import io.github.hydrazinemc.hydrazine.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.multiblocks.multiblocks
 import org.bukkit.entity.Player
 
@@ -76,7 +76,7 @@ class MultiblockCommands : BaseCommand() {
 			sender.sendRichMessage("<gold>No multiblock found at ${target.type}")
 			return
 		}
-		sender.sendRichMessage(mb.getLocation(MultiblockOriginRelative(x, y, z)).toString())
+		sender.sendRichMessage(mb.getLocation(OriginRelative(x, y, z)).toString())
 	}
 
 	@Subcommand("find")

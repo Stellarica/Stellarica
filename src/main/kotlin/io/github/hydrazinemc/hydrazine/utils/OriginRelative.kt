@@ -1,9 +1,9 @@
-package io.github.hydrazinemc.hydrazine.multiblocks
+package io.github.hydrazinemc.hydrazine.utils
 
 /**
  * Coordinates relative to the origin of a multiblock
  */
-data class MultiblockOriginRelative(
+data class OriginRelative(
 	/**
 	 * The x component
 	 */

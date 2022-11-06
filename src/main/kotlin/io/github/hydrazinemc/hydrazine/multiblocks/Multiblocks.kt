@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.utils.extensions.id
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.block.Block
@@ -34,11 +35,11 @@ object Multiblocks : Listener {
 		private set
 
 	private fun validate(facing: BlockFace, layout: MultiblockType, origin: Block): Boolean {
-		fun rotationFunction(it: MultiblockOriginRelative) = when (facing) {
+		fun rotationFunction(it: OriginRelative) = when (facing) {
 			BlockFace.NORTH -> it
-			BlockFace.EAST -> MultiblockOriginRelative(-it.z, it.y, it.x)
-			BlockFace.SOUTH -> MultiblockOriginRelative(-it.x, it.y, -it.z)
-			BlockFace.WEST -> MultiblockOriginRelative(it.z, it.y, -it.x)
+			BlockFace.EAST -> OriginRelative(-it.z, it.y, it.x)
+			BlockFace.SOUTH -> OriginRelative(-it.x, it.y, -it.z)
+			BlockFace.WEST -> OriginRelative(it.z, it.y, -it.x)
 
 			else -> throw IllegalArgumentException("Invalid facing direction: $facing")
 		}
@@ -232,7 +233,7 @@ object Multiblocks : Listener {
 			}
 
 			// Now we need to get all the blocks relative to the origin (interface)
-			val blocks = mutableMapOf<MultiblockOriginRelative, String>()
+			val blocks = mutableMapOf<OriginRelative, String>()
 			layers.forEachIndexed { y, yName ->
 				plugin.config.getStringList("multiblocks.$multiblockName.layers.$yName").forEachIndexed { z, zString ->
 					zString.forEachIndexed { x, xChar ->
@@ -245,7 +246,7 @@ object Multiblocks : Listener {
 						val material = keys[xChar]
 
 						// Construct a MultiblockOriginRelativeLocation
-						val location = MultiblockOriginRelative(relativeX, relativeY, relativeZ)
+						val location = OriginRelative(relativeX, relativeY, relativeZ)
 
 						// Add the block to the multiblock configuration
 						blocks[location] = material!!

@@ -1,5 +1,6 @@
 package io.github.hydrazinemc.hydrazine.multiblocks
 
+import io.github.hydrazinemc.hydrazine.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.Location
 import org.bukkit.block.BlockFace
@@ -36,7 +37,7 @@ data class MultiblockInstance(
 	/**
 	 * @return the world location of [position]
 	 */
-	fun getLocation(position: MultiblockOriginRelative): Location {
+	fun getLocation(position: OriginRelative): Location {
 		return when (facing) {
 			BlockFace.NORTH -> BlockLocation(position.x, position.y, position.z, origin.world)
 			BlockFace.SOUTH -> BlockLocation(-position.x, position.y, -position.z)
@@ -49,13 +50,13 @@ data class MultiblockInstance(
 	/**
 	 * @return the origin relative position of [loc]
 	 */
-	fun getOriginRelative(loc: Location): MultiblockOriginRelative {
+	fun getOriginRelative(loc: Location): OriginRelative {
 		val relative = loc.clone().subtract(origin)
 		return when (facing) {
-			BlockFace.NORTH -> MultiblockOriginRelative(relative.blockX, relative.blockY, relative.blockZ)
-			BlockFace.SOUTH -> MultiblockOriginRelative(-relative.blockX, relative.blockY, -relative.blockZ)
-			BlockFace.EAST -> MultiblockOriginRelative(relative.blockZ, relative.blockY, relative.blockX)
-			BlockFace.WEST -> MultiblockOriginRelative(-relative.blockZ, relative.blockY, -relative.blockX)
+			BlockFace.NORTH -> OriginRelative(relative.blockX, relative.blockY, relative.blockZ)
+			BlockFace.SOUTH -> OriginRelative(-relative.blockX, relative.blockY, -relative.blockZ)
+			BlockFace.EAST -> OriginRelative(relative.blockZ, relative.blockY, relative.blockX)
+			BlockFace.WEST -> OriginRelative(-relative.blockZ, relative.blockY, -relative.blockX)
 			else -> throw Exception("wtf happened here you dummy")
 		}
 	}
