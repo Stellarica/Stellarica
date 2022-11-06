@@ -30,6 +30,9 @@ permissions:
   hydrazine.starship.debug.get:
     description: Lets users get the current movement data
     default: op
+  hydrazine.starship.debug.hitbox:
+      description: Lets users view the hitbox of a ship
+      default: op
   hydrazine.starship.debug.*:
     description: Wildcard permission
     default: op
@@ -37,6 +40,7 @@ permissions:
       hydrazine.starship.debug.setvelocity: true
       hydrazine.starship.debug.setacceleration: true
       hydrazine.starship.debug.get: true
+      hydrazine.starship.debug.hitbox: true
 
   hydrazine.customitems.give.self:
     description: Lets users give themselves custom items
