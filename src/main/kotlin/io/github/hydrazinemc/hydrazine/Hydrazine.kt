@@ -66,7 +66,7 @@ class Hydrazine : JavaPlugin() {
 			InterfaceListener(),
 			PowerItemBreakListener(),
 			ItemEnchantListener(),
-			Multiblocks(),
+			Multiblocks,
 			TemporaryBlasterListener()
 		).forEach { getPluginManager().registerEvents(it, this) }
 
