@@ -5,14 +5,16 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
+import io.github.hydrazinemc.hydrazine.multiblocks.Multiblocks
 import io.github.hydrazinemc.hydrazine.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.multiblocks.multiblocks
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 /**
  * Command handling for the multiblock related commands.
  */
-@CommandAlias("multiblock")
+@CommandAlias("multiblockdebug")
 @Suppress("unused")
 class MultiblockCommands : BaseCommand() {
 
@@ -90,6 +92,13 @@ class MultiblockCommands : BaseCommand() {
 			}
 		}
 		sender.sendRichMessage("<gray>Checked ${target.location}")
+	}
+
+	@Subcommand("active")
+	@Description("List the active multiblocks")
+	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
+	fun onListActive(sender: CommandSender) {
+		sender.sendMessage(Multiblocks.activeMultiblocks.joinToString("\n") { it.uuid.toString() })
 	}
 }
 
