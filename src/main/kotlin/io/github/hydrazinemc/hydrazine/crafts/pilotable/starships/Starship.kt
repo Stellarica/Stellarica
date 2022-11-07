@@ -2,6 +2,7 @@ package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships
 
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control.ShipControlHotbar
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 
@@ -75,6 +76,12 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 			if (weightedTime < 30) movesPerSecond++
 			if (weightedTime + timeSpentMoving > 60) movesPerSecond--
 			ticksSinceMove = 0
+		}
+	}
+
+	override fun deactivateCraft(): Boolean {
+		return super.deactivateCraft().also {
+			if (it) pilot?.let { pilot -> ShipControlHotbar.closeMenu(pilot) }
 		}
 	}
 }
