@@ -25,6 +25,7 @@ import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
 import org.bukkit.Bukkit
 import org.bukkit.ChunkSnapshot
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.data.BlockData
@@ -89,7 +90,11 @@ open class Craft(
 	val blockCount: Int
 		get() = detectedBlocks.size
 
-	private val hitbox = CraftHitbox()
+
+	/**
+	 * The blocks considered to be "inside" of the ship, but not neccecarily detected.
+	 */
+	private var bounds = mutableSetOf<OriginRelative>()
 
 	/**
 	 * Message this craft's pilot, if it has one.
@@ -117,9 +122,29 @@ open class Craft(
 	/**
 	 * @return Whether [block] is considered to be inside this craft
 	 */
-	fun contains(block: BlockLocation): Boolean {
-		return detectedBlocks.contains(block) || hitbox.contains((block - origin).let {OriginRelative(it.x, it.y, it.z)})
+	fun contains(block: BlockLocation?): Boolean {
+		block ?: return false
+		return detectedBlocks.contains(block) || bounds.contains((block - origin).let {OriginRelative(it.x, it.y, it.z)})
 	}
+
+	/**
+	 * @return Whether [loc] is considered to be inside this craft
+	 */
+	fun contains(loc: Location?): Boolean {
+		loc ?: return false
+		return contains(BlockLocation(loc))
+	}
+
+
+	fun calculateHitbox() {
+		detectedBlocks.map {pos -> (pos - origin).let {OriginRelative(it.x, it.y, it.z)}}.sortedBy { -it.y }.forEach {block ->
+			val max = bounds.filter { it.x == block.x && it.z == block.z }.maxByOrNull { it.y }?.y ?: block.y
+			for (y in block.y..max) {
+				bounds.add(OriginRelative(block.x, y, block.z))
+			}
+		}
+	}
+
 
 	/**
 	 * Detect this craft
@@ -180,9 +205,7 @@ open class Craft(
 						"(${detectedBlocks.size / time.coerceAtLeast(1)} blocks/ms)"
 			)
 			messagePilot("<gray>Calculated Hitbox in ${measureTimeMillis { 
-				hitbox.calculate(
-					detectedBlocks.map {pos -> (pos - origin).let {OriginRelative(it.x, it.y, it.z)}}.toSet()
-				) 
+				calculateHitbox()
 			}
 			}ms.")
 			Tasks.sync {
@@ -274,6 +297,9 @@ open class Craft(
 		queueChange({ current ->
 			return@queueChange rotateCoordinates(current, Vector3(origin), rotation)
 		}, "Rotation", origin.world!!, rotation)
+		Tasks.async {
+			calculateHitbox() // rather than keep track of a hitbox rotation, just recacluate it when we rotate.
+		}
 	}
 
 	/**
