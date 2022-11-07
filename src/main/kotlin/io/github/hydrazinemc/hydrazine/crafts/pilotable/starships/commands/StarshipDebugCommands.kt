@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
+import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.extensions.craft
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
@@ -88,11 +89,11 @@ class StarshipDebugCommands : BaseCommand() {
 					if (ship.contains(loc)) {
 						sender.world.spawnParticle(
 							Particle.BLOCK_MARKER,
-							loc.asLocation.subtract(0.5, 0.5, 0.5).also { it.world = sender.world },
-							5,
-							0.2,
-							0.2,
-							0.2,
+							loc.asLocation.add(0.5, 0.5, 0.5).also { it.world = sender.world },
+							1,
+							0.0,
+							0.0,
+							0.0,
 							0.0,
 							Material.BARRIER.createBlockData()
 						)
@@ -100,6 +101,20 @@ class StarshipDebugCommands : BaseCommand() {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Display the hitbox of the craft
+	 */
+	@Subcommand("contains")
+	@Description("Whether a block is 'inside' the ship")
+	@CommandPermission("hydrazine.starship.debug.contains")
+	private fun onCheckContains(sender: Player) {
+		val ship = sender.craft ?: run {
+			sender.sendRichMessage("<red>You are not piloting a starship!")
+			return
+		}
+		sender.sendMessage(ship.contains(sender.getTargetBlock(20)?.location).toString())
 	}
 
 
