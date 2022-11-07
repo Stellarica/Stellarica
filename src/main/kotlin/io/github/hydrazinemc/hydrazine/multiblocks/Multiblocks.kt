@@ -34,6 +34,12 @@ object Multiblocks : Listener {
 	var activeMultiblocks = mutableSetOf<MultiblockInstance>()
 		private set
 
+	/**
+	 * String "id"s for each type of block that is used as an interface
+	 * (the blocks that can be clicked on to detect a multiblock)
+	 */
+	private val interfaceBlockTypes = mutableSetOf<String>()
+
 	private fun validate(facing: BlockFace, layout: MultiblockType, origin: Block): Boolean {
 		fun rotationFunction(it: OriginRelative) = when (facing) { // maybe we can repurpose this for ship movement?
 			BlockFace.NORTH -> it
@@ -66,7 +72,7 @@ object Multiblocks : Listener {
 		) return
 
 		val clickedBlock = event.clickedBlock!!
-		if (clickedBlock.id != "interface_block") return
+		if (clickedBlock.id !in interfaceBlockTypes) return
 
 		event.isCancelled = true
 
@@ -191,6 +197,7 @@ object Multiblocks : Listener {
 	 */
 	@EventHandler
 	fun onConfigReload(event: HydrazineConfigReloadEvent) {
+		interfaceBlockTypes.clear()
 		val newMultiblocks = mutableSetOf<MultiblockType>()
 		plugin.config.getConfigurationSection("multiblocks")?.getKeys(false)?.forEach multiblockLoop@{ multiblockName ->
 			// The first thing that needs to be done is we need to get all the keys for the multiblock
@@ -223,7 +230,7 @@ object Multiblocks : Listener {
 									interfaceY = y
 									interfaceZ = z
 									interfaceX = x
-
+									interfaceBlockTypes.add(keys[xChar]!!)
 									return@layerLoop
 								}
 							}
