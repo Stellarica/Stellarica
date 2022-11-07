@@ -33,6 +33,9 @@ permissions:
   hydrazine.starship.debug.hitbox:
       description: Lets users view the hitbox of a ship
       default: op
+  hydrazine.starship.debug.contains:
+    description: Lets users check whether a block is "inside" a ship
+    default: op
   hydrazine.starship.debug.*:
     description: Wildcard permission
     default: op
@@ -41,6 +44,7 @@ permissions:
       hydrazine.starship.debug.setacceleration: true
       hydrazine.starship.debug.get: true
       hydrazine.starship.debug.hitbox: true
+      hydrazine.starship.debug.contains: true
 
   hydrazine.customitems.give.self:
     description: Lets users give themselves custom items
