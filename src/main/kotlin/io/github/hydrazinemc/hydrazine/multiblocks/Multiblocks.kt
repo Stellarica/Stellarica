@@ -35,7 +35,7 @@ object Multiblocks : Listener {
 		private set
 
 	private fun validate(facing: BlockFace, layout: MultiblockType, origin: Block): Boolean {
-		fun rotationFunction(it: OriginRelative) = when (facing) {
+		fun rotationFunction(it: OriginRelative) = when (facing) { // maybe we can repurpose this for ship movement?
 			BlockFace.NORTH -> it
 			BlockFace.EAST -> OriginRelative(-it.z, it.y, it.x)
 			BlockFace.SOUTH -> OriginRelative(-it.x, it.y, -it.z)
@@ -84,9 +84,7 @@ object Multiblocks : Listener {
 
 		// If a smaller multiblock exists as part of a larger multiblock, we may end up detecting the wrong one.
 		// We use the amount of blocks as a tiebreaker.
-		val multiblock = potentialMultiblocks.maxByOrNull { it.key.blocks.size }
-
-		if (multiblock == null) {
+		val multiblock = potentialMultiblocks.maxByOrNull { it.key.blocks.size } ?: run {
 			event.player.sendRichMessage("<red>Multiblock is invalid.")
 			return
 		}
@@ -94,7 +92,7 @@ object Multiblocks : Listener {
 		event.player.sendRichMessage("<green>Found Multiblock: ${multiblock.key.name}")
 
 		// Get the multiblock list
-		val multiblockArray = clickedBlock.chunk.multiblocks
+		val multiblockArray = clickedBlock.chunk.multiblocks.toMutableSet()
 
 		// Create Multiblock
 		val multiblockData =
@@ -123,7 +121,7 @@ object Multiblocks : Listener {
 		multiblockArray.add(multiblockData)
 
 		// Save it
-		clickedBlock.chunk.multiblocks = multiblockArray
+		clickedBlock.chunk.multiblocks = multiblockArray.toSet()
 		activeMultiblocks.addAll(multiblockArray) // it's a set, so we don't need to worry about duplicates
 	}
 
@@ -164,9 +162,10 @@ object Multiblocks : Listener {
 				multiblock.type.onTick(multiblock) // tick the multiblock
 			}
 		}
-		invalid.forEach {
+		invalid.forEach { inv ->
 			// Remove each multiblock from its chunk's pdc
-			it.origin.chunk.multiblocks.remove(it)
+			// cant mutate in place because.. uh yes
+			inv.origin.chunk.multiblocks = inv.origin.chunk.multiblocks.filter { it != inv }.toMutableSet()
 		}
 		activeMultiblocks.removeAll(invalid)
 	}
@@ -257,6 +256,14 @@ object Multiblocks : Listener {
 				multiblockName,
 				blocks
 			) {})
+		}
+		klogger.info {
+			"Loaded ${newMultiblocks.size} multiblock types:\n   " +
+					newMultiblocks.joinToString("\n   ") { it.name }
+		}
+		klogger.info {
+			"Interface Block Types:\n    " +
+					interfaceBlockTypes.joinToString("\n   ")
 		}
 		types = newMultiblocks
 	}

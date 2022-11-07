@@ -433,9 +433,9 @@ open class Craft(
 						multiblock.facing = rotateBlockFace(multiblock.facing, rotation)
 
 						// Update the new chunk
-						val nmb = newLoc.chunk.multiblocks
+						val nmb = newLoc.chunk.multiblocks.toMutableSet()
 						nmb.add(multiblock)
-						newLoc.chunk.multiblocks = nmb
+						newLoc.chunk.multiblocks = nmb.toSet()
 					}
 
 					// let the craft know we're done here
