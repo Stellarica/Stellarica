@@ -26,10 +26,7 @@ class StarshipInterfaceScreen(player: Player, private val craft: Pilotable) : Sc
 			0 -> craft.detect()
 			1 -> {
 				if (player.isPilotingCraft) craft.deactivateCraft()
-				else {
-					craft.activateCraft(player)
-					ShipControlHotbar.openMenu(player)
-				}
+				else craft.activateCraft(player)
 				closeScreen()
 			}
 		}

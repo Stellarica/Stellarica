@@ -5,6 +5,7 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control.ShipControlHotbar
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
+import org.bukkit.entity.Player
 
 /**
  * Base Starship class
@@ -80,8 +81,15 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 	}
 
 	override fun deactivateCraft(): Boolean {
+		val p = pilot // it becomes null after this
 		return super.deactivateCraft().also {
-			if (it) pilot?.let { pilot -> ShipControlHotbar.closeMenu(pilot) }
+			if (it) p?.let { p -> ShipControlHotbar.closeMenu(p) }
+		}
+	}
+
+	override fun activateCraft(pilot: Player): Boolean {
+		return super.activateCraft(pilot).also {
+			if (it) ShipControlHotbar.openMenu(pilot)
 		}
 	}
 }
