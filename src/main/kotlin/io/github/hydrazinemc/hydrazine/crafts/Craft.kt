@@ -207,7 +207,7 @@ open class Craft(
 			messagePilot("<gray>Calculated Hitbox in ${measureTimeMillis { 
 				calculateHitbox()
 			}
-			}ms.")
+			}ms. (${bounds.size} blocks)")
 			Tasks.sync {
 				// Detect all multiblocks
 				multiblocks.clear()

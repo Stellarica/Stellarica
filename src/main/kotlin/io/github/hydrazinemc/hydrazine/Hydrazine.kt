@@ -5,6 +5,7 @@ import io.github.hydrazinemc.hydrazine.commands.ConfigCommand
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.ControlQueueRunnable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.commands.StarshipCommands
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.commands.StarshipDebugCommands
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners.InterfaceListener
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlockListener
@@ -74,6 +75,7 @@ class Hydrazine : JavaPlugin() {
 		val commandManager = PaperCommandManager(this)
 		arrayOf(
 			ConfigCommand(),
+			StarshipCommands(),
 			StarshipDebugCommands(),
 			CustomItemCommands(),
 			MultiblockCommands(),

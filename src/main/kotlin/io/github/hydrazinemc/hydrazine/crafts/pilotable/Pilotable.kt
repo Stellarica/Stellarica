@@ -4,6 +4,7 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.pilotedCrafts
 import io.github.hydrazinemc.hydrazine.crafts.Craft
 import io.github.hydrazinemc.hydrazine.utils.AlreadyPilotedException
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 /**
@@ -43,6 +44,12 @@ open class Pilotable(origin: BlockLocation) : Craft(origin) {
 		if (this.pilot != null) throw AlreadyPilotedException(this, pilot)
 		passengers.add(pilot)
 		this.pilot = pilot
+		Bukkit.getOnlinePlayers().filter { it.world == origin.world }.forEach {
+			if (contains(it.location) && it != pilot) {
+				passengers.add(it)
+				it.sendRichMessage("<gray> Now riding a craft piloted by ${pilot.displayName()}!")
+			}
+		}
 		pilotedCrafts.add(this)
 		updateUndetectables()
 		messagePilot("<green>Piloted craft!")
@@ -52,7 +59,7 @@ open class Pilotable(origin: BlockLocation) : Craft(origin) {
 	 * Deactivate the craft and remove it from [pilotedCrafts]
 	 * @return whether the ship successfully deactivated
 	 */
-	fun deactivateCraft(): Boolean {
+	open fun deactivateCraft(): Boolean {
 		if (isMoving) {
 			messagePilot("<red>Cannot unpilot a moving craft!")
 			return false// maybe throw something?
