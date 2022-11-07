@@ -42,12 +42,16 @@ open class Pilotable(origin: BlockLocation) : Craft(origin) {
 	fun activateCraft(pilot: Player) {
 		// Determine passengers, pilot
 		if (this.pilot != null) throw AlreadyPilotedException(this, pilot)
+		if (this.blockCount == 0) {
+			pilot.sendRichMessage("<red>Cannot pilot empty ship, detect it first!")
+			return
+		}
 		passengers.add(pilot)
 		this.pilot = pilot
 		Bukkit.getOnlinePlayers().filter { it.world == origin.world }.forEach {
 			if (contains(it.location) && it != pilot) {
 				passengers.add(it)
-				it.sendRichMessage("<gray> Now riding a craft piloted by ${pilot.displayName()}!")
+				it.sendRichMessage("<gray>Now riding a craft piloted by ${pilot.name}!")
 			}
 		}
 		pilotedCrafts.add(this)
