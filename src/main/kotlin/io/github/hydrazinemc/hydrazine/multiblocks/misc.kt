@@ -9,7 +9,7 @@ import org.bukkit.NamespacedKey
  * The multiblocks in this chunk
  * Backed by the Chunk's PDC
  */
-var Chunk.multiblocks: MutableSet<MultiblockInstance>
+var Chunk.multiblocks: Set<MultiblockInstance>
 	get() = this.persistentDataContainer.get(
 		NamespacedKey(Hydrazine.plugin, "multiblocks"),
 		MultiblockPDC

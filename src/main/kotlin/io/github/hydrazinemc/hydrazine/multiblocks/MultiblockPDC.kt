@@ -13,16 +13,16 @@ import java.util.UUID
 /**
  * PersistentDataType for storing detected multiblocks in chunk data
  */
-object MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, MutableSet<MultiblockInstance>> {
+object MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Set<MultiblockInstance>> {
 	override fun getPrimitiveType(): Class<Array<PersistentDataContainer>> {
 		return Array<PersistentDataContainer>::class.java
 	}
 
-	override fun getComplexType(): Class<MutableSet<MultiblockInstance>> {
+	override fun getComplexType(): Class<Set<MultiblockInstance>> {
 		return mutableSetOf<MultiblockInstance>().javaClass
 	}
 
-	override fun toPrimitive(complex: MutableSet<MultiblockInstance>, context: PersistentDataAdapterContext):
+	override fun toPrimitive(complex: Set<MultiblockInstance>, context: PersistentDataAdapterContext):
 			Array<PersistentDataContainer> {
 		val result = arrayOfNulls<PersistentDataContainer>(complex.size)
 
@@ -44,7 +44,7 @@ object MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutabl
 	}
 
 	override fun fromPrimitive(primitive: Array<PersistentDataContainer>, context: PersistentDataAdapterContext):
-			MutableSet<MultiblockInstance> {
+			Set<MultiblockInstance> {
 		val result = mutableSetOf<MultiblockInstance>()
 
 		primitive.forEach { persistentDataContainer ->
@@ -72,6 +72,6 @@ object MultiblockPDC : PersistentDataType<Array<PersistentDataContainer>, Mutabl
 			)
 		}
 
-		return result
+		return result.toSet()
 	}
 }
