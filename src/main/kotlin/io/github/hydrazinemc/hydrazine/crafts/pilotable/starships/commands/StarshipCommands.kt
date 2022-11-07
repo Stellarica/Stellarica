@@ -35,9 +35,13 @@ class StarshipCommands : BaseCommand() {
 	@Subcommand("stopriding")
 	@Description("Stop riding a ship")
 	private fun onStopRiding(sender: Player) {
-		val ship = getRidingShip(sender) ?: return
-		ship.passengers.remove(sender)
-		sender.sendRichMessage("<green>Stopped riding!")
+		val ship = getShip(sender) ?: return
+		if (sender == ship.pilot) {
+			ship.deactivateCraft()
+		} else {
+			ship.passengers.remove(sender)
+			sender.sendRichMessage("<green>Stopped riding!")
+		}
 	}
 
 	private fun getPilotedShip(sender: Player): Starship? {
@@ -50,15 +54,19 @@ class StarshipCommands : BaseCommand() {
 		}
 	}
 
-	private fun getRidingShip(sender: Player): Starship? {
-		return (((pilotedCrafts.firstOrNull { it.passengers.contains(sender) } ?: run {
+	private fun getShip(sender: Player): Starship? {
+		return ((pilotedCrafts.firstOrNull { it.passengers.contains(sender) } ?: run {
 			sender.sendRichMessage("<red>You are not riding a starship!")
 			return null
 		}) as? Starship) ?: run {
 			sender.sendRichMessage("<gold>This craft is not a starship!")
 			return null
-		}).also {
-			if (it.pilot == sender) {
+		}
+	}
+
+	private fun getRidingShip(sender: Player): Starship? {
+		return getShip(sender).also {
+			if (it?.pilot == sender) {
 				sender.sendRichMessage("<red>You are piloting this ship!")
 				return null
 			}

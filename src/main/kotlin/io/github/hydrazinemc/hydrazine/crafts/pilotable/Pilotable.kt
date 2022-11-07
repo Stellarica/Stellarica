@@ -38,13 +38,18 @@ open class Pilotable(origin: BlockLocation) : Craft(origin) {
 	 * Activates the craft and registers it in [pilotedCrafts]
 	 * @param pilot the pilot, who controls the ship
 	 * @throws AlreadyPilotedException if the ship is already piloted
+	 * @return whether the craft was successfully activated
 	 */
-	fun activateCraft(pilot: Player) {
+	open fun activateCraft(pilot: Player): Boolean {
 		// Determine passengers, pilot
 		if (this.pilot != null) throw AlreadyPilotedException(this, pilot)
 		if (this.blockCount == 0) {
-			pilot.sendRichMessage("<red>Cannot pilot empty ship, detect it first!")
-			return
+			pilot.sendRichMessage("<red>Cannot pilot empty craft, detect it first!")
+			return false
+		}
+		if (!contains(pilot.location)) {
+			pilot.sendRichMessage("<red>You must be inside the craft to pilot it!")
+			return false
 		}
 		passengers.add(pilot)
 		this.pilot = pilot
@@ -57,6 +62,7 @@ open class Pilotable(origin: BlockLocation) : Craft(origin) {
 		pilotedCrafts.add(this)
 		updateUndetectables()
 		messagePilot("<green>Piloted craft!")
+		return true
 	}
 
 	/**
