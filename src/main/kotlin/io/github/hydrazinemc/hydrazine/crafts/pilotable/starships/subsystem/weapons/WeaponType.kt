@@ -1,0 +1,13 @@
+package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons
+
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.projectiles.Projectile
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.projectiles.TestProjectile
+import io.github.hydrazinemc.hydrazine.multiblocks.Multiblocks
+
+enum class WeaponType(val projectile: Projectile, private val multiblockId: String) {
+	TEST_WEAPON(TestProjectile, "testweapon");
+
+	val multiblockType by lazy { // is this even safe, considering multiblock types can be reloaded?
+		Multiblocks.types.first { it.name == multiblockId }
+	}
+}

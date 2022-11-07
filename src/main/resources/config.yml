@@ -95,6 +95,17 @@ multiblocks:
 
     interface: i
 
+  testweapon:
+    layers:
+      0:
+        "sif"
+    key:
+      s: "sponge"
+      i: "iron_block"
+      f: "interface_block"
+    interface: f
+
+
 # Output how long it takes to detect/move a ship
 timeOperations: true
 

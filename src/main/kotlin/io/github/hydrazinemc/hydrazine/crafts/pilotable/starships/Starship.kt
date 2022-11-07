@@ -3,6 +3,8 @@ package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control.ShipControlHotbar
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.Subsystem
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.WeaponSubsystem
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.entity.Player
@@ -58,6 +60,15 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 	var ticksSinceMove = 0
 		private set
 
+
+
+	val subsystems: MutableSet<Subsystem>
+		get() = mutableSetOf(weapons)
+
+
+	val weapons = WeaponSubsystem(this)
+
+
 	/**
 	 * Possibly move the ship depending on [movesPerSecond] and [ticksSinceMove]
 	 * Handles [movesPerSecond]
@@ -82,14 +93,18 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 
 	override fun deactivateCraft(): Boolean {
 		val p = pilot // it becomes null after this
+		subsystems.forEach { it.onShipUnpiloted() }
 		return super.deactivateCraft().also {
 			if (it) p?.let { p -> ShipControlHotbar.closeMenu(p) }
 		}
 	}
 
 	override fun activateCraft(pilot: Player): Boolean {
-		return super.activateCraft(pilot).also {
-			if (it) ShipControlHotbar.openMenu(pilot)
+		return super.activateCraft(pilot).also { result ->
+			if (result) {
+				ShipControlHotbar.openMenu(pilot)
+				subsystems.forEach { it.onShipPiloted() }
+			}
 		}
 	}
 }

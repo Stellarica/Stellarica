@@ -24,7 +24,7 @@ object ShipControlHotbar : HotbarMenu() {
 		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Right", null), // these might be
 		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Left", null),
 		null,
-		null,
+		namedItem(Material.FIRE_CHARGE, "<red>Fire", null),
 		namedItem(Material.RED_CONCRETE, "<red>Unpilot Ship", null)
 	)
 
@@ -43,6 +43,7 @@ object ShipControlHotbar : HotbarMenu() {
 			2 -> ship.velocity = Vector3.zero
 			4 -> ship.controlQueue.add { ship.queueRotation(RotationAmount.CLOCKWISE) }
 			5 -> ship.controlQueue.add { ship.queueRotation(RotationAmount.COUNTERCLOCKWISE) }
+			7 -> ship.weapons.fire()
 			8 -> ship.controlQueue.add { if (ship.deactivateCraft()) closeMenu(player) }
 		}
 	}
