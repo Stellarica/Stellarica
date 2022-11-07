@@ -102,7 +102,7 @@ multiblocks:
     key:
       s: "sponge"
       i: "iron_block"
-      f: "interface_block"
+      f: "furnace"
     interface: f
 
 
