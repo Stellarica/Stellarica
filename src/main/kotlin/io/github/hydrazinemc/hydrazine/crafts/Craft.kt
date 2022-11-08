@@ -3,7 +3,7 @@ package io.github.hydrazinemc.hydrazine.crafts
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockInstance
-import io.github.hydrazinemc.hydrazine.multiblocks.multiblocks
+import io.github.hydrazinemc.hydrazine.multiblocks.Multiblocks
 import io.github.hydrazinemc.hydrazine.utils.AlreadyMovingException
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.OriginRelative
@@ -208,17 +208,14 @@ open class Craft(
 				calculateHitbox()
 			}
 			}ms. (${bounds.size} blocks)")
-			Tasks.sync {
-				// Detect all multiblocks
-				multiblocks.clear()
-				chunkCache.keys.forEach { chunkLoc ->
-					origin.world!!.getChunkAt(chunkLoc.x, chunkLoc.z).multiblocks.forEach {
-						if (detectedBlocks.contains(BlockLocation(it.origin))) multiblocks.add(it)
-					}
-				}
-				messagePilot("<gray>Detected ${multiblocks.size} multiblocks")
-				chunkCache.clear()
-			}
+
+			// Detect all multiblocks
+			multiblocks.clear()
+			// this is probably slow
+			multiblocks.addAll(Multiblocks.activeMultiblocks.filter { detectedBlocks.contains(BlockLocation(it.origin)) })
+
+			messagePilot("<gray>Detected ${multiblocks.size} multiblocks")
+			chunkCache.clear()
 		}
 	}
 

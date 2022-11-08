@@ -10,7 +10,7 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 
 	override fun onShipPiloted() {
 		ship.multiblocks.forEach {
-			if (it.type.name == "testweapon") {
+			if (it.type.name == "test_weapon") {
 				multiblocks.add(it)
 			}
 		}
