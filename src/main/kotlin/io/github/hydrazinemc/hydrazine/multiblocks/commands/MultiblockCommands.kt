@@ -42,29 +42,11 @@ class MultiblockCommands : BaseCommand() {
 		)
 	}
 
-	/**
-	 * Get the multiblocks in a chunk
-	 */
-	@Subcommand("chunk")
-	@Description("Get the multiblocks in the current chunk")
-	@CommandPermission("hydrazine.multiblocks.debug.chunk")
-	fun onChunk(sender: Player) {
-		val mbs = sender.location.chunk.multiblocks
-		sender.sendRichMessage(
-			"""
-			<green>---- Chunk Multiblocks ----
-			</green>
-			Count: ${mbs.size}
-			UUIDs: ${(mbs.map { it.uuid }).joinToString(", ")}
-			""".trimIndent()
-		)
-	}
-
 	@Subcommand("relative")
 	@Description("Get the origin relative position of the block")
 	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
 	fun onRelative(sender: Player) {
-		sender.location.chunk.multiblocks.forEach {
+		Multiblocks.activeMultiblocks.forEach {
 			sender.sendRichMessage(it.getOriginRelative(sender.getTargetBlock(10)!!.location).toString())
 		}
 	}
@@ -74,7 +56,7 @@ class MultiblockCommands : BaseCommand() {
 	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
 	fun onGlobal(sender: Player, x: Int, y: Int, z: Int) {
 		val target = sender.getTargetBlock(10) ?: return // this will never happen; it will be a block of air
-		val mb = target.chunk.multiblocks.firstOrNull { it.origin == target.location } ?: run {
+		val mb = Multiblocks.activeMultiblocks.firstOrNull { it.origin == target.location } ?: run {
 			sender.sendRichMessage("<gold>No multiblock found at ${target.type}")
 			return
 		}
@@ -86,7 +68,7 @@ class MultiblockCommands : BaseCommand() {
 	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
 	fun onFind(sender: Player) {
 		val target = sender.getTargetBlock(10) ?: return // this will never happen; it will be a block of air
-		target.chunk.multiblocks.forEach {
+		Multiblocks.activeMultiblocks.forEach {
 			if (it.contains(target.location)) {
 				sender.sendRichMessage("<green>Found ${it.uuid}")
 			}
