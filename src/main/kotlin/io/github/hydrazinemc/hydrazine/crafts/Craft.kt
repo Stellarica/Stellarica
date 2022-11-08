@@ -425,17 +425,9 @@ open class Craft(
 						val newLoc =
 							modifier(Vector3(oldLoc)).asLocation.apply { this@apply.world = world }
 
-						// Update the old chunk
-						oldLoc.chunk.multiblocks = oldLoc.chunk.multiblocks.filter { it != multiblock }.toMutableSet()
-
 						// Update the multiblock itself
 						multiblock.origin = newLoc
 						multiblock.facing = rotateBlockFace(multiblock.facing, rotation)
-
-						// Update the new chunk
-						val nmb = newLoc.chunk.multiblocks.toMutableSet()
-						nmb.add(multiblock)
-						newLoc.chunk.multiblocks = nmb.toSet()
 					}
 
 					// let the craft know we're done here

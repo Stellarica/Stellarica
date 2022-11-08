@@ -5,6 +5,7 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.utils.OriginRelative
+import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.extensions.id
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.block.Block
@@ -40,6 +41,32 @@ object Multiblocks : Listener {
 	 */
 	private val interfaceBlockTypes = mutableSetOf<String>()
 
+	init { // init block on an object? :conc:
+		Tasks.syncRepeat(10, 1) {
+			val invalid = mutableSetOf<MultiblockInstance>()
+			activeMultiblocks.forEach { multiblock ->
+				// Validate the layout
+				if (!validate(
+						multiblock.facing,
+						multiblock.type,
+						multiblock.origin.block
+					)
+				) {
+					klogger.warn {
+						"Invalid multiblock at ${BlockLocation(multiblock.origin).formattedString}: " +
+								"${multiblock.type.name} (${multiblock.uuid}), it has been undetected."
+					}
+					invalid.add(multiblock)
+					return@forEach
+				} else {
+					multiblock.type.onTick(multiblock) // tick the multiblock
+				}
+			}
+			activeMultiblocks.removeAll(invalid)
+		}
+	}
+
+
 	private fun validate(facing: BlockFace, layout: MultiblockType, origin: Block): Boolean {
 		fun rotationFunction(it: OriginRelative) = when (facing) { // maybe we can repurpose this for ship movement?
 			BlockFace.NORTH -> it
@@ -52,10 +79,8 @@ object Multiblocks : Listener {
 
 		layout.blocks.forEach {
 			val rotatedLocation = rotationFunction(it.key)
-
-			val relativeBlock = origin.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z).id
-
-			if (relativeBlock != it.value) return false // A block we were expecting is missing, so break the function.
+			val relativeBlock = origin.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z)
+			if (relativeBlock.id != it.value) return false // A block we were expecting is missing, so break the function.
 		}
 
 		return true // Valid, save it and keep looking.
@@ -97,13 +122,10 @@ object Multiblocks : Listener {
 
 		event.player.sendRichMessage("<green>Found Multiblock: ${multiblock.key.name}")
 
-		// Get the multiblock list
-		val multiblockArray = clickedBlock.chunk.multiblocks.toMutableSet()
-
 		// Create Multiblock
 		val multiblockData =
 			MultiblockInstance(
-				types.first { multiblock.key.name == it.name },
+				multiblock.key,
 				UUID.randomUUID(),
 				clickedBlock.location,
 				multiblock.value,
@@ -111,10 +133,10 @@ object Multiblocks : Listener {
 			)
 
 		// Check if the multiblock is already in the list
-		multiblockArray.forEach { existing ->
+		// could probably filter this more to reduce the number of checks
+		activeMultiblocks.filter{ it.type == multiblockData.type }.forEach { existing ->
 			// Cant do equality check because the UUID will be different
 			if (
-				multiblockData.type == existing.type &&
 				multiblockData.origin == existing.origin &&
 				multiblockData.facing == existing.facing
 			) {
@@ -123,57 +145,8 @@ object Multiblocks : Listener {
 			}
 		}
 
-		// Add the multiblock to the list if it wasn't already detected
-		multiblockArray.add(multiblockData)
-
 		// Save it
-		clickedBlock.chunk.multiblocks = multiblockArray.toSet()
-		activeMultiblocks.addAll(multiblockArray) // it's a set, so we don't need to worry about duplicates
-	}
-
-	/**
-	 * Confirm multiblocks exist and are intact, and tick them
-	 */
-	@EventHandler
-	fun onServerTick(event: ServerTickStartEvent) {
-		val invalid = mutableSetOf<MultiblockInstance>()
-
-		activeMultiblocks.forEach { multiblock ->
-			// Get the layout
-			val multiblockLayout = types.find { it.name == multiblock.type.name }
-
-			// If the layout does not exist, undetect the multiblock
-			if (multiblockLayout == null) {
-				klogger.warn {
-					"Non-existent multiblock type at ${BlockLocation(multiblock.origin).formattedString}: " +
-							"${multiblock.type.name}, it has been undetected."
-				}
-				invalid.add(multiblock)
-				return@forEach
-			}
-			// Validate the layout
-			if (!validate(
-					multiblock.facing,
-					multiblockLayout,
-					multiblock.origin.block
-				)
-			) {
-				klogger.warn {
-					"Invalid multiblock at ${BlockLocation(multiblock.origin).formattedString}: " +
-							"${multiblock.type.name} (${multiblock.uuid}), it has been undetected."
-				}
-				invalid.add(multiblock)
-				return@forEach
-			} else {
-				multiblock.type.onTick(multiblock) // tick the multiblock
-			}
-		}
-		invalid.forEach { inv ->
-			// Remove each multiblock from its chunk's pdc
-			// cant mutate in place because.. uh yes
-			inv.origin.chunk.multiblocks = inv.origin.chunk.multiblocks.filter { it != inv }.toMutableSet()
-		}
-		activeMultiblocks.removeAll(invalid)
+		activeMultiblocks.add(multiblockData)
 	}
 
 	/**
@@ -182,6 +155,7 @@ object Multiblocks : Listener {
 	@EventHandler
 	fun onChunkLoad(event: ChunkLoadEvent) {
 		activeMultiblocks.addAll(event.chunk.multiblocks)
+		event.chunk.multiblocks = setOf()
 	}
 
 	/**
@@ -190,6 +164,9 @@ object Multiblocks : Listener {
 	@EventHandler
 	fun onChunkUnload(event: ChunkUnloadEvent) {
 		activeMultiblocks.removeAll(event.chunk.multiblocks)
+
+		// this is probably laggy and should be fixed
+		event.chunk.multiblocks = activeMultiblocks.filter { it.origin.chunk == event.chunk }.toSet()
 	}
 
 	/**
@@ -209,9 +186,6 @@ object Multiblocks : Listener {
 			}
 
 			val interfaceKey = plugin.config.getString("multiblocks.$multiblockName.interface")!!.first()
-			if (keys.keys.filter { it == interfaceKey }.count() > 1) {
-				klogger.error { "Multiblock type $multiblockName has multiple interface blocks!" }
-			}
 
 			// Now we need to find the interface as all blocks in a multtiblock are stored relative to this point.
 			val layers = plugin.config.getConfigurationSection("multiblocks.$multiblockName.layers")!!.getKeys(false)
@@ -274,4 +248,5 @@ object Multiblocks : Listener {
 		}
 		types = newMultiblocks
 	}
+
 }
