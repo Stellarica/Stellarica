@@ -78,9 +78,10 @@ object Multiblocks : Listener {
 		layout.blocks.forEach {
 			val rotatedLocation = rotationFunction(it.key)
 			val relativeBlock = origin.getRelative(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z)
-			if (relativeBlock.id != it.value) return false // A block we were expecting is missing, so break the function.
+			if (relativeBlock.id != it.value) {
+				return false
+			} // A block we were expecting is missing, so break the function.
 		}
-
 		return true // Valid, save it and keep looking.
 	}
 
@@ -89,24 +90,18 @@ object Multiblocks : Listener {
 	 */
 	@EventHandler
 	fun onMultiblockDetection(event: PlayerInteractEvent) {
-		if (event.action != Action.RIGHT_CLICK_BLOCK ||
-			event.hand != EquipmentSlot.HAND ||
-			event.player.isSneaking
-		) return
-
+		if (event.action != Action.RIGHT_CLICK_BLOCK || event.player.isSneaking) return
 		val clickedBlock = event.clickedBlock!!
 		if (clickedBlock.id !in interfaceBlockTypes) return
 
-		event.isCancelled = true
 
-		// Actually detect it
 		val potentialMultiblocks = mutableMapOf<MultiblockType, BlockFace>()
 
 		// Start by iterating over each multiblock
-		types.forEach { multiblockConfiguration ->
+		types.forEach { type ->
 			setOf(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST).forEach { facing ->
-				if (validate(facing, multiblockConfiguration, clickedBlock)) {
-					potentialMultiblocks[multiblockConfiguration] = facing
+				if (validate(facing, type, clickedBlock)) {
+					potentialMultiblocks[type] = facing
 				}
 			}
 		}
@@ -119,16 +114,16 @@ object Multiblocks : Listener {
 		}
 
 		event.player.sendRichMessage("<green>Found Multiblock: ${multiblock.key.name}")
+		event.isCancelled = true
 
 		// Create Multiblock
-		val multiblockData =
-			MultiblockInstance(
-				multiblock.key,
-				UUID.randomUUID(),
-				clickedBlock.location,
-				multiblock.value,
-				clickedBlock.chunk.persistentDataContainer.adapterContext.newPersistentDataContainer()
-			)
+		val multiblockData = MultiblockInstance(
+			multiblock.key,
+			UUID.randomUUID(),
+			clickedBlock.location,
+			multiblock.value,
+			clickedBlock.chunk.persistentDataContainer.adapterContext.newPersistentDataContainer()
+		)
 
 		// Check if the multiblock is already in the list
 		// could probably filter this more to reduce the number of checks
@@ -178,7 +173,6 @@ object Multiblocks : Listener {
 			// The first thing that needs to be done is we need to get all the keys for the multiblock
 			// This way we know what blocks are in the multiblock
 			val keys = mutableMapOf<Char, String>()
-
 			plugin.config.getConfigurationSection("multiblocks.$multiblockName.key")!!.getKeys(false).forEach { c ->
 				keys[c.first()] = plugin.config.getString("multiblocks.$multiblockName.key.$c")!!.lowercase()
 			}
@@ -227,7 +221,7 @@ object Multiblocks : Listener {
 						val location = OriginRelative(relativeX, relativeY, relativeZ)
 
 						// Add the block to the multiblock configuration
-						blocks[location] = material!!
+						material?.let {blocks[location] = material}
 					}
 				}
 			}
@@ -238,7 +232,7 @@ object Multiblocks : Listener {
 		}
 		klogger.info {
 			"Loaded ${newMultiblocks.size} multiblock types:\n   " +
-					newMultiblocks.joinToString("\n   ") { it.name }
+					newMultiblocks.joinToString("\n   ") { it.name + ": " + it.blocks.size }
 		}
 		klogger.info {
 			"Interface Block Types:\n    " +
