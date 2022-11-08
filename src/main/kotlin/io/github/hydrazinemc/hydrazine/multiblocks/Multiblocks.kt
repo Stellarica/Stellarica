@@ -8,6 +8,8 @@ import io.github.hydrazinemc.hydrazine.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.extensions.id
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
+import org.bukkit.Chunk
+import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
 import org.bukkit.event.EventHandler
@@ -16,6 +18,7 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
+import org.bukkit.event.world.WorldUnloadEvent
 import org.bukkit.inventory.EquipmentSlot
 import java.util.UUID
 
@@ -147,8 +150,9 @@ object Multiblocks : Listener {
 	 */
 	@EventHandler
 	fun onChunkLoad(event: ChunkLoadEvent) {
-		activeMultiblocks.addAll(event.chunk.multiblocks)
-		event.chunk.multiblocks = setOf()
+		// if (event.chunk.savedMultiblocks.isNotEmpty()) println("loaded " + event.chunk.savedMultiblocks)
+		activeMultiblocks.addAll(event.chunk.savedMultiblocks)
+		event.chunk.savedMultiblocks = setOf()
 	}
 
 	/**
@@ -158,7 +162,8 @@ object Multiblocks : Listener {
 	fun onChunkUnload(event: ChunkUnloadEvent) {
 		val chunkMultiblocks = activeMultiblocks.filter { it.origin.chunk == event.chunk }.toSet()
 		// this is probably laggy and should be fixed
-		event.chunk.multiblocks = chunkMultiblocks
+		// if (chunkMultiblocks.isNotEmpty()) println("saving " + chunkMultiblocks)
+		event.chunk.savedMultiblocks = chunkMultiblocks
 		activeMultiblocks.removeAll(chunkMultiblocks)
 	}
 
@@ -241,4 +246,20 @@ object Multiblocks : Listener {
 		types = newMultiblocks
 	}
 
+
+
+	/**
+	 * The multiblocks in this chunk
+	 * Backed by the Chunk's PDC
+	 */
+	private var Chunk.savedMultiblocks: Set<MultiblockInstance>
+		get() = this.persistentDataContainer.get(
+			NamespacedKey(plugin, "multiblocks"),
+			MultiblockPDC
+		) ?: emptySet()
+		set(value) = this.persistentDataContainer.set(
+			NamespacedKey(plugin, "multiblocks"),
+			MultiblockPDC,
+			value
+		)
 }

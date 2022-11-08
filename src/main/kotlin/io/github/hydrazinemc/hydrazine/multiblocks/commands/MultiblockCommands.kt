@@ -7,7 +7,6 @@ import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.multiblocks.Multiblocks
 import io.github.hydrazinemc.hydrazine.utils.OriginRelative
-import io.github.hydrazinemc.hydrazine.multiblocks.multiblocks
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -26,7 +25,7 @@ class MultiblockCommands : BaseCommand() {
 	@CommandPermission("hydrazine.multiblocks.debug.multiblock")
 	fun onDebug(sender: Player) {
 		val target = sender.getTargetBlock(10) ?: return // this will never happen; it will be a block of air
-		val mb = sender.location.chunk.multiblocks.firstOrNull { it.origin == target.location } ?: run {
+		val mb = Multiblocks.activeMultiblocks.firstOrNull { it.origin == target.location } ?: run {
 			sender.sendRichMessage("<gold>No multiblock found at ${target.type}")
 			return
 		}
