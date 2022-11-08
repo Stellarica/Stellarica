@@ -58,8 +58,6 @@ object Multiblocks : Listener {
 					}
 					invalid.add(multiblock)
 					return@forEach
-				} else {
-					multiblock.type.onTick(multiblock) // tick the multiblock
 				}
 			}
 			activeMultiblocks.removeAll(invalid)
@@ -236,7 +234,7 @@ object Multiblocks : Listener {
 			newMultiblocks.add(MultiblockType(
 				multiblockName,
 				blocks
-			) {})
+			))
 		}
 		klogger.info {
 			"Loaded ${newMultiblocks.size} multiblock types:\n   " +

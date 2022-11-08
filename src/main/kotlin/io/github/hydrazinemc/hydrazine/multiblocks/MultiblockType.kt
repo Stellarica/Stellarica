@@ -16,9 +16,4 @@ data class MultiblockType(
 	 * @see getId
 	 */
 	val blocks: Map<OriginRelative, String>,
-
-	/**
-	 * The function ticked on every instance of this type
-	 */
-	val onTick: (MultiblockInstance) -> Unit,
 )
