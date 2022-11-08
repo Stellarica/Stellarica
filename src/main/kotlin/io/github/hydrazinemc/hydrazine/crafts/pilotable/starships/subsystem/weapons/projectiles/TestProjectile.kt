@@ -5,6 +5,7 @@ import org.bukkit.Particle
 
 object TestProjectile: Projectile {
 	override fun shoot(origin: Location) {
+		origin.add(0.5, 0.5, 0.5)
 		origin.world.rayTraceBlocks(origin.clone().add(origin.direction), origin.direction, 100.0)?.let {
 			val loc = it.hitPosition.toLocation(origin.world)
 			origin.world.createExplosion(loc, 5.0f)
