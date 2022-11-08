@@ -156,10 +156,10 @@ object Multiblocks : Listener {
 	 */
 	@EventHandler
 	fun onChunkUnload(event: ChunkUnloadEvent) {
-		activeMultiblocks.removeAll(event.chunk.multiblocks)
-
+		val chunkMultiblocks = activeMultiblocks.filter { it.origin.chunk == event.chunk }.toSet()
 		// this is probably laggy and should be fixed
-		event.chunk.multiblocks = activeMultiblocks.filter { it.origin.chunk == event.chunk }.toSet()
+		event.chunk.multiblocks = chunkMultiblocks
+		activeMultiblocks.removeAll(chunkMultiblocks)
 	}
 
 	/**
