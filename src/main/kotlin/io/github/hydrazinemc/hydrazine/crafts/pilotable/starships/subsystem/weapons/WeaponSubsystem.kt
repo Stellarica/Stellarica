@@ -9,9 +9,9 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 	val multiblocks = mutableSetOf<MultiblockInstance>()
 
 	override fun onShipPiloted() {
-		ship.multiblocks.forEach {
-			if (it.type.name == "test_weapon") {
-				multiblocks.add(it)
+		ship.multiblocks.forEach { multiblock ->
+			if (multiblock.type in WeaponType.values().map{it.multiblockType}) {
+				multiblocks.add(multiblock)
 			}
 		}
 	}
