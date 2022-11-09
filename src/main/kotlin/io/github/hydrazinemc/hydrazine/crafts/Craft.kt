@@ -360,7 +360,6 @@ open class Craft(
 				messagePassengers("<bold><gold>This is a bug, please report it.")
 			}
 			chunkCache.clear()
-			origin = modifier(Vector3(origin)).asBlockLocation.apply { this.world = world }
 
 			// On the next server tick, check for collisions and move the ship
 			Tasks.sync {
@@ -428,6 +427,7 @@ open class Craft(
 					}
 
 					// let the craft know we're done here
+					origin = modifier(Vector3(origin)).asBlockLocation.apply { this.world = world }
 					isMoving = false
 					detectedBlocks = newDetectedBlocks
 
