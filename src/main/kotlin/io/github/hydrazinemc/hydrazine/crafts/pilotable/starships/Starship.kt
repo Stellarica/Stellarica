@@ -4,6 +4,7 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control.ShipControlHotbar
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.Subsystem
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.shields.ShieldSubsystem
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.WeaponSubsystem
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
@@ -63,10 +64,11 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 
 
 	val subsystems: MutableSet<Subsystem>
-		get() = mutableSetOf(weapons)
+		get() = mutableSetOf(weapons, shields)
 
 
 	val weapons = WeaponSubsystem(this)
+	val shields = ShieldSubsystem(this)
 
 
 	/**
