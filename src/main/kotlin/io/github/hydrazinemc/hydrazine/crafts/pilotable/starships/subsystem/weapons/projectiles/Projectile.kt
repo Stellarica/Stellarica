@@ -10,6 +10,11 @@ abstract class Projectile {
 	abstract fun shoot(origin: Location)
 
 
+	// I admit, this projectile thing is a little funky
+	// However, having each of these function arguments as a method on Projectile is a lot less flexible, as
+	// the ability to have any instance data would require having different instances of projectiles,
+	// which makes passing around a projectile type a pain.
+	// It's totally doable, but this works too so... deal with it. :)
 	/**
 	 * Handles projectile raycasts
 	 */
@@ -56,7 +61,9 @@ abstract class Projectile {
 		var count = 0
 
 		class Runnable(): BukkitRunnable() {
+			// gets run every tick
 			override fun run() {
+				// ray trace as far as it moves this tick (step blocks)
 				val hit = position.world.rayTrace(
 					position,
 					origin.direction,
@@ -66,6 +73,8 @@ abstract class Projectile {
 					0.1,
 					null
 				)
+				// if it hit something, call the appropriate function
+				// continue on if it returns false
 				if (hit != null) {
 					if (onHit(hit)) {
 						this.cancel()
@@ -73,9 +82,10 @@ abstract class Projectile {
 					}
 				}
 
-
+				// Though we've already done the raycast, go and tick at density locations along this step blocks
 				val locStep = position.clone()
 				for (i in 1..(step * density).toInt()) {
+					// and stop if it returns true
 					if (onLocationTick(locStep)) {
 						this.cancel()
 						return
@@ -84,15 +94,15 @@ abstract class Projectile {
 					locStep.add(origin.direction.clone().multiply(1/density.toFloat()))
 				}
 
+				// now move the raytrace position forward in preparation for the next tick
 				position.add(origin.direction.clone().multiply(step))
-
 
 				if (onServerTick(position)) {
 					this.cancel()
 					return
 				}
 
-				count++
+				count++ // enforce max range so it doesnt go forever
 				if (count >= time) {
 					this.cancel()
 				}
