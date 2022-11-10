@@ -1,5 +1,6 @@
 package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.projectiles
 
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
@@ -14,6 +15,11 @@ object TestProjectile: Projectile() {
 			{
 				it.world.spawnParticle(Particle.SOUL_FIRE_FLAME, it, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 				false
+			},
+			{loc, craft ->
+				val ship = craft as? Starship ?: return@cast false // todo: bad for npc ships
+				ship.shields.damage(10)
+				true
 			},
 			{
 				it.hitBlock?.type = Material.LAVA

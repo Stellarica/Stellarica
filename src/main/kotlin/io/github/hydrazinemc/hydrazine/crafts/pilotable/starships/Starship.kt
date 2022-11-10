@@ -95,9 +95,19 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 
 	override fun deactivateCraft(): Boolean {
 		val p = pilot // it becomes null after this
+		val pass = passengers
 		subsystems.forEach { it.onShipUnpiloted() }
 		return super.deactivateCraft().also {
-			if (it) p?.let { p -> ShipControlHotbar.closeMenu(p) }
+			if (it) {
+
+				// close the ship HUD. this is really dumb
+				// todo: fix
+				this.passengers = pass
+				StarshipHUD.close(this)
+				this.passengers.clear()
+				// close the hotbar menu
+				p?.let { p -> ShipControlHotbar.closeMenu(p) }
+			}
 		}
 	}
 
@@ -105,6 +115,7 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 		return super.activateCraft(pilot).also { result ->
 			if (result) {
 				ShipControlHotbar.openMenu(pilot)
+				StarshipHUD.open(this)
 				subsystems.forEach { it.onShipPiloted() }
 			}
 		}
