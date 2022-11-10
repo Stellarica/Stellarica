@@ -77,7 +77,7 @@ customBlocks:
 
 # Multiblocks
 multiblocks:
-  Test Thingy:
+  test_multiblock:
     layers:
       0:
         - "grg"
@@ -95,15 +95,26 @@ multiblocks:
 
     interface: i
 
-  testweapon:
+  test_weapon:
     layers:
       0:
-        "sif"
+       -  "sig"
     key:
       s: "sponge"
       i: "iron_block"
-      f: "furnace"
-    interface: f
+      g: "grindstone"
+    interface: g
+
+  test_shield:
+    layers:
+      0:
+        - " g "
+        - "gdg"
+        - " g "
+    key:
+      d: "diamond_block"
+      g: "glass"
+    interface: d
 
 
 # Output how long it takes to detect/move a ship

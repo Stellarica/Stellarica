@@ -1,6 +1,9 @@
 package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.projectiles;
 
 import io.github.hydrazinemc.hydrazine.Hydrazine
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.pilotedCrafts
+import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
+import io.github.hydrazinemc.hydrazine.crafts.Craft
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable
@@ -47,11 +50,12 @@ abstract class Projectile {
 		 * @return whether to continue onward
 		 */
 		onServerTick: (Location) -> Boolean,
+		onHitCraft: (Location, Craft) -> Boolean,
 		/**
 		 * Called when the projectile hits something
 		 * @return whether to continue onward
 		 */
-		onHit: (RayTraceResult) -> Boolean
+		onHitBlockOrEntity: (RayTraceResult) -> Boolean
 	) {
 		/** the current position */
 		val position = origin.clone()
@@ -76,7 +80,20 @@ abstract class Projectile {
 				// if it hit something, call the appropriate function
 				// continue on if it returns false
 				if (hit != null) {
-					if (onHit(hit)) {
+					val hitLoc = hit.hitPosition.toLocation(position.world)
+					// first, check if we hit a starship
+					// TODO: check all ships, not just pilotable ones (need to hit npc ships)
+					// TODO: use a better filter than distancequared
+					pilotedCrafts.filter{it.origin.world == position.world}.filter {it.origin.asLocation.distanceSquared(position) < 1000}.forEach {
+						if (it.contains(hitLoc)) {
+							if (onHitCraft(hitLoc, it)) {
+								this.cancel()
+								return
+							}
+						}
+					}
+
+					if (onHitBlockOrEntity(hit)) {
 						this.cancel()
 						return
 					}

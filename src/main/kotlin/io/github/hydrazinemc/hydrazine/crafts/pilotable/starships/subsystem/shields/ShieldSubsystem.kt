@@ -2,11 +2,28 @@ package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.shi
 
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.Subsystem
-import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.WeaponType
 import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockInstance
 
-public class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
+class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 	val multiblocks = mutableSetOf<MultiblockInstance>()
+
+	var shieldHealth = 0
+		private set(value) {
+			field = value.coerceIn(0, maxShieldHealth)
+		}
+
+	val maxShieldHealth: Int
+		get(): Int {
+			var h = 0
+			multiblocks.forEach { multiblock ->
+				ShieldType.values().firstOrNull {
+					it.multiblockType == multiblock.type
+				}?.let {
+					h += it.maxHealth
+				}
+			}
+			return h
+		}
 
 	override fun onShipPiloted() {
 		ship.multiblocks.forEach { multiblock ->
@@ -16,9 +33,8 @@ public class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 		}
 	}
 
-	fun fire() {
-		multiblocks.filter { it.type == WeaponType.TEST_WEAPON.multiblockType }.forEach {
-			WeaponType.TEST_WEAPON.projectile.shoot(it.origin.also { it.direction = ship.pilot!!.eyeLocation.direction })
-		}
+	fun damage(dam: Int) {
+		// todo: stuff
+		shieldHealth -= dam
 	}
 }
