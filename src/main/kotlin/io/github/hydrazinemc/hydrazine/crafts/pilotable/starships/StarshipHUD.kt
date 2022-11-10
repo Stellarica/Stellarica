@@ -1,10 +1,10 @@
 package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships
 
 import io.github.hydrazinemc.hydrazine.utils.Tasks
-import io.github.hydrazinemc.hydrazine.utils.gui.ScoreboardDisplay
+import io.github.hydrazinemc.hydrazine.utils.gui.setScoreboardContents
 import org.bukkit.entity.Player
 
-object StarshipHUD: ScoreboardDisplay() {
+object StarshipHUD {
 	private val ships = mutableSetOf<Starship>()
 
 	init {
@@ -15,23 +15,18 @@ object StarshipHUD: ScoreboardDisplay() {
 		}
 	}
 
+	fun open(ship: Starship) = ships.add(ship)
 
-	fun open(ship: Starship) {
-		ships.add(ship)
-	}
 	fun close(ship: Starship) {
 		ships.remove(ship)
-		ship.passengers.forEach { passenger ->
-			if (passenger is Player) {
-				passenger.scoreboard = passenger.server.scoreboardManager.mainScoreboard
-			}
+		ship.passengers.forEach {
+			(it as? Player)?.setScoreboardContents("", listOf())
 		}
 	}
 
 	private fun display(ship: Starship) {
 		ship.passengers.forEach {
-			val player = it as? Player ?: return@forEach
-			setScoreboard(player, "Starship", listOf(
+			(it as? Player)?.setScoreboardContents("Starship", listOf(
 				"Block Count: ${ship.blockCount}",
 				"Origin: ${ship.origin.formattedString}",
 				"Shields: ${ship.shields.shieldHealth}/${ship.shields.maxShieldHealth}",
