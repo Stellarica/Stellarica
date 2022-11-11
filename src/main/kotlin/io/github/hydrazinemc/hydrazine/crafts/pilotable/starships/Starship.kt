@@ -95,7 +95,7 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 
 	override fun deactivateCraft(): Boolean {
 		val p = pilot // it becomes null after this
-		val pass = passengers
+		val pass = passengers.toMutableSet()
 		subsystems.forEach { it.onShipUnpiloted() }
 		return super.deactivateCraft().also {
 			if (it) {
