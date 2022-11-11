@@ -47,7 +47,7 @@ open class Craft(
 	var origin: BlockLocation
 ) {
 
-	private var detectedBlocks = mutableSetOf<BlockLocation>()
+	protected var detectedBlocks = mutableSetOf<BlockLocation>()
 	var multiblocks = mutableSetOf<MultiblockInstance>()
 	private var chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
@@ -100,7 +100,7 @@ open class Craft(
 	/**
 	 * The blocks considered to be "inside" of the ship, but not neccecarily detected.
 	 */
-	private var bounds = mutableSetOf<OriginRelative>()
+	protected var bounds = mutableSetOf<OriginRelative>()
 
 	/**
 	 * Message this craft's pilot, if it has one.

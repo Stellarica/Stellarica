@@ -9,11 +9,15 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weap
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.block.BlockExplodeEvent
+import kotlin.math.roundToInt
 
 /**
  * Base Starship class
  */
-class Starship(origin: BlockLocation) : Pilotable(origin) {
+class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 	/**
 	 * The velocity (in blocks per second) of this starship
 	 * @see maxVelocity
@@ -107,6 +111,10 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 				this.passengers.clear()
 				// close the hotbar menu
 				p?.let { p -> ShipControlHotbar.closeMenu(p) }
+
+				// todo: maybe find a better way than spamming this for everything we register to
+				// reflection?
+				BlockExplodeEvent.getHandlerList().unregister(this)
 			}
 		}
 	}
@@ -114,9 +122,25 @@ class Starship(origin: BlockLocation) : Pilotable(origin) {
 	override fun activateCraft(pilot: Player): Boolean {
 		return super.activateCraft(pilot).also { result ->
 			if (result) {
+				plugin.server.pluginManager.registerEvents(this, plugin)
 				ShipControlHotbar.openMenu(pilot)
 				StarshipHUD.open(this)
 				subsystems.forEach { it.onShipPiloted() }
+			}
+		}
+	}
+
+
+	@EventHandler
+	fun onBlockExplode(event: BlockExplodeEvent) {
+		// todo: fix bad range check
+		if (event.block.location.distanceSquared(origin.asLocation) < 500 && contains(event.block.location)) {
+			if (shields.shieldHealth > 0) {
+				event.isCancelled = true
+				shields.damage(event.block.location, event.yield.roundToInt())
+			}
+			else {
+				detectedBlocks.remove(BlockLocation(event.block.location))
 			}
 		}
 	}

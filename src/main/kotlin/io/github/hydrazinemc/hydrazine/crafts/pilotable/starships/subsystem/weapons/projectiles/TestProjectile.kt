@@ -17,12 +17,16 @@ object TestProjectile: Projectile() {
 				false
 			},
 			{loc, craft ->
+				/*
 				val ship = craft as? Starship ?: return@cast false // todo: bad for npc ships
-				ship.shields.damage(10)
-				true
+				ship.shields.damage(loc, 10)
+
+				ship.shields.shieldHealth > 0
+				 */
+				false
 			},
 			{
-				it.hitBlock?.type = Material.LAVA
+				it.hitBlock?.location?.createExplosion(2f, true, true)
 				true
 			}
 		)

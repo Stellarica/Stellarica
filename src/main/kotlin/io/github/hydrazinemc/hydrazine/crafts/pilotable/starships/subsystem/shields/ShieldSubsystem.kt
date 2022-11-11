@@ -3,6 +3,11 @@ package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.shi
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.Subsystem
 import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockInstance
+import net.minecraft.core.particles.DustColorTransitionOptions
+import org.bukkit.Color
+import org.bukkit.Location
+import org.bukkit.Particle
+import org.bukkit.Particle.DustOptions
 
 class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 	val multiblocks = mutableSetOf<MultiblockInstance>()
@@ -34,8 +39,9 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 		shieldHealth = maxShieldHealth
 	}
 
-	fun damage(dam: Int) {
+	fun damage(loc: Location, dam: Int) {
 		// todo: stuff
+		loc.world.spawnParticle(Particle.REDSTONE, loc, 3, 0.5, 0.5, 0.5, 0.0, DustOptions(Color.BLUE, 3f), true)
 		shieldHealth -= dam
 	}
 }
