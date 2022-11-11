@@ -90,6 +90,12 @@ open class Craft(
 	val blockCount: Int
 		get() = detectedBlocks.size
 
+	var initialBlockCount: Int = 1
+		private set
+
+	val hullIntegrityPercent
+		get() = blockCount / initialBlockCount.toDouble()
+
 
 	/**
 	 * The blocks considered to be "inside" of the ship, but not neccecarily detected.
@@ -208,6 +214,8 @@ open class Craft(
 				calculateHitbox()
 			}
 			}ms. (${bounds.size} blocks)")
+
+			initialBlockCount = detectedBlocks.size
 
 			// Detect all multiblocks
 			multiblocks.clear()
