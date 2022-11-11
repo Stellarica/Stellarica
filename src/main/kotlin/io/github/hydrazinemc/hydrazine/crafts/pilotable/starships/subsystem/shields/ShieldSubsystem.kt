@@ -31,6 +31,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 				multiblocks.add(multiblock)
 			}
 		}
+		shieldHealth = maxShieldHealth
 	}
 
 	fun damage(dam: Int) {
