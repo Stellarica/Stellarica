@@ -10,7 +10,7 @@ import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.RayTraceResult
 
 abstract class Projectile {
-	abstract fun shoot(origin: Location)
+	abstract fun shoot(shooter: Craft, origin: Location)
 
 
 	// I admit, this projectile thing is a little funky
