@@ -16,6 +16,10 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 		}
 	}
 
+	override fun onMultiblockUndetected(multiblock: MultiblockInstance) {
+		multiblocks.remove(multiblock)
+	}
+
 	fun fire() {
 		multiblocks.filter { it.type == WeaponType.TEST_WEAPON.multiblockType }.forEach {
 			WeaponType.TEST_WEAPON.projectile.shoot(
