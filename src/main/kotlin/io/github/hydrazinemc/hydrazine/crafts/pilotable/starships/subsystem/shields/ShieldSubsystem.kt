@@ -39,6 +39,10 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 		shieldHealth = maxShieldHealth
 	}
 
+	override fun onMultiblockUndetected(multiblock: MultiblockInstance) {
+		multiblocks.remove(multiblock)
+	}
+
 	fun damage(loc: Location, dam: Int) {
 		// todo: stuff
 		loc.world.spawnParticle(Particle.REDSTONE, loc, 3, 0.5, 0.5, 0.5, 0.0, DustOptions(Color.BLUE, 3f), true)

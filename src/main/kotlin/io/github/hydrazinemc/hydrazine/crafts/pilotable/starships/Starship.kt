@@ -6,6 +6,7 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control.ShipCo
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.Subsystem
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.shields.ShieldSubsystem
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.WeaponSubsystem
+import io.github.hydrazinemc.hydrazine.multiblocks.events.MultiblockUndetectEvent
 import io.github.hydrazinemc.hydrazine.utils.Vector3
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import org.bukkit.entity.Player
@@ -115,6 +116,7 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 				// todo: maybe find a better way than spamming this for everything we register to
 				// reflection?
 				BlockExplodeEvent.getHandlerList().unregister(this)
+				MultiblockUndetectEvent.handlerList.unregister(this)
 			}
 		}
 	}
@@ -141,6 +143,16 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 			}
 			else {
 				detectedBlocks.remove(BlockLocation(event.block.location))
+			}
+		}
+	}
+
+	@EventHandler
+	fun onMultiblockUndetect(event: MultiblockUndetectEvent) {
+		if (multiblocks.contains(event.multiblock)) {
+			multiblocks.remove(event.multiblock)
+			subsystems.forEach {
+				it.onMultiblockUndetected(event.multiblock)
 			}
 		}
 	}
