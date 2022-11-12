@@ -4,6 +4,10 @@ import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
+import io.github.hydrazinemc.hydrazine.multiblocks.events.MultiblockDetectEvent
+import io.github.hydrazinemc.hydrazine.multiblocks.events.MultiblockLoadEvent
+import io.github.hydrazinemc.hydrazine.multiblocks.events.MultiblockUndetectEvent
+import io.github.hydrazinemc.hydrazine.multiblocks.events.MultiblockUnloadEvent
 import io.github.hydrazinemc.hydrazine.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.extensions.id
@@ -18,8 +22,6 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
-import org.bukkit.event.world.WorldUnloadEvent
-import org.bukkit.inventory.EquipmentSlot
 import java.util.UUID
 
 /**
@@ -62,6 +64,9 @@ object Multiblocks : Listener {
 					invalid.add(multiblock)
 					return@forEach
 				}
+			}
+			invalid.forEach {
+				plugin.server.pluginManager.callEvent(MultiblockUndetectEvent(it))
 			}
 			activeMultiblocks.removeAll(invalid)
 		}
@@ -142,7 +147,9 @@ object Multiblocks : Listener {
 		}
 
 		// Save it
-		activeMultiblocks.add(multiblockData)
+		val detect = MultiblockDetectEvent(multiblockData)
+		plugin.server.pluginManager.callEvent(detect)
+		if (!detect.isCancelled) activeMultiblocks.add(multiblockData)
 	}
 
 	/**
@@ -151,7 +158,11 @@ object Multiblocks : Listener {
 	@EventHandler
 	fun onChunkLoad(event: ChunkLoadEvent) {
 		// if (event.chunk.savedMultiblocks.isNotEmpty()) println("loaded " + event.chunk.savedMultiblocks)
-		activeMultiblocks.addAll(event.chunk.savedMultiblocks)
+		val multiblocks = event.chunk.savedMultiblocks
+		multiblocks.forEach {
+			plugin.server.pluginManager.callEvent(MultiblockLoadEvent(it))
+		}
+		activeMultiblocks.addAll(multiblocks)
 		event.chunk.savedMultiblocks = setOf()
 	}
 
@@ -163,8 +174,11 @@ object Multiblocks : Listener {
 		val chunkMultiblocks = activeMultiblocks.filter { it.origin.chunk == event.chunk }.toSet()
 		// this is probably laggy and should be fixed
 		// if (chunkMultiblocks.isNotEmpty()) println("saving " + chunkMultiblocks)
-		event.chunk.savedMultiblocks = chunkMultiblocks
 		Tasks.sync { // chunks are sometimes handled async
+			chunkMultiblocks.forEach {
+				plugin.server.pluginManager.callEvent(MultiblockUnloadEvent(it))
+			}
+			event.chunk.savedMultiblocks = chunkMultiblocks
 			activeMultiblocks.removeAll(chunkMultiblocks)
 		}
 	}
