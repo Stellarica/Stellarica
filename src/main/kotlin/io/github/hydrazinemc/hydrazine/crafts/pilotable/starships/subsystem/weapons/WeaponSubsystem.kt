@@ -18,7 +18,10 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 
 	fun fire() {
 		multiblocks.filter { it.type == WeaponType.TEST_WEAPON.multiblockType }.forEach {
-			WeaponType.TEST_WEAPON.projectile.shoot(it.origin.also { it.direction = ship.pilot!!.eyeLocation.direction })
+			WeaponType.TEST_WEAPON.projectile.shoot(
+				ship,
+				it.origin.clone().add(0.5, 0.5, 0.5).add(ship.pilot!!.eyeLocation.direction)
+					.also { it.direction = ship.pilot!!.eyeLocation.direction })
 		}
 	}
 }

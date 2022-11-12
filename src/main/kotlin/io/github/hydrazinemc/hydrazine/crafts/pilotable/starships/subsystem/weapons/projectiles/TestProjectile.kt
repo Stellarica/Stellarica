@@ -1,12 +1,11 @@
 package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.projectiles
 
-import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
+import io.github.hydrazinemc.hydrazine.crafts.Craft
 import org.bukkit.Location
-import org.bukkit.Material
 import org.bukkit.Particle
 
 object TestProjectile: Projectile() {
-	override fun shoot(origin: Location) {
+	override fun shoot(shooter: Craft, origin: Location) {
 		cast(origin.clone(), 100, 40, 5,
 			{
 				it.world.spawnParticle(Particle.FLAME, it, 1, 0.0, 0.0, 0.0, 0.0, null, true)
@@ -17,16 +16,11 @@ object TestProjectile: Projectile() {
 				false
 			},
 			{loc, craft ->
-				/*
-				val ship = craft as? Starship ?: return@cast false // todo: bad for npc ships
-				ship.shields.damage(loc, 10)
-
-				ship.shields.shieldHealth > 0
-				 */
-				false
+				craft == shooter
 			},
 			{
-				it.hitBlock?.location?.createExplosion(2f, true, true)
+				if (!shooter.contains(it.hitBlock?.location)) // no ship suicide
+					it.hitBlock?.location?.createExplosion(2f, true, true)
 				true
 			}
 		)
