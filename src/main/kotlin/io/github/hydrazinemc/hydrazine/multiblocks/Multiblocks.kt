@@ -164,7 +164,9 @@ object Multiblocks : Listener {
 		// this is probably laggy and should be fixed
 		// if (chunkMultiblocks.isNotEmpty()) println("saving " + chunkMultiblocks)
 		event.chunk.savedMultiblocks = chunkMultiblocks
-		activeMultiblocks.removeAll(chunkMultiblocks)
+		Tasks.sync { // chunks are sometimes handled async
+			activeMultiblocks.removeAll(chunkMultiblocks)
+		}
 	}
 
 	/**
