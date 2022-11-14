@@ -21,8 +21,8 @@ object ShipControlHotbar : HotbarMenu() {
 		namedItem(Material.ORANGE_STAINED_GLASS, "<gold>Decrease Speed", null),
 		namedItem(Material.RED_STAINED_GLASS, "<red>Full Stop", null),
 		null,
-		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Right", null), // these might be
-		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Left", null),
+		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Left", null), // these might be
+		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Right", null),
 		null,
 		namedItem(Material.FIRE_CHARGE, "<red>Fire", null),
 		namedItem(Material.RED_CONCRETE, "<red>Unpilot Ship", null)
