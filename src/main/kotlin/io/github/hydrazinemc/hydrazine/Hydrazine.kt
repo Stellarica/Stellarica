@@ -20,6 +20,7 @@ import io.github.hydrazinemc.hydrazine.multiblocks.Multiblocks
 import io.github.hydrazinemc.hydrazine.multiblocks.commands.MultiblockCommands
 import io.github.hydrazinemc.hydrazine.projectiles.TemporaryBlasterListener
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
+import io.github.hydrazinemc.hydrazine.utils.extensions.TestDebugCommand
 import mu.KotlinLogging
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.plugin.java.JavaPlugin
@@ -79,6 +80,7 @@ class Hydrazine : JavaPlugin() {
 			StarshipDebugCommands(),
 			CustomItemCommands(),
 			MultiblockCommands(),
+			TestDebugCommand(),
 		).forEach { commandManager.registerCommand(it) }
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
