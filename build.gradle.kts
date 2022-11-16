@@ -18,7 +18,7 @@ dependencies {
 	implementation ("io.github.microutils:kotlin-logging-jvm:3.0.4")
 	implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 	implementation("com.mineinabyss:protocolburrito:0.6.3") // Designed to be installed separately but uh.. :cringe:
-	implementation("com.comphenix.protocol:ProtocolLib:4.8.0") // same here
+	compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0") // same here
 }
 
 tasks{
