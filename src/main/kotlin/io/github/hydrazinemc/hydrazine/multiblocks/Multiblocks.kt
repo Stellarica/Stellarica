@@ -159,11 +159,13 @@ object Multiblocks : Listener {
 	fun onChunkLoad(event: ChunkLoadEvent) {
 		// if (event.chunk.savedMultiblocks.isNotEmpty()) println("loaded " + event.chunk.savedMultiblocks)
 		val multiblocks = event.chunk.savedMultiblocks
-		multiblocks.forEach {
-			plugin.server.pluginManager.callEvent(MultiblockLoadEvent(it))
+		Tasks.sync {
+			multiblocks.forEach {
+				plugin.server.pluginManager.callEvent(MultiblockLoadEvent(it))
+			}
+			activeMultiblocks.addAll(multiblocks)
+			event.chunk.savedMultiblocks = setOf()
 		}
-		activeMultiblocks.addAll(multiblocks)
-		event.chunk.savedMultiblocks = setOf()
 	}
 
 	/**
