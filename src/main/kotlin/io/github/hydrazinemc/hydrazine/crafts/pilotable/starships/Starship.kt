@@ -4,6 +4,7 @@ import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.Pilotable
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.control.ShipControlHotbar
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.Subsystem
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.armor.ArmorSubsystem
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.shields.ShieldSubsystem
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.weapons.WeaponSubsystem
 import io.github.hydrazinemc.hydrazine.multiblocks.events.MultiblockUndetectEvent
@@ -68,8 +69,8 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 
 
 
-	val subsystems: MutableSet<Subsystem>
-		get() = mutableSetOf(weapons, shields, armor)
+	val subsystems: Set<Subsystem>
+		get() = setOf(weapons, shields, armor)
 
 
 	val weapons = WeaponSubsystem(this)
