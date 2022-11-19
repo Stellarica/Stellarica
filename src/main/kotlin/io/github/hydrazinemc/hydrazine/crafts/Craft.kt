@@ -47,7 +47,7 @@ open class Craft(
 	var origin: BlockLocation
 ) {
 
-	protected var detectedBlocks = mutableSetOf<BlockLocation>()
+	var detectedBlocks = mutableSetOf<BlockLocation>()
 	var multiblocks = mutableSetOf<MultiblockInstance>()
 	private var chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
@@ -231,6 +231,7 @@ open class Craft(
 	 * Move all passengers by offset.
 	 * Uses bukkit to teleport entities, and NMS to move players.
 	 */
+	@Suppress("UnstableApiUsage")
 	fun movePassengers(offset: (Vector3) -> Vector3, rotation: RotationAmount = RotationAmount.NONE) {
 		passengers.forEach {
 			// TODO: FIX
@@ -335,6 +336,7 @@ open class Craft(
 			chunkCache.clear()
 
 			val newDetectedBlocks = mutableSetOf<BlockLocation>()
+			val lostBlocks = mutableSetOf<BlockLocation>()
 			val blocksToSet = mutableMapOf<BlockLocation, BlockData>()
 			val airData = Bukkit.createBlockData(Material.AIR)
 			val entities = mutableMapOf<BlockLocation, BlockLocation>()
@@ -343,6 +345,9 @@ open class Craft(
 				val currentBlockData = getCachedBlockData(currentBlockLocation)
 				val targetBlockLocation =
 					modifier(Vector3(currentBlockLocation)).asBlockLocation.apply { this.world = world }
+
+				if (currentBlockData.material == Material.AIR) // is this the best way to compare it?
+					lostBlocks.add(currentBlockLocation)
 
 				blocksToSet.putIfAbsent(currentBlockLocation, airData)
 
@@ -361,12 +366,15 @@ open class Craft(
 			}
 
 			if (detectedBlocks.size != newDetectedBlocks.size) {
+				@Suppress("UnstableApiUsage")
 				messagePassengers(
 					"<red>Lost <bold>${detectedBlocks.size - newDetectedBlocks.size}</bold> " +
 							"blocks while queuing $name!"
 				)
 				messagePassengers("<bold><gold>This is a bug, please report it.")
 			}
+			assert(detectedBlocks.size - newDetectedBlocks.size == lostBlocks.size) { "Lost blocks size does not match!" }
+
 			chunkCache.clear()
 
 			// On the next server tick, check for collisions and move the ship
