@@ -20,7 +20,7 @@ object TestProjectile: Projectile() {
 			},
 			{
 				if (!shooter.contains(it.hitBlock?.location)) // no ship suicide
-					it.hitBlock?.location?.createExplosion(2f, true, true)
+					it.hitBlock?.location?.createExplosion(2f, false, true)
 				true
 			}
 		)
