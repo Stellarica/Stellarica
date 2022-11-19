@@ -69,11 +69,12 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 
 
 	val subsystems: MutableSet<Subsystem>
-		get() = mutableSetOf(weapons, shields)
+		get() = mutableSetOf(weapons, shields, armor)
 
 
 	val weapons = WeaponSubsystem(this)
 	val shields = ShieldSubsystem(this)
+	val armor = ArmorSubsystem(this)
 
 
 	/**
