@@ -8,6 +8,7 @@ import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.StarshipMover
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.commands.StarshipCommands
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.commands.StarshipDebugCommands
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.listeners.InterfaceListener
+import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.armor.ArmorValues
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlockListener
 import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocks
 import io.github.hydrazinemc.hydrazine.customblocks.MushroomEventListener
@@ -69,6 +70,7 @@ class Hydrazine : JavaPlugin() {
 			PowerItemBreakListener(),
 			ItemEnchantListener(),
 			Multiblocks,
+			ArmorValues,
 			TemporaryBlasterListener()
 		).forEach { getPluginManager().registerEvents(it, this) }
 

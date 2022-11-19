@@ -123,6 +123,9 @@ timeOperations: true
 # Detection Limit
 detectionLimit: 500000
 
+# Ship armor values for blocks
+armorValues:
+  STONE_BRICKS: 2
 
 # These blocks can not be detected at all.
 forcedUndetectable:
