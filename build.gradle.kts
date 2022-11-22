@@ -1,7 +1,7 @@
 plugins {
 	id("xyz.jpenilla.run-paper") version "2.0.0"
 	id("org.jetbrains.kotlin.jvm") version "1.7.21"
-	id("io.papermc.paperweight.userdev") version "1.3.9"
+	id("io.papermc.paperweight.userdev") version "1.3.11"
 	id("com.github.johnrengelman.shadow") version "7.1.2"
 	id("io.gitlab.arturbosch.detekt").version("1.22.0-RC2")
 }
