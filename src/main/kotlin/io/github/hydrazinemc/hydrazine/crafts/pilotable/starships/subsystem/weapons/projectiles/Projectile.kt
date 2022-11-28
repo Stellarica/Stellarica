@@ -2,10 +2,9 @@ package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.wea
 
 import io.github.hydrazinemc.hydrazine.Hydrazine
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.pilotedCrafts
-import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.crafts.Craft
 import org.bukkit.FluidCollisionMode
-import org.bukkit.Location;
+import org.bukkit.Location
 import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.util.RayTraceResult
 
@@ -59,12 +58,14 @@ abstract class Projectile {
 	) {
 		/** the current position */
 		val position = origin.clone()
+
 		/** the distance, in blocks, to go each tick*/
 		val step = range / time.toDouble()
+
 		/** the number of ticks this has been running*/
 		var count = 0
 
-		class Runnable(): BukkitRunnable() {
+		class Runnable() : BukkitRunnable() {
 			// gets run every tick
 			override fun run() {
 				// ray trace as far as it moves this tick (step blocks)
@@ -84,7 +85,8 @@ abstract class Projectile {
 					// first, check if we hit a starship
 					// TODO: check all ships, not just pilotable ones (need to hit npc ships)
 					// TODO: use a better filter than distancequared
-					pilotedCrafts.filter{it.origin.world == position.world}.filter {it.origin.asLocation.distanceSquared(position) < 1000}.forEach {
+					pilotedCrafts.filter { it.origin.world == position.world }
+						.filter { it.origin.asLocation.distanceSquared(position) < 1000 }.forEach {
 						if (it.contains(hitLoc)) {
 							if (onHitCraft(hitLoc, it)) {
 								this.cancel()
@@ -108,7 +110,7 @@ abstract class Projectile {
 						return
 					}
 
-					locStep.add(origin.direction.clone().multiply(1/density.toFloat()))
+					locStep.add(origin.direction.clone().multiply(1 / density.toFloat()))
 				}
 
 				// now move the raytrace position forward in preparation for the next tick

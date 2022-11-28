@@ -4,7 +4,7 @@ import io.github.hydrazinemc.hydrazine.crafts.Craft
 import org.bukkit.Location
 import org.bukkit.Particle
 
-object TestProjectile: Projectile() {
+object TestProjectile : Projectile() {
 	override fun shoot(shooter: Craft, origin: Location) {
 		cast(origin.clone(), 100, 40, 5,
 			{
@@ -15,7 +15,7 @@ object TestProjectile: Projectile() {
 				it.world.spawnParticle(Particle.SOUL_FIRE_FLAME, it, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 				false
 			},
-			{loc, craft ->
+			{ loc, craft ->
 				craft == shooter
 			},
 			{

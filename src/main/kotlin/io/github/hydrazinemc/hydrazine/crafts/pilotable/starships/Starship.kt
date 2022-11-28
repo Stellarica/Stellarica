@@ -68,7 +68,6 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 		private set
 
 
-
 	val subsystems: Set<Subsystem>
 		get() = setOf(weapons, shields, armor)
 
@@ -142,8 +141,7 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 			if (shields.shieldHealth > 0) {
 				event.isCancelled = true
 				shields.damage(event.block.location, event.yield.roundToInt())
-			}
-			else {
+			} else {
 				detectedBlocks.remove(BlockLocation(event.block.location))
 			}
 		}

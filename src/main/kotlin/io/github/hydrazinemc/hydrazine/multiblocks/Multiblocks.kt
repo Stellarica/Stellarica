@@ -1,6 +1,5 @@
 package io.github.hydrazinemc.hydrazine.multiblocks
 
-import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.klogger
 import io.github.hydrazinemc.hydrazine.Hydrazine.Companion.plugin
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
@@ -135,7 +134,7 @@ object Multiblocks : Listener {
 
 		// Check if the multiblock is already in the list
 		// could probably filter this more to reduce the number of checks
-		activeMultiblocks.filter{ it.type == multiblockData.type }.forEach { existing ->
+		activeMultiblocks.filter { it.type == multiblockData.type }.forEach { existing ->
 			// Cant do equality check because the UUID will be different
 			if (
 				multiblockData.origin == existing.origin &&
@@ -244,14 +243,16 @@ object Multiblocks : Listener {
 						val location = OriginRelative(relativeX, relativeY, relativeZ)
 
 						// Add the block to the multiblock configuration
-						material?.let {blocks[location] = material}
+						material?.let { blocks[location] = material }
 					}
 				}
 			}
-			newMultiblocks.add(MultiblockType(
-				multiblockName,
-				blocks
-			))
+			newMultiblocks.add(
+				MultiblockType(
+					multiblockName,
+					blocks
+				)
+			)
 		}
 		klogger.info {
 			"Loaded ${newMultiblocks.size} multiblock types:\n   " +
@@ -263,7 +264,6 @@ object Multiblocks : Listener {
 		}
 		types = newMultiblocks
 	}
-
 
 
 	/**

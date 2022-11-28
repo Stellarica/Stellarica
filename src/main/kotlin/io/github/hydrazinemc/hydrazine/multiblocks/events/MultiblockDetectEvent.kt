@@ -5,7 +5,7 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class MultiblockDetectEvent(val multiblock: MultiblockInstance): Event(), Cancellable {
+class MultiblockDetectEvent(val multiblock: MultiblockInstance) : Event(), Cancellable {
 
 	private var isCancelled: Boolean = false
 	override fun setCancelled(cancel: Boolean) {

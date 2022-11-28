@@ -6,7 +6,7 @@ import org.bukkit.entity.Player
 import org.bukkit.scoreboard.DisplaySlot
 
 
-fun Player.setScoreboardContents(title: String, lines: List<String>){
+fun Player.setScoreboardContents(title: String, lines: List<String>) {
 	@Suppress("DEPRECATION") // uh, should probably fix this
 	val objective = this.scoreboard.getObjective("hud") ?: this.scoreboard.registerNewObjective(
 		"hud",

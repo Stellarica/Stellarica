@@ -4,7 +4,7 @@ import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockInstance
 import org.bukkit.event.Event
 import org.bukkit.event.HandlerList
 
-class MultiblockUndetectEvent(val multiblock: MultiblockInstance): Event() {
+class MultiblockUndetectEvent(val multiblock: MultiblockInstance) : Event() {
 	override fun getHandlers(): HandlerList {
 		return handlerList
 	}

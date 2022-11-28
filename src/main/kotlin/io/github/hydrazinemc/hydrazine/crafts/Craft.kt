@@ -130,7 +130,13 @@ open class Craft(
 	 */
 	fun contains(block: BlockLocation?): Boolean {
 		block ?: return false
-		return detectedBlocks.contains(block) || bounds.contains((block - origin).let {OriginRelative(it.x, it.y, it.z)})
+		return detectedBlocks.contains(block) || bounds.contains((block - origin).let {
+			OriginRelative(
+				it.x,
+				it.y,
+				it.z
+			)
+		})
 	}
 
 	/**
@@ -143,12 +149,13 @@ open class Craft(
 
 
 	fun calculateHitbox() {
-		detectedBlocks.map {pos -> (pos - origin).let {OriginRelative(it.x, it.y, it.z)}}.sortedBy { -it.y }.forEach {block ->
-			val max = bounds.filter { it.x == block.x && it.z == block.z }.maxByOrNull { it.y }?.y ?: block.y
-			for (y in block.y..max) {
-				bounds.add(OriginRelative(block.x, y, block.z))
+		detectedBlocks.map { pos -> (pos - origin).let { OriginRelative(it.x, it.y, it.z) } }.sortedBy { -it.y }
+			.forEach { block ->
+				val max = bounds.filter { it.x == block.x && it.z == block.z }.maxByOrNull { it.y }?.y ?: block.y
+				for (y in block.y..max) {
+					bounds.add(OriginRelative(block.x, y, block.z))
+				}
 			}
-		}
 	}
 
 
@@ -210,10 +217,12 @@ open class Craft(
 				"<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. " +
 						"(${detectedBlocks.size / time.coerceAtLeast(1)} blocks/ms)"
 			)
-			messagePilot("<gray>Calculated Hitbox in ${measureTimeMillis { 
-				calculateHitbox()
-			}
-			}ms. (${bounds.size} blocks)")
+			messagePilot(
+				"<gray>Calculated Hitbox in ${
+					measureTimeMillis {
+						calculateHitbox()
+					}
+				}ms. (${bounds.size} blocks)")
 
 			initialBlockCount = detectedBlocks.size
 
@@ -420,7 +429,7 @@ open class Craft(
 							(Bukkit.getServer().viewDistance * 16.0).pow(2)
 						)
 						// if the player can see the craft, send the change
-						player.sendMultiBlockChange(blocksToSet.mapKeys { it.key.asLocation }, true)
+							player.sendMultiBlockChange(blocksToSet.mapKeys { it.key.asLocation }, true)
 					}
 
 					// TODO: update heightmaps
