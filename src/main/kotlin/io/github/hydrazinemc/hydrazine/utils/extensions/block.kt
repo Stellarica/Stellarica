@@ -15,7 +15,8 @@ import org.bukkit.entity.Player
 fun Block.setVisualDurability(value: Int) {
 	val blockAnim = PacketContainer(PacketType.Play.Server.BLOCK_BREAK_ANIMATION)
 	(blockAnim.handle as ClientboundBlockDestructionPacket).wrap().apply {
-		id = (Math.random() * 1000).toInt()
+		@Suppress("DEPRECATION")
+		id = this@setVisualDurability.blockKey.toInt() // not perfect, good enough though
 		this.pos = this@setVisualDurability.blockLocation.asBlockPos
 		progress = value
 	}
