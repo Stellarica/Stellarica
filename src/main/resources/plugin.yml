@@ -31,8 +31,8 @@ permissions:
     description: Lets users get the current movement data
     default: op
   hydrazine.starship.debug.hitbox:
-      description: Lets users view the hitbox of a ship
-      default: op
+    description: Lets users view the hitbox of a ship
+    default: op
   hydrazine.starship.debug.contains:
     description: Lets users check whether a block is "inside" a ship
     default: op

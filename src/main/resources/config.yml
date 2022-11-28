@@ -98,7 +98,7 @@ multiblocks:
   test_weapon:
     layers:
       0:
-       -  "sig"
+        - "sig"
     key:
       s: "sponge"
       i: "iron_block"

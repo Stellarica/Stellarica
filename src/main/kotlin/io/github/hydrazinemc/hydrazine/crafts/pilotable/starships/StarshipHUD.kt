@@ -27,14 +27,16 @@ object StarshipHUD {
 
 	private fun display(ship: Starship) {
 		ship.passengers.forEach {
-			(it as? Player)?.setScoreboardContents("Starship", listOf(
-				"Block Count: ${ship.blockCount}",
-				"Origin: ${ship.origin.formattedString}",
-				if (ship.shields.maxShieldHealth != 0)
-					"Shields: ${getShieldBar(ship)}" // - ${ship.shields.shieldHealth}/${ship.shields.maxShieldHealth}"
-				else "<red>No Shields",
-				"Hull: ${(ship.hullIntegrityPercent * 100).roundToInt()}%"
-			))
+			(it as? Player)?.setScoreboardContents(
+				"Starship", listOf(
+					"Block Count: ${ship.blockCount}",
+					"Origin: ${ship.origin.formattedString}",
+					if (ship.shields.maxShieldHealth != 0)
+						"Shields: ${getShieldBar(ship)}" // - ${ship.shields.shieldHealth}/${ship.shields.maxShieldHealth}"
+					else "<red>No Shields",
+					"Hull: ${(ship.hullIntegrityPercent * 100).roundToInt()}%"
+				)
+			)
 		}
 	}
 

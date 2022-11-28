@@ -3,7 +3,6 @@ package io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.shi
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.Starship
 import io.github.hydrazinemc.hydrazine.crafts.pilotable.starships.subsystem.Subsystem
 import io.github.hydrazinemc.hydrazine.multiblocks.MultiblockInstance
-import net.minecraft.core.particles.DustColorTransitionOptions
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
@@ -32,7 +31,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 
 	override fun onShipPiloted() {
 		ship.multiblocks.forEach { multiblock ->
-			if (multiblock.type in ShieldType.values().map{it.multiblockType}) {
+			if (multiblock.type in ShieldType.values().map { it.multiblockType }) {
 				multiblocks.add(multiblock)
 			}
 		}

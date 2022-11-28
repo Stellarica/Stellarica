@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.spigotmc.SpigotConfig.config
 
-object ArmorValues: Listener {
+object ArmorValues : Listener {
 	private var values = mapOf<Material, Float>()
 
 	operator fun get(type: Material): Float = values[type] ?: 0f

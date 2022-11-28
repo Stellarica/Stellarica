@@ -1,6 +1,5 @@
 package io.github.hydrazinemc.hydrazine.projectiles
 
-import com.destroystokyo.paper.ParticleBuilder
 import io.github.hydrazinemc.hydrazine.customitems.power
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.extensions.id
@@ -28,7 +27,7 @@ class TemporaryBlasterListener : Listener {
 		Tasks.syncRepeat(1, 1) {
 			Bukkit.getServer().onlinePlayers.forEach { player ->
 				if (!drills.contains(player.uniqueId)) return@forEach
-				if(player.inventory.itemInMainHand.id != "laser_drill") return@forEach
+				if (player.inventory.itemInMainHand.id != "laser_drill") return@forEach
 
 				// note that this doesn't actually check if there's enough
 				player.inventory.itemInMainHand.power = player.inventory.itemInMainHand.power?.minus(1)

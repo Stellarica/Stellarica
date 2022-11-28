@@ -15,13 +15,13 @@ repositories {
 
 dependencies {
 	paperDevBundle("1.19.2-R0.1-SNAPSHOT")
-	implementation ("io.github.microutils:kotlin-logging-jvm:3.0.4")
+	implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
 	implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
 	implementation("com.mineinabyss:protocolburrito:0.6.3") // Designed to be installed separately but uh.. :cringe:
 	compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0") // same here
 }
 
-tasks{
+tasks {
 	compileJava {
 		options.compilerArgs.add("-parameters")
 		options.isFork = true
