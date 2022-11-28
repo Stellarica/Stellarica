@@ -19,7 +19,6 @@ import io.github.hydrazinemc.hydrazine.customitems.listeners.PowerItemBreakListe
 import io.github.hydrazinemc.hydrazine.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.multiblocks.Multiblocks
 import io.github.hydrazinemc.hydrazine.multiblocks.commands.MultiblockCommands
-import io.github.hydrazinemc.hydrazine.projectiles.TemporaryBlasterListener
 import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.extensions.TestDebugCommand
 import mu.KotlinLogging
@@ -71,7 +70,6 @@ class Hydrazine : JavaPlugin() {
 			ItemEnchantListener(),
 			Multiblocks,
 			ArmorValues,
-			TemporaryBlasterListener()
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		// Register commands here
