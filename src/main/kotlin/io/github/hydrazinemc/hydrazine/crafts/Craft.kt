@@ -9,6 +9,7 @@ import io.github.hydrazinemc.hydrazine.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.utils.Tasks
 import io.github.hydrazinemc.hydrazine.utils.Vector3
+import io.github.hydrazinemc.hydrazine.utils.extensions.sendRichMessage
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
 import io.github.hydrazinemc.hydrazine.utils.locations.ChunkLocation
 import io.github.hydrazinemc.hydrazine.utils.nms.removeBlockEntity
@@ -20,6 +21,8 @@ import io.github.hydrazinemc.hydrazine.utils.rotation.rotate
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateBlockFace
 import io.github.hydrazinemc.hydrazine.utils.rotation.rotateCoordinates
 import io.papermc.paper.entity.RelativeTeleportFlag
+import net.kyori.adventure.audience.Audience
+import net.kyori.adventure.audience.ForwardingAudience
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
@@ -45,7 +48,7 @@ open class Craft(
 	 * the craft rotates around
 	 */
 	var origin: BlockLocation
-) {
+) : ForwardingAudience {
 
 	var detectedBlocks = mutableSetOf<BlockLocation>()
 	var multiblocks = mutableSetOf<MultiblockInstance>()
@@ -113,16 +116,6 @@ open class Craft(
 		if (this is Pilotable) {
 			pilot?.sendRichMessage(message) ?: owner?.sendRichMessage(message)
 		}
-	}
-
-	/**
-	 * Message all passengers of this craft.
-	 * MiniMessage formatting is allowed
-	 *
-	 * @see messagePilot
-	 */
-	fun messagePassengers(message: String) {
-		passengers.forEach { it.sendRichMessage(message) }
 	}
 
 	/**
@@ -376,11 +369,11 @@ open class Craft(
 
 			if (detectedBlocks.size != newDetectedBlocks.size) {
 				@Suppress("UnstableApiUsage")
-				messagePassengers(
+				sendRichMessage(
 					"<red>Lost <bold>${detectedBlocks.size - newDetectedBlocks.size}</bold> " +
 							"blocks while queuing $name!"
 				)
-				messagePassengers("<bold><gold>This is a bug, please report it.")
+				sendRichMessage("<bold><gold>This is a bug, please report it.")
 			}
 			assert(detectedBlocks.size - newDetectedBlocks.size == lostBlocks.size) { "Lost blocks size does not match!" }
 
@@ -476,4 +469,6 @@ open class Craft(
 			block.z - (chunkCoord.z shl 4)
 		)
 	}
+
+	override fun audiences() = passengers
 }

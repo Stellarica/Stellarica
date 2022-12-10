@@ -5,6 +5,7 @@ import io.github.hydrazinemc.hydrazine.customblocks.CustomBlocks
 import io.github.hydrazinemc.hydrazine.customitems.CustomItem
 import io.github.hydrazinemc.hydrazine.customitems.CustomItems
 import io.github.hydrazinemc.hydrazine.utils.locations.BlockLocation
+import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.NamespacedKey
@@ -22,6 +23,8 @@ val String.asMiniMessage: Component get() = MiniMessage.miniMessage().deserializ
  * The location of this block
  */
 val Block.blockLocation: BlockLocation get() = BlockLocation(this.location)
+
+fun Audience.sendRichMessage(message: String) = this.sendMessage(message.asMiniMessage)
 
 /**
  * The id (either CustomBlock or Material) of the block
