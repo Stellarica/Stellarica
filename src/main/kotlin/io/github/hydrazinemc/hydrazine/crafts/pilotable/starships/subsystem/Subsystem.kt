@@ -8,3 +8,5 @@ open class Subsystem(val ship: Starship) {
 	open fun onShipUnpiloted() {}
 	open fun onMultiblockUndetected(multiblock: MultiblockInstance) {}
 }
+
+// todo: clean up weak refrences for subsystem multiblocks

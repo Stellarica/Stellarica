@@ -7,9 +7,10 @@ import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
+import java.lang.ref.WeakReference
 
 class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
-	val multiblocks = mutableSetOf<MultiblockInstance>()
+	val multiblocks = mutableSetOf<WeakReference<MultiblockInstance>>()
 
 	var shieldHealth = 0
 		private set(value) {
@@ -21,7 +22,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 			var h = 0
 			multiblocks.forEach { multiblock ->
 				ShieldType.values().firstOrNull {
-					it.multiblockType == multiblock.type
+					it.multiblockType == multiblock.get()?.type
 				}?.let {
 					h += it.maxHealth
 				}
@@ -32,14 +33,10 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 	override fun onShipPiloted() {
 		ship.multiblocks.forEach { multiblock ->
 			if (multiblock.type in ShieldType.values().map { it.multiblockType }) {
-				multiblocks.add(multiblock)
+				multiblocks.add(WeakReference(multiblock))
 			}
 		}
 		shieldHealth = maxShieldHealth
-	}
-
-	override fun onMultiblockUndetected(multiblock: MultiblockInstance) {
-		multiblocks.remove(multiblock)
 	}
 
 	fun damage(loc: Location, dam: Int) {
