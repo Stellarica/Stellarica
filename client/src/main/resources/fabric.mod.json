@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "hydrazine",
+  "version": "$version",
+  "name": "Hydrazine",
+  "description": "I am very good at names!",
+  "authors": [
+    {
+      "name": "trainb0y",
+      "contact": {
+        "email": "trainb0ydev@gmail.com",
+        "discord": "trainb0y#7688"
+      }
+    }
+  ],
+  "contact": {
+    "issues": "https://github.com/hydrazinemc/hydrazine/issues",
+    "sources": "https://github.com/hydrazinemc/hydrazine"
+  },
+  "license": "MIT",
+  "icon": "assets/hydrazine/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "io.github.hydrazinemc.hydrazine.client.HydrazineClient"
+      }
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.14.10",
+    "fabric-language-kotlin": ">=1.8.6+kotlin.1.7.21"
+  },
+  "recommends": {
+    "modmenu": ">=5.0.0",
+    "minecraft": ">=1.19.3"
+  }
+}
