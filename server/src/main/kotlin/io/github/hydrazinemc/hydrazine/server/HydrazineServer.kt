@@ -4,7 +4,6 @@ import co.aikar.commands.PaperCommandManager
 import io.github.hydrazinemc.hydrazine.server.commands.ConfigCommand
 import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.ControlQueueRunnable
 import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.Pilotable
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.StarshipMover
 import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.commands.StarshipCommands
 import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.commands.StarshipDebugCommands
 import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.listeners.InterfaceListener
@@ -92,7 +91,6 @@ class HydrazineServer : JavaPlugin() {
 
 		// Start the bukkit tasks
 		ControlQueueRunnable.runTaskTimer(plugin, 1, 1)
-		StarshipMover.runTaskTimer(plugin, 1, 1)
 	}
 
 	override fun reloadConfig() {
