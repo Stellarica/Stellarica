@@ -8,26 +8,21 @@ import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsyst
 import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.shields.ShieldSubsystem
 import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.weapons.WeaponSubsystem
 import io.github.hydrazinemc.hydrazine.server.multiblocks.events.MultiblockUndetectEvent
+import io.github.hydrazinemc.hydrazine.server.utils.Tasks
 import io.github.hydrazinemc.hydrazine.server.utils.Vector3
 import io.github.hydrazinemc.hydrazine.server.utils.locations.BlockLocation
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockExplodeEvent
+import org.bukkit.scheduler.BukkitRunnable
+import org.bukkit.scheduler.BukkitTask
 import kotlin.math.roundToInt
 
 /**
  * Base Starship class
  */
 class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
-
-	/**
-	 * The number of ticks since this ship moved.
-	 * (the number of times [move] was called since moving)
-	 */
-	var ticksSinceMove = 0
-		private set
-
 
 	val subsystems: Set<Subsystem>
 		get() = setOf(weapons, shields, armor)
@@ -37,6 +32,7 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 	val shields = ShieldSubsystem(this)
 	val armor = ArmorSubsystem(this)
 
+	lateinit var movementTask: BukkitTask
 
 	override fun deactivateCraft(): Boolean {
 		val p = pilot // it becomes null after this
@@ -44,7 +40,7 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 		subsystems.forEach { it.onShipUnpiloted() }
 		return super.deactivateCraft().also {
 			if (it) {
-
+				movementTask.cancel()
 				// close the ship HUD. this is really dumb
 				// todo: fix
 				this.passengers = pass
@@ -68,10 +64,16 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 				ShipControlHotbar.openMenu(pilot)
 				StarshipHUD.open(this)
 				subsystems.forEach { it.onShipPiloted() }
+				movementTask = Tasks.syncRepeat(1, 1) {
+					move()
+				}
 			}
 		}
 	}
 
+	fun move() {
+
+	}
 
 	@EventHandler
 	fun onBlockExplode(event: BlockExplodeEvent) {
