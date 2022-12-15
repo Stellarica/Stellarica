@@ -6,7 +6,7 @@ import org.bukkit.entity.Player
 import kotlin.math.roundToInt
 
 object StarshipHUD {
-	private val ships = mutableSetOf<Starship>()
+	private val ships = mutableSetOf<Starship>() // todo: weakref?
 
 	init {
 		Tasks.syncRepeat(1, 1) {
