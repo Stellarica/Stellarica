@@ -7,7 +7,7 @@ import io.github.hydrazinemc.hydrazine.server.multiblocks.events.MultiblockDetec
 import io.github.hydrazinemc.hydrazine.server.multiblocks.events.MultiblockLoadEvent
 import io.github.hydrazinemc.hydrazine.server.multiblocks.events.MultiblockUndetectEvent
 import io.github.hydrazinemc.hydrazine.server.multiblocks.events.MultiblockUnloadEvent
-import io.github.hydrazinemc.hydrazine.server.utils.OriginRelative
+import io.github.hydrazinemc.hydrazine.common.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.server.utils.Tasks
 import io.github.hydrazinemc.hydrazine.server.utils.extensions.id
 import io.github.hydrazinemc.hydrazine.server.utils.locations.BlockLocation

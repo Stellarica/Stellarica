@@ -6,7 +6,7 @@ import io.github.hydrazinemc.hydrazine.server.multiblocks.MultiblockInstance
 import io.github.hydrazinemc.hydrazine.server.multiblocks.Multiblocks
 import io.github.hydrazinemc.hydrazine.server.utils.AlreadyMovingException
 import io.github.hydrazinemc.hydrazine.server.utils.ConfigurableValues
-import io.github.hydrazinemc.hydrazine.server.utils.OriginRelative
+import io.github.hydrazinemc.hydrazine.common.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.server.utils.Tasks
 import io.github.hydrazinemc.hydrazine.server.utils.Vector3
 import io.github.hydrazinemc.hydrazine.server.utils.extensions.sendRichMessage
@@ -16,7 +16,7 @@ import io.github.hydrazinemc.hydrazine.server.utils.nms.removeBlockEntity
 import io.github.hydrazinemc.hydrazine.server.utils.nms.setBlockEntity
 import io.github.hydrazinemc.hydrazine.server.utils.nms.setBlockFast
 import io.github.hydrazinemc.hydrazine.server.utils.nms.tileEntities
-import io.github.hydrazinemc.hydrazine.server.utils.rotation.RotationAmount
+import io.github.hydrazinemc.hydrazine.common.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.server.utils.rotation.rotate
 import io.github.hydrazinemc.hydrazine.server.utils.rotation.rotateBlockFace
 import io.github.hydrazinemc.hydrazine.server.utils.rotation.rotateCoordinates

@@ -6,7 +6,7 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.server.multiblocks.Multiblocks
-import io.github.hydrazinemc.hydrazine.server.utils.OriginRelative
+import io.github.hydrazinemc.hydrazine.common.utils.OriginRelative
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 

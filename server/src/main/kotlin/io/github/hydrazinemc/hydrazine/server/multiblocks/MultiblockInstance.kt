@@ -1,6 +1,6 @@
 package io.github.hydrazinemc.hydrazine.server.multiblocks
 
-import io.github.hydrazinemc.hydrazine.server.utils.OriginRelative
+import io.github.hydrazinemc.hydrazine.common.utils.OriginRelative
 import io.github.hydrazinemc.hydrazine.server.utils.locations.BlockLocation
 import org.bukkit.Location
 import org.bukkit.block.BlockFace

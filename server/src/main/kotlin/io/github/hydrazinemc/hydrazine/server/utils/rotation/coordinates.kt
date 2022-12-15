@@ -1,5 +1,6 @@
 package io.github.hydrazinemc.hydrazine.server.utils.rotation
 
+import io.github.hydrazinemc.hydrazine.common.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.server.utils.Vector3
 import kotlin.math.cos
 import kotlin.math.sin

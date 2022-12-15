@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.server.utils.rotation
+package io.github.hydrazinemc.hydrazine.common.utils.rotation
 
 /**
  * Represents an amount of rotation
