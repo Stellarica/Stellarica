@@ -17,8 +17,9 @@ class FabricNetworkHandler {
 
 	init {
 		Channel.values().forEach { channel ->
-			ClientPlayNetworking.registerGlobalReceiver(channel.fabric) { _, _, buf, _ ->
+			ClientPlayNetworking.registerGlobalReceiver(channel.fabric) { client, _, buf, _ ->
 				listeners.filter { it.first == channel }.forEach { it.second(buf.readByteArray()) }
+				println("hey you yes you")
 			}
 		}
 	}

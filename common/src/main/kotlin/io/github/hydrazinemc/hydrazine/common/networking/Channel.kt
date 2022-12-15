@@ -6,9 +6,9 @@ enum class Channel {
 	HANDSHAKE;
 
 	val fabric by lazy {
-		ResourceLocation("tomfoolery", name.lowercase())
+		ResourceLocation("hydrazine", name.lowercase())
 	}
 	val bukkit by lazy {
-		"tomfoolery:${name.lowercase()}"
+		"hydrazine:${name.lowercase()}"
 	}
 }
