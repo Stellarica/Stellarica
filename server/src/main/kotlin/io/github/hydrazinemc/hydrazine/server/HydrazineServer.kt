@@ -18,10 +18,13 @@ import io.github.hydrazinemc.hydrazine.server.customitems.listeners.PowerItemBre
 import io.github.hydrazinemc.hydrazine.server.events.HydrazineConfigReloadEvent
 import io.github.hydrazinemc.hydrazine.server.multiblocks.Multiblocks
 import io.github.hydrazinemc.hydrazine.server.multiblocks.commands.MultiblockCommands
+import io.github.hydrazinemc.hydrazine.server.networking.BukkitNetworkHandler
+import io.github.hydrazinemc.hydrazine.server.networking.Handshake
 import io.github.hydrazinemc.hydrazine.server.utils.ConfigurableValues
 import io.github.hydrazinemc.hydrazine.server.utils.extensions.TestDebugCommand
 import mu.KotlinLogging
 import org.bukkit.Bukkit.getPluginManager
+import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
 
@@ -54,11 +57,15 @@ class HydrazineServer : JavaPlugin() {
 	@Deprecated("Use kotlin-logging instead", ReplaceWith("klogger"))
 	override fun getLogger(): Logger = super.getLogger()
 
+	lateinit var networkHandler: BukkitNetworkHandler
+	val moddedPlayers = mutableSetOf<Player>()
 
 	override fun onEnable() {
 		// Plugin init
 
 		plugin = this
+
+		networkHandler = BukkitNetworkHandler()
 
 		// Register listeners here
 		arrayOf(
@@ -69,6 +76,7 @@ class HydrazineServer : JavaPlugin() {
 			ItemEnchantListener(),
 			Multiblocks,
 			ArmorValues,
+			Handshake()
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		// Register commands here
