@@ -1,54 +1,30 @@
 plugins {
-	id("xyz.jpenilla.run-paper") version "2.0.1"
-	id("org.jetbrains.kotlin.jvm") version "1.7.22"
-	id("io.papermc.paperweight.userdev") version "1.4.0"
-	id("com.github.johnrengelman.shadow") version "7.1.2"
-	id("io.gitlab.arturbosch.detekt").version("1.22.0-RC2")
+	java
+	id("io.gitlab.arturbosch.detekt")
 }
 
 repositories {
 	mavenCentral()
-	maven("https://repo.mineinabyss.com/releases") // ProtocolBurrito
-	maven("https://repo.aikar.co/content/groups/aikar/") // acf-paper
-	maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
 }
-
-dependencies {
-	paperDevBundle("1.19.2-R0.1-SNAPSHOT")
-	implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
-	implementation("co.aikar:acf-paper:0.5.1-SNAPSHOT")
-	implementation("com.mineinabyss:protocolburrito:0.6.3") // Designed to be installed separately but uh.. :cringe:
-	compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0") // same here
+allprojects {
+	repositories {
+		mavenCentral()
+		maven(uri("https://jitpack.io"))
+	}
 }
-
 tasks {
-	compileJava {
-		options.compilerArgs.add("-parameters")
-		options.isFork = true
-	}
-
 	build {
-		dependsOn(reobfJar)
+		doLast {
+			copy {
+				from("client/build/libs/client-${project.property("mod_version")}.jar")
+				into("build/")
+			}
+			copy {
+				from("server/build/libs/server-${project.property("mod_version")}.jar")
+				into("build/")
+			}
+		}
 	}
-
-	reobfJar {
-		outputJar.set(file(rootProject.projectDir.absolutePath + "/build/Hydrazine.jar"))
-	}
-
-	shadowJar {
-		relocate("co.aikar.commands", "io.github.hydrazinemc.hydrazine.libraries.co.aikar.commands")
-		relocate("co.aikar.locales", "io.github.hydrazinemc.hydrazine.libraries.co.aikar.locales")
-	}
-
-	compileKotlin {
-		kotlinOptions.javaParameters = true
-		kotlinOptions.jvmTarget = "17"
-	}
-
-	runServer {
-		minecraftVersion("1.19.2")
-	}
-
 	detekt {
 		config = files("config/detekt/detekt.yml")
 		buildUponDefaultConfig = true
@@ -65,5 +41,3 @@ tasks {
 		}
 	}
 }
-
-java { toolchain.languageVersion.set(JavaLanguageVersion.of(17)) }
