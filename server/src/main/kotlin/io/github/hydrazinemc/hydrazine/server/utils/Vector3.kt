@@ -1,7 +1,7 @@
 package io.github.hydrazinemc.hydrazine.server.utils
 
 import io.github.hydrazinemc.hydrazine.server.utils.locations.BlockLocation
-import io.github.hydrazinemc.hydrazine.server.utils.rotation.RotationAmount
+import io.github.hydrazinemc.hydrazine.common.utils.rotation.RotationAmount
 import io.github.hydrazinemc.hydrazine.server.utils.rotation.rotateCoordinates
 import org.bukkit.Location
 import org.bukkit.util.Vector
@@ -102,7 +102,7 @@ class Vector3(x: Double, y: Double, z: Double) : Vector(x, y, z) {
 	fun clamp(min: Vector3, max: Vector3) = Vector3(
 		x.coerceIn(min.x, max.x),
 		y.coerceIn(min.y, max.y),
-		z.coerceIn(min.z, max.z)
+		z.coerceIn(min.z, max.z),
 	)
 
 	/**

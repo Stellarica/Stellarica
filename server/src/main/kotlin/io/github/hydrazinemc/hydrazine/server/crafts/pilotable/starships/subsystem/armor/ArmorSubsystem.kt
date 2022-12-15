@@ -2,7 +2,7 @@ package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsys
 
 import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.Starship
 import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.Subsystem
-import io.github.hydrazinemc.hydrazine.server.utils.OriginRelative
+import io.github.hydrazinemc.hydrazine.common.utils.OriginRelative
 
 class ArmorSubsystem(ship: Starship) : Subsystem(ship) {
 	var armor = mutableMapOf<OriginRelative, Float>()

@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.server.utils
+package io.github.hydrazinemc.hydrazine.common.utils
 
 /**
  * Coordinates relative to the origin of a multiblock

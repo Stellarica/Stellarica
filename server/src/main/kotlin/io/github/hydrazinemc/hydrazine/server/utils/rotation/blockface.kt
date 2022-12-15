@@ -1,5 +1,6 @@
 package io.github.hydrazinemc.hydrazine.server.utils.rotation
 
+import io.github.hydrazinemc.hydrazine.common.utils.rotation.RotationAmount
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData

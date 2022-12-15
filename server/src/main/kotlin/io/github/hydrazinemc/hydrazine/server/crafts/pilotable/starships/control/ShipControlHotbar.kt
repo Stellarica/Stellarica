@@ -6,7 +6,7 @@ import io.github.hydrazinemc.hydrazine.server.utils.extensions.craft
 import io.github.hydrazinemc.hydrazine.server.utils.extensions.hotbar
 import io.github.hydrazinemc.hydrazine.server.utils.gui.hotbar.HotbarMenu
 import io.github.hydrazinemc.hydrazine.server.utils.gui.namedItem
-import io.github.hydrazinemc.hydrazine.server.utils.rotation.RotationAmount
+import io.github.hydrazinemc.hydrazine.common.utils.rotation.RotationAmount
 import org.bukkit.Material
 import org.bukkit.entity.Player
 

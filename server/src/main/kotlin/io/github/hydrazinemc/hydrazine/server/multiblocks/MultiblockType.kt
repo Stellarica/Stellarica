@@ -1,6 +1,6 @@
 package io.github.hydrazinemc.hydrazine.server.multiblocks
 
-import io.github.hydrazinemc.hydrazine.server.utils.OriginRelative
+import io.github.hydrazinemc.hydrazine.common.utils.OriginRelative
 
 /**
  * A type of multiblock
