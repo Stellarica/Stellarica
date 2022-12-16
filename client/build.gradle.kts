@@ -1,6 +1,4 @@
 plugins {
-	java
-	kotlin("jvm")
 	id("fabric-loom")
 }
 version = property("mod_version")!!
