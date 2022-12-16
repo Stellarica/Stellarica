@@ -100,21 +100,22 @@ multiblocks:
       0:
         - "sig"
     key:
-      s: "sponge"
+      s: "note_block"
       i: "iron_block"
-      g: "grindstone"
-    interface: g
+      g: "blast_furnace"
+    interface: s
 
   test_shield:
     layers:
       0:
-        - " g "
+        - " n "
         - "gdg"
         - " g "
     key:
       d: "diamond_block"
       g: "glass"
-    interface: d
+      n: "note_block"
+    interface: n
 
 
 # Output how long it takes to detect/move a ship
