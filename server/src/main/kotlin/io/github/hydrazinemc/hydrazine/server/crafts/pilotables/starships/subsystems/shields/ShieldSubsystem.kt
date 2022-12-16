@@ -1,7 +1,7 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.shields;
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.shields;
 
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.Starship
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.Subsystem
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.Starship
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.Subsystem
 import io.github.hydrazinemc.hydrazine.server.multiblocks.MultiblockInstance
 import org.bukkit.Color
 import org.bukkit.Location

@@ -1,11 +1,11 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.commands
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import io.github.hydrazinemc.hydrazine.server.HydrazineServer.Companion.pilotedCrafts
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.Starship
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.Starship
 import io.github.hydrazinemc.hydrazine.server.utils.extensions.craft
 import org.bukkit.entity.Player
 

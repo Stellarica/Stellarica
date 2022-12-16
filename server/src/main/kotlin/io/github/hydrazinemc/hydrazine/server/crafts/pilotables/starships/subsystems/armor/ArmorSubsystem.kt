@@ -1,7 +1,7 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.armor
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.armor
 
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.Starship
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.Subsystem
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.Starship
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.Subsystem
 import io.github.hydrazinemc.hydrazine.common.utils.OriginRelative
 
 class ArmorSubsystem(ship: Starship) : Subsystem(ship) {

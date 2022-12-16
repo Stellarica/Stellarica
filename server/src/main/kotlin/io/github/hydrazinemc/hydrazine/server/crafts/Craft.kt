@@ -1,7 +1,7 @@
 package io.github.hydrazinemc.hydrazine.server.crafts
 
 import io.github.hydrazinemc.hydrazine.server.HydrazineServer.Companion.klogger
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.Pilotable
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.Pilotable
 import io.github.hydrazinemc.hydrazine.server.multiblocks.MultiblockInstance
 import io.github.hydrazinemc.hydrazine.server.multiblocks.Multiblocks
 import io.github.hydrazinemc.hydrazine.server.utils.AlreadyMovingException

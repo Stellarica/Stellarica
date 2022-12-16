@@ -1,6 +1,6 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.control
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.control
 
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.Starship
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.Starship
 import io.github.hydrazinemc.hydrazine.server.utils.extensions.craft
 import io.github.hydrazinemc.hydrazine.server.utils.extensions.hotbar
 import io.github.hydrazinemc.hydrazine.server.utils.gui.hotbar.HotbarMenu

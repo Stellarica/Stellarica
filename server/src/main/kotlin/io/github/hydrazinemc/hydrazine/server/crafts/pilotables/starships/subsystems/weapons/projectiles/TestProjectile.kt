@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.weapons.projectiles
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.weapons.projectiles
 
 import io.github.hydrazinemc.hydrazine.server.crafts.Craft
 import org.bukkit.Location

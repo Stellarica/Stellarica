@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships
 
 import io.github.hydrazinemc.hydrazine.server.utils.Tasks
 import io.github.hydrazinemc.hydrazine.server.utils.gui.setScoreboardContents

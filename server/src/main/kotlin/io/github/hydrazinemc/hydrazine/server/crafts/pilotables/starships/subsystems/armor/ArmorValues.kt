@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.armor
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.armor
 
 import io.github.hydrazinemc.hydrazine.server.events.HydrazineConfigReloadEvent
 import org.bukkit.Material

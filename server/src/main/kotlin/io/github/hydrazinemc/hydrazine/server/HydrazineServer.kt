@@ -2,12 +2,12 @@ package io.github.hydrazinemc.hydrazine.server
 
 import co.aikar.commands.PaperCommandManager
 import io.github.hydrazinemc.hydrazine.server.commands.ConfigCommand
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.ControlQueueRunnable
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.Pilotable
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.commands.StarshipCommands
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.commands.StarshipDebugCommands
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.listeners.InterfaceListener
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.armor.ArmorValues
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.ControlQueueRunnable
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.Pilotable
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.commands.StarshipCommands
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.commands.StarshipDebugCommands
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.listeners.InterfaceListener
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.armor.ArmorValues
 import io.github.hydrazinemc.hydrazine.server.customblocks.CustomBlockListener
 import io.github.hydrazinemc.hydrazine.server.customblocks.CustomBlocks
 import io.github.hydrazinemc.hydrazine.server.customblocks.MushroomEventListener

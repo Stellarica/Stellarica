@@ -1,21 +1,19 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships
 
 import io.github.hydrazinemc.hydrazine.server.HydrazineServer.Companion.plugin
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.Pilotable
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.control.ShipControlHotbar
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.Subsystem
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.armor.ArmorSubsystem
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.shields.ShieldSubsystem
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.weapons.WeaponSubsystem
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.Pilotable
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.control.ShipControlHotbar
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.Subsystem
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.armor.ArmorSubsystem
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.shields.ShieldSubsystem
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.weapons.WeaponSubsystem
 import io.github.hydrazinemc.hydrazine.server.multiblocks.events.MultiblockUndetectEvent
 import io.github.hydrazinemc.hydrazine.server.utils.Tasks
-import io.github.hydrazinemc.hydrazine.server.utils.Vector3
 import io.github.hydrazinemc.hydrazine.server.utils.locations.BlockLocation
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockExplodeEvent
-import org.bukkit.scheduler.BukkitRunnable
 import org.bukkit.scheduler.BukkitTask
 import kotlin.math.roundToInt
 
