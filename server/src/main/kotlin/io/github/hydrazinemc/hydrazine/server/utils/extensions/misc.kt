@@ -13,6 +13,8 @@ import org.bukkit.block.Block
 import org.bukkit.block.data.MultipleFacing
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import org.bukkit.util.Vector
+import kotlin.math.abs
 
 /**
  * This string as a Component, using MiniMessage formatting
@@ -53,3 +55,10 @@ val ItemStack.customItem: CustomItem?
  */
 val ItemStack.id: String
 	get() = this.customItem?.id ?: this.type.toString().lowercase()
+
+
+fun Vector.abs() = this.also {
+	it.x = abs(it.x)
+	it.y = abs(it.y)
+	it.z = abs(it.z)
+}
