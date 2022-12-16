@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.weapons.projectiles;
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.weapons.projectiles;
 
 import io.github.hydrazinemc.hydrazine.server.HydrazineServer
 import io.github.hydrazinemc.hydrazine.server.HydrazineServer.Companion.pilotedCrafts
@@ -83,7 +83,7 @@ abstract class Projectile {
 				if (hit != null) {
 					val hitLoc = hit.hitPosition.toLocation(position.world)
 					// first, check if we hit a starship
-					// TODO: check all ships, not just pilotable ones (need to hit npc ships)
+					// TODO: check all ships, not just pilotables ones (need to hit npc ships)
 					// TODO: use a better filter than distancequared
 					pilotedCrafts.filter { it.origin.world == position.world }
 						.filter { it.origin.asLocation.distanceSquared(position) < 1000 }.forEach {

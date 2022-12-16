@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables
 
 import io.github.hydrazinemc.hydrazine.server.HydrazineServer
 import org.bukkit.scheduler.BukkitRunnable

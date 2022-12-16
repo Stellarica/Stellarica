@@ -1,7 +1,7 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.weapons
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.weapons
 
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.weapons.projectiles.Projectile
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.subsystem.weapons.projectiles.TestProjectile
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.weapons.projectiles.Projectile
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.subsystems.weapons.projectiles.TestProjectile
 import io.github.hydrazinemc.hydrazine.server.multiblocks.Multiblocks
 
 enum class WeaponType(val projectile: Projectile, private val multiblockId: String) {

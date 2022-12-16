@@ -1,4 +1,4 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables
 
 import io.github.hydrazinemc.hydrazine.server.HydrazineServer.Companion.pilotedCrafts
 import io.github.hydrazinemc.hydrazine.server.crafts.Craft
@@ -8,7 +8,7 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
 /**
- * Base class for all pilotable Crafts.
+ * Base class for all pilotables Crafts.
  */
 open class Pilotable(origin: BlockLocation) : Craft(origin) {
 

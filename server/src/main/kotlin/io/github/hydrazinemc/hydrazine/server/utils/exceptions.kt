@@ -1,6 +1,6 @@
 package io.github.hydrazinemc.hydrazine.server.utils
 
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.Pilotable
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.Pilotable
 import org.bukkit.entity.Player
 
 // todo: these are dumb, don't need exceptions for every little thing

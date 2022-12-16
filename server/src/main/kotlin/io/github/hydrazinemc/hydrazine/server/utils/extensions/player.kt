@@ -2,7 +2,7 @@ package io.github.hydrazinemc.hydrazine.server.utils.extensions
 
 import io.github.hydrazinemc.hydrazine.server.HydrazineServer.Companion.pilotedCrafts
 import io.github.hydrazinemc.hydrazine.server.crafts.Craft
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.Pilotable
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.Pilotable
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 

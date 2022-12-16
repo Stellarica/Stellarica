@@ -1,7 +1,7 @@
-package io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.listeners
+package io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.listeners
 
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.Starship
-import io.github.hydrazinemc.hydrazine.server.crafts.pilotable.starships.control.StarshipInterfaceScreen
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.Starship
+import io.github.hydrazinemc.hydrazine.server.crafts.pilotables.starships.control.StarshipInterfaceScreen
 import io.github.hydrazinemc.hydrazine.server.utils.extensions.blockLocation
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
