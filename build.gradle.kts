@@ -1,5 +1,6 @@
 plugins {
 	java
+	kotlin("jvm")
 	id("io.gitlab.arturbosch.detekt")
 }
 
@@ -7,6 +8,10 @@ repositories {
 	mavenCentral()
 }
 allprojects {
+	apply {
+		plugin("java")
+		plugin("kotlin")
+	}
 	repositories {
 		mavenCentral()
 		maven(uri("https://jitpack.io"))

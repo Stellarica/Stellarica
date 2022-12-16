@@ -1,6 +1,4 @@
 plugins {
-	java
-	kotlin("jvm")
 	kotlin("plugin.serialization")
 	id("fabric-loom")
 }

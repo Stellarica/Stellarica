@@ -1,6 +1,4 @@
 plugins {
-	java
-	kotlin("jvm")
 	id("xyz.jpenilla.run-paper")
 	id("io.papermc.paperweight.userdev")
 	id("com.github.johnrengelman.shadow")
