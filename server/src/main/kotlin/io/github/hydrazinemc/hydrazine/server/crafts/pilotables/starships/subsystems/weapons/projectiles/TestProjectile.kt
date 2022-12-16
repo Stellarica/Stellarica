@@ -15,7 +15,7 @@ object TestProjectile : Projectile() {
 				it.world.spawnParticle(Particle.SOUL_FIRE_FLAME, it, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 				false
 			},
-			{ loc, craft ->
+			{ _, craft ->
 				craft == shooter
 			},
 			{
