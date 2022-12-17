@@ -180,7 +180,8 @@ object Multiblocks : Listener {
 				plugin.server.pluginManager.callEvent(MultiblockUnloadEvent(it))
 			}
 			event.chunk.savedMultiblocks = chunkMultiblocks
-			activeMultiblocks.removeAll(chunkMultiblocks)
+			if (!activeMultiblocks.removeAll(chunkMultiblocks))
+				klogger.warn { "Failed to remove unloaded multiblocks" }
 		}
 	}
 

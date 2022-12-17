@@ -35,6 +35,7 @@ import org.bukkit.craftbukkit.v1_19_R2.CraftWorld
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
+import java.lang.ref.WeakReference
 import kotlin.math.pow
 import kotlin.system.measureTimeMillis
 
@@ -50,7 +51,7 @@ open class Craft(
 ) : ForwardingAudience {
 
 	var detectedBlocks = mutableSetOf<BlockLocation>()
-	var multiblocks = mutableSetOf<MultiblockInstance>()
+	var multiblocks = mutableSetOf<WeakReference<MultiblockInstance>>()
 	private var chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
 	/**
@@ -221,7 +222,7 @@ open class Craft(
 			// Detect all multiblocks
 			multiblocks.clear()
 			// this is probably slow
-			multiblocks.addAll(Multiblocks.activeMultiblocks.filter { detectedBlocks.contains(BlockLocation(it.origin)) })
+			multiblocks.addAll(Multiblocks.activeMultiblocks.filter { detectedBlocks.contains(BlockLocation(it.origin)) }.map { WeakReference(it) })
 
 			messagePilot("<gray>Detected ${multiblocks.size} multiblocks")
 			chunkCache.clear()
@@ -432,7 +433,8 @@ open class Craft(
 					}
 
 					// move multiblocks
-					multiblocks.forEach { multiblock ->
+					multiblocks.forEach { multiblockRef ->
+						val multiblock = multiblockRef.get() ?: return@forEach
 						// Figure out where to go
 						val oldLoc = multiblock.origin.clone()
 						val newLoc =
