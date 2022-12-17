@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockExplodeEvent
 import org.bukkit.scheduler.BukkitTask
+import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
 /**
@@ -82,16 +83,6 @@ class Starship(origin: BlockLocation) : Pilotable(origin), Listener {
 				shields.damage(event.block.location, event.yield.roundToInt())
 			} else {
 				detectedBlocks.remove(BlockLocation(event.block.location))
-			}
-		}
-	}
-
-	@EventHandler
-	fun onMultiblockUndetect(event: MultiblockUndetectEvent) {
-		if (multiblocks.contains(event.multiblock)) {
-			multiblocks.remove(event.multiblock)
-			subsystems.forEach {
-				it.onMultiblockUndetected(event.multiblock)
 			}
 		}
 	}

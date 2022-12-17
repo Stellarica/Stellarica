@@ -19,8 +19,8 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 
 	override fun onShipPiloted() {
 		ship.multiblocks.forEach { multiblock ->
-			if (multiblock.type in WeaponType.values().map { it.multiblockType }) {
-				multiblocks.add(WeakReference(multiblock))
+			if (multiblock.get()?.type in WeaponType.values().map { it.multiblockType }) {
+				multiblocks.add(multiblock)
 			}
 		}
 	}
