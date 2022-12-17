@@ -41,9 +41,15 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 					// this whole thing could definitely be improved
 					val dirPitch = asin(-direction.y)
 					val dirYaw = atan2(direction.x, direction.z)
+					val eyePitch = asin(-eye.y)
+					val eyeYaw = atan2(eye.x, eye.z)
 
-					val pitch = asin(-eye.y).coerceIn(dirPitch - type.cone, dirPitch + type.cone)
-					val yaw = atan2(eye.x, eye.z).coerceIn(dirYaw - type.cone, dirYaw + type.cone)
+					val pitch = eyePitch.coerceIn(dirPitch - type.cone, dirPitch + type.cone)
+					val yaw = if (eyeYaw - type.cone > -PI) {
+						eyeYaw.coerceIn(dirYaw - type.cone, dirYaw + type.cone)
+					} else { // fix for atan2 range not going beneath -PI
+						(eyeYaw + (2*PI)).coerceAtMost(dirYaw + type.cone)
+					}
 
 					Vector(
 						sin(yaw) * cos(pitch),
@@ -52,16 +58,6 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 					)
 				}
 				else return@forEach
-
-				DebugProjectile.shoot(ship,
-					multiblock.getLocation(type.mount).clone().add(0.5, 0.5, 0.5).add(direction)
-						.also { it.direction = direction }
-					)
-
-				DebugProjectile.shoot(ship,
-					multiblock.getLocation(type.mount).clone().add(0.5, 0.5, 0.5).add(eye)
-						.also { it.direction = eye }
-				)
 
 				type.projectile.shoot(
 					ship,
