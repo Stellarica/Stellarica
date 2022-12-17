@@ -94,6 +94,7 @@ val tileEntities: EnumSet<Material> = EnumSet.of(
 	Material.BEEHIVE,
 	Material.BEE_NEST,
 	Material.BARREL,
+	Material.BEACON,
 	Material.NOTE_BLOCK,
 	Material.ENCHANTED_GOLDEN_APPLE,
 	Material.CONDUIT,
