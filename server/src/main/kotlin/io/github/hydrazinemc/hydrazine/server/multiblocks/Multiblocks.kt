@@ -173,14 +173,13 @@ object Multiblocks : Listener {
 	@EventHandler
 	fun onChunkUnload(event: ChunkUnloadEvent) {
 		val chunkMultiblocks = activeMultiblocks.filter { it.origin.chunk == event.chunk }.toSet()
-		// this is probably laggy and should be fixed
-		// if (chunkMultiblocks.isNotEmpty()) println("saving " + chunkMultiblocks)
+		if (chunkMultiblocks.isEmpty()) return
 		Tasks.sync { // chunks are sometimes handled async
 			chunkMultiblocks.forEach {
 				plugin.server.pluginManager.callEvent(MultiblockUnloadEvent(it))
 			}
 			event.chunk.savedMultiblocks = chunkMultiblocks
-			if (!activeMultiblocks.removeAll(chunkMultiblocks))
+			if (!activeMultiblocks.removeIf { it.origin.chunk == event.chunk })  // removeAll doesnt seem to work
 				klogger.warn { "Failed to remove unloaded multiblocks" }
 		}
 	}
