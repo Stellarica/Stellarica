@@ -37,27 +37,36 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 				val direction = multiblock.getLocation(type.direction).clone().subtract(multiblock.getLocation(type.mount)).toVector().normalize()
 
 				// if the angleBetween (in radians) is less than the type's cone, fire
-				val dir = if (abs(eye.angle(direction)) < type.cone + (PI / 4)) {
-					// this whole thing could definitely be improved
-					val dirPitch = asin(-direction.y)
-					val dirYaw = atan2(direction.x, direction.z)
-					val eyePitch = asin(-eye.y)
-					val eyeYaw = atan2(eye.x, eye.z)
+				if (abs(eye.angle(direction)) > type.cone + (PI / 4)) return@forEach
 
-					val pitch = eyePitch.coerceIn(dirPitch - type.cone, dirPitch + type.cone)
-					val yaw = if (eyeYaw - type.cone > -PI) {
-						eyeYaw.coerceIn(dirYaw - type.cone, dirYaw + type.cone)
-					} else { // fix for atan2 range not going beneath -PI
-						(eyeYaw + (2*PI)).coerceAtMost(dirYaw + type.cone)
+				// this whole thing could definitely be improved
+				val dirPitch = asin(-direction.y)
+				val dirYaw = atan2(direction.x, direction.z)
+				val eyePitch = asin(-eye.y)
+				val eyeYaw = atan2(eye.x, eye.z)
+
+				val pitch = eyePitch.coerceIn(dirPitch - type.cone, dirPitch + type.cone)
+				val yaw = if (eyeYaw - type.cone > -PI) { // <- bad interval
+					eyeYaw.coerceIn(dirYaw - type.cone, dirYaw + type.cone)
+				} else { // fix for atan2 range not going beneath -PI
+					if (abs(eyeYaw - dirYaw) > type.cone) {
+						eyeYaw
+					} else {
+						dirYaw + type.cone
 					}
-
-					Vector(
-						sin(yaw) * cos(pitch),
-						-sin(pitch),
-						cos(yaw) * cos(pitch),
-					)
 				}
-				else return@forEach
+
+				val dir = Vector(
+					sin(yaw) * cos(pitch),
+					-sin(pitch),
+					cos(yaw) * cos(pitch)
+				)
+
+				if (eyeYaw + type.cone < -PI) {
+					// more fix for arctan range issues
+					// literal duct tape
+					dir.x = -dir.x
+				}
 
 				type.projectile.shoot(
 					ship,
