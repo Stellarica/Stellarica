@@ -122,13 +122,24 @@ multiblocks:
   test_shield:
     layers:
       0:
-        - " n "
+        - "igi"
         - "gdg"
-        - " g "
+        - "igi"
+      1:
+        - "pgp"
+        - "gdg"
+        - "pfp"
+      2:
+        - "igi"
+        - "gdg"
+        - "ini"
     key:
       d: "diamond_block"
       g: "glass"
+      p: "glass_pane"
       n: "note_block"
+      f: "furnace"
+      i: "iron_block"
     interface: n
 
 
