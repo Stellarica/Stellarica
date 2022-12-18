@@ -108,7 +108,7 @@ multiblocks:
 light_cannon:
     layers:
       0:
-        - "d    "
+        - "dill "
       1:
         - "siggg"
     key:
@@ -116,6 +116,7 @@ light_cannon:
       i: "iron_block"
       g: "polished_deepslate_wall"
       d: "dispenser"
+      l: "polished_deepslate_slab"
     interface: s
 
   test_shield:
