@@ -41,8 +41,8 @@ data class MultiblockInstance(
 		return when (facing) {
 			BlockFace.NORTH -> BlockLocation(position.x, position.y, position.z)
 			BlockFace.SOUTH -> BlockLocation(-position.x, position.y, -position.z)
-			BlockFace.EAST -> BlockLocation(-position.z, position.y, -position.x)
-			BlockFace.WEST -> BlockLocation(position.z, position.y, position.x)
+			BlockFace.EAST -> BlockLocation(position.z, position.y, position.x)
+			BlockFace.WEST -> BlockLocation(-position.z, position.y, -position.x)
 			else -> throw Exception("wtf happened here you dummy")
 		}.asLocation.apply { this.world = origin.world }.add(origin)
 	}
@@ -55,8 +55,8 @@ data class MultiblockInstance(
 		return when (facing) {
 			BlockFace.NORTH -> OriginRelative(relative.blockX, relative.blockY, relative.blockZ)
 			BlockFace.SOUTH -> OriginRelative(-relative.blockX, relative.blockY, -relative.blockZ)
-			BlockFace.EAST -> OriginRelative(-relative.blockZ, relative.blockY, -relative.blockX)
-			BlockFace.WEST -> OriginRelative(relative.blockZ, relative.blockY, relative.blockX)
+			BlockFace.EAST -> OriginRelative(relative.blockZ, relative.blockY, relative.blockX)
+			BlockFace.WEST -> OriginRelative(-relative.blockZ, relative.blockY, -relative.blockX)
 			else -> throw Exception("wtf happened here you dummy")
 		}
 	}
