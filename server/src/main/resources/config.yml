@@ -105,6 +105,19 @@ multiblocks:
       g: "blast_furnace"
     interface: s
 
+light_cannon:
+    layers:
+      0:
+        - "d    "
+      1:
+        - "siggg"
+    key:
+      s: "note_block"
+      i: "iron_block"
+      g: "polished_deepslate_wall"
+      d: "dispenser"
+    interface: s
+
   test_shield:
     layers:
       0:
