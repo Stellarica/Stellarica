@@ -8,6 +8,9 @@ object LightCannonProjectile : Projectile() {
 	override fun shoot(shooter: Craft, origin: Location) {
 		cast(origin.clone(), 150, 120, 5,
 			{
+				false
+			},
+			{
 				it.world.spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, it, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 				false
 			},
