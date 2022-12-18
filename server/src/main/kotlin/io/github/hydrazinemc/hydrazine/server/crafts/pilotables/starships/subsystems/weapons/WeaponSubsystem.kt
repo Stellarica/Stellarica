@@ -46,14 +46,10 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 				val eyeYaw = atan2(eye.x, eye.z)
 
 				val pitch = eyePitch.coerceIn(dirPitch - type.cone, dirPitch + type.cone)
-				val yaw = if (eyeYaw - type.cone > -PI) { // <- bad interval
+				val yaw = if (eyeYaw - type.cone > -PI) {
 					eyeYaw.coerceIn(dirYaw - type.cone, dirYaw + type.cone)
-				} else { // fix for atan2 range not going beneath -PI
-					if (abs(eyeYaw - dirYaw) > type.cone) {
-						eyeYaw
-					} else {
-						dirYaw + type.cone
-					}
+				} else { // fix for atan2 range not going beneath -PI, breaking coerceIn
+					eyeYaw
 				}
 
 				val dir = Vector(
@@ -62,11 +58,13 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 					cos(yaw) * cos(pitch)
 				)
 
-				if (eyeYaw + type.cone < -PI) {
+				val adjDirYaw = dirYaw - (2 * PI)
+				if (eyeYaw != eyeYaw.coerceIn(adjDirYaw - type.cone, adjDirYaw + type.cone) && direction.z < 0 && eye.z < 0 && eye.x < 0) {
 					// more fix for arctan range issues
 					// literal duct tape
 					dir.x = -dir.x
 				}
+				//println("e: $eyeYaw, d: $adjDirYaw, c: ${type.cone} d-e${adjDirYaw - type.cone} d+e${adjDirYaw + type.cone}")
 
 				type.projectile.shoot(
 					ship,
