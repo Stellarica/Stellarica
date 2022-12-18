@@ -47,27 +47,21 @@ object Multiblocks : Listener {
 
 	init { // init block on an object? :conc:
 		Tasks.syncRepeat(10, 1) {
-			val invalid = mutableSetOf<MultiblockInstance>()
-			activeMultiblocks.forEach { multiblock ->
-				// Validate the layout
-				if (!validate(
-						multiblock.facing,
-						multiblock.type,
-						multiblock.origin.block
-					)
-				) {
-					klogger.warn {
-						"Invalid multiblock at ${BlockLocation(multiblock.origin).formattedString}: " +
-								"${multiblock.type.name} (${multiblock.uuid}), it has been undetected."
+			activeMultiblocks.removeIf { multiblock ->
+				!validate(
+					multiblock.facing,
+					multiblock.type,
+					multiblock.origin.block
+				).also { valid ->
+					if (!valid) {
+						plugin.server.pluginManager.callEvent(MultiblockUnloadEvent(multiblock))
+						klogger.warn {
+							"Invalid multiblock at ${BlockLocation(multiblock.origin).formattedString}: " +
+									"${multiblock.type.name} (${multiblock.uuid}), it has been undetected."
+						}
 					}
-					invalid.add(multiblock)
-					return@forEach
 				}
 			}
-			invalid.forEach {
-				plugin.server.pluginManager.callEvent(MultiblockUndetectEvent(it))
-			}
-			activeMultiblocks.removeAll(invalid)
 		}
 	}
 
