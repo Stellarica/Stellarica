@@ -11,7 +11,7 @@ object LightCannonProjectile : Projectile() {
 				false
 			},
 			{
-				it.world.spawnParticle(Particle.CAMPFIRE_SIGNAL_SMOKE, it, 1, 0.0, 0.0, 0.0, 0.0, null, true)
+				it.world.spawnParticle(Particle.CAMPFIRE_COSY_SMOKE, it, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 				false
 			},
 			{ _, craft ->
