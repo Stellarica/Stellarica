@@ -1,42 +1,27 @@
 package net.stellarica.server.crafts
 
-import net.stellarica.server.StellaricaServer.Companion.klogger
-import net.stellarica.server.crafts.pilotables.Pilotable
 import net.stellarica.server.multiblocks.MultiblockInstance
-import net.stellarica.server.multiblocks.Multiblocks
-import net.stellarica.server.utils.AlreadyMovingException
 import net.stellarica.server.utils.ConfigurableValues
 import net.stellarica.common.utils.OriginRelative
-import net.stellarica.server.utils.Tasks
-import net.stellarica.server.utils.Vector3
 import net.stellarica.server.utils.extensions.sendRichMessage
-import net.stellarica.server.utils.locations.BlockLocation
 import net.stellarica.server.utils.locations.ChunkLocation
 import net.stellarica.server.utils.nms.removeBlockEntity
 import net.stellarica.server.utils.nms.setBlockEntity
-import net.stellarica.server.utils.nms.setBlockFast
-import net.stellarica.server.utils.nms.tileEntities
-import net.stellarica.common.utils.rotation.RotationAmount
 import net.stellarica.server.utils.rotation.rotate
-import net.stellarica.server.utils.rotation.rotateBlockFace
 import net.stellarica.server.utils.rotation.rotateCoordinates
 import io.papermc.paper.entity.RelativeTeleportFlag
 import net.kyori.adventure.audience.ForwardingAudience
 import net.minecraft.core.BlockPos
-import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.entity.BlockEntity
-import org.bukkit.Bukkit
+import net.stellarica.server.crafts.pilotables.starships.Starship
 import org.bukkit.ChunkSnapshot
-import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.World
 import org.bukkit.block.data.BlockData
-import org.bukkit.craftbukkit.v1_19_R2.CraftWorld
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
 import java.lang.ref.WeakReference
-import kotlin.math.pow
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.system.measureTimeMillis
 
 /**
@@ -47,10 +32,10 @@ open class Craft(
 	 * The point from which detection starts, and
 	 * the craft rotates around
 	 */
-	var origin: BlockLocation
+	var origin: BlockPos
 ) : ForwardingAudience {
 
-	var detectedBlocks = mutableSetOf<BlockLocation>()
+	var detectedBlocks = mutableSetOf<BlockPos>()
 	var multiblocks = mutableSetOf<WeakReference<MultiblockInstance>>()
 	private var chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
 
@@ -60,16 +45,6 @@ open class Craft(
 	 */
 	var isMoving = false
 
-	/**
-	 * The time (in millis) that this craft took to move
-	 * when it was last moved.
-	 *
-	 * Note that this does not include time spent queueing movement,
-	 * but only the time to place the blocks.
-	 *
-	 * Handled by [CraftBlockSetter]
-	 */
-	var timeSpentMoving: Long = 0
 
 	/**
 	 * The.. uh.. passengers...
@@ -113,36 +88,41 @@ open class Craft(
 	 * @see messagePassengers
 	 */
 	fun messagePilot(message: String) {
-		if (this is Pilotable) {
+		if (this is Starship) {
 			pilot?.sendRichMessage(message) ?: owner?.sendRichMessage(message)
 		}
 	}
 
+	companion object {
+		const val sizeLimit = 10000
+	}
+
+	var multiblocks = mutableSetOf<OriginRelative>()
+	var passengers = mutableSetOf<LivingEntity>()
+	private var detectedBlocks = mutableSetOf<BlockPos>()
+
+	val blockCount: Int
+		get() = detectedBlocks.size
+
+	/**
+	 * The blocks considered to be "inside" of the ship, but not neccecarily detected.
+	 */
+	protected var bounds = mutableSetOf<OriginRelative>()
+
 	/**
 	 * @return Whether [block] is considered to be inside this craft
 	 */
-	fun contains(block: BlockLocation?): Boolean {
+	fun contains(block: BlockPos?): Boolean {
 		block ?: return false
-		return detectedBlocks.contains(block) || bounds.contains((block - origin).let {
-			OriginRelative(
-				it.x,
-				it.y,
-				it.z
-			)
-		})
+		return detectedBlocks.contains(block) || bounds.contains(OriginRelative.get(block, origin, direction))
 	}
 
-	/**
-	 * @return Whether [loc] is considered to be inside this craft
-	 */
-	fun contains(loc: Location?): Boolean {
-		loc ?: return false
-		return contains(BlockLocation(loc))
-	}
-
-
-	fun calculateHitbox() {
-		detectedBlocks.map { pos -> (pos - origin).let { OriginRelative(it.x, it.y, it.z) } }.sortedBy { -it.y }
+	private fun calculateHitbox() {
+		detectedBlocks
+			.map { pos ->
+				OriginRelative.get(pos, origin, direction)
+			}
+			.sortedBy { -it.y }
 			.forEach { block ->
 				val max = bounds.filter { it.x == block.x && it.z == block.z }.maxByOrNull { it.y }?.y ?: block.y
 				for (y in block.y..max) {
@@ -151,82 +131,243 @@ open class Craft(
 			}
 	}
 
+	fun sendRichMessage(message: String) {
+		passengers.forEach {
+			if (it is ServerPlayerEntity) {
+				it.sendRichMessage(message)
+			}
+		}
+	}
 
 	/**
-	 * Detect this craft
-	 * @throws AlreadyMovingException if the craft is moving
+	 * Translate the craft by [offset] blocks
+	 * @see change
 	 */
+	fun move(offset: Vec3i) {
+		val change = offset.toVec3d()
+		// don't want to let them pass a vec3d
+		// since the ships snap to blocks but entities can actually move by that much
+		// relative entity teleportation will be messed up
+
+		change({ current ->
+			return@change current.add(change)
+		}, world)
+	}
+
+	/**
+	 * Rotate the craft and contents by [rotation]
+	 * @see change
+	 */
+	fun rotate(rotation: BlockRotation) {
+		change({ current ->
+			return@change rotateCoordinates(current, origin.toVec3d(), rotation)
+		}, world, rotation) {
+			direction = direction.rotate(rotation)
+		}
+	}
+
+	private fun change(
+		/** The transformation to apply to each blocks in the craft */
+		modifier: (Vec3d) -> Vec3d,
+		/** The world to move to */
+		targetWorld: ServerWorld,
+		/** The amount to rotate each directional blocks by */
+		rotation: BlockRotation = BlockRotation.NONE,
+		/** Callback called after the craft finishes moving */
+		callback: () -> Unit = {}
+	) {
+		// calculate new blocks locations
+		val targetsCHM = ConcurrentHashMap<BlockPos, BlockPos>()
+		runBlocking {
+			detectedBlocks.chunked(500).forEach { section ->
+				// chunk into sections to process parallel
+				launch(Dispatchers.Default) {
+					section.forEach { current ->
+						targetsCHM[current] = modifier(current.toVec3d()).toBlockPos()
+					}
+				}
+			}
+		}
+
+		// possible optimization because iterating over a CHM is pain
+		val targets = targetsCHM.toMap()
+
+		// We need to get the original blockstates before we start setting blocks
+		// otherwise, if we just try to get the state as we set the blocks, the state might have already been set.
+		// Consider moving a blocks from b to c. If a has already been moved to b, we don't want to copy a to c.
+		// see https://discord.com/channels/1038493335679156425/1038504764356427877/1066184457264046170
+		//
+		// However, we don't need to go and get the states of the current blocks, as if it isn't in
+		// the target blocks, it won't be overwritten, so we can just get it when it comes time to set the blocks
+		//
+		// This solution ~~may not be~~ isn't the most efficient, but it works
+		val original = mutableMapOf<BlockPos, BlockState>()
+		val entities = mutableMapOf<BlockPos, BlockEntity>()
+
+		// check for collisions
+		// if the world we're moving to isn't the world we're coming from, the whole map of original states we got is useless
+		if (world == targetWorld) {
+			targets.values.forEach { target ->
+				val state = targetWorld.getBlockState(target)
+
+				if (!state.isAir && !detectedBlocks.contains(target)) {
+					sendRichMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
+					return
+				}
+
+				// also use this time to get the original state of these blocks
+				if (state.hasBlockEntity()) entities[target] = targetWorld.getBlockEntity(target)!!
+
+				original[target] = state
+			}
+		}
+
+		// iterating over twice isn't great
+		val newDetectedBlocks = mutableSetOf<BlockPos>()
+		targets.forEach { (current, target) ->
+			val currentBlock = original.getOrElse(current) { world.getBlockState(current) }
+
+			// set the blocks
+			setBlockFast(target, currentBlock.rotate(rotation), targetWorld)
+			newDetectedBlocks.add(target)
+
+			// move any entities
+			if (entities.contains(current) || currentBlock.hasBlockEntity()) {
+				val entity = entities.getOrElse(current) { world.getBlockEntity(current)!! }
+
+				world.getChunk(current).removeBlockEntity(current)
+
+				(entity as BlockEntityMixin).setPos(target)
+				entity.world = targetWorld
+				entity.markDirty()
+
+				targetWorld.getChunk(target).setBlockEntity(entity)
+			}
+		}
+
+		if (newDetectedBlocks.size != detectedBlocks.size)
+			println("Lost ${detectedBlocks.size - newDetectedBlocks.size} blocks while moving! This is a bug!")
+
+		if (world == targetWorld) {
+			// set air where we were
+			detectedBlocks.removeAll(newDetectedBlocks)
+			detectedBlocks.forEach { setBlockFast(it, Blocks.AIR.defaultState, world) }
+		}
+		detectedBlocks = newDetectedBlocks
+
+		// move multiblocks
+		multiblocks.forEach { pos ->
+			val mb = getMultiblock(pos)
+			val new = MultiblockInstance(
+				origin = modifier(mb.origin.toVec3d()).toBlockPos(),
+				world = targetWorld,
+				direction = mb.direction.rotate(rotation),
+				typeId = mb.typeId
+			)
+			MULTIBLOCKS.get(mb.chunk).multiblocks.remove(mb)
+			MULTIBLOCKS.get(targetWorld.getChunk(new.origin)).multiblocks.add(new)
+		}
+
+		// finish up
+		movePassengers(modifier, rotation)
+		world = targetWorld
+		origin = modifier(origin.toVec3d()).toBlockPos()
+		callback()
+	}
+
+
 	fun detect() {
-		if (isMoving) throw AlreadyMovingException("Craft attempted to detect, but is currently moving!")
-		messagePilot("<gray>Detecting craft...")
-		Tasks.async {
-			chunkCache.clear()
-			val time = measureTimeMillis {
+		var nextBlocksToCheck = detectedBlocks
+		nextBlocksToCheck.add(origin)
+		detectedBlocks = mutableSetOf()
+		val checkedBlocks = nextBlocksToCheck.toMutableSet()
 
-				var nextBlocksToCheck = detectedBlocks
-				nextBlocksToCheck.add(origin)
-				detectedBlocks = mutableSetOf()
-				val checkedBlocks = nextBlocksToCheck.toMutableSet()
+		val startTime = System.currentTimeMillis()
 
-				updateUndetectables()
+		val chunks = mutableSetOf<Chunk>()
 
-				while (nextBlocksToCheck.size > 0) {
-					val blocksToCheck = nextBlocksToCheck
-					nextBlocksToCheck = mutableSetOf()
+		while (nextBlocksToCheck.size > 0) {
+			val blocksToCheck = nextBlocksToCheck
+			nextBlocksToCheck = mutableSetOf()
 
-					for (currentBlock in blocksToCheck) {
-						val type = getCachedBlockData(currentBlock).material
+			for (currentBlock in blocksToCheck) {
 
-						if (undetectables.contains(type)) continue
+				if (undetectableBlocks.contains(world.getBlockState(currentBlock).block)) continue
 
-						if (detectedBlocks.size > ConfigurableValues.detectionLimit) {
-							klogger.info { "Detection limit reached. (${ConfigurableValues.detectionLimit})" }
-							messagePilot("<gold>Detection limit reached. (${ConfigurableValues.detectionLimit} blocks)")
-							nextBlocksToCheck.clear()
-							detectedBlocks.clear()
-							break
-						}
+				if (detectedBlocks.size > Companion.sizeLimit) {
+					owner.sendRichMessage("<gold>Detection limit reached. (${Companion.sizeLimit} blocks)")
+					nextBlocksToCheck.clear()
+					detectedBlocks.clear()
+					break
+				}
 
-						detectedBlocks.add(currentBlock)
+				detectedBlocks.add(currentBlock)
+				chunks.add(world.getChunk(currentBlock))
 
-						// Slightly condensed from MSP's nonsense, but this could be improved
-						for (x in -1..1) {
-							for (y in -1..1) {
-								for (z in -1..1) {
-									if (x == y && z == y && y == 0) continue
-									val block = currentBlock + BlockLocation(x, y, z, currentBlock.world)
-									if (!checkedBlocks.contains(block)) {
-										checkedBlocks.add(block)
-										nextBlocksToCheck.add(block)
-									}
-								}
+				// Slightly condensed from MSP's nonsense, but this could be improved
+				for (x in -1..1) {
+					for (y in -1..1) {
+						for (z in -1..1) {
+							if (x == y && z == y && y == 0) continue
+							val block = currentBlock.add(x, y, z)
+							if (!checkedBlocks.contains(block)) {
+								checkedBlocks.add(block)
+								nextBlocksToCheck.add(block)
 							}
 						}
 					}
 				}
 			}
-			messagePilot("<green>Craft detected! (${detectedBlocks.size} blocks)")
-			messagePilot(
-				"<gray>Detected ${detectedBlocks.size} blocks in ${time}ms. " +
-						"(${detectedBlocks.size / time.coerceAtLeast(1)} blocks/ms)"
-			)
-			messagePilot(
-				"<gray>Calculated Hitbox in ${
-					measureTimeMillis {
-						calculateHitbox()
-					}
-				}ms. (${bounds.size} blocks)")
-
-			initialBlockCount = detectedBlocks.size
-
-			// Detect all multiblocks
-			multiblocks.clear()
-			// this is probably slow
-			multiblocks.addAll(Multiblocks.activeMultiblocks.filter { detectedBlocks.contains(BlockLocation(it.origin)) }.map { WeakReference(it) })
-
-			messagePilot("<gray>Detected ${multiblocks.size} multiblocks")
-			chunkCache.clear()
 		}
+
+		val elapsed = System.currentTimeMillis() - startTime
+		owner.sendRichMessage("<green>Craft detected! (${detectedBlocks.size} blocks)")
+		owner.sendRichMessage(
+			"<gray>Detected ${detectedBlocks.size} blocks in ${elapsed}ms. " +
+					"(${detectedBlocks.size / elapsed.coerceAtLeast(1)} blocks/ms)"
+		)
+		owner.sendRichMessage(
+			"<gray>Calculated Hitbox in ${
+				measureTimeMillis {
+					calculateHitbox()
+				}
+			}ms. (${bounds.size} blocks)")
+
+		// Detect all multiblocks
+		multiblocks.clear()
+		// this is probably slow
+		multiblocks.addAll(chunks
+			.map { MULTIBLOCKS.get(it).multiblocks }
+			.flatten()
+			.filter { detectedBlocks.contains(it.origin) }
+			.map { OriginRelative.get(it.origin, origin, direction)}
+		)
+
+		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
+	}
+
+	private fun setBlockFast(pos: BlockPos, state: BlockState, world: ServerWorld) {
+		val chunk = world.getChunk(pos) as WorldChunk
+		val chunkSection = (pos.y shr 4) - chunk.bottomSectionCoord
+		var section = chunk.sectionArray[chunkSection]
+		if (section == null) {
+			// Put a GLASS blocks to initialize the section. It will be replaced next with the real blocks.
+			chunk.setBlockState(pos, Blocks.GLASS.defaultState, false)
+			section = chunk.sectionArray[chunkSection]
+		}
+		val oldState = section!!.getBlockState(pos.x and 15, pos.y and 15, pos.z and 15)
+		if (oldState == state) return //Block is already of correct type and data, don't overwrite
+
+		section.setBlockState(pos.x and 15, pos.y and 15, pos.z and 15, state)
+		world.updateListeners(pos, oldState, state, 3)
+		// world.lightEngine.checkBlock(position) // boolean corresponds to if chunk section empty
+		//todo: LIGHTING IS FOR CHUMPS!
+		chunk.setNeedsSaving(true)
+	}
+
+	fun getMultiblock(pos: OriginRelative): MultiblockInstance {
+		val origin = pos.getBlockPos(origin, direction)
+		return MULTIBLOCKS[world.getChunk(origin)].multiblocks.first { it.origin == origin }
 	}
 
 	/**
@@ -234,7 +375,7 @@ open class Craft(
 	 * Uses bukkit to teleport entities, and NMS to move players.
 	 */
 	@Suppress("UnstableApiUsage")
-	fun movePassengers(offset: (Vector3) -> Vector3, rotation: RotationAmount = RotationAmount.NONE) {
+	fun movePassengers(offset: (Vec3) -> Vec3, rotation: RotationAmount = RotationAmount.NONE) {
 		passengers.forEach {
 			// TODO: FIX
 			// this is not a good solution because if there is any rotation, the player will not be translated by the offset
@@ -246,14 +387,14 @@ open class Craft(
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
 			val destination =
-				if (rotation != RotationAmount.NONE) Vector3(it.location).rotateAround(
-					Vector3(origin) + Vector3(
+				if (rotation != RotationAmount.NONE) Vec3(it.location).rotateAround(
+					Vec3(origin) + Vec3(
 						0.5,
 						0.0,
 						0.5
 					), rotation
 				).asLocation
-				else offset(Vector3(it.location)).asLocation
+				else offset(Vec3(it.location)).asLocation
 
 
 			destination.world = it.world // todo: fix
@@ -285,178 +426,8 @@ open class Craft(
 		messagePilot("<gray>Updated craft's undetectable blocks.")
 	}
 
-	/**
-	 * Translate the craft by [offset] blocks
-	 * @throws AlreadyMovingException if craft movement is currently queued.
-	 * @see queueChange
-	 */
-	fun queueMovement(offset: BlockLocation) {
-		queueChange({ current ->
-			return@queueChange current + Vector3(offset)
-		}, "Movement", origin.world!!)
-	}
 
-	/**
-	 * Rotate the craft and contents by [rotation]
-	 * @throws AlreadyMovingException if craft movement is currently queued.
-	 * @see queueChange
-	 */
-	fun queueRotation(rotation: RotationAmount) {
-		queueChange({ current ->
-			return@queueChange rotateCoordinates(current, Vector3(origin), rotation)
-		}, "Rotation", origin.world!!, rotation)
-		Tasks.async {
-			calculateHitbox() // rather than keep track of a hitbox rotation, just recacluate it when we rotate.
-		}
-	}
-
-	/**
-	 * Queue a starships move in [StarshipBlockSetter].
-	 * Asynchronously calculates where the ship needs to move to, and queues
-	 * block placements in [blockSetQueueQueue].
-	 *
-	 * @param modifier the function through which block coordinates are passed
-	 * @param name the name of the change (e.g "Rotation" or "Translation")
-	 * @param world the world in which to place the target blocks
-	 * @param rotation the rotation applied. Not used to move blocks, but rotates entities and rotational blocks
-	 * @see queueMovement
-	 * @see queueWorldChange
-	 * @see queueRotation
-	 * @throws AlreadyMovingException if this ship already has movement queued.
-	 */
-	private fun queueChange(
-		modifier: (Vector3) -> Vector3,
-		name: String,
-		world: World,
-		rotation: RotationAmount = RotationAmount.NONE
-	) {
-		if (isMoving) throw AlreadyMovingException("Craft attempted to queue movement, but it is already moving!")
-		isMoving = true
-
-		// While async, calculate the target blocks
-		Tasks.async {
-			chunkCache.clear()
-
-			val newDetectedBlocks = mutableSetOf<BlockLocation>()
-			val lostBlocks = mutableSetOf<BlockLocation>()
-			val blocksToSet = mutableMapOf<BlockLocation, BlockData>()
-			val airData = Bukkit.createBlockData(Material.AIR)
-			val entities = mutableMapOf<BlockLocation, BlockLocation>()
-
-			detectedBlocks.forEach { currentBlockLocation ->
-				val currentBlockData = getCachedBlockData(currentBlockLocation)
-				val targetBlockLocation =
-					modifier(Vector3(currentBlockLocation)).asBlockLocation.apply { this.world = world }
-
-				if (currentBlockData.material == Material.AIR) // is this the best way to compare it?
-					lostBlocks.add(currentBlockLocation)
-
-				blocksToSet.putIfAbsent(currentBlockLocation, airData)
-
-				currentBlockData.rotate(rotation)
-				blocksToSet[targetBlockLocation] = currentBlockData
-
-				// This is really, really, really, really, stupid.
-				// Sadly afaik there's no way to get a tile entity from a chunk snapshot
-				// and the benefits of doing this async outweigh this pain and suffering
-				if (currentBlockData.material in tileEntities) entities[currentBlockLocation] = targetBlockLocation
-
-				// Step 5: Add the target block to the new detected blocks list.
-				if (!newDetectedBlocks.add(targetBlockLocation)) klogger.warn {
-					"A newly detected block was overwritten while queueing $name!"
-				}
-			}
-
-			if (detectedBlocks.size != newDetectedBlocks.size) {
-				@Suppress("UnstableApiUsage")
-				sendRichMessage(
-					"<red>Lost <bold>${detectedBlocks.size - newDetectedBlocks.size}</bold> " +
-							"blocks while queuing $name!"
-				)
-				sendRichMessage("<bold><gold>This is a bug, please report it.")
-			}
-			assert(detectedBlocks.size - newDetectedBlocks.size == lostBlocks.size) { "Lost blocks size does not match!" }
-
-			chunkCache.clear()
-
-			// On the next server tick, check for collisions and move the ship
-			Tasks.sync {
-				val timeSpent = measureTimeMillis {
-
-					// Check for collisions
-					blocksToSet.forEach {
-						// If there is a non-air block there, cancel the move
-						if (!detectedBlocks.contains(it.key) && !it.key.bukkit.type.isAir) {
-							// The ship is blocked!
-							messagePilot(
-								"<gold>$name blocked by ${it.key.bukkit.type} at " +
-										"<bold>(${it.key.x}, ${it.key.y}, ${it.key.z}</bold>)!"
-							)
-							this.isMoving = false
-							chunkCache.clear()
-							return@sync
-						}
-					}
-
-					// no collisions, move the ship
-					movePassengers(modifier, rotation)
-
-					// get nms tile entities, and remove them
-					val e = mutableMapOf<BlockEntity, Pair<Level, BlockPos>>() // pair is target
-					entities.forEach {
-						val world = (world as CraftWorld).handle
-						e[removeBlockEntity(world, it.key.asBlockPos) ?: return@forEach] =
-							Pair(world, it.value.asBlockPos)
-					}
-
-					// move blocks
-					blocksToSet.forEach {
-						val loc = it.key.asLocation
-						setBlockFast(loc, it.value)
-					}
-
-					// use sendMultiBlockChange to reduce visual artifacts
-					Bukkit.getServer().onlinePlayers.forEach { player ->
-						if (
-							Vector3(player.location).distanceSquared(Vector3(origin)) <
-							(Bukkit.getServer().viewDistance * 16.0).pow(2)
-						)
-						// if the player can see the craft, send the change
-							player.sendMultiBlockChange(blocksToSet.mapKeys { it.key.asLocation }, true)
-					}
-
-					// TODO: update heightmaps
-
-					// set entities back
-					e.forEach { (entity, pos) ->
-						setBlockEntity(pos.first, pos.second, entity)
-					}
-
-					// move multiblocks
-					multiblocks.forEach { multiblockRef ->
-						val multiblock = multiblockRef.get() ?: return@forEach
-						// Figure out where to go
-						val oldLoc = multiblock.origin.clone()
-						val newLoc =
-							modifier(Vector3(oldLoc)).asLocation.apply { this@apply.world = world }
-
-						// Update the multiblock itself
-						multiblock.origin = newLoc
-						multiblock.facing = rotateBlockFace(multiblock.facing, rotation)
-					}
-
-					// let the craft know we're done here
-					origin = modifier(Vector3(origin)).asBlockLocation.apply { this.world = world }
-					isMoving = false
-					detectedBlocks = newDetectedBlocks
-
-				}
-				timeSpentMoving = timeSpent
-			}
-		}
-	}
-
-	private fun getCachedBlockData(block: BlockLocation): BlockData {
+	private fun getCachedBlockData(block: BlockPos): BlockData {
 		val chunkCoord = ChunkLocation(block.x shr 4, block.z shr 4)
 		val currentChunk = chunkCache.getOrPut(chunkCoord) {
 			block.world!!.getChunkAt(

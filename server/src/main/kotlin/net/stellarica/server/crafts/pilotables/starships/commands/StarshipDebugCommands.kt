@@ -7,7 +7,6 @@ import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import net.stellarica.server.crafts.pilotables.starships.Starship
 import net.stellarica.server.utils.extensions.craft
-import net.stellarica.server.utils.locations.BlockLocation
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -33,7 +32,7 @@ class StarshipDebugCommands : BaseCommand() {
 		for (x in (sender.location.x.toInt() - 200)..(sender.location.x.toInt() + 200)) {
 			for (y in sender.world.minHeight..sender.world.maxHeight) {
 				for (z in (sender.location.z.toInt() - 200)..(sender.location.z.toInt() + 200)) {
-					val loc = BlockLocation(x, y, z)
+					val loc = BlockPos(x, y, z)
 					if (ship.contains(loc)) {
 						sender.world.spawnParticle(
 							Particle.BLOCK_MARKER,

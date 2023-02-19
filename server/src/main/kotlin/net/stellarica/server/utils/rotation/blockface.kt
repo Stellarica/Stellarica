@@ -1,6 +1,5 @@
 package net.stellarica.server.utils.rotation
 
-import net.stellarica.common.utils.rotation.RotationAmount
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.BlockData

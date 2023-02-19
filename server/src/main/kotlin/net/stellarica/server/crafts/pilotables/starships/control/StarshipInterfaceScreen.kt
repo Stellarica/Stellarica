@@ -1,6 +1,5 @@
 package net.stellarica.server.crafts.pilotables.starships.control
 
-import net.stellarica.server.crafts.pilotables.Pilotable
 import net.stellarica.server.utils.extensions.isPilotingCraft
 import net.stellarica.server.utils.gui.Screen
 import net.stellarica.server.utils.gui.namedItem

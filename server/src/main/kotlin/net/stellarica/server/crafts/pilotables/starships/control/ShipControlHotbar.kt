@@ -5,8 +5,6 @@ import net.stellarica.server.utils.extensions.craft
 import net.stellarica.server.utils.extensions.hotbar
 import net.stellarica.server.utils.gui.hotbar.HotbarMenu
 import net.stellarica.server.utils.gui.namedItem
-import net.stellarica.common.utils.rotation.RotationAmount
-import net.stellarica.server.utils.locations.BlockLocation
 import org.bukkit.Material
 import org.bukkit.entity.Player
 
@@ -38,11 +36,11 @@ object ShipControlHotbar : HotbarMenu() {
 			return
 		}
 		when (index) {
-			0 -> ship.controlQueue.add { ship.queueMovement(BlockLocation(
+			0 -> ship.controlQueue.add { ship.queueMovement(BlockPos(
 				player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(ship.origin.world!!))
 			)}
-			1 -> TODO() // ship.velocity -= Vector3(player.eyeLocation.direction.normalize())
-			2 -> TODO() // ship.velocity = Vector3.zero
+			1 -> TODO() // ship.velocity -= Vec3(player.eyeLocation.direction.normalize())
+			2 -> TODO() // ship.velocity = Vec3.zero
 			4 -> ship.controlQueue.add { ship.queueRotation(RotationAmount.CLOCKWISE) }
 			5 -> ship.controlQueue.add { ship.queueRotation(RotationAmount.COUNTERCLOCKWISE) }
 			7 -> ship.weapons.fire()

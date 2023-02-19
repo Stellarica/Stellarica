@@ -4,7 +4,7 @@ import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
 import net.stellarica.server.commands.ConfigCommand
 import net.stellarica.server.crafts.pilotables.ControlQueueRunnable
-import net.stellarica.server.crafts.pilotables.Pilotable
+import net.stellarica.server.crafts.pilotables.starships.Starship
 import net.stellarica.server.crafts.pilotables.starships.commands.StarshipCommands
 import net.stellarica.server.crafts.pilotables.starships.commands.StarshipDebugCommands
 import net.stellarica.server.crafts.pilotables.starships.listeners.InterfaceListener
@@ -17,8 +17,6 @@ import net.stellarica.server.customitems.commands.CustomItemCommands
 import net.stellarica.server.customitems.listeners.ItemEnchantListener
 import net.stellarica.server.customitems.listeners.PowerItemBreakListener
 import net.stellarica.server.events.StellaricaConfigReloadEvent
-import net.stellarica.server.multiblocks.Multiblocks
-import net.stellarica.server.multiblocks.commands.MultiblockCommands
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.Handshake
 import net.stellarica.server.utils.ConfigurableValues
@@ -43,9 +41,9 @@ class StellaricaServer : JavaPlugin() {
 			private set
 
 		/**
-		 * The currently piloted [Pilotable]s
+		 * The currently piloted [Starship]s
 		 */
-		var pilotedCrafts = mutableSetOf<Pilotable>()
+		var pilotedCrafts = mutableSetOf<Starship>()
 
 		/**
 		 * kotlin-logging logger for Stellarica
@@ -74,7 +72,6 @@ class StellaricaServer : JavaPlugin() {
 			InterfaceListener(),
 			PowerItemBreakListener(),
 			ItemEnchantListener(),
-			Multiblocks,
 			ArmorValues,
 			Handshake()
 		).forEach { getPluginManager().registerEvents(it, this) }
@@ -86,7 +83,6 @@ class StellaricaServer : JavaPlugin() {
 			StarshipCommands(),
 			StarshipDebugCommands(),
 			CustomItemCommands(),
-			MultiblockCommands(),
 			TestDebugCommand(),
 		).forEach { commandManager.registerCommand(it) }
 		commandManager.commandCompletions.registerCompletion(
