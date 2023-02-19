@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.crafts.pilotables.starships.Starship
+import net.stellarica.server.mixin.BlockEntityMixin
 import net.stellarica.server.multiblocks.MultiblockInstance
 import net.stellarica.server.utils.ChunkLocation
 import net.stellarica.server.utils.asDegrees
@@ -200,7 +201,7 @@ open class Craft(
 
 				world.getChunk(current).removeBlockEntity(current)
 
-				(entity as BlockEntityMixin).setPos(target)
+				(entity as BlockEntityMixin).setWorldPosition(target)
 				entity.world = targetWorld
 				entity.markDirty()
 

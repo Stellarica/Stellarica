@@ -26,6 +26,9 @@ dependencies {
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core${property("kotlin_coroutines_version")}")
 	implementation("net.silkmc:silk-nbt:${property("silk_version")}")
+
+	implementation("space.vectrix.ignite:ignite-api:${property("ignite_version")}")
+	implementation("org.spongepowered:mixin:${property("mixin_version")}")
 }
 
 val version = property("mod_version")!!

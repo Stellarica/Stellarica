@@ -1,0 +1,11 @@
+{
+  "id": "stellarica",
+  "version": "1.0.0",
+  "entry": "com.example.ExampleMod",
+  "dependencies": [
+    "ignite"
+  ],
+  "mixins": [
+    "stellarica.mixins.json"
+  ]
+}
