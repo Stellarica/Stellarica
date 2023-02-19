@@ -1,4 +1,4 @@
-rootProject.name = "Hydrazine"
+rootProject.name = "Stellarica"
 pluginManagement {
 	repositories {
 		mavenCentral()

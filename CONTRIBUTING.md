@@ -1,4 +1,4 @@
-# Contributing to Hydrazine
+# Contributing to Stellarica
 
 1. Do not use spaces for indentation.
 2. Do not use * when importing.
