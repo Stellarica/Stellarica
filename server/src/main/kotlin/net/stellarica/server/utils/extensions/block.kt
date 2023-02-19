@@ -28,6 +28,6 @@ fun Block.setVisualDurability(value: Int) {
 class TestDebugCommand : BaseCommand() {
 	@Subcommand("set")
 	fun onSet(sender: Player, value: Int) {
-		sender.getTargetBlock(20)?.setVisualDurability(value)
+		sender.getTargetBlockExact(20)?.setVisualDurability(value)
 	}
 }
