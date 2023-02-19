@@ -6,7 +6,7 @@ import net.stellarica.server.StellaricaServer.Companion.plugin
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
 
-class BukkitNetworkHandler: PluginMessageListener {
+class BukkitNetworkHandler : PluginMessageListener {
 	init {
 		Channel.values().forEach {
 			plugin.server.messenger.registerIncomingPluginChannel(plugin, it.bukkit, this)

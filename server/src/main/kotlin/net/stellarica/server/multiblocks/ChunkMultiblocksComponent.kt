@@ -2,18 +2,17 @@ package net.stellarica.server.multiblocks
 
 
 import dev.onyxstudios.cca.api.v3.component.tick.ServerTickingComponent
-import kotlinx.serialization.Serializable
-import net.minecraft.nbt.NbtCompound
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
-import net.minecraft.world.World
-import net.minecraft.world.chunk.Chunk
-import net.minecraft.world.chunk.WorldChunk
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.nbt.CompoundTag
+import net.minecraft.world.level.chunk.LevelChunk
 import net.silkmc.silk.nbt.serialization.Nbt
 import net.silkmc.silk.nbt.serialization.decodeFromNbtElement
 import net.silkmc.silk.nbt.serialization.encodeToNbtElement
 import net.stellarica.server.Stellarica.Companion.identifier
 import net.stellarica.server.events.multiblocks.MultiblockUndetectEvent
+import org.bukkit.Chunk
+import org.bukkit.World
 
 
 class ChunkMultiblocksComponent(private val chunk: Chunk) : ServerTickingComponent {
@@ -48,14 +47,14 @@ class ChunkMultiblocksComponent(private val chunk: Chunk) : ServerTickingCompone
 			)
 	}
 
-	override fun readFromNbt(tag: NbtCompound) {
-		val world = (chunk as WorldChunk).world
+	override fun readFromNbt(tag: CompoundTag) {
+		val world = (chunk as LevelChunk).level
 		tag.get("multiblocks")?.let { nbt ->
 			Nbt.decodeFromNbtElement<List<MultiblockData>>(nbt).map { it.toInstance(world) }
 		}?.let { multiblocks.addAll(it) }
 	}
 
-	override fun writeToNbt(tag: NbtCompound) {
+	override fun writeToNbt(tag: CompoundTag) {
 		if (multiblocks.size == 0) return
 		tag.put("multiblocks", Nbt.encodeToNbtElement(multiblocks.map { MultiblockData(it) }))
 	}

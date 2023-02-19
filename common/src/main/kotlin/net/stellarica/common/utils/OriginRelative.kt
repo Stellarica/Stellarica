@@ -30,7 +30,7 @@ data class OriginRelative(
 			Direction.EAST -> BlockPos(z, y, x)
 			Direction.WEST -> BlockPos(-z, y, -x)
 			else -> throw Exception("wtf happened here you dummy")
-		}.add(origin)
+		}.offset(origin)
 	}
 
 	companion object {

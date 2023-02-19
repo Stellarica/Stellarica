@@ -13,8 +13,7 @@ object DebugProjectile : Projectile() {
 			{
 				false
 			},
-			{
-				_, _ ->
+			{ _, _ ->
 				false
 			},
 			{

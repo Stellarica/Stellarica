@@ -2,6 +2,7 @@ package net.stellarica.server.customitems
 
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.plugin
+import net.stellarica.server.customitems.CustomItems.items
 import net.stellarica.server.utils.extensions.id
 import org.bukkit.Bukkit
 import org.bukkit.Material

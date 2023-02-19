@@ -1,4 +1,4 @@
-package net.stellarica.server.utils.rotation
+package net.stellarica.server.utils
 
 import net.minecraft.core.Direction
 import net.minecraft.world.level.block.Rotation
@@ -38,7 +38,7 @@ val Rotation.asDegrees: Double
 
 fun Direction.rotate(rot: Rotation) = when (rot) {
 	Rotation.NONE -> this
-	Rotation.CLOCKWISE_90 -> this.rotateYClockwise()
+	Rotation.CLOCKWISE_90 -> this.clockWise
 	Rotation.CLOCKWISE_180 -> this.opposite
-	Rotation.COUNTERCLOCKWISE_90 -> this.rotateYCounterclockwise()
+	Rotation.COUNTERCLOCKWISE_90 -> this.counterClockWise
 }

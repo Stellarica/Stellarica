@@ -1,14 +1,5 @@
 package net.stellarica.server.crafts
 
-import net.stellarica.server.multiblocks.MultiblockInstance
-import net.stellarica.server.utils.ConfigurableValues
-import net.stellarica.common.utils.OriginRelative
-import net.stellarica.server.utils.extensions.sendRichMessage
-import net.stellarica.server.utils.locations.ChunkLocation
-import net.stellarica.server.utils.nms.removeBlockEntity
-import net.stellarica.server.utils.nms.setBlockEntity
-import net.stellarica.server.utils.rotation.rotate
-import net.stellarica.server.utils.rotation.rotateCoordinates
 import io.papermc.paper.entity.RelativeTeleportFlag
 import net.kyori.adventure.audience.ForwardingAudience
 import net.minecraft.core.BlockPos
@@ -17,14 +8,18 @@ import net.minecraft.world.level.block.Rotation
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.phys.Vec3
+import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.crafts.pilotables.starships.Starship
+import net.stellarica.server.multiblocks.MultiblockInstance
+import net.stellarica.server.utils.ChunkLocation
+import net.stellarica.server.utils.asDegrees
+import net.stellarica.server.utils.extensions.sendRichMessage
+import net.stellarica.server.utils.rotateCoordinates
 import org.bukkit.ChunkSnapshot
-import org.bukkit.Material
 import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
-import java.lang.ref.WeakReference
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.system.measureTimeMillis
 
@@ -40,31 +35,13 @@ open class Craft(
 ) : ForwardingAudience {
 
 	var detectedBlocks = mutableSetOf<BlockPos>()
-	var multiblocks = mutableSetOf<WeakReference<MultiblockInstance>>()
 	private var chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
-
-	/**
-	 * Whether the ship is currently moving.
-	 * @see lastMoved
-	 */
-	var isMoving = false
 
 
 	/**
 	 * The.. uh.. passengers...
 	 */
 	var passengers = mutableSetOf<Entity>()
-
-	/**
-	 * Remnant from MSP, I honestly have no idea, and am
-	 * too lazy to figure it out
-	 */
-	var allowedBlocks = mutableSetOf<Material>()
-
-	/**
-	 * The blocks that this ship cannot contain
-	 */
-	var undetectables = mutableSetOf<Material>()
 
 	/**
 	 * The number of detected blocks
@@ -77,6 +54,8 @@ open class Craft(
 
 	val hullIntegrityPercent
 		get() = blockCount / initialBlockCount.toDouble()
+
+	var multiblocks = mutableSetOf<OriginRelative>()
 
 
 	/**
@@ -101,18 +80,6 @@ open class Craft(
 		const val sizeLimit = 10000
 	}
 
-	var multiblocks = mutableSetOf<OriginRelative>()
-	var passengers = mutableSetOf<LivingEntity>()
-	private var detectedBlocks = mutableSetOf<BlockPos>()
-
-	val blockCount: Int
-		get() = detectedBlocks.size
-
-	/**
-	 * The blocks considered to be "inside" of the ship, but not neccecarily detected.
-	 */
-	protected var bounds = mutableSetOf<OriginRelative>()
-
 	/**
 	 * @return Whether [block] is considered to be inside this craft
 	 */
@@ -133,14 +100,6 @@ open class Craft(
 					bounds.add(OriginRelative(block.x, y, block.z))
 				}
 			}
-	}
-
-	fun sendRichMessage(message: String) {
-		passengers.forEach {
-			if (it is ServerPlayerEntity) {
-				it.sendRichMessage(message)
-			}
-		}
 	}
 
 	/**
@@ -172,7 +131,7 @@ open class Craft(
 
 	private fun change(
 		/** The transformation to apply to each blocks in the craft */
-		modifier: (Vec3d) -> Vec3d,
+		modifier: (Vec3) -> Vec3,
 		/** The world to move to */
 		targetWorld: ServerWorld,
 		/** The amount to rotate each directional blocks by */
@@ -344,7 +303,7 @@ open class Craft(
 			.map { MULTIBLOCKS.get(it).multiblocks }
 			.flatten()
 			.filter { detectedBlocks.contains(it.origin) }
-			.map { OriginRelative.get(it.origin, origin, direction)}
+			.map { OriginRelative.get(it.origin, origin, direction) }
 		)
 
 		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
@@ -415,19 +374,6 @@ open class Craft(
 			)
 			else it.teleport(destination)
 		}
-	}
-
-
-	/**
-	 * Update this craft's undetectables.
-	 */
-	fun updateUndetectables() {
-		// Construct the undetectable list
-		undetectables =
-			ConfigurableValues.defaultUndetectable.toMutableSet() // Get a copy of all default undetectables
-		undetectables.addAll(ConfigurableValues.forcedUndetectable)               // Add all forced undetectables
-		undetectables.removeAll(allowedBlocks)
-		messagePilot("<gray>Updated craft's undetectable blocks.")
 	}
 
 
