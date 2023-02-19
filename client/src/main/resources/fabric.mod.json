@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "hydrazine",
+  "id": "stellarica",
   "version": "$version",
-  "name": "Hydrazine",
+  "name": "Stellarica",
   "description": "I am very good at names!",
   "authors": [
     {
@@ -14,17 +14,17 @@
     }
   ],
   "contact": {
-    "issues": "https://github.com/hydrazinemc/hydrazine/issues",
-    "sources": "https://github.com/hydrazinemc/hydrazine"
+    "issues": "https://github.com/stellaricamc/stellarica/issues",
+    "sources": "https://github.com/stellaricamc/stellarica"
   },
   "license": "MIT",
-  "icon": "assets/hydrazine/icon.png",
+  "icon": "assets/stellarica/icon.png",
   "environment": "client",
   "entrypoints": {
     "client": [
       {
         "adapter": "kotlin",
-        "value": "io.github.hydrazinemc.hydrazine.client.HydrazineClient"
+        "value": "io.github.stellaricamc.stellarica.client.StellaricaClient"
       }
     ]
   },
