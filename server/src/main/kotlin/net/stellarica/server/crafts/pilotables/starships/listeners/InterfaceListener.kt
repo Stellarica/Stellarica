@@ -2,7 +2,7 @@ package net.stellarica.server.crafts.pilotables.starships.listeners
 
 import net.stellarica.server.crafts.pilotables.starships.Starship
 import net.stellarica.server.crafts.pilotables.starships.control.StarshipInterfaceScreen
-import net.stellarica.server.utils.extensions.blockLocation
+import net.stellarica.server.utils.extensions.BlockPos
 import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -24,7 +24,7 @@ class InterfaceListener : Listener {
 			if (event.clickedBlock!!.type == Material.JUKEBOX) {
 				StarshipInterfaceScreen(
 					event.player,
-					Starship(event.clickedBlock!!.blockLocation)
+					Starship(event.clickedBlock!!.BlockPos)
 				)
 
 				event.isCancelled = true

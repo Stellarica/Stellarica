@@ -17,7 +17,7 @@ fun Block.setVisualDurability(value: Int) {
 	(blockAnim.handle as ClientboundBlockDestructionPacket).wrap().apply {
 		@Suppress("DEPRECATION")
 		id = this@setVisualDurability.blockKey.toInt() // not perfect, good enough though
-		this.pos = this@setVisualDurability.blockLocation.asBlockPos
+		this.pos = this@setVisualDurability.BlockPos.asBlockPos
 		progress = value
 	}
 	plugin.server.onlinePlayers.forEach { blockAnim.sendTo(it) }

@@ -6,7 +6,6 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import net.stellarica.server.customblocks.CustomBlocks
 import net.stellarica.server.customitems.CustomItem
 import net.stellarica.server.customitems.CustomItems
-import net.stellarica.server.utils.locations.BlockLocation
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.data.MultipleFacing
@@ -23,7 +22,7 @@ val String.asMiniMessage: Component get() = MiniMessage.miniMessage().deserializ
 /**
  * The location of this block
  */
-val Block.blockLocation: BlockLocation get() = BlockLocation(this.location)
+val Block.BlockPos: BlockPos get() = BlockPos(this.location)
 
 fun Audience.sendRichMessage(message: String) = this.sendMessage(message.asMiniMessage)
 

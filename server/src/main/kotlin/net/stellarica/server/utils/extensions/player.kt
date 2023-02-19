@@ -2,7 +2,6 @@ package net.stellarica.server.utils.extensions
 
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.crafts.Craft
-import net.stellarica.server.crafts.pilotables.Pilotable
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
