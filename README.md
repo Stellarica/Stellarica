@@ -1,10 +1,5 @@
 # Stellarica
 
-![GitHub Actions](https://github.com/StellaricaMC/Stellarica/actions/workflows/gradle.yml/badge.svg)
-![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)
-
-### See https://github.com/HydrazineMC/Hydrazine-Quilt/ for the continuation/replacement!
-
 This project (A gradle nightmare) contains:
 - A Paper plugin that aims to add various science fiction mechanics to
 Minecraft.
