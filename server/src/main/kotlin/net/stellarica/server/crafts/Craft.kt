@@ -12,7 +12,11 @@ import net.stellarica.server.utils.rotation.rotateCoordinates
 import io.papermc.paper.entity.RelativeTeleportFlag
 import net.kyori.adventure.audience.ForwardingAudience
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Vec3i
+import net.minecraft.world.level.block.Rotation
 import net.minecraft.world.level.block.entity.BlockEntity
+import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.phys.Vec3
 import net.stellarica.server.crafts.pilotables.starships.Starship
 import org.bukkit.ChunkSnapshot
 import org.bukkit.Material
@@ -158,7 +162,7 @@ open class Craft(
 	 * Rotate the craft and contents by [rotation]
 	 * @see change
 	 */
-	fun rotate(rotation: BlockRotation) {
+	fun rotate(rotation: Rotation) {
 		change({ current ->
 			return@change rotateCoordinates(current, origin.toVec3d(), rotation)
 		}, world, rotation) {
@@ -172,7 +176,7 @@ open class Craft(
 		/** The world to move to */
 		targetWorld: ServerWorld,
 		/** The amount to rotate each directional blocks by */
-		rotation: BlockRotation = BlockRotation.NONE,
+		rotation: Rotation = Rotation.NONE,
 		/** Callback called after the craft finishes moving */
 		callback: () -> Unit = {}
 	) {
@@ -375,7 +379,7 @@ open class Craft(
 	 * Uses bukkit to teleport entities, and NMS to move players.
 	 */
 	@Suppress("UnstableApiUsage")
-	fun movePassengers(offset: (Vec3) -> Vec3, rotation: RotationAmount = RotationAmount.NONE) {
+	fun movePassengers(offset: (Vec3) -> Vec3, rotation: Rotation = Rotation.NONE) {
 		passengers.forEach {
 			// TODO: FIX
 			// this is not a good solution because if there is any rotation, the player will not be translated by the offset
@@ -387,7 +391,7 @@ open class Craft(
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
 			val destination =
-				if (rotation != RotationAmount.NONE) Vec3(it.location).rotateAround(
+				if (rotation != Rotation.NONE) Vec3(it.location).rotateAround(
 					Vec3(origin) + Vec3(
 						0.5,
 						0.0,

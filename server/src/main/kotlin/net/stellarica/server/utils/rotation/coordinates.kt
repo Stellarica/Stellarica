@@ -1,5 +1,8 @@
 package net.stellarica.server.utils.rotation
 
+import net.minecraft.core.Direction
+import net.minecraft.world.level.block.Rotation
+import net.minecraft.world.phys.Vec3
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -18,5 +21,24 @@ fun rotateCoordinates(loc: Vec3, origin: Vec3, theta: Double): Vec3 = Vec3(
  * Rotate [loc] [rotation] around [origin]
  * @see Vec3.rotateAround
  */
-fun rotateCoordinates(loc: Vec3, origin: Vec3, rotation: RotationAmount): Vec3 =
+fun rotateCoordinates(loc: Vec3, origin: Vec3, rotation: Rotation): Vec3 =
 	rotateCoordinates(loc, origin, rotation.asRadians)
+
+
+val Rotation.asRadians: Double
+	get() = when (this) {
+		Rotation.NONE -> 0.0
+		Rotation.CLOCKWISE_90 -> Math.PI / 2
+		Rotation.CLOCKWISE_180 -> Math.PI
+		Rotation.COUNTERCLOCKWISE_90 -> -Math.PI / 2
+	}
+
+val Rotation.asDegrees: Double
+	get() = Math.toDegrees(asRadians) // :iea:
+
+fun Direction.rotate(rot: Rotation) = when (rot) {
+	Rotation.NONE -> this
+	Rotation.CLOCKWISE_90 -> this.rotateYClockwise()
+	Rotation.CLOCKWISE_180 -> this.opposite
+	Rotation.COUNTERCLOCKWISE_90 -> this.rotateYCounterclockwise()
+}
