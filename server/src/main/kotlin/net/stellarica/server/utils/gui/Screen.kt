@@ -1,7 +1,7 @@
 package net.stellarica.server.utils.gui
 
-import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.kyori.adventure.text.Component.text
+import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.stellarica.server.utils.Tasks
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player

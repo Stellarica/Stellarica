@@ -1,4 +1,4 @@
-package net.stellarica.server.crafts.pilotables.starships.subsystems.shields;
+package net.stellarica.server.crafts.pilotables.starships.subsystems.shields
 
 import net.stellarica.server.crafts.pilotables.starships.Starship
 import net.stellarica.server.crafts.pilotables.starships.subsystems.Subsystem

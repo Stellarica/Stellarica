@@ -1,6 +1,5 @@
 package net.stellarica.server.crafts.pilotables.starships.subsystems.weapons
 
-import DebugProjectile
 import net.stellarica.server.crafts.pilotables.starships.Starship
 import net.stellarica.server.crafts.pilotables.starships.subsystems.Subsystem
 import net.stellarica.server.multiblocks.MultiblockInstance
@@ -8,8 +7,8 @@ import org.bukkit.util.Vector
 import java.lang.ref.WeakReference
 import kotlin.math.PI
 import kotlin.math.abs
-import kotlin.math.atan2
 import kotlin.math.asin
+import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -30,11 +29,13 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 		// the direction the pilot is facing
 		val eye = ship.pilot!!.eyeLocation.direction.normalize()
 
-		WeaponType.values().sortedBy{it.priority}.forEach { type ->
-			multiblocks.mapNotNull{it.get()}.filter{ it.type == type.multiblockType }.forEach { multiblock ->
+		WeaponType.values().sortedBy { it.priority }.forEach { type ->
+			multiblocks.mapNotNull { it.get() }.filter { it.type == type.multiblockType }.forEach { multiblock ->
 
 				// the direction the weapon is facing
-				val direction = multiblock.getLocation(type.direction).clone().subtract(multiblock.getLocation(type.mount)).toVector().normalize()
+				val direction =
+					multiblock.getLocation(type.direction).clone().subtract(multiblock.getLocation(type.mount))
+						.toVector().normalize()
 
 				// if the angleBetween (in radians) is less than the type's cone, fire
 				if (abs(eye.angle(direction)) > type.cone + (PI / 4)) return@forEach
@@ -59,7 +60,11 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 				)
 
 				val adjDirYaw = dirYaw - (2 * PI)
-				if (eyeYaw != eyeYaw.coerceIn(adjDirYaw - type.cone, adjDirYaw + type.cone) && direction.z < 0 && eye.z < 0 && eye.x < 0) {
+				if (eyeYaw != eyeYaw.coerceIn(
+						adjDirYaw - type.cone,
+						adjDirYaw + type.cone
+					) && direction.z < 0 && eye.z < 0 && eye.x < 0
+				) {
 					// more fix for arctan range issues
 					// literal duct tape
 					dir.x = -dir.x

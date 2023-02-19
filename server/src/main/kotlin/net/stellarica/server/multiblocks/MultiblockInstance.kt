@@ -1,21 +1,21 @@
 package net.stellarica.server.multiblocks
 
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.BlockPos
-import net.minecraft.util.math.Direction
-import net.minecraft.world.World
-import net.minecraft.world.chunk.Chunk
-import net.stellarica.server.utils.coordinates.OriginRelative
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.resources.ResourceLocation
+import net.stellarica.common.utils.OriginRelative
+import org.bukkit.Chunk
+import org.bukkit.World
 
 data class MultiblockInstance(
 	val origin: BlockPos,
 	val world: World,
 	val direction: Direction,
-	val typeId: Identifier
+	val typeId: ResourceLocation
 ) {
 
 	val chunk: Chunk
-		get() = world.getChunk(origin)
+		get() = world.getChunkAt(origin)
 
 	val type: MultiblockType // this seems inefficient
 		get() = MultiblockHandler.types.first { it.id == typeId }

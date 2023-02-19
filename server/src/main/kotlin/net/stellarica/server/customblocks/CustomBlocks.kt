@@ -1,6 +1,7 @@
 package net.stellarica.server.customblocks
 
 import net.stellarica.server.StellaricaServer.Companion.plugin
+import net.stellarica.server.customblocks.CustomBlocks.blocks
 import net.stellarica.server.customitems.CustomItem
 import net.stellarica.server.customitems.CustomItems.itemStackFromId
 import org.bukkit.block.BlockFace

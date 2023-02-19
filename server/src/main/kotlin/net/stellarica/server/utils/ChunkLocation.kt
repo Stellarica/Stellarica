@@ -1,4 +1,4 @@
-package net.stellarica.server.utils.locations
+package net.stellarica.server.utils
 
 /**
  * Container for an [x] and [z] of a chunk

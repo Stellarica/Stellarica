@@ -9,7 +9,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerQuitEvent
 
-class Handshake: Listener {
+class Handshake : Listener {
 	init {
 		plugin.networkHandler.registerListener(Channel.HANDSHAKE, ::onPlayerRespond)
 	}
@@ -31,10 +31,12 @@ class Handshake: Listener {
 				klogger.info { "Player $player connected with compatible mod version" }
 				plugin.moddedPlayers.add(player)
 			}
+
 			clientVersion > networkVersion -> klogger.warn {
 				"Player $player has a newer version of the mod than the server! " +
 						"Please update the plugin! ($clientVersion > $networkVersion)"
 			}
+
 			else -> klogger.info {
 				"Player $player has an outdated version of the mod! ($clientVersion < $networkVersion)"
 			}

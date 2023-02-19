@@ -1,4 +1,4 @@
-package net.stellarica.server.crafts.pilotables.starships.subsystems.weapons.projectiles;
+package net.stellarica.server.crafts.pilotables.starships.subsystems.weapons.projectiles
 
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.crafts.Craft
@@ -64,7 +64,7 @@ abstract class Projectile {
 		/** the number of ticks this has been running*/
 		var count = 0
 
-		class Runnable() : BukkitRunnable() {
+		class Runnable : BukkitRunnable() {
 			// gets run every tick
 			override fun run() {
 				// ray trace as far as it moves this tick (step blocks)

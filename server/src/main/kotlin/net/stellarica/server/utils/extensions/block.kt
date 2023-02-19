@@ -7,8 +7,8 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
 import com.mineinabyss.protocolburrito.dsl.sendTo
 import com.mineinabyss.protocolburrito.packets.wrap
-import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket
+import net.stellarica.server.StellaricaServer.Companion.plugin
 import org.bukkit.block.Block
 import org.bukkit.entity.Player
 

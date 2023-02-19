@@ -2,7 +2,7 @@ package net.stellarica.server
 
 import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
-import net.stellarica.server.commands.ConfigCommand
+import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.crafts.pilotables.ControlQueueRunnable
 import net.stellarica.server.crafts.pilotables.starships.Starship
 import net.stellarica.server.crafts.pilotables.starships.commands.StarshipCommands
@@ -10,19 +10,15 @@ import net.stellarica.server.crafts.pilotables.starships.commands.StarshipDebugC
 import net.stellarica.server.crafts.pilotables.starships.listeners.InterfaceListener
 import net.stellarica.server.crafts.pilotables.starships.subsystems.armor.ArmorValues
 import net.stellarica.server.customblocks.CustomBlockListener
-import net.stellarica.server.customblocks.CustomBlocks
 import net.stellarica.server.customblocks.MushroomEventListener
 import net.stellarica.server.customitems.CustomItems
 import net.stellarica.server.customitems.commands.CustomItemCommands
 import net.stellarica.server.customitems.listeners.ItemEnchantListener
 import net.stellarica.server.customitems.listeners.PowerItemBreakListener
-import net.stellarica.server.events.StellaricaConfigReloadEvent
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.Handshake
-import net.stellarica.server.utils.ConfigurableValues
 import net.stellarica.server.utils.extensions.TestDebugCommand
 import org.bukkit.Bukkit.getPluginManager
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
 
@@ -37,7 +33,7 @@ class StellaricaServer : JavaPlugin() {
 		 *
 		 * Sorry :)
 		 */
-		lateinit var plugin: net.stellarica.server.StellaricaServer
+		lateinit var plugin: StellaricaServer
 			private set
 
 		/**
@@ -50,18 +46,18 @@ class StellaricaServer : JavaPlugin() {
 		 * @see getLogger
 		 */
 		val klogger = KotlinLogging.logger("Stellarica")
+
+		fun identifier(path: String) = ResourceLocation("stellarica", path)
 	}
 
 	@Deprecated("Use kotlin-logging instead", ReplaceWith("klogger"))
 	override fun getLogger(): Logger = super.getLogger()
 
 	lateinit var networkHandler: BukkitNetworkHandler
-	val moddedPlayers = mutableSetOf<Player>()
 
 	override fun onEnable() {
 		// Plugin init
-
-		net.stellarica.server.StellaricaServer.Companion.plugin = this
+		plugin = this
 
 		networkHandler = BukkitNetworkHandler()
 
@@ -79,7 +75,6 @@ class StellaricaServer : JavaPlugin() {
 		// Register commands here
 		val commandManager = PaperCommandManager(this)
 		arrayOf(
-			ConfigCommand(),
 			StarshipCommands(),
 			StarshipDebugCommands(),
 			CustomItemCommands(),
@@ -89,20 +84,7 @@ class StellaricaServer : JavaPlugin() {
 			"customitems"
 		) { CustomItems.all.keys }
 
-		// Reload the config
-		saveDefaultConfig()
-		reloadConfig()
-
 		// Start the bukkit tasks
-		ControlQueueRunnable.runTaskTimer(net.stellarica.server.StellaricaServer.Companion.plugin, 1, 1)
-	}
-
-	override fun reloadConfig() {
-		super.reloadConfig()
-		CustomItems.loadFromConfig() // needs to be called before custom blocks
-		CustomBlocks.loadFromConfig()
-
-		getPluginManager().callEvent(StellaricaConfigReloadEvent())
-		ConfigurableValues.loadFromConfig()
+		ControlQueueRunnable.runTaskTimer(plugin, 1, 1)
 	}
 }

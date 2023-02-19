@@ -1,7 +1,7 @@
 package net.stellarica.server.customitems
 
-import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.kyori.adventure.text.Component
+import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.stellarica.server.utils.extensions.asMiniMessage
 import net.stellarica.server.utils.extensions.customItem
 import org.bukkit.NamespacedKey

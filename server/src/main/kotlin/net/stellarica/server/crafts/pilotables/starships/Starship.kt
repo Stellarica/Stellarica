@@ -62,24 +62,24 @@ class Starship(origin: BlockPos) : Craft(origin), Listener {
 	 * @return whether the craft was successfully activated
 	 */
 	fun activateCraft(pilot: Player): Boolean {
-			// Determine passengers, pilot
-			if (this.pilot != null) return false
-			if (this.blockCount == 0) {
-				pilot.sendRichMessage("<red>Cannot pilot empty craft, detect it first!")
-				return false
+		// Determine passengers, pilot
+		if (this.pilot != null) return false
+		if (this.blockCount == 0) {
+			pilot.sendRichMessage("<red>Cannot pilot empty craft, detect it first!")
+			return false
+		}
+		if (!contains(pilot.location)) {
+			pilot.sendRichMessage("<red>You must be inside the craft to pilot it!")
+			return false
+		}
+		passengers.add(pilot)
+		this.pilot = pilot
+		Bukkit.getOnlinePlayers().filter { it.world == origin.world }.forEach {
+			if (contains(it.location) && it != pilot) {
+				passengers.add(it)
+				it.sendRichMessage("<gray>Now riding a craft piloted by ${pilot.name}!")
 			}
-			if (!contains(pilot.location)) {
-				pilot.sendRichMessage("<red>You must be inside the craft to pilot it!")
-				return false
-			}
-			passengers.add(pilot)
-			this.pilot = pilot
-			Bukkit.getOnlinePlayers().filter { it.world == origin.world }.forEach {
-				if (contains(it.location) && it != pilot) {
-					passengers.add(it)
-					it.sendRichMessage("<gray>Now riding a craft piloted by ${pilot.name}!")
-				}
-			}
+		}
 
 
 		plugin.server.pluginManager.registerEvents(this, plugin)

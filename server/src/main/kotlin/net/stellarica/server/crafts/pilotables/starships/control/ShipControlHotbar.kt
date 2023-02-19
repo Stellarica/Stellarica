@@ -36,9 +36,14 @@ object ShipControlHotbar : HotbarMenu() {
 			return
 		}
 		when (index) {
-			0 -> ship.controlQueue.add { ship.queueMovement(BlockPos(
-				player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(ship.origin.world!!))
-			)}
+			0 -> ship.controlQueue.add {
+				ship.queueMovement(
+					BlockPos(
+						player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(ship.origin.world!!)
+					)
+				)
+			}
+
 			1 -> TODO() // ship.velocity -= Vec3(player.eyeLocation.direction.normalize())
 			2 -> TODO() // ship.velocity = Vec3.zero
 			4 -> ship.controlQueue.add { ship.queueRotation(Rotation.CLOCKWISE) }
