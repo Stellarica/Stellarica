@@ -1,8 +1,12 @@
-package net.stellarica.server.crafts.pilotables.starships.subsystems.weapons
+package net.stellarica.server.crafts.starships.subsystems.weapons
 
-import net.stellarica.server.crafts.pilotables.starships.Starship
-import net.stellarica.server.crafts.pilotables.starships.subsystems.Subsystem
+import net.stellarica.common.utils.OriginRelative
+import net.stellarica.server.crafts.starships.Starship
+import net.stellarica.server.crafts.starships.subsystems.Subsystem
 import net.stellarica.server.multiblocks.MultiblockInstance
+import net.stellarica.server.utils.extensions.toLocation
+import net.stellarica.server.utils.extensions.toVec3
+import net.stellarica.server.utils.extensions.toVector
 import org.bukkit.util.Vector
 import java.lang.ref.WeakReference
 import kotlin.math.PI
@@ -14,11 +18,11 @@ import kotlin.math.sin
 
 class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 
-	val multiblocks = mutableSetOf<WeakReference<MultiblockInstance>>()
+	val multiblocks = mutableSetOf<OriginRelative>()
 
 	override fun onShipPiloted() {
 		ship.multiblocks.forEach { multiblock ->
-			if (multiblock.get()?.type in WeaponType.values().map { it.multiblockType }) {
+			if (ship.getMultiblock(multiblock).type in WeaponType.values().map { it.multiblockType }) {
 				multiblocks.add(multiblock)
 			}
 		}
@@ -30,15 +34,15 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 		val eye = ship.pilot!!.eyeLocation.direction.normalize()
 
 		WeaponType.values().sortedBy { it.priority }.forEach { type ->
-			multiblocks.mapNotNull { it.get() }.filter { it.type == type.multiblockType }.forEach { multiblock ->
+			multiblocks.mapNotNull { ship.getMultiblock(it) }.filter { it.type == type.multiblockType }.forEach { multiblock ->
 
 				// the direction the weapon is facing
 				val direction =
-					multiblock.getLocation(type.direction).clone().subtract(multiblock.getLocation(type.mount))
-						.toVector().normalize()
+					multiblock.getLocation(type.direction).immutable().subtract(multiblock.getLocation(type.mount))
+						.toVec3().normalize()
 
 				// if the angleBetween (in radians) is less than the type's cone, fire
-				if (abs(eye.angle(direction)) > type.cone + (PI / 4)) return@forEach
+				if (abs(eye.angle(direction.toVector())) > type.cone + (PI / 4)) return@forEach
 
 				// this whole thing could definitely be improved
 				val dirPitch = asin(-direction.y)
@@ -73,7 +77,7 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 
 				type.projectile.shoot(
 					ship,
-					multiblock.getLocation(type.mount).clone().add(0.5, 0.5, 0.5).add(dir)
+					multiblock.getLocation(type.mount).toLocation(ship.world.world).add(0.5, 0.5, 0.5).add(dir)
 						.also { it.direction = dir }
 				)
 			}

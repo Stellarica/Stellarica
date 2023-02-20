@@ -1,4 +1,4 @@
-package net.stellarica.server.crafts.pilotables.starships
+package net.stellarica.server.crafts.starships
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -6,24 +6,23 @@ import net.minecraft.server.level.ServerLevel
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.stellarica.server.crafts.Craft
-import net.stellarica.server.crafts.pilotables.starships.control.ShipControlHotbar
-import net.stellarica.server.crafts.pilotables.starships.subsystems.Subsystem
-import net.stellarica.server.crafts.pilotables.starships.subsystems.armor.ArmorSubsystem
-import net.stellarica.server.crafts.pilotables.starships.subsystems.shields.ShieldSubsystem
-import net.stellarica.server.crafts.pilotables.starships.subsystems.weapons.WeaponSubsystem
-import net.stellarica.server.utils.Tasks
+import net.stellarica.server.crafts.starships.control.ShipControlHotbar
+import net.stellarica.server.crafts.starships.subsystems.Subsystem
+import net.stellarica.server.crafts.starships.subsystems.armor.ArmorSubsystem
+import net.stellarica.server.crafts.starships.subsystems.shields.ShieldSubsystem
+import net.stellarica.server.crafts.starships.subsystems.weapons.WeaponSubsystem
+import net.stellarica.server.utils.extensions.toBlockPos
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockExplodeEvent
-import org.bukkit.scheduler.BukkitTask
 import kotlin.math.roundToInt
 
 /**
  * Base Starship class
  */
-class Starship(origin: BlockPos, direction: Direction, world: ServerLevel) : Craft(origin, direction, world), Listener {
+class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner: Player? = null) : Craft(origin, direction, world, owner), Listener {
 
 	val subsystems: Set<Subsystem>
 		get() = setOf(weapons, shields, armor)
@@ -33,10 +32,6 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel) : Cra
 	val shields = ShieldSubsystem(this)
 	val armor = ArmorSubsystem(this)
 
-	/**
-	 * The owner of this craft
-	 */
-	var owner: Player? = null
 
 	/**
 	 * The player who is currently piloting this craft
@@ -58,14 +53,14 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel) : Cra
 			pilot.sendRichMessage("<red>Cannot pilot empty craft, detect it first!")
 			return false
 		}
-		if (!contains(pilot.location)) {
+		if (!contains(pilot.location.toBlockPos())) {
 			pilot.sendRichMessage("<red>You must be inside the craft to pilot it!")
 			return false
 		}
 		passengers.add(pilot)
 		this.pilot = pilot
 		Bukkit.getOnlinePlayers().filter { it.world == world }.forEach {
-			if (contains(it.location) && it != pilot) {
+			if (contains(it.location.toBlockPos()) && it != pilot) {
 				passengers.add(it)
 				it.sendRichMessage("<gray>Now riding a craft piloted by ${pilot.name}!")
 			}
@@ -93,7 +88,7 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel) : Cra
 		StarshipHUD.close(this)
 		this.passengers.clear()
 		// close the hotbar menu
-		ShipControlHotbar.closeMenu(pilot)
+		ShipControlHotbar.closeMenu(pilot!!)
 
 		// todo: maybe find a better way than spamming this for everything we register to
 		// reflection?
@@ -108,12 +103,12 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel) : Cra
 	@EventHandler
 	fun onBlockExplode(event: BlockExplodeEvent) {
 		// todo: fix bad range check
-		if (event.block.location.distanceSquared(origin) < 500 && contains(event.block.location)) {
+		if (origin.distSqr(event.block.toBlockPos())  < 500 && contains(event.block.toBlockPos())) {
 			if (shields.shieldHealth > 0) {
 				event.isCancelled = true
 				shields.damage(event.block.location, event.yield.roundToInt())
 			} else {
-				detectedBlocks.remove(event.block.location)
+				detectedBlocks.remove(event.block.toBlockPos())
 			}
 		}
 	}

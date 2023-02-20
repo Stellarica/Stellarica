@@ -2,6 +2,7 @@ package net.stellarica.server.utils.extensions
 
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.crafts.Craft
+import net.stellarica.server.crafts.starships.Starship
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 
@@ -26,7 +27,7 @@ val Player.craft: Craft?
  * @see Player.craft
  */
 val Player.isPilotingCraft: Boolean
-	get() = (this.craft as? Pilotable?)?.pilot == this
+	get() = (this.craft as? Starship?)?.pilot == this
 
 /**
  * The player's current hotbar

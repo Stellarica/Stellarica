@@ -8,7 +8,10 @@ import net.kyori.adventure.audience.ForwardingAudience
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Vec3i
+import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.tags.TagKey
+import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.Rotation
 import net.minecraft.world.level.block.entity.BlockEntity
@@ -16,16 +19,21 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.chunk.LevelChunk
 import net.minecraft.world.phys.Vec3
 import net.stellarica.common.utils.OriginRelative
-import net.stellarica.server.crafts.pilotables.starships.Starship
+import net.stellarica.server.StellaricaServer.Companion.identifier
+import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.mixin.BlockEntityMixin
+import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockInstance
 import net.stellarica.server.utils.ChunkLocation
 import net.stellarica.server.utils.asDegrees
 import net.stellarica.server.utils.extensions.sendRichMessage
+import net.stellarica.server.utils.extensions.toBlockPos
+import net.stellarica.server.utils.extensions.toLocation
+import net.stellarica.server.utils.extensions.toVec3
 import net.stellarica.server.utils.rotate
 import net.stellarica.server.utils.rotateCoordinates
+import org.bukkit.Chunk
 import org.bukkit.ChunkSnapshot
-import org.bukkit.block.data.BlockData
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
@@ -42,12 +50,11 @@ open class Craft(
 	 */
 	var origin: BlockPos,
 	var direction: Direction,
-	var world: ServerLevel
+	var world: ServerLevel,
+	var owner: Player? = null
 ) : ForwardingAudience {
 
 	var detectedBlocks = mutableSetOf<BlockPos>()
-	private var chunkCache = mutableMapOf<ChunkLocation, ChunkSnapshot>()
-
 
 	/**
 	 * The.. uh.. passengers...
@@ -89,6 +96,7 @@ open class Craft(
 
 	companion object {
 		const val sizeLimit = 10000
+		val detectableKey = TagKey(Registries.BLOCK, identifier("starship_detectable"))
 	}
 
 	/**
@@ -118,8 +126,8 @@ open class Craft(
 	 * @see change
 	 */
 	fun move(offset: Vec3i) {
-		val change = offset.toVec3d()
-		// don't want to let them pass a vec3d
+		val change = offset.toVec3()
+		// don't want to let them pass a vec3
 		// since the ships snap to blocks but entities can actually move by that much
 		// relative entity teleportation will be messed up
 
@@ -134,7 +142,7 @@ open class Craft(
 	 */
 	fun rotate(rotation: Rotation) {
 		change({ current ->
-			return@change rotateCoordinates(current, origin.toVec3d(), rotation)
+			return@change rotateCoordinates(current, origin.toVec3(), rotation)
 		}, world, rotation) {
 			direction = direction.rotate(rotation)
 		}
@@ -157,7 +165,7 @@ open class Craft(
 				// chunk into sections to process parallel
 				launch(Dispatchers.Default) {
 					section.forEach { current ->
-						targetsCHM[current] = modifier(current.toVec3d()).toBlockPos()
+						targetsCHM[current] = modifier(current.toVec3()).toBlockPos()
 					}
 				}
 			}
@@ -202,7 +210,7 @@ open class Craft(
 			val currentBlock = original.getOrElse(current) { world.getBlockState(current) }
 
 			// set the blocks
-			setBlockFast(target, currentBlock.rotate(rotation), targetWorld)
+			setBlockFast(targetWorld, target, currentBlock.rotate(rotation))
 			newDetectedBlocks.add(target)
 
 			// move any entities
@@ -225,7 +233,7 @@ open class Craft(
 		if (world == targetWorld) {
 			// set air where we were
 			detectedBlocks.removeAll(newDetectedBlocks)
-			detectedBlocks.forEach { setBlockFast(it, Blocks.AIR.defaultBlockState(), world) }
+			detectedBlocks.forEach { setBlockFast( world, it, Blocks.AIR.defaultBlockState()) }
 		}
 		detectedBlocks = newDetectedBlocks
 
@@ -233,19 +241,19 @@ open class Craft(
 		multiblocks.forEach { pos ->
 			val mb = getMultiblock(pos)
 			val new = MultiblockInstance(
-				origin = modifier(mb.origin.toVec3d()).toBlockPos(),
-				world = targetWorld,
+				origin = modifier(mb.origin.toVec3()).toBlockPos(),
+				world = targetWorld.world,
 				direction = mb.direction.rotate(rotation),
 				typeId = mb.typeId
 			)
-			MULTIBLOCKS.get(mb.chunk).multiblocks.remove(mb)
-			MULTIBLOCKS.get(targetWorld.getChunk(new.origin)).multiblocks.add(new)
+			MultiblockHandler[mb.chunk].remove(mb)
+			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkitChunk].add(new)
 		}
 
 		// finish up
 		movePassengers(modifier, rotation)
 		world = targetWorld
-		origin = modifier(origin.toVec3d()).toBlockPos()
+		origin = modifier(origin.toVec3()).toBlockPos()
 		callback()
 	}
 
@@ -266,24 +274,24 @@ open class Craft(
 
 			for (currentBlock in blocksToCheck) {
 
-				if (undetectableBlocks.contains(world.getBlockState(currentBlock).block)) continue
+				if (!world.getBlockState(currentBlock).tags.toList().contains(detectableKey)) continue
 
 				if (detectedBlocks.size > Companion.sizeLimit) {
-					owner.sendRichMessage("<gold>Detection limit reached. (${Companion.sizeLimit} blocks)")
+					owner?.sendRichMessage("<gold>Detection limit reached. (${Companion.sizeLimit} blocks)")
 					nextBlocksToCheck.clear()
 					detectedBlocks.clear()
 					break
 				}
 
 				detectedBlocks.add(currentBlock)
-				chunks.add(world.getChunk(currentBlock))
+				chunks.add(world.getChunkAt(currentBlock).bukkitChunk)
 
 				// Slightly condensed from MSP's nonsense, but this could be improved
 				for (x in -1..1) {
 					for (y in -1..1) {
 						for (z in -1..1) {
 							if (x == y && z == y && y == 0) continue
-							val block = currentBlock.add(x, y, z)
+							val block = currentBlock.offset(x, y, z)
 							if (!checkedBlocks.contains(block)) {
 								checkedBlocks.add(block)
 								nextBlocksToCheck.add(block)
@@ -295,12 +303,12 @@ open class Craft(
 		}
 
 		val elapsed = System.currentTimeMillis() - startTime
-		owner.sendRichMessage("<green>Craft detected! (${detectedBlocks.size} blocks)")
-		owner.sendRichMessage(
+		owner?.sendRichMessage("<green>Craft detected! (${detectedBlocks.size} blocks)")
+		owner?.sendRichMessage(
 			"<gray>Detected ${detectedBlocks.size} blocks in ${elapsed}ms. " +
 					"(${detectedBlocks.size / elapsed.coerceAtLeast(1)} blocks/ms)"
 		)
-		owner.sendRichMessage(
+		owner?.sendRichMessage(
 			"<gray>Calculated Hitbox in ${
 				measureTimeMillis {
 					calculateHitbox()
@@ -311,37 +319,44 @@ open class Craft(
 		multiblocks.clear()
 		// this is probably slow
 		multiblocks.addAll(chunks
-			.map { MULTIBLOCKS.get(it).multiblocks }
+			.map { MultiblockHandler[it] }
 			.flatten()
 			.filter { detectedBlocks.contains(it.origin) }
 			.map { OriginRelative.get(it.origin, origin, direction) }
 		)
 
-		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
+		owner?.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
 	}
 
-	private fun setBlockFast(pos: BlockPos, state: BlockState, world: ServerLevel) {
-		val chunk = world.getChunk(pos) as LevelChunk
-		val chunkSection = (pos.y shr 4) - chunk.bottomSectionCoord
-		var section = chunk.sectionArray[chunkSection]
+	// A modified, kotlin-ified version of the block placement from
+	// https://github.com/APDevTeam/Movecraft/blob/main/modules/v1_18_R2/src/main/java/net/countercraft/movecraft/compat/v1_18_R2/IWorldHandler.java
+	// Under GPL-3 as noted in the readme
+	/**
+	 * Set the block at [position] in [world] to [data] using NMS
+	 */
+	private fun setBlockFast(world: Level, position: BlockPos, data: BlockState) {
+		val chunk: LevelChunk = world.getChunkAt(position)
+		val chunkSection = (position.y shr 4) - chunk.minSection
+		var section = chunk.sections[chunkSection]
 		if (section == null) {
-			// Put a GLASS blocks to initialize the section. It will be replaced next with the real blocks.
-			chunk.setBlockState(pos, Blocks.GLASS.defaultBlockState(), false)
-			section = chunk.sectionArray[chunkSection]
+			// Put a GLASS block to initialize the section. It will be replaced next with the real block.
+			chunk.setBlockState(position, Blocks.GLASS.defaultBlockState(), false)
+			section = chunk.sections[chunkSection]
 		}
-		val oldState = section!!.getBlockState(pos.x and 15, pos.y and 15, pos.z and 15)
-		if (oldState == state) return //Block is already of correct type and data, don't overwrite
-
-		section.setBlockState(pos.x and 15, pos.y and 15, pos.z and 15, state)
-		world.updateListeners(pos, oldState, state, 3)
+		if (section!!.getBlockState(position.x and 15, position.y and 15, position.z and 15) == data) {
+			//Block is already of correct type and data, don't overwrite
+			return
+		}
+		section.setBlockState(position.x and 15, position.y and 15, position.z and 15, data)
+		world.sendBlockUpdated(position, data, data, 3)
 		// world.lightEngine.checkBlock(position) // boolean corresponds to if chunk section empty
 		//todo: LIGHTING IS FOR CHUMPS!
-		chunk.setNeedsSaving(true)
+		chunk.isUnsaved = true
 	}
 
 	fun getMultiblock(pos: OriginRelative): MultiblockInstance {
 		val origin = pos.getBlockPos(origin, direction)
-		return MULTIBLOCKS[world.getChunk(origin)].multiblocks.first { it.origin == origin }
+		return MultiblockHandler[world.getChunkAt(origin).bukkitChunk].first { it.origin == origin }
 	}
 
 	/**
@@ -361,20 +376,20 @@ open class Craft(
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
 			val destination =
-				if (rotation != Rotation.NONE) Vec3(it.location).rotateAround(
-					Vec3(origin) + Vec3(
+				if (rotation != Rotation.NONE) rotateCoordinates(it.location.toVec3(),
+					origin.toVec3().add(Vec3(
 						0.5,
 						0.0,
 						0.5
-					), rotation
-				).asLocation
-				else offset(Vec3(it.location)).asLocation
+					)), rotation
+				).toLocation(world.world)
+				else offset(it.location.toVec3()).toLocation(world.world)
 
 
 			destination.world = it.world // todo: fix
 
 			destination.pitch = it.location.pitch
-			destination.yaw = it.location.yaw + rotation.asDegrees
+			destination.yaw = (it.location.yaw + rotation.asDegrees).toFloat()
 
 			if (it is Player) it.teleport(
 				destination,

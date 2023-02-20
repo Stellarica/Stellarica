@@ -1,9 +1,9 @@
-package net.stellarica.server.crafts.pilotables.starships.listeners
+package net.stellarica.server.crafts.starships.listeners
 
 import net.minecraft.core.Direction
-import net.stellarica.server.crafts.pilotables.starships.Starship
-import net.stellarica.server.crafts.pilotables.starships.control.StarshipInterfaceScreen
-import net.stellarica.server.utils.extensions.BlockPos
+import net.stellarica.server.crafts.starships.Starship
+import net.stellarica.server.crafts.starships.control.StarshipInterfaceScreen
+import net.stellarica.server.utils.extensions.toBlockPos
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_19_R2.CraftWorld
 import org.bukkit.event.EventHandler
@@ -26,7 +26,7 @@ class InterfaceListener : Listener {
 			if (event.clickedBlock!!.type == Material.JUKEBOX) {
 				StarshipInterfaceScreen(
 					event.player,
-					Starship(event.clickedBlock!!.BlockPos, Direction.NORTH, (event.player.world as CraftWorld).handle)
+					Starship(event.clickedBlock!!.toBlockPos(), Direction.NORTH, (event.player.world as CraftWorld).handle, event.player)
 				)
 
 				event.isCancelled = true

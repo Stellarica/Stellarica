@@ -1,9 +1,10 @@
-package net.stellarica.server.crafts.pilotables.starships.control
+package net.stellarica.server.crafts.starships.control
 
 import net.minecraft.world.level.block.Rotation
-import net.stellarica.server.crafts.pilotables.starships.Starship
+import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.utils.extensions.craft
 import net.stellarica.server.utils.extensions.hotbar
+import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.gui.hotbar.HotbarMenu
 import net.stellarica.server.utils.gui.namedItem
 import org.bukkit.Material
@@ -37,8 +38,7 @@ object ShipControlHotbar : HotbarMenu() {
 			return
 		}
 		when (index) {
-			0 -> ship.move(player.eyeLocation.direction.normalize().multiply(1.5f))
-
+			0 -> ship.move(player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(player.world).toBlockPos())
 			1 -> TODO() // ship.velocity -= Vec3(player.eyeLocation.direction.normalize())
 			2 -> TODO() // ship.velocity = Vec3.zero
 			4 -> ship.rotate(Rotation.CLOCKWISE_90)
