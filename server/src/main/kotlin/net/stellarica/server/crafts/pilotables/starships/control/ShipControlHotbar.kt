@@ -1,5 +1,6 @@
 package net.stellarica.server.crafts.pilotables.starships.control
 
+import net.minecraft.world.level.block.Rotation
 import net.stellarica.server.crafts.pilotables.starships.Starship
 import net.stellarica.server.utils.extensions.craft
 import net.stellarica.server.utils.extensions.hotbar
@@ -36,20 +37,14 @@ object ShipControlHotbar : HotbarMenu() {
 			return
 		}
 		when (index) {
-			0 -> ship.controlQueue.add {
-				ship.queueMovement(
-					BlockPos(
-						player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(ship.origin.world!!)
-					)
-				)
-			}
+			0 -> ship.move(player.eyeLocation.direction.normalize().multiply(1.5f))
 
 			1 -> TODO() // ship.velocity -= Vec3(player.eyeLocation.direction.normalize())
 			2 -> TODO() // ship.velocity = Vec3.zero
-			4 -> ship.controlQueue.add { ship.queueRotation(Rotation.CLOCKWISE) }
-			5 -> ship.controlQueue.add { ship.queueRotation(Rotation.COUNTERCLOCKWISE) }
+			4 -> ship.rotate(Rotation.CLOCKWISE_90)
+			5 -> ship.rotate(Rotation.COUNTERCLOCKWISE_90)
 			7 -> ship.weapons.fire()
-			8 -> ship.controlQueue.add { ship.deactivateCraft() }
+			8 -> ship.deactivateCraft()
 		}
 	}
 }

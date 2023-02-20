@@ -30,7 +30,7 @@ object StarshipHUD {
 			(it as? Player)?.setScoreboardContents(
 				"Starship", listOf(
 					"Block Count: ${ship.blockCount}",
-					"Origin: ${ship.origin.formattedString}",
+					"Origin: ${ship.origin}",
 					if (ship.shields.maxShieldHealth != 0)
 						"Shields: ${getShieldBar(ship)}" // - ${ship.shields.shieldHealth}/${ship.shields.maxShieldHealth}"
 					else "<red>No Shields",

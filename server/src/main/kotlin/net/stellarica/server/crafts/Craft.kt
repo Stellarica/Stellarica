@@ -1,12 +1,19 @@
 package net.stellarica.server.crafts
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import io.papermc.paper.entity.RelativeTeleportFlag
 import net.kyori.adventure.audience.ForwardingAudience
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.core.Vec3i
+import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.Rotation
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
+import net.minecraft.world.level.chunk.LevelChunk
 import net.minecraft.world.phys.Vec3
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.crafts.pilotables.starships.Starship
@@ -15,6 +22,7 @@ import net.stellarica.server.multiblocks.MultiblockInstance
 import net.stellarica.server.utils.ChunkLocation
 import net.stellarica.server.utils.asDegrees
 import net.stellarica.server.utils.extensions.sendRichMessage
+import net.stellarica.server.utils.rotate
 import net.stellarica.server.utils.rotateCoordinates
 import org.bukkit.ChunkSnapshot
 import org.bukkit.block.data.BlockData
@@ -32,7 +40,9 @@ open class Craft(
 	 * The point from which detection starts, and
 	 * the craft rotates around
 	 */
-	var origin: BlockPos
+	var origin: BlockPos,
+	var direction: Direction,
+	var world: ServerLevel
 ) : ForwardingAudience {
 
 	var detectedBlocks = mutableSetOf<BlockPos>()
@@ -134,7 +144,7 @@ open class Craft(
 		/** The transformation to apply to each blocks in the craft */
 		modifier: (Vec3) -> Vec3,
 		/** The world to move to */
-		targetWorld: ServerWorld,
+		targetWorld: ServerLevel,
 		/** The amount to rotate each directional blocks by */
 		rotation: Rotation = Rotation.NONE,
 		/** Callback called after the craft finishes moving */
@@ -202,8 +212,8 @@ open class Craft(
 				world.getChunk(current).removeBlockEntity(current)
 
 				(entity as BlockEntityMixin).setWorldPosition(target)
-				entity.world = targetWorld
-				entity.markDirty()
+				entity.level = targetWorld
+				entity.setChanged()
 
 				targetWorld.getChunk(target).setBlockEntity(entity)
 			}
@@ -215,7 +225,7 @@ open class Craft(
 		if (world == targetWorld) {
 			// set air where we were
 			detectedBlocks.removeAll(newDetectedBlocks)
-			detectedBlocks.forEach { setBlockFast(it, Blocks.AIR.defaultState, world) }
+			detectedBlocks.forEach { setBlockFast(it, Blocks.AIR.defaultBlockState(), world) }
 		}
 		detectedBlocks = newDetectedBlocks
 
@@ -310,13 +320,13 @@ open class Craft(
 		owner.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
 	}
 
-	private fun setBlockFast(pos: BlockPos, state: BlockState, world: ServerWorld) {
-		val chunk = world.getChunk(pos) as WorldChunk
+	private fun setBlockFast(pos: BlockPos, state: BlockState, world: ServerLevel) {
+		val chunk = world.getChunk(pos) as LevelChunk
 		val chunkSection = (pos.y shr 4) - chunk.bottomSectionCoord
 		var section = chunk.sectionArray[chunkSection]
 		if (section == null) {
 			// Put a GLASS blocks to initialize the section. It will be replaced next with the real blocks.
-			chunk.setBlockState(pos, Blocks.GLASS.defaultState, false)
+			chunk.setBlockState(pos, Blocks.GLASS.defaultBlockState(), false)
 			section = chunk.sectionArray[chunkSection]
 		}
 		val oldState = section!!.getBlockState(pos.x and 15, pos.y and 15, pos.z and 15)
@@ -375,22 +385,6 @@ open class Craft(
 			)
 			else it.teleport(destination)
 		}
-	}
-
-
-	private fun getCachedBlockData(block: BlockPos): BlockData {
-		val chunkCoord = ChunkLocation(block.x shr 4, block.z shr 4)
-		val currentChunk = chunkCache.getOrPut(chunkCoord) {
-			block.world!!.getChunkAt(
-				chunkCoord.x,
-				chunkCoord.z
-			).getChunkSnapshot(false, false, false)
-		}
-		return currentChunk.getBlockData(
-			block.x - (chunkCoord.x shl 4),
-			block.y,
-			block.z - (chunkCoord.z shl 4)
-		)
 	}
 
 	override fun audiences() = passengers

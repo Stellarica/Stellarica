@@ -15,6 +15,7 @@ import net.stellarica.server.customitems.CustomItems
 import net.stellarica.server.customitems.commands.CustomItemCommands
 import net.stellarica.server.customitems.listeners.ItemEnchantListener
 import net.stellarica.server.customitems.listeners.PowerItemBreakListener
+import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.Handshake
 import net.stellarica.server.utils.extensions.TestDebugCommand
@@ -69,6 +70,7 @@ class StellaricaServer : JavaPlugin() {
 			PowerItemBreakListener(),
 			ItemEnchantListener(),
 			ArmorValues,
+			MultiblockHandler,
 			Handshake()
 		).forEach { getPluginManager().registerEvents(it, this) }
 
