@@ -16,12 +16,10 @@ pluginManagement {
 		val paperweight_version: String by settings
 		val loom_version: String by settings
 		val kotlin_version: String by settings
-		val run_paper_version: String by settings
 		val shadow_version: String by settings
 		val detekt_version: String by settings
 
 		id("fabric-loom") version loom_version
-		id("xyz.jpenilla.run-paper") version run_paper_version
 		id("io.papermc.paperweight.userdev") version paperweight_version
 		id("com.github.johnrengelman.shadow") version shadow_version
 		id("io.gitlab.arturbosch.detekt") version detekt_version

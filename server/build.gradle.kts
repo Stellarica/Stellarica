@@ -1,5 +1,4 @@
 plugins {
-	id("xyz.jpenilla.run-paper")
 	id("io.papermc.paperweight.userdev")
 	id("com.github.johnrengelman.shadow")
 	kotlin("plugin.serialization")
@@ -48,10 +47,6 @@ tasks {
 	shadowJar {
 		relocate("co.aikar.commands", "io.github.stellaricamc.stellarica.libraries.co.aikar.commands")
 		relocate("co.aikar.locales", "io.github.stellaricamc.stellarica.libraries.co.aikar.locales")
-	}
-
-	runServer {
-		minecraftVersion(mc)
 	}
 
 	processResources {
