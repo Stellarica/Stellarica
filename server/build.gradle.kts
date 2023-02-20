@@ -2,6 +2,7 @@ plugins {
 	id("xyz.jpenilla.run-paper")
 	id("io.papermc.paperweight.userdev")
 	id("com.github.johnrengelman.shadow")
+	kotlin("plugin.serialization")
 }
 
 repositories {
@@ -24,8 +25,8 @@ dependencies {
 	implementation("com.mineinabyss:protocolburrito:${property("protocolburrito_version")}") // Designed to be installed separately but uh.. :cringe:
 	compileOnly("com.comphenix.protocol:ProtocolLib:${property("protocollib_version")}")
 
-	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core${property("kotlin_coroutines_version")}")
-	implementation("net.silkmc:silk-nbt:${property("silk_version")}")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${property("kotlin_coroutines_version")}")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kx_ser_version")}")
 
 	implementation("space.vectrix.ignite:ignite-api:${property("ignite_version")}")
 	implementation("org.spongepowered:mixin:${property("mixin_version")}")

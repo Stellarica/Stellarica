@@ -1,11 +1,11 @@
-package net.stellarica.server.crafts.pilotables.starships.commands
+package net.stellarica.server.crafts.starships.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
-import net.stellarica.server.crafts.pilotables.starships.Starship
+import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.utils.extensions.craft
 import org.bukkit.entity.Player
 

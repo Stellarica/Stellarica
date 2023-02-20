@@ -1,6 +1,7 @@
-package net.stellarica.server.crafts.pilotables.starships.subsystems.weapons.projectiles
+package net.stellarica.server.crafts.starships.subsystems.weapons.projectiles
 
 import net.stellarica.server.crafts.Craft
+import net.stellarica.server.utils.extensions.toBlockPos
 import org.bukkit.Location
 import org.bukkit.Particle
 
@@ -19,7 +20,7 @@ object TestProjectile : Projectile() {
 				craft == shooter
 			},
 			{
-				if (!shooter.contains(it.hitBlock?.location)) // no ship suicide
+				if (!shooter.contains(it.hitBlock?.toBlockPos())) // no ship suicide
 					it.hitBlock?.location?.createExplosion(2f, false, true)
 				true
 			}

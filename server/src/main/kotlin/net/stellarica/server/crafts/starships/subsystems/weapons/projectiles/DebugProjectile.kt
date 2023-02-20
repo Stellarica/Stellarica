@@ -1,5 +1,5 @@
 import net.stellarica.server.crafts.Craft
-import net.stellarica.server.crafts.pilotables.starships.subsystems.weapons.projectiles.Projectile
+import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.Projectile
 import org.bukkit.Location
 import org.bukkit.Particle
 

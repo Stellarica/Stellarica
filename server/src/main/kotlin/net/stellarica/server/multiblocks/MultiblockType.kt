@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.utils.OriginRelative
+import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.World
 
 data class MultiblockType(
@@ -40,7 +41,7 @@ data class MultiblockType(
 		blocks.forEach {
 			val rotatedLocation = rotationFunction(it.key)
 			val relativeLocation = origin.offset(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z)
-			if (world.getBlockState(relativeLocation).block != it.value) {
+			if (world.getBlockState(relativeLocation.toLocation(world)).block != it.value) {
 				return false
 			} // A blocks we were expecting is missing, so break the function.
 		}

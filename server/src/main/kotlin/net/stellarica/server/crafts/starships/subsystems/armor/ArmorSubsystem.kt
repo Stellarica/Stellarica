@@ -1,8 +1,8 @@
-package net.stellarica.server.crafts.pilotables.starships.subsystems.armor
+package net.stellarica.server.crafts.starships.subsystems.armor
 
 import net.stellarica.common.utils.OriginRelative
-import net.stellarica.server.crafts.pilotables.starships.Starship
-import net.stellarica.server.crafts.pilotables.starships.subsystems.Subsystem
+import net.stellarica.server.crafts.starships.Starship
+import net.stellarica.server.crafts.starships.subsystems.Subsystem
 
 class ArmorSubsystem(ship: Starship) : Subsystem(ship) {
 	var armor = mutableMapOf<OriginRelative, Float>()

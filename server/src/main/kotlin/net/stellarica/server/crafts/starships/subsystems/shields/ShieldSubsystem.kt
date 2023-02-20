@@ -1,7 +1,8 @@
-package net.stellarica.server.crafts.pilotables.starships.subsystems.shields
+package net.stellarica.server.crafts.starships.subsystems.shields
 
-import net.stellarica.server.crafts.pilotables.starships.Starship
-import net.stellarica.server.crafts.pilotables.starships.subsystems.Subsystem
+import net.stellarica.common.utils.OriginRelative
+import net.stellarica.server.crafts.starships.Starship
+import net.stellarica.server.crafts.starships.subsystems.Subsystem
 import net.stellarica.server.multiblocks.MultiblockInstance
 import org.bukkit.Color
 import org.bukkit.Location
@@ -10,7 +11,7 @@ import org.bukkit.Particle.DustOptions
 import java.lang.ref.WeakReference
 
 class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
-	val multiblocks = mutableSetOf<WeakReference<MultiblockInstance>>()
+	val multiblocks = mutableSetOf<OriginRelative>()
 
 	var shieldHealth = 0
 		private set(value) {
@@ -22,7 +23,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 			var h = 0
 			multiblocks.forEach { multiblock ->
 				ShieldType.values().firstOrNull {
-					it.multiblockType == multiblock.get()?.type
+					it.multiblockType == ship.getMultiblock(multiblock).type
 				}?.let {
 					h += it.maxHealth
 				}
@@ -32,7 +33,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 
 	override fun onShipPiloted() {
 		ship.multiblocks.forEach { multiblock ->
-			if (multiblock.get()?.type in ShieldType.values().map { it.multiblockType }) {
+			if (ship.getMultiblock(multiblock).type in ShieldType.values().map { it.multiblockType }) {
 				multiblocks.add(multiblock)
 			}
 		}

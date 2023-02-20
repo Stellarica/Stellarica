@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.utils.OriginRelative
+import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.Chunk
 import org.bukkit.World
 
@@ -15,7 +16,7 @@ data class MultiblockInstance(
 ) {
 
 	val chunk: Chunk
-		get() = world.getChunkAt(origin)
+		get() = world.getChunkAt(origin.toLocation(world))
 
 	val type: MultiblockType // this seems inefficient
 		get() = MultiblockHandler.types.first { it.id == typeId }

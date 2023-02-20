@@ -1,7 +1,9 @@
-package net.stellarica.server.crafts.pilotables.starships.subsystems.weapons.projectiles
+package net.stellarica.server.crafts.starships.subsystems.weapons.projectiles
 
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.crafts.Craft
+import net.stellarica.server.utils.extensions.toBlockPos
+import net.stellarica.server.utils.extensions.toVec3i
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Location
 import org.bukkit.scheduler.BukkitRunnable
@@ -84,9 +86,9 @@ abstract class Projectile {
 					// first, check if we hit a starship
 					// TODO: check all ships, not just pilotables ones (need to hit npc ships)
 					// TODO: use a better filter than distancequared
-					pilotedCrafts.filter { it.origin.world == position.world }
-						.filter { it.origin.asLocation.distanceSquared(position) < 1000 }.forEach {
-							if (it.contains(hitLoc)) {
+					pilotedCrafts.filter { it.world == position.world }
+						.filter { it.origin.distSqr(position.toVec3i()) < 1000 }.forEach {
+							if (it.contains(hitLoc.toBlockPos())) {
 								if (onHitCraft(hitLoc, it)) {
 									this.cancel()
 									return

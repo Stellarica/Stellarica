@@ -1,4 +1,4 @@
-package net.stellarica.server.crafts.pilotables.starships
+package net.stellarica.server.crafts.starships
 
 import net.stellarica.server.utils.Tasks
 import net.stellarica.server.utils.gui.setScoreboardContents

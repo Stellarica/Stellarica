@@ -19,10 +19,6 @@ import kotlin.math.abs
  */
 val String.asMiniMessage: Component get() = MiniMessage.miniMessage().deserialize(this.trimIndent())
 
-/**
- * The location of this block
- */
-val Block.BlockPos: BlockPos get() = BlockPos(this.location)
 
 fun Audience.sendRichMessage(message: String) = this.sendMessage(message.asMiniMessage)
 
@@ -53,10 +49,3 @@ val ItemStack.customItem: CustomItem?
  */
 val ItemStack.id: String
 	get() = this.customItem?.id ?: this.type.toString().lowercase()
-
-
-fun Vector.abs() = this.also {
-	it.x = abs(it.x)
-	it.y = abs(it.y)
-	it.z = abs(it.z)
-}

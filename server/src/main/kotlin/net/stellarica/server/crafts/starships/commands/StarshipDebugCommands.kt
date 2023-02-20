@@ -1,12 +1,16 @@
-package net.stellarica.server.crafts.pilotables.starships.commands
+package net.stellarica.server.crafts.starships.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
-import net.stellarica.server.crafts.pilotables.starships.Starship
+import net.minecraft.core.BlockPos
+import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.utils.extensions.craft
+import net.stellarica.server.utils.extensions.toBlockPos
+import net.stellarica.server.utils.extensions.toLocation
+import net.stellarica.server.utils.extensions.toVec3
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -36,7 +40,7 @@ class StarshipDebugCommands : BaseCommand() {
 					if (ship.contains(loc)) {
 						sender.world.spawnParticle(
 							Particle.BLOCK_MARKER,
-							loc.asLocation.add(0.5, 0.5, 0.5).also { it.world = sender.world },
+							loc.toLocation(sender.world).add(0.5, 0.5, 0.5),
 							1,
 							0.0,
 							0.0,
@@ -61,7 +65,7 @@ class StarshipDebugCommands : BaseCommand() {
 			sender.sendRichMessage("<red>You are not piloting a starship!")
 			return
 		}
-		sender.sendMessage(ship.contains(sender.getTargetBlock(20)?.location).toString())
+		sender.sendMessage(ship.contains(sender.getTargetBlockExact(20)?.toBlockPos()).toString())
 	}
 
 
