@@ -14,8 +14,8 @@
     }
   ],
   "contact": {
-    "issues": "https://github.com/stellaricamc/stellarica/issues",
-    "sources": "https://github.com/stellaricamc/stellarica"
+    "issues": "https://github.com/stellarica/stellarica/issues",
+    "sources": "https://github.com/stellarica/stellarica"
   },
   "license": "MIT",
   "icon": "assets/stellarica/icon.png",
@@ -24,7 +24,7 @@
     "client": [
       {
         "adapter": "kotlin",
-        "value": "io.github.stellaricamc.stellarica.client.StellaricaClient"
+        "value": "net.stellarica.client.StellaricaClient"
       }
     ]
   },

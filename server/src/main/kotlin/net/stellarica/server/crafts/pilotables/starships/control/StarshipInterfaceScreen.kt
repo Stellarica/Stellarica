@@ -1,5 +1,6 @@
 package net.stellarica.server.crafts.pilotables.starships.control
 
+import net.stellarica.server.crafts.pilotables.starships.Starship
 import net.stellarica.server.utils.extensions.isPilotingCraft
 import net.stellarica.server.utils.gui.Screen
 import net.stellarica.server.utils.gui.namedItem
@@ -10,7 +11,7 @@ import org.bukkit.event.inventory.InventoryType
 /**
  * The GUI opened when a player clicks the starship interface block
  */
-class StarshipInterfaceScreen(player: Player, private val craft: Pilotable) : Screen() {
+class StarshipInterfaceScreen(player: Player, private val craft: Starship) : Screen() {
 	init {
 		createScreen(player, InventoryType.HOPPER, "Starship Interface")
 

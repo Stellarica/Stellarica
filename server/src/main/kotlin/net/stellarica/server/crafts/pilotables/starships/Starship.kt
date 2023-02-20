@@ -1,6 +1,8 @@
 package net.stellarica.server.crafts.pilotables.starships
 
 import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
+import net.minecraft.server.level.ServerLevel
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.stellarica.server.crafts.Craft
@@ -21,7 +23,7 @@ import kotlin.math.roundToInt
 /**
  * Base Starship class
  */
-class Starship(origin: BlockPos) : Craft(origin), Listener {
+class Starship(origin: BlockPos, direction: Direction, world: ServerLevel) : Craft(origin, direction, world), Listener {
 
 	val subsystems: Set<Subsystem>
 		get() = setOf(weapons, shields, armor)
@@ -42,18 +44,6 @@ class Starship(origin: BlockPos) : Craft(origin), Listener {
 	var pilot: Player? = null
 		private set
 
-	/**
-	 * The queued actions from the pilot.
-	 * Exists so that movement inputs (such as turning) can be queued, so they are not ignored if the ship is moving.
-	 *
-	 * Not recommended for actions that can be done immediately (regardless of whether the ship is moving)
-	 * as they will do nothing but delay the queue.
-	 *
-	 * Each tick that the ship is not moving, will execute queued actions until the ship is moving
-	 */
-	var controlQueue = mutableListOf<() -> Unit>()
-
-	lateinit var movementTask: BukkitTask
 
 	/**
 	 * Activates the craft and registers it in [pilotedCrafts]
@@ -74,7 +64,7 @@ class Starship(origin: BlockPos) : Craft(origin), Listener {
 		}
 		passengers.add(pilot)
 		this.pilot = pilot
-		Bukkit.getOnlinePlayers().filter { it.world == origin.world }.forEach {
+		Bukkit.getOnlinePlayers().filter { it.world == world }.forEach {
 			if (contains(it.location) && it != pilot) {
 				passengers.add(it)
 				it.sendRichMessage("<gray>Now riding a craft piloted by ${pilot.name}!")
@@ -86,26 +76,17 @@ class Starship(origin: BlockPos) : Craft(origin), Listener {
 		ShipControlHotbar.openMenu(pilot)
 		StarshipHUD.open(this)
 		subsystems.forEach { it.onShipPiloted() }
-		movementTask = Tasks.syncRepeat(1, 1) {
-			move()
-		}
 
 		pilotedCrafts.add(this)
-		updateUndetectables()
 		messagePilot("<green>Piloted craft!")
 
 		return true
 	}
 
 	fun deactivateCraft(): Boolean {
-		if (isMoving) {
-			messagePilot("<red>Cannot unpilot a moving craft!")
-			return false// maybe throw something?
-		}
 		messagePilot("<green>Unpiloting craft")
 		val pass = passengers.toMutableSet()
 		subsystems.forEach { it.onShipUnpiloted() }
-		movementTask.cancel()
 		// close the ship HUD. this is really dumb
 		// todo: fix
 		this.passengers = pass
@@ -117,7 +98,6 @@ class Starship(origin: BlockPos) : Craft(origin), Listener {
 		// todo: maybe find a better way than spamming this for everything we register to
 		// reflection?
 		BlockExplodeEvent.getHandlerList().unregister(this)
-		MultiblockUndetectEvent.handlerList.unregister(this)
 
 		pilot = null
 		passengers.clear()
@@ -128,12 +108,12 @@ class Starship(origin: BlockPos) : Craft(origin), Listener {
 	@EventHandler
 	fun onBlockExplode(event: BlockExplodeEvent) {
 		// todo: fix bad range check
-		if (event.block.location.distanceSquared(origin.asLocation) < 500 && contains(event.block.location)) {
+		if (event.block.location.distanceSquared(origin) < 500 && contains(event.block.location)) {
 			if (shields.shieldHealth > 0) {
 				event.isCancelled = true
 				shields.damage(event.block.location, event.yield.roundToInt())
 			} else {
-				detectedBlocks.remove(BlockPos(event.block.location))
+				detectedBlocks.remove(event.block.location)
 			}
 		}
 	}
