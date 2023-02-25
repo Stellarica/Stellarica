@@ -49,6 +49,10 @@ tasks {
 		relocate("co.aikar.locales", "io.github.stellaricamc.stellarica.libraries.co.aikar.locales")
 	}
 
+	reobfJar {
+		remapperArgs.add("--mixin")
+	}
+
 	processResources {
 		inputs.property("version", version)
 		filesMatching("plugin.yml") {

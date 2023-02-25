@@ -274,7 +274,7 @@ open class Craft(
 
 			for (currentBlock in blocksToCheck) {
 
-				if (!world.getBlockState(currentBlock).tags.toList().contains(detectableKey)) continue
+				if (world.getBlockState(currentBlock).block !in setOf(Blocks.JUKEBOX, Blocks.GRAY_CONCRETE)) continue
 
 				if (detectedBlocks.size > Companion.sizeLimit) {
 					owner?.sendRichMessage("<gold>Detection limit reached. (${Companion.sizeLimit} blocks)")
