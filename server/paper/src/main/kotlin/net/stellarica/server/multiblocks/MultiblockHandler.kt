@@ -11,12 +11,15 @@ import net.stellarica.server.StellaricaServer
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
 import net.stellarica.server.multiblocks.events.MultiblockDetectEvent
 import net.stellarica.server.multiblocks.events.MultiblockUndetectEvent
+import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.Chunk
 import org.bukkit.World
 import org.bukkit.craftbukkit.v1_19_R2.CraftChunk
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
+import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.persistence.PersistentDataType
@@ -73,6 +76,11 @@ object MultiblockHandler: Listener {
 	}
 
 
+	@EventHandler
+	fun onPlayerAttemptDetect(event: PlayerInteractEvent) {
+		if (event.action != Action.RIGHT_CLICK_BLOCK) return
+		detect(event.clickedBlock!!.toBlockPos(), event.player.world)
+	}
 
 	@EventHandler
 	fun onServerTick(event: ServerTickStartEvent) {
