@@ -3,6 +3,8 @@ package net.stellarica.server
 import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.level.block.Blocks
+import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.crafts.starships.commands.StarshipCommands
 import net.stellarica.server.crafts.starships.commands.StarshipDebugCommands
@@ -14,6 +16,7 @@ import net.stellarica.server.customitems.commands.CustomItemCommands
 import net.stellarica.server.customitems.listeners.ItemEnchantListener
 import net.stellarica.server.customitems.listeners.PowerItemBreakListener
 import net.stellarica.server.multiblocks.MultiblockHandler
+import net.stellarica.server.multiblocks.MultiblockType
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.Handshake
 import net.stellarica.server.utils.extensions.TestDebugCommand
@@ -87,5 +90,14 @@ class StellaricaServer : JavaPlugin() {
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
 		) { CustomItems.all.keys }
+
+		MultiblockHandler.types.add(MultiblockType(
+			identifier("test_weapon"),
+			mapOf(
+				OriginRelative(0, 0, 0) to ResourceLocation("minecraft", "iron_block"),
+				OriginRelative(1, 0, 0) to ResourceLocation("minecraft", "iron_block"),
+				OriginRelative(2, 0, 0) to ResourceLocation("minecraft", "furnace"),
+			)
+		))
 	}
 }
