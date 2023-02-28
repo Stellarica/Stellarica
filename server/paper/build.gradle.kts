@@ -27,20 +27,12 @@ dependencies {
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${property("kotlin_coroutines_version")}")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kx_ser_version")}")
-
-	implementation("space.vectrix.ignite:ignite-api:${property("ignite_version")}")
-	implementation("org.spongepowered:mixin:${property("mixin_version")}")
 }
 
 val version = property("mod_version")!!
 val mc = property("minecraft_version")!!.toString()
 
 tasks {
-	compileJava {
-		options.compilerArgs.add("-parameters")
-		options.isFork = true
-	}
-
 	build {
 		dependsOn(reobfJar)
 	}
@@ -48,10 +40,6 @@ tasks {
 	shadowJar {
 		relocate("co.aikar.commands", "io.github.stellaricamc.stellarica.libraries.co.aikar.commands")
 		relocate("co.aikar.locales", "io.github.stellaricamc.stellarica.libraries.co.aikar.locales")
-	}
-
-	reobfJar {
-		remapperArgs.add("--mixin")
 	}
 
 	processResources {

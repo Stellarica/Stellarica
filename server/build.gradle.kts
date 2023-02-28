@@ -1,5 +1,6 @@
 plugins {
 	id("io.papermc.paperweight.userdev") apply false
+	java
 }
 
 subprojects {
