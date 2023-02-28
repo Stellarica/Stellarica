@@ -17,11 +17,6 @@ val version = property("mod_version")!!
 val mc = property("minecraft_version")!!.toString()
 
 tasks {
-	compileJava {
-		options.compilerArgs.add("-parameters")
-		options.isFork = true
-	}
-
 	build {
 		dependsOn(reobfJar)
 	}
