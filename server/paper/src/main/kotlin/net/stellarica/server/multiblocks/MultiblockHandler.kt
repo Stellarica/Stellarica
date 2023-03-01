@@ -26,7 +26,7 @@ import org.bukkit.persistence.PersistentDataType
 
 object MultiblockHandler: Listener {
 	val types = mutableListOf<MultiblockType>()
-	private val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
+	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
 
 	operator fun get(chunk: Chunk) = multiblocks.getOrDefault(chunk, mutableSetOf())
 
@@ -79,7 +79,7 @@ object MultiblockHandler: Listener {
 	@EventHandler
 	fun onPlayerAttemptDetect(event: PlayerInteractEvent) {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
-		detect(event.clickedBlock!!.toBlockPos(), event.player.world)
+		event.player.sendMessage(detect(event.clickedBlock!!.toBlockPos(), event.player.world)?.type?.id.toString())
 	}
 
 	@EventHandler
