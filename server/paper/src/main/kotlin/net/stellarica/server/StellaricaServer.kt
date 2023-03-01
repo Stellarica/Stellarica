@@ -15,6 +15,7 @@ import net.stellarica.server.customitems.CustomItems
 import net.stellarica.server.customitems.commands.CustomItemCommands
 import net.stellarica.server.customitems.listeners.ItemEnchantListener
 import net.stellarica.server.customitems.listeners.PowerItemBreakListener
+import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockType
 import net.stellarica.server.networking.BukkitNetworkHandler
@@ -86,6 +87,7 @@ class StellaricaServer : JavaPlugin() {
 			StarshipDebugCommands(),
 			CustomItemCommands(),
 			TestDebugCommand(),
+			MultiblockCommands()
 		).forEach { commandManager.registerCommand(it) }
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
@@ -99,5 +101,9 @@ class StellaricaServer : JavaPlugin() {
 				OriginRelative(2, 0, 0) to ResourceLocation("minecraft", "furnace"),
 			)
 		))
+	}
+
+	fun doSomething(thingDoer: (Int) -> Boolean) {
+		val someOutput = thingDoer(5)
 	}
 }
