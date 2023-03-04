@@ -15,6 +15,8 @@ import net.stellarica.server.customitems.CustomItems
 import net.stellarica.server.customitems.commands.CustomItemCommands
 import net.stellarica.server.customitems.listeners.ItemEnchantListener
 import net.stellarica.server.customitems.listeners.PowerItemBreakListener
+import net.stellarica.server.material.block.BlockType
+import net.stellarica.server.material.block.VanillaBlockType
 import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockType
@@ -66,6 +68,9 @@ class StellaricaServer : JavaPlugin() {
 	override fun onEnable() {
 		// Plugin init
 		plugin = this
+
+		println("#############################################")
+		println(BlockType.of(Blocks.BRAIN_CORAL_BLOCK).getId())
 
 		networkHandler = BukkitNetworkHandler()
 
