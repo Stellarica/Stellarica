@@ -101,14 +101,10 @@ class StellaricaServer : JavaPlugin() {
 		MultiblockHandler.types.add(MultiblockType(
 			identifier("test_weapon"),
 			mapOf(
-				OriginRelative(0, 0, 0) to ResourceLocation("minecraft", "iron_block"),
-				OriginRelative(1, 0, 0) to ResourceLocation("minecraft", "iron_block"),
-				OriginRelative(2, 0, 0) to ResourceLocation("minecraft", "furnace"),
+				OriginRelative(0, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
+				OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
+				OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
 			)
 		))
-	}
-
-	fun doSomething(thingDoer: (Int) -> Boolean) {
-		val someOutput = thingDoer(5)
 	}
 }
