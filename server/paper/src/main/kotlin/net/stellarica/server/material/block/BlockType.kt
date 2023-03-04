@@ -33,7 +33,7 @@ interface BlockType {
 		}
 
 		fun of(block: org.bukkit.Material): VanillaBlockType {
-			return of((block.createBlockData() as CraftBlockData).state.block) as VanillaBlockType
+			return of((block.createBlockData() as CraftBlockData).state.block)
 		}
 	}
 }

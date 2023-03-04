@@ -272,10 +272,11 @@ open class Craft(
 
 			for (currentBlock in blocksToCheck) {
 
-				if (world.getBlockState(currentBlock).block !in setOf(Blocks.JUKEBOX, Blocks.GRAY_CONCRETE)) continue
+				// todo: block tags for detection? this is idiocy
+				if (world.getBlockState(currentBlock).block !in setOf(Blocks.JUKEBOX, Blocks.GRAY_CONCRETE, Blocks.FURNACE, Blocks.IRON_BLOCK)) continue
 
-				if (detectedBlocks.size > Companion.sizeLimit) {
-					owner?.sendRichMessage("<gold>Detection limit reached. (${Companion.sizeLimit} blocks)")
+				if (detectedBlocks.size > sizeLimit) {
+					owner?.sendRichMessage("<gold>Detection limit reached. (${sizeLimit} blocks)")
 					nextBlocksToCheck.clear()
 					detectedBlocks.clear()
 					break
