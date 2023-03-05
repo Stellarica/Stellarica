@@ -31,7 +31,7 @@ data class MultiblockInstance(
 	/**
 	 * @return the origin relative position of [loc]
 	 */
-	fun getOriginRelative(loc: BlockPos) = OriginRelative.get(loc, this.origin, this.direction)
+	fun getOriginRelative(loc: BlockPos) = OriginRelative.getOriginRelative(loc, this.origin, this.direction)
 
 
 	/**

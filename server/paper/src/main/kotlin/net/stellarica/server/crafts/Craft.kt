@@ -102,13 +102,13 @@ open class Craft(
 	 */
 	fun contains(block: BlockPos?): Boolean {
 		block ?: return false
-		return detectedBlocks.contains(block) || bounds.contains(OriginRelative.get(block, origin, direction))
+		return detectedBlocks.contains(block) || bounds.contains(OriginRelative.getOriginRelative(block, origin, direction))
 	}
 
 	private fun calculateHitbox() {
 		detectedBlocks
 			.map { pos ->
-				OriginRelative.get(pos, origin, direction)
+				OriginRelative.getOriginRelative(pos, origin, direction)
 			}
 			.sortedBy { -it.y }
 			.forEach { block ->
@@ -117,6 +117,14 @@ open class Craft(
 					bounds.add(OriginRelative(block.x, y, block.z))
 				}
 			}
+	}
+
+	fun getMultiblock(pos: OriginRelative): MultiblockInstance {
+		println()
+		println("origin: $origin, direction: $direction, pos: $pos")
+		val mb = pos.getBlockPos(origin, direction)
+		println("adjusted: $mb")
+		return MultiblockHandler[world.getChunkAt(mb).bukkitChunk].first { it.origin == mb }.also { println("found: $it") }
 	}
 
 	/**
@@ -238,12 +246,14 @@ open class Craft(
 		// move multiblocks
 		multiblocks.forEach { pos ->
 			val mb = getMultiblock(pos)
+			print("moved $mb to ")
 			val new = MultiblockInstance(
 				origin = modifier(mb.origin.toVec3()).toBlockPos(),
 				world = targetWorld.world,
 				direction = mb.direction.rotate(rotation),
 				typeId = mb.typeId
 			)
+			println(new)
 			MultiblockHandler[mb.chunk].remove(mb)
 			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkitChunk].add(new)
 		}
@@ -321,7 +331,7 @@ open class Craft(
 			.map { MultiblockHandler[it] }
 			.flatten()
 			.filter { detectedBlocks.contains(it.origin) }
-			.map { OriginRelative.get(it.origin, origin, direction) }
+			.map { OriginRelative.getOriginRelative(it.origin, origin, direction) }
 		)
 
 		owner?.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
@@ -351,11 +361,6 @@ open class Craft(
 		// world.lightEngine.checkBlock(position) // boolean corresponds to if chunk section empty
 		//todo: LIGHTING IS FOR CHUMPS!
 		chunk.isUnsaved = true
-	}
-
-	fun getMultiblock(pos: OriginRelative): MultiblockInstance {
-		val origin = pos.getBlockPos(origin, direction)
-		return MultiblockHandler[world.getChunkAt(origin).bukkitChunk].first { it.origin == origin }
 	}
 
 	/**

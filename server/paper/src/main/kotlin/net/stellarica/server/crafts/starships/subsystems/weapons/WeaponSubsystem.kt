@@ -34,7 +34,7 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 		val eye = ship.pilot!!.eyeLocation.direction.normalize()
 
 		WeaponType.values().sortedBy { it.priority }.forEach { type ->
-			multiblocks.mapNotNull { ship.getMultiblock(it) }.filter { it.type == type.multiblockType }.forEach { multiblock ->
+			multiblocks.map { ship.getMultiblock(it) }.filter { it.type == type.multiblockType }.forEach { multiblock ->
 
 				// the direction the weapon is facing
 				val direction =

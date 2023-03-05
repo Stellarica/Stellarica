@@ -69,9 +69,6 @@ class StellaricaServer : JavaPlugin() {
 		// Plugin init
 		plugin = this
 
-		println("#############################################")
-		println(BlockType.of(Blocks.BRAIN_CORAL_BLOCK).getId())
-
 		networkHandler = BukkitNetworkHandler()
 
 		// Register listeners here
@@ -98,12 +95,23 @@ class StellaricaServer : JavaPlugin() {
 			"customitems"
 		) { CustomItems.all.keys }
 
+		// this is just for testing
 		MultiblockHandler.types.add(MultiblockType(
 			identifier("test_weapon"),
 			mapOf(
 				OriginRelative(0, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
 				OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
 				OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
+			)
+		))
+		MultiblockHandler.types.add(MultiblockType(
+			identifier("test_shield"),
+			mapOf(
+				OriginRelative(0,0,0) to BlockType.of(Blocks.DIAMOND_BLOCK),
+				OriginRelative(1,0,0) to BlockType.of(Blocks.GLASS),
+				OriginRelative(-1,0,0) to BlockType.of(Blocks.GLASS),
+				OriginRelative(0,0,1) to BlockType.of(Blocks.GLASS),
+				OriginRelative(0,0,-1) to BlockType.of(Blocks.GLASS),
 			)
 		))
 	}

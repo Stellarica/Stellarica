@@ -28,7 +28,7 @@ object MultiblockHandler: Listener {
 	val types = mutableListOf<MultiblockType>()
 	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
 
-	operator fun get(chunk: Chunk) = multiblocks.getOrDefault(chunk, mutableSetOf())
+	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) {mutableSetOf()}
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()
@@ -42,7 +42,7 @@ object MultiblockHandler: Listener {
 		return possible.maxByOrNull { it.type.blocks.size }?.also {
 			if (!MultiblockDetectEvent(it).callEvent()) return null // maybe check for a smaller one?
 			val chunk = world.getChunkAt(origin.toLocation(world))
-			multiblocks.getOrDefault(chunk, mutableSetOf()).add(it)
+			multiblocks.getOrPut(chunk){ mutableSetOf()}.add(it)
 			(chunk as CraftChunk).handle.isUnsaved = true
 		}
 	}
@@ -104,7 +104,7 @@ object MultiblockHandler: Listener {
 		event.chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)?.let {string ->
 			Json.decodeFromString<Set<MultiblockData>>(string)
 				.map { it.toInstance(event.world) }
-				.let{ multiblocks.getOrDefault(event.chunk, mutableSetOf()).addAll(it) }
+				.let{ multiblocks.getOrPut(event.chunk){ mutableSetOf()}.addAll(it) }
 		}
 	}
 
