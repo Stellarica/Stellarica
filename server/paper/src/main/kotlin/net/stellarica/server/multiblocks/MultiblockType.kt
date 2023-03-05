@@ -4,12 +4,13 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.utils.OriginRelative
+import net.stellarica.server.material.block.BlockType
 import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.World
 
 data class MultiblockType(
 	val id: ResourceLocation,
-	val blocks: Map<OriginRelative, ResourceLocation>
+	val blocks: Map<OriginRelative, BlockType>
 ) {
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST).forEach { facing ->
@@ -41,7 +42,7 @@ data class MultiblockType(
 		blocks.forEach {
 			val rotatedLocation = rotationFunction(it.key)
 			val relativeLocation = origin.offset(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z)
-			if (world.getBlockState(relativeLocation.toLocation(world)).block != it.value) {
+			if (BlockType.of(world.getBlockState(relativeLocation.toLocation(world))) != it.value) {
 				return false
 			} // A blocks we were expecting is missing, so break the function.
 		}
