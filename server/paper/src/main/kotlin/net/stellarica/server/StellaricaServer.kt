@@ -2,6 +2,8 @@ package net.stellarica.server
 
 import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
+import net.minecraft.core.BlockPos
+import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.common.utils.OriginRelative
@@ -16,7 +18,6 @@ import net.stellarica.server.customitems.commands.CustomItemCommands
 import net.stellarica.server.customitems.listeners.ItemEnchantListener
 import net.stellarica.server.customitems.listeners.PowerItemBreakListener
 import net.stellarica.server.material.block.BlockType
-import net.stellarica.server.material.block.VanillaBlockType
 import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockType
@@ -69,6 +70,13 @@ class StellaricaServer : JavaPlugin() {
 		// Plugin init
 		plugin = this
 
+		val i = OriginRelative(-1, 0, 2)
+		println("$i north ${i.getBlockPos(BlockPos.ZERO, Direction.NORTH)}")
+		println("$i south ${i.getBlockPos(BlockPos.ZERO, Direction.SOUTH)}")
+		println("$i east ${i.getBlockPos(BlockPos.ZERO, Direction.EAST)}")
+		println("$i west ${i.getBlockPos(BlockPos.ZERO, Direction.WEST)}")
+
+
 		networkHandler = BukkitNetworkHandler()
 
 		// Register listeners here
@@ -96,23 +104,27 @@ class StellaricaServer : JavaPlugin() {
 		) { CustomItems.all.keys }
 
 		// this is just for testing
-		MultiblockHandler.types.add(MultiblockType(
-			identifier("test_weapon"),
-			mapOf(
-				OriginRelative(0, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
-				OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
-				OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
+		MultiblockHandler.types.add(
+			MultiblockType(
+				identifier("test_weapon"),
+				mapOf(
+					OriginRelative(0, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
+					OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
+					OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
+				)
 			)
-		))
-		MultiblockHandler.types.add(MultiblockType(
-			identifier("test_shield"),
-			mapOf(
-				OriginRelative(0,0,0) to BlockType.of(Blocks.DIAMOND_BLOCK),
-				OriginRelative(1,0,0) to BlockType.of(Blocks.GLASS),
-				OriginRelative(-1,0,0) to BlockType.of(Blocks.GLASS),
-				OriginRelative(0,0,1) to BlockType.of(Blocks.GLASS),
-				OriginRelative(0,0,-1) to BlockType.of(Blocks.GLASS),
+		)
+		MultiblockHandler.types.add(
+			MultiblockType(
+				identifier("test_shield"),
+				mapOf(
+					OriginRelative(0, 0, 0) to BlockType.of(Blocks.DIAMOND_BLOCK),
+					OriginRelative(1, 0, 0) to BlockType.of(Blocks.GLASS),
+					OriginRelative(-1, 0, 0) to BlockType.of(Blocks.GLASS),
+					OriginRelative(0, 0, 1) to BlockType.of(Blocks.GLASS),
+					OriginRelative(0, 0, -1) to BlockType.of(Blocks.GLASS),
+				)
 			)
-		))
+		)
 	}
 }

@@ -3,12 +3,10 @@ package net.stellarica.server.crafts.starships.subsystems.shields
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.crafts.starships.subsystems.Subsystem
-import net.stellarica.server.multiblocks.MultiblockInstance
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
-import java.lang.ref.WeakReference
 
 class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 	val multiblocks = mutableSetOf<OriginRelative>()
@@ -23,7 +21,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 			var h = 0
 			multiblocks.forEach { multiblock ->
 				ShieldType.values().firstOrNull {
-					it.multiblockType == ship.getMultiblock(multiblock).type
+					it.multiblockType == ship.getMultiblock(multiblock)?.type
 				}?.let {
 					h += it.maxHealth
 				}
@@ -33,7 +31,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 
 	override fun onShipPiloted() {
 		ship.multiblocks.forEach { multiblock ->
-			if (ship.getMultiblock(multiblock).type in ShieldType.values().map { it.multiblockType }) {
+			if (ship.getMultiblock(multiblock)?.type in ShieldType.values().map { it.multiblockType }) {
 				multiblocks.add(multiblock)
 			}
 		}

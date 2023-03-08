@@ -1,8 +1,8 @@
 package net.stellarica.client.network
 
-import net.stellarica.common.networking.Channel
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
+import net.stellarica.common.networking.Channel
 
 class FabricNetworkHandler {
 	val listeners = mutableSetOf<Pair<Channel, (ByteArray) -> Unit>>()

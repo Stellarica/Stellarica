@@ -24,11 +24,11 @@ import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.persistence.PersistentDataType
 
-object MultiblockHandler: Listener {
+object MultiblockHandler : Listener {
 	val types = mutableListOf<MultiblockType>()
 	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
 
-	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) {mutableSetOf()}
+	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() }
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()
@@ -42,7 +42,7 @@ object MultiblockHandler: Listener {
 		return possible.maxByOrNull { it.type.blocks.size }?.also {
 			if (!MultiblockDetectEvent(it).callEvent()) return null // maybe check for a smaller one?
 			val chunk = world.getChunkAt(origin.toLocation(world))
-			multiblocks.getOrPut(chunk){ mutableSetOf()}.add(it)
+			multiblocks.getOrPut(chunk) { mutableSetOf() }.add(it)
 			(chunk as CraftChunk).handle.isUnsaved = true
 		}
 	}
@@ -89,7 +89,7 @@ object MultiblockHandler: Listener {
 
 		multiblocks.forEach { (_, mbSet) ->
 			val invalid = mutableSetOf<MultiblockInstance>()
-			mbSet.forEach {multiblock ->
+			mbSet.forEach { multiblock ->
 				if (!multiblock.validate()) {
 					MultiblockUndetectEvent(multiblock).callEvent()
 					invalid.add(multiblock)
@@ -101,11 +101,12 @@ object MultiblockHandler: Listener {
 
 	@EventHandler
 	fun onChunkLoad(event: ChunkLoadEvent) {
-		event.chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)?.let {string ->
-			Json.decodeFromString<Set<MultiblockData>>(string)
-				.map { it.toInstance(event.world) }
-				.let{ multiblocks.getOrPut(event.chunk){ mutableSetOf()}.addAll(it) }
-		}
+		event.chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)
+			?.let { string ->
+				Json.decodeFromString<Set<MultiblockData>>(string)
+					.map { it.toInstance(event.world) }
+					.let { multiblocks.getOrPut(event.chunk) { mutableSetOf() }.addAll(it) }
+			}
 	}
 
 	@EventHandler

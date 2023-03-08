@@ -7,10 +7,9 @@ import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import org.bukkit.command.CommandSender
 
-
+@Suppress("Unused")
 @CommandAlias("multiblock|mb")
 class MultiblockCommands : BaseCommand() {
-
 
 	@Subcommand("types")
 	@Description("Dump multiblock types")
@@ -27,7 +26,7 @@ class MultiblockCommands : BaseCommand() {
 	@Description("Dump loaded multiblocks")
 	@CommandPermission("stellarica.multiblocks.debug")
 	fun onDumpMultiblocks(sender: CommandSender) {
-		MultiblockHandler.multiblocks.toString()
+		sender.sendRichMessage(MultiblockHandler.multiblocks.toString())
 	}
 }
 

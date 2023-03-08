@@ -11,8 +11,6 @@ import org.bukkit.block.Block
 import org.bukkit.block.data.MultipleFacing
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import org.bukkit.util.Vector
-import kotlin.math.abs
 
 /**
  * This string as a Component, using MiniMessage formatting

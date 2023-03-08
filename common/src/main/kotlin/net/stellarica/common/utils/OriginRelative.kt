@@ -2,6 +2,7 @@ package net.stellarica.common.utils
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.Vec3i
 
 
 /**
@@ -29,25 +30,18 @@ data class OriginRelative(
 	companion object {
 		// this would be better as a constructor
 		fun getOriginRelative(loc: BlockPos, origin: BlockPos, direction: Direction): OriginRelative {
-			val relative = loc.subtract(origin)
-			return when (direction) {
-				Direction.NORTH -> OriginRelative(relative.x, relative.y, relative.z)
-				Direction.SOUTH -> OriginRelative(-relative.x, relative.y, -relative.z)
-				Direction.EAST -> OriginRelative(relative.z, relative.y, relative.x)
-				Direction.WEST -> OriginRelative(-relative.z, relative.y, -relative.x)
-				else -> throw Exception("wtf happened here you dummy")
-			}
+			return rotateCoordinates(loc.toVec3(), origin.toVec3(), direction.getRotFromNorth().asRadians)
+				.subtract(origin.toVec3())
+				.toVec3i()
+				.let { OriginRelative(it.x, it.y, it.z) }
 		}
 
 		fun getBlockPos(loc: OriginRelative, origin: BlockPos, direction: Direction): BlockPos {
-			return when (direction) {
-				// todo: this doesn't seem right
-				Direction.NORTH -> BlockPos(loc.x, loc.y, loc.z)
-				Direction.SOUTH -> BlockPos(-loc.x, loc.y, -loc.z)
-				Direction.EAST -> BlockPos(loc.z, loc.y, loc.x)
-				Direction.WEST -> BlockPos(-loc.z, loc.y, -loc.x)
-				else -> throw Exception("wtf happened here you dummy")
-			}.offset(origin)
+			return rotateCoordinates(
+				loc.let { Vec3i(it.x, it.y, it.z).toVec3().add(origin.toVec3()) },
+				origin.toVec3(),
+				(Math.PI * 2) - direction.getRotFromNorth().asRadians
+			).toBlockPos()
 		}
 	}
 }
