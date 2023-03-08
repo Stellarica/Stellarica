@@ -7,9 +7,10 @@ import org.bukkit.Location
 import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.util.Vector
+import kotlin.math.roundToInt
 
 fun Location.toBlockPos(): BlockPos {
-	return BlockPos(x.toInt(), y.toInt(), z.toInt())
+	return BlockPos(x.roundToInt(), y.roundToInt(), z.roundToInt())
 }
 
 fun Location.toVec3(): Vec3 {
@@ -25,18 +26,6 @@ fun BlockPos.toLocation(world: World?): Location {
 }
 
 fun Block.toBlockPos(): BlockPos {
-	return BlockPos(x, y, z)
-}
-
-fun Vec3i.toVec3(): Vec3 {
-	return Vec3(x.toDouble(), y.toDouble(), z.toDouble())
-}
-
-fun Vec3.toVec3i(): Vec3i {
-	return Vec3i(x, y, z)
-}
-
-fun Vec3.toBlockPos(): BlockPos {
 	return BlockPos(x, y, z)
 }
 

@@ -5,12 +5,10 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
-import net.minecraft.core.BlockPos
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.utils.extensions.craft
 import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.extensions.toLocation
-import net.stellarica.server.utils.extensions.toVec3
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.entity.Player
@@ -24,34 +22,37 @@ class StarshipDebugCommands : BaseCommand() {
 	/**
 	 * Display the hitbox of the craft
 	 */
-	@Subcommand("hitbox")
-	@Description("View the ship's hitbox")
-	@CommandPermission("stellarica.starship.debug.hitbox")
+	@Subcommand("contents")
+	@Description("View the ship's contants")
+	@CommandPermission("stellarica.starship.debug.contants")
 	private fun onShowHitbox(sender: Player) {
 		val ship = sender.craft ?: run {
 			sender.sendRichMessage("<red>You are not piloting a starship!")
 			return
 		}
-		// this is really terrible, but this is a debug command anyway
-		for (x in (sender.location.x.toInt() - 200)..(sender.location.x.toInt() + 200)) {
-			for (y in sender.world.minHeight..sender.world.maxHeight) {
-				for (z in (sender.location.z.toInt() - 200)..(sender.location.z.toInt() + 200)) {
-					val loc = BlockPos(x, y, z)
-					if (ship.contains(loc)) {
-						sender.world.spawnParticle(
-							Particle.BLOCK_MARKER,
-							loc.toLocation(sender.world).add(0.5, 0.5, 0.5),
-							1,
-							0.0,
-							0.0,
-							0.0,
-							0.0,
-							Material.BARRIER.createBlockData()
-						)
-					}
-				}
-			}
+		ship.bounds.forEach {
+			val pos = it.getBlockPos(ship.origin, ship.direction)
+			sender.world.spawnParticle(
+				Particle.BLOCK_MARKER,
+				pos.toLocation(sender.world),
+				1,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				Material.BARRIER.createBlockData()
+			)
 		}
+		sender.world.spawnParticle(
+			Particle.BLOCK_MARKER,
+			ship.origin.toLocation(sender.world),
+			1,
+			0.0,
+			0.0,
+			0.0,
+			0.0,
+			Material.LAPIS_BLOCK.createBlockData()
+		)
 	}
 
 	/**

@@ -1,9 +1,9 @@
 package net.stellarica.server.crafts
 
+import io.papermc.paper.entity.RelativeTeleportFlag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import io.papermc.paper.entity.RelativeTeleportFlag
 import net.kyori.adventure.audience.ForwardingAudience
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
@@ -19,18 +19,19 @@ import net.minecraft.world.level.block.state.BlockState
 import net.minecraft.world.level.chunk.LevelChunk
 import net.minecraft.world.phys.Vec3
 import net.stellarica.common.utils.OriginRelative
+import net.stellarica.common.utils.asDegrees
+import net.stellarica.common.utils.rotate
+import net.stellarica.common.utils.rotateCoordinates
+import net.stellarica.common.utils.toBlockPos
+import net.stellarica.common.utils.toVec3
 import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.mixin.BlockEntityMixin
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockInstance
-import net.stellarica.server.utils.asDegrees
 import net.stellarica.server.utils.extensions.sendRichMessage
-import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.extensions.toLocation
 import net.stellarica.server.utils.extensions.toVec3
-import net.stellarica.server.utils.rotate
-import net.stellarica.server.utils.rotateCoordinates
 import org.bukkit.Chunk
 import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
@@ -77,7 +78,7 @@ open class Craft(
 	/**
 	 * The blocks considered to be "inside" of the ship, but not neccecarily detected.
 	 */
-	protected var bounds = mutableSetOf<OriginRelative>()
+	var bounds = mutableSetOf<OriginRelative>()
 
 	/**
 	 * Message this craft's pilot, if it has one.
@@ -102,10 +103,17 @@ open class Craft(
 	 */
 	fun contains(block: BlockPos?): Boolean {
 		block ?: return false
-		return detectedBlocks.contains(block) || bounds.contains(OriginRelative.getOriginRelative(block, origin, direction))
+		return detectedBlocks.contains(block) || bounds.contains(
+			OriginRelative.getOriginRelative(
+				block,
+				origin,
+				direction
+			)
+		)
 	}
 
 	private fun calculateHitbox() {
+		// might cause issues if run when direction isn't north?
 		detectedBlocks
 			.map { pos ->
 				OriginRelative.getOriginRelative(pos, origin, direction)
@@ -119,12 +127,13 @@ open class Craft(
 			}
 	}
 
-	fun getMultiblock(pos: OriginRelative): MultiblockInstance {
+	fun getMultiblock(pos: OriginRelative): MultiblockInstance? {
 		println()
 		println("origin: $origin, direction: $direction, pos: $pos")
 		val mb = pos.getBlockPos(origin, direction)
 		println("adjusted: $mb")
-		return MultiblockHandler[world.getChunkAt(mb).bukkitChunk].first { it.origin == mb }.also { println("found: $it") }
+		return MultiblockHandler[world.getChunkAt(mb).bukkitChunk].firstOrNull { it.origin == mb }
+			.also { println("found: $it") }
 	}
 
 	/**
@@ -149,17 +158,15 @@ open class Craft(
 	fun rotate(rotation: Rotation) {
 		change({ current ->
 			return@change rotateCoordinates(current, origin.toVec3(), rotation)
-		}, world, rotation) {
-			direction = direction.rotate(rotation)
-		}
+		}, world, rotation)
 	}
 
 	private fun change(
-		/** The transformation to apply to each blocks in the craft */
+		/** The transformation to apply to each block in the craft */
 		modifier: (Vec3) -> Vec3,
 		/** The world to move to */
 		targetWorld: ServerLevel,
-		/** The amount to rotate each directional blocks by */
+		/** The amount to rotate each directional block by */
 		rotation: Rotation = Rotation.NONE,
 		/** Callback called after the craft finishes moving */
 		callback: () -> Unit = {}
@@ -239,13 +246,13 @@ open class Craft(
 		if (world == targetWorld) {
 			// set air where we were
 			detectedBlocks.removeAll(newDetectedBlocks)
-			detectedBlocks.forEach { setBlockFast( world, it, Blocks.AIR.defaultBlockState()) }
+			detectedBlocks.forEach { setBlockFast(world, it, Blocks.AIR.defaultBlockState()) }
 		}
 		detectedBlocks = newDetectedBlocks
 
 		// move multiblocks
 		multiblocks.forEach { pos ->
-			val mb = getMultiblock(pos)
+			val mb = getMultiblock(pos)!!
 			print("moved $mb to ")
 			val new = MultiblockInstance(
 				origin = modifier(mb.origin.toVec3()).toBlockPos(),
@@ -262,6 +269,7 @@ open class Craft(
 		movePassengers(modifier, rotation)
 		world = targetWorld
 		origin = modifier(origin.toVec3()).toBlockPos()
+		direction = direction.rotate(rotation)
 		callback()
 	}
 
@@ -283,7 +291,13 @@ open class Craft(
 			for (currentBlock in blocksToCheck) {
 
 				// todo: block tags for detection? this is idiocy
-				if (world.getBlockState(currentBlock).block !in setOf(Blocks.JUKEBOX, Blocks.GRAY_CONCRETE, Blocks.FURNACE, Blocks.IRON_BLOCK)) continue
+				if (world.getBlockState(currentBlock).block !in setOf(
+						Blocks.JUKEBOX,
+						Blocks.GRAY_CONCRETE,
+						Blocks.FURNACE,
+						Blocks.IRON_BLOCK
+					)
+				) continue
 
 				if (detectedBlocks.size > sizeLimit) {
 					owner?.sendRichMessage("<gold>Detection limit reached. (${sizeLimit} blocks)")
@@ -380,12 +394,15 @@ open class Craft(
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
 			val destination =
-				if (rotation != Rotation.NONE) rotateCoordinates(it.location.toVec3(),
-					origin.toVec3().add(Vec3(
-						0.5,
-						0.0,
-						0.5
-					)), rotation
+				if (rotation != Rotation.NONE) rotateCoordinates(
+					it.location.toVec3(),
+					origin.toVec3().add(
+						Vec3(
+							0.5,
+							0.0,
+							0.5
+						)
+					), rotation
 				).toLocation(world.world)
 				else offset(it.location.toVec3()).toLocation(world.world)
 
