@@ -1,11 +1,7 @@
 package net.stellarica.server.material.custom.block
 
-import net.stellarica.server.material.custom.item.CustomItem
-import net.stellarica.server.material.custom.item.CustomItems
-import org.bukkit.Bukkit
-import org.bukkit.Material
+import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.block.BlockFace
-import org.bukkit.block.data.MultipleFacing
 import org.bukkit.inventory.ItemStack
 
 /**
@@ -19,7 +15,7 @@ data class CustomBlock(
 	/**
 	 * The custom item id for this block
 	 */
-	private val item: String?, // don't pass the custom item because we can't be sure its registered yet
+	private val item: ItemType,
 	/**
 	 * The data for the underlying mushroom stem BlockData
 	 */
@@ -28,19 +24,4 @@ data class CustomBlock(
 	 * The drops on block break
 	 */
 	val drops: ItemStack?,
-) {
-	/**
-	 * The custom item used to place this
-	 */
-	val customItem: CustomItem?
-		get() = CustomItems[item]
-
-	/**
-	 * The block data of the custom block
-	 */
-	val blockData: MultipleFacing by lazy {
-		val blockData = Bukkit.getServer().createBlockData(Material.MUSHROOM_STEM) as MultipleFacing
-		data.forEach { (face, value) -> blockData.setFace(face, value) }
-		blockData
-	}
-}
+)
