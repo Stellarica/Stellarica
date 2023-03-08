@@ -1,8 +1,9 @@
 package net.stellarica.server.material.custom.item
 
+import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.plugin
-import net.stellarica.server.material.custom.item.CustomItems.items
+import net.stellarica.server.material.custom.item.CustomItemHandler.items
 import net.stellarica.server.utils.extensions.id
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -15,56 +16,8 @@ import org.bukkit.inventory.ShapelessRecipe
  * Keeps track of registed [items]
  * Utilities for dealing with custom items
  */
-object CustomItems {
-	private val items = mutableMapOf<String, CustomItem>()
-
-	/**
-	 * Get a custom item by its id
-	 */
-	operator fun get(name: String?): CustomItem? = items[name]
-
-	/**
-	 * The registered custom items
-	 */ // id rather not expose items itself
-	val all: Map<String, CustomItem>
-		get() = items.toMap()
-
-
-	/**
-	 * Load custom items from the config file
-	 */
-	fun loadFromConfig() {
-		items.clear()
-		val conf = plugin.config
-		conf.getConfigurationSection("customItems")!!.getKeys(false).forEach { id ->
-			val itemPath = "customItems.$id"
-			items[id] = CustomItem(
-				id,
-				conf.getString("$itemPath.name")!!,
-				conf.getStringList("$itemPath.lore"),
-				Material.valueOf(conf.getString("$itemPath.base")!!.uppercase()),
-				conf.getInt("$itemPath.data"),
-				conf.getInt("$itemPath.maxPower"),
-			)
-			if (conf.getConfigurationSection("$itemPath.shapedRecipe") != null) {
-				val matrix = mutableListOf<String>()
-				for (i in 1..3) {
-					matrix.addAll(conf.getStringList("$itemPath.shapedRecipe.r$i"))
-				}
-				registerShapedRecipe(
-					items[id]!!.getItem(conf.getInt("$itemPath.shapedRecipe.amount")),
-					matrix
-				)
-			}
-			if (conf.getConfigurationSection("$itemPath.shapelessRecipe") != null) {
-				registerShapelessRecipe(
-					items[id]!!.getItem(conf.getInt("$itemPath.shapelessRecipe.amount")),
-					conf.getStringList("$itemPath.shapelessRecipe.items")
-				)
-			}
-		}
-	}
-
+object CustomItemHandler {
+	private val items = mutableMapOf<ResourceLocation, CustomItem>()
 
 	/**
 	 * Register a shaped recipe for [itemStack]
@@ -113,16 +66,5 @@ object CustomItems {
 		}
 		Bukkit.addRecipe(recipe)
 		klogger.info { "Registered recipe $ingredients for ${itemStack.id}" }
-	}
-
-	/**
-	 * @return the ItemStack of the custom item or material with [id], with [count] items
-	 * @see [ItemStack.id]
-	 */
-	fun itemStackFromId(id: String, count: Int = 1): ItemStack? {
-		return CustomItems[id]?.getItem(count) ?: ItemStack(
-			Material.getMaterial(id.uppercase()) ?: return null,
-			count
-		)
 	}
 }

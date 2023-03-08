@@ -1,9 +1,10 @@
 package net.stellarica.server.material.custom.item
 
 import net.kyori.adventure.text.Component
+import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.StellaricaServer.Companion.plugin
+import net.stellarica.server.material.type.item.VanillaItemType
 import net.stellarica.server.utils.extensions.asMiniMessage
-import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemStack
@@ -13,10 +14,8 @@ import org.bukkit.persistence.PersistentDataType
  * Holds data for a custom item
  */
 data class CustomItem(
-	/**
-	 * The id of the item, must be unique to this item
-	 */
-	val id: String,
+	/** The ID of the item. */
+	val id: ResourceLocation,
 
 	/**
 	 * The display name of the item, MiniMessage formatting is allowed
@@ -28,34 +27,17 @@ data class CustomItem(
 	 */
 	val lore: List<String>,
 
-	/**
-	 * The vanilla material behind this item
-	 */
-	val base: Material,
+	/** The vanilla material behind this item */
+	val base: VanillaItemType,
 
 	/**
 	 * Custom model data for this item
 	 */
 	val modelData: Int,
 
-	/**
-	 * The maximum power this item can hold.
-	 * -1 if this item cannot hold power
-	 */
-	val maxPower: Int = -1,
-
-	/**
-	 * The allowed enchants for this item
-	 */
-	val allowedEnchants: MutableSet<Enchantment> = mutableSetOf()
-
+	/** The allowed enchants for this item */
+	val allowedEnchants: MutableSet<Enchantment>? = null
 ) {
-
-	/**
-	 * Whether this item can hold power,
-	 * @see maxPower
-	 */
-	val isPowerable: Boolean = maxPower > 0
 
 	/**
 	 * @return an [ItemStack] with [count] of this item

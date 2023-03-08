@@ -5,7 +5,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.stellarica.server.customblocks.CustomBlocks
 import net.stellarica.server.material.custom.item.CustomItem
-import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.material.custom.item.CustomItemHandler
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.data.MultipleFacing
@@ -34,7 +34,7 @@ val Block.id: String
  * The custom item type this ItemStack represents, if any
  */
 val ItemStack.customItem: CustomItem?
-	get() = CustomItems[
+	get() = CustomItemHandler[
 		this.itemMeta.persistentDataContainer.get(
 			NamespacedKey(net.stellarica.server.StellaricaServer.plugin, "custom_item_id"),
 			PersistentDataType.STRING
