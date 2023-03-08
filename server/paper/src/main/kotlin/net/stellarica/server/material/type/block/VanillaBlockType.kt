@@ -1,4 +1,4 @@
-package net.stellarica.server.material.block
+package net.stellarica.server.material.type.block
 
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
@@ -27,9 +27,5 @@ value class VanillaBlockType(val type: Block) : BlockType {
 	override fun getId(): ResourceLocation {
 		@Suppress("DEPRECATION")
 		return type.builtInRegistryHolder().key().location()
-	}
-
-	override fun getStringId(): String {
-		return getId().path
 	}
 }
