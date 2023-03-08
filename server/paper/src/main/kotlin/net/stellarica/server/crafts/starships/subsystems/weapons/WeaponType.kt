@@ -3,7 +3,6 @@ package net.stellarica.server.crafts.starships.subsystems.weapons
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.StellaricaServer.Companion.identifier
-import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.LightCannonProjectile
 import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.Projectile
 import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.TestProjectile
 import net.stellarica.server.multiblocks.MultiblockHandler

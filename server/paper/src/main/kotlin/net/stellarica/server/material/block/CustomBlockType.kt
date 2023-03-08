@@ -4,10 +4,9 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
 import net.stellarica.server.customblocks.CustomBlock
 import org.bukkit.Material
-import org.bukkit.block.BlockState
 import org.bukkit.block.data.BlockData
 
-data class CustomBlockType(val type: CustomBlock): BlockType {
+data class CustomBlockType(val type: CustomBlock) : BlockType {
 	override fun getBukkitBlockData(): BlockData {
 		TODO("Not yet implemented")
 	}

@@ -1,4 +1,4 @@
-package net.stellarica.server.utils
+package net.stellarica.common.utils
 
 import net.minecraft.core.Direction
 import net.minecraft.world.level.block.Rotation
@@ -41,4 +41,12 @@ fun Direction.rotate(rot: Rotation) = when (rot) {
 	Rotation.CLOCKWISE_90 -> this.clockWise
 	Rotation.CLOCKWISE_180 -> this.opposite
 	Rotation.COUNTERCLOCKWISE_90 -> this.counterClockWise
+}
+
+fun Direction.getRotFromNorth() = when (this) {
+	Direction.NORTH -> Rotation.NONE
+	Direction.EAST -> Rotation.CLOCKWISE_90
+	Direction.SOUTH -> Rotation.CLOCKWISE_180
+	Direction.WEST -> Rotation.COUNTERCLOCKWISE_90
+	else -> throw Exception("don't be lazy")
 }

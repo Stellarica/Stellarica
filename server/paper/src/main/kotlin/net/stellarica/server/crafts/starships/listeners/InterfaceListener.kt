@@ -26,7 +26,12 @@ class InterfaceListener : Listener {
 			if (event.clickedBlock!!.type == Material.JUKEBOX) {
 				StarshipInterfaceScreen(
 					event.player,
-					Starship(event.clickedBlock!!.toBlockPos(), Direction.NORTH, (event.player.world as CraftWorld).handle, event.player)
+					Starship(
+						event.clickedBlock!!.toBlockPos(),
+						Direction.NORTH,
+						(event.player.world as CraftWorld).handle,
+						event.player
+					)
 				)
 
 				event.isCancelled = true
