@@ -15,7 +15,7 @@ import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.custom.CustomItemCommands
 import net.stellarica.server.material.custom.item.listeners.ItemEnchantListener
 import net.stellarica.server.material.custom.item.listeners.PowerItemBreakListener
-import net.stellarica.server.material.block.BlockType
+import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockType
