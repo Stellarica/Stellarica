@@ -1,4 +1,4 @@
-package net.stellarica.server.customblocks
+package net.stellarica.server.material.custom.block
 
 import net.stellarica.server.utils.Tasks
 import org.bukkit.Bukkit.getOnlinePlayers

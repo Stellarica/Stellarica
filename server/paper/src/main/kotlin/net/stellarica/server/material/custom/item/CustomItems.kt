@@ -1,8 +1,8 @@
-package net.stellarica.server.customitems
+package net.stellarica.server.material.custom.item
 
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.plugin
-import net.stellarica.server.customitems.CustomItems.items
+import net.stellarica.server.material.custom.item.CustomItems.items
 import net.stellarica.server.utils.extensions.id
 import org.bukkit.Bukkit
 import org.bukkit.Material

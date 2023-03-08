@@ -4,8 +4,8 @@ import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.stellarica.server.customblocks.CustomBlocks
-import net.stellarica.server.customitems.CustomItem
-import net.stellarica.server.customitems.CustomItems
+import net.stellarica.server.material.custom.item.CustomItem
+import net.stellarica.server.material.custom.item.CustomItems
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block
 import org.bukkit.block.data.MultipleFacing
