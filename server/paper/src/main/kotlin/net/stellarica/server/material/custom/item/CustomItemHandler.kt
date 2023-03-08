@@ -4,67 +4,51 @@ import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.stellarica.server.material.custom.item.CustomItemHandler.items
+import net.stellarica.server.utils.extensions.customItem
 import net.stellarica.server.utils.extensions.id
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.event.EventHandler
+import org.bukkit.event.enchantment.PrepareItemEnchantEvent
+import org.bukkit.event.inventory.PrepareAnvilEvent
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.ShapelessRecipe
+import java.net.http.WebSocket.Listener
 
 /**
  * Keeps track of registed [items]
  * Utilities for dealing with custom items
  */
-object CustomItemHandler {
+object CustomItemHandler: Listener {
 	private val items = mutableMapOf<ResourceLocation, CustomItem>()
 
 	/**
-	 * Register a shaped recipe for [itemStack]
-	 * @param matrix a list of item (or custom item) ids that represent the crafting grid
-	 * @see registerShapelessRecipe
+	 * Handles cancelling enchants for custom items, allows only those in [CustomItem.allowedEnchants]
+	 * @see [onAnvilEnchant]
 	 */
-	private fun registerShapedRecipe(itemStack: ItemStack, matrix: List<String?>) {
-		klogger.debug { "Registering recipe for $itemStack" }
-		val key = NamespacedKey(plugin, "recipe_${itemStack.id}")
-		if (Bukkit.getRecipe(key) != null) {
-			klogger.warn { "A recipe is already registered with key ${key.key}!" }
-			klogger.warn { "Cannot register bukkit shapeless recipe for ${itemStack.id}" }
-			return
+	@EventHandler
+	fun onTableEnchant(event: PrepareItemEnchantEvent) {
+		val item = event.item.customItem ?: return
+		for (i in 0..2) {
+			val offer = event.offers.get(i) ?: continue
+			if (offer.enchantment !in item.allowedEnchants) event.offers.set(i, null)
 		}
-		val recipe = ShapedRecipe(key, itemStack).shape("abc", "def", "ghi")
-		var shape = ""
-		val str = "abcdefghi"
-		for (i in 0..8) {
-			if (matrix[i] == null) {
-				shape += " "
-				continue
-			}
-			shape += str[i]
-			recipe.setIngredient(str[i], itemStackFromId(matrix[i]!!)!!)
-		}
-		recipe.shape(*shape.chunked(3).toTypedArray())
-		Bukkit.addRecipe(recipe)
-		klogger.info { "Registered recipe $matrix for ${itemStack.id}" }
 	}
 
 	/**
-	 * Register a shapeless recipe for [itemStack]
-	 * @param ingredients the crafting ingredients as a set of id strings
-	 * @see registerShapedRecipe
+	 * Handles cancelling enchants for custom items, allows only those in [CustomItem.allowedEnchants]
+	 * @see [onTableEnchant]
 	 */
-	private fun registerShapelessRecipe(itemStack: ItemStack, ingredients: List<String>) {
-		val key = NamespacedKey(plugin, "recipe_${itemStack.id}")
-		if (Bukkit.getRecipe(key) != null) {
-			klogger.warn { "A recipe is already registered with key ${key.key}!" }
-			klogger.warn { "Cannot register bukkit shapeless recipe for ${itemStack.id}" }
+	@EventHandler
+	fun onAnvilEnchant(event: PrepareAnvilEvent) {
+		val item = event.result?.customItem ?: return
+		event.result!!.enchantments.keys.forEach {
+			if (it !in item.allowedEnchants) event.result = null
 			return
 		}
-		val recipe = ShapelessRecipe(key, itemStack)
-		ingredients.forEach {
-			recipe.addIngredient(itemStackFromId(it)!!)
-		}
-		Bukkit.addRecipe(recipe)
-		klogger.info { "Registered recipe $ingredients for ${itemStack.id}" }
 	}
+
+
 }

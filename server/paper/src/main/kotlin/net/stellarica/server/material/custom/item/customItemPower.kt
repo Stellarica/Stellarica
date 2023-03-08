@@ -16,7 +16,7 @@ import kotlin.math.roundToInt
  * Update this item's durability to match the current [power]/[maxPower]
  * @return whether it was successful
  */
-fun ItemStack.updatePowerDurability(): Boolean {
+private fun ItemStack.updatePowerDurability(): Boolean {
 	if (!this.isPowerable || this.itemMeta !is Damageable) return false
 	this.editMeta {
 		// In order to update the durability bar we need to set it to *not* be unbreakable
