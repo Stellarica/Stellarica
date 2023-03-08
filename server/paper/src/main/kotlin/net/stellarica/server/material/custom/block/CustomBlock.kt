@@ -1,7 +1,7 @@
-package net.stellarica.server.customblocks
+package net.stellarica.server.material.custom.block
 
-import net.stellarica.server.customitems.CustomItem
-import net.stellarica.server.customitems.CustomItems
+import net.stellarica.server.material.custom.item.CustomItem
+import net.stellarica.server.material.custom.item.CustomItems
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.block.BlockFace

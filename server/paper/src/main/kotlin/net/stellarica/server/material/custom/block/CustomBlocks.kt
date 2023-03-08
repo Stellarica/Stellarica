@@ -1,9 +1,9 @@
-package net.stellarica.server.customblocks
+package net.stellarica.server.material.custom.block
 
 import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.stellarica.server.customblocks.CustomBlocks.blocks
-import net.stellarica.server.customitems.CustomItem
-import net.stellarica.server.customitems.CustomItems.itemStackFromId
+import net.stellarica.server.material.custom.item.CustomItem
+import net.stellarica.server.material.custom.item.CustomItems.itemStackFromId
 import org.bukkit.block.BlockFace
 import org.bukkit.block.data.MultipleFacing
 import org.bukkit.inventory.ItemStack

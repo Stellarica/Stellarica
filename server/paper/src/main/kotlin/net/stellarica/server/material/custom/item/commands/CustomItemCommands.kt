@@ -1,4 +1,4 @@
-package net.stellarica.server.customitems.commands
+package net.stellarica.server.material.custom.item.commands
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
@@ -8,9 +8,9 @@ import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
-import net.stellarica.server.customitems.CustomItems
-import net.stellarica.server.customitems.isPowerable
-import net.stellarica.server.customitems.power
+import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.material.custom.item.isPowerable
+import net.stellarica.server.material.custom.item.power
 import net.stellarica.server.utils.extensions.customItem
 import org.bukkit.entity.Player
 

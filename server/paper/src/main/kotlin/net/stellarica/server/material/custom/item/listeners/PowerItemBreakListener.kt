@@ -1,7 +1,7 @@
-package net.stellarica.server.customitems.listeners
+package net.stellarica.server.material.custom.item.listeners
 
-import net.stellarica.server.customitems.isPowerable
-import net.stellarica.server.customitems.updatePowerDurability
+import net.stellarica.server.material.custom.item.isPowerable
+import net.stellarica.server.material.custom.item.updatePowerDurability
 import net.stellarica.server.utils.Tasks
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

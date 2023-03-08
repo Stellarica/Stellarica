@@ -1,4 +1,4 @@
-package net.stellarica.server.customitems
+package net.stellarica.server.material.custom.item
 
 import net.kyori.adventure.text.Component
 import net.stellarica.server.StellaricaServer.Companion.plugin

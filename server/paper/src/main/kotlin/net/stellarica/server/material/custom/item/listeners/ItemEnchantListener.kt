@@ -1,4 +1,4 @@
-package net.stellarica.server.customitems.listeners
+package net.stellarica.server.material.custom.item.listeners
 
 import net.stellarica.server.utils.extensions.customItem
 import org.bukkit.event.EventHandler
