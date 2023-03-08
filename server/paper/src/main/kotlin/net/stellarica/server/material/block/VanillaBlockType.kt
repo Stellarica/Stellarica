@@ -6,7 +6,8 @@ import org.bukkit.Material
 import org.bukkit.block.data.BlockData
 
 
-data class VanillaBlockType(val type: Block) : BlockType {
+@JvmInline
+value class VanillaBlockType(val type: Block) : BlockType {
 	override fun getBukkitBlockData(): BlockData {
 		return getBukkitBlock().createBlockData()
 	}

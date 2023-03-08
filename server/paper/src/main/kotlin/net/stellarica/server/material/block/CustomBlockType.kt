@@ -6,7 +6,8 @@ import net.stellarica.server.customblocks.CustomBlock
 import org.bukkit.Material
 import org.bukkit.block.data.BlockData
 
-data class CustomBlockType(val type: CustomBlock) : BlockType {
+@JvmInline
+value class CustomBlockType(val type: CustomBlock) : BlockType {
 	override fun getBukkitBlockData(): BlockData {
 		TODO("Not yet implemented")
 	}
