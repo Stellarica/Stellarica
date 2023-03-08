@@ -1,6 +1,6 @@
 package net.stellarica.server.crafts
 
-import io.papermc.paper.entity.RelativeTeleportFlag
+import io.papermc.paper.entity.TeleportFlag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -412,14 +412,16 @@ open class Craft(
 			destination.pitch = it.location.pitch
 			destination.yaw = (it.location.yaw + rotation.asDegrees).toFloat()
 
-			if (it is Player) it.teleport(
+			it.teleport(
 				destination,
 				PlayerTeleportEvent.TeleportCause.PLUGIN,
-				false,
-				true,
-				*RelativeTeleportFlag.values(),
+				TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
+				TeleportFlag.Relative.PITCH,
+				TeleportFlag.Relative.YAW,
+				TeleportFlag.Relative.Y,
+				TeleportFlag.Relative.X,
+				TeleportFlag.Relative.Z
 			)
-			else it.teleport(destination)
 		}
 	}
 
