@@ -1,7 +1,7 @@
-package net.stellarica.server.material.block
+package net.stellarica.server.material.type.block
 
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.customblocks.CustomBlock
+import net.stellarica.server.material.custom.block.CustomBlock
 import org.bukkit.craftbukkit.v1_19_R2.block.data.CraftBlockData
 
 interface BlockType {
@@ -10,7 +10,7 @@ interface BlockType {
 	fun getBukkitBlock(): org.bukkit.Material
 	fun getVanillaBlock(): net.minecraft.world.level.block.Block
 	fun getId(): ResourceLocation
-	fun getStringId(): String
+	fun getStringId(): String = getId().path
 
 	val isCustom: Boolean
 		get() = this is CustomBlockType
@@ -34,6 +34,10 @@ interface BlockType {
 
 		fun of(block: org.bukkit.Material): VanillaBlockType {
 			return of((block.createBlockData() as CraftBlockData).state.block)
+		}
+
+		fun of(block: ResourceLocation): BlockType {
+			TODO()
 		}
 	}
 }
