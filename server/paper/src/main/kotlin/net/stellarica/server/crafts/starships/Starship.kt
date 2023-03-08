@@ -22,7 +22,8 @@ import kotlin.math.roundToInt
 /**
  * Base Starship class
  */
-class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner: Player? = null) : Craft(origin, direction, world, owner), Listener {
+class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner: Player? = null) :
+	Craft(origin, direction, world, owner), Listener {
 
 	val subsystems: Set<Subsystem>
 		get() = setOf(weapons, shields, armor)
@@ -103,7 +104,7 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 	@EventHandler
 	fun onBlockExplode(event: BlockExplodeEvent) {
 		// todo: fix bad range check
-		if (origin.distSqr(event.block.toBlockPos())  < 500 && contains(event.block.toBlockPos())) {
+		if (origin.distSqr(event.block.toBlockPos()) < 500 && contains(event.block.toBlockPos())) {
 			if (shields.shieldHealth > 0) {
 				event.isCancelled = true
 				shields.damage(event.block.location, event.yield.roundToInt())
