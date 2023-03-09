@@ -1,9 +1,8 @@
 package net.stellarica.server.utils
 
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.utils.extensions.id
+import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.Bukkit
-import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.inventory.ShapelessRecipe
@@ -13,12 +12,11 @@ import org.bukkit.inventory.ShapelessRecipe
  * @param matrix a list of item (or custom item) ids that represent the crafting grid
  * @see registerShapelessRecipe
  */
-private fun registerShapedRecipe(itemStack: ItemStack, matrix: List<String?>) {
-	StellaricaServer.klogger.debug { "Registering recipe for $itemStack" }
-	val key = NamespacedKey(StellaricaServer.plugin, "recipe_${itemStack.id}")
+private fun registerShapedRecipe(itemStack: ItemStack, matrix: List<ItemType?>) {
+	val key =  StellaricaServer.namespacedKey("recipe_${ItemType.of(itemStack).getStringId()}")
 	if (Bukkit.getRecipe(key) != null) {
 		StellaricaServer.klogger.warn { "A recipe is already registered with key ${key.key}!" }
-		StellaricaServer.klogger.warn { "Cannot register bukkit shapeless recipe for ${itemStack.id}" }
+		StellaricaServer.klogger.warn { "Cannot register bukkit shapeless recipe for ${ItemType.of(itemStack).getStringId()}" }
 		return
 	}
 	val recipe = ShapedRecipe(key, itemStack).shape("abc", "def", "ghi")
@@ -30,29 +28,28 @@ private fun registerShapedRecipe(itemStack: ItemStack, matrix: List<String?>) {
 			continue
 		}
 		shape += str[i]
-		recipe.setIngredient(str[i], itemStackFromId(matrix[i]!!)!!)
+		recipe.setIngredient(str[i], matrix[i]!!.getBukkitItemStack())
 	}
 	recipe.shape(*shape.chunked(3).toTypedArray())
 	Bukkit.addRecipe(recipe)
-	StellaricaServer.klogger.info { "Registered recipe $matrix for ${itemStack.id}" }
 }
 
 /**
  * Register a shapeless recipe for [itemStack]
- * @param ingredients the crafting ingredients as a set of id strings
+ * @param ingredients the crafting ingredients
  * @see registerShapedRecipe
  */
-private fun registerShapelessRecipe(itemStack: ItemStack, ingredients: List<String>) {
-	val key = NamespacedKey(StellaricaServer.plugin, "recipe_${itemStack.id}")
+private fun registerShapelessRecipe(itemStack: ItemStack, ingredients: List<ItemType>) {
+	val id = ItemType.of(itemStack).getStringId()
+	val key = StellaricaServer.namespacedKey("recipe_$id")
 	if (Bukkit.getRecipe(key) != null) {
 		StellaricaServer.klogger.warn { "A recipe is already registered with key ${key.key}!" }
-		StellaricaServer.klogger.warn { "Cannot register bukkit shapeless recipe for ${itemStack.id}" }
+		StellaricaServer.klogger.warn { "Cannot register bukkit shapeless recipe for $id" }
 		return
 	}
 	val recipe = ShapelessRecipe(key, itemStack)
 	ingredients.forEach {
-		recipe.addIngredient(itemStackFromId(it)!!)
+		recipe.addIngredient(it.getBukkitItemStack())
 	}
 	Bukkit.addRecipe(recipe)
-	StellaricaServer.klogger.info { "Registered recipe $ingredients for ${itemStack.id}" }
 }

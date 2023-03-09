@@ -2,8 +2,9 @@ package net.stellarica.server.material.custom.item
 
 import net.kyori.adventure.text.Component
 import net.stellarica.server.StellaricaServer.Companion.plugin
+import net.stellarica.server.material.type.item.CustomItemType
+import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.utils.extensions.asMiniMessage
-import net.stellarica.server.utils.extensions.customItem
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
@@ -12,21 +13,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-/**
- * Update this item's durability to match the current [power]/[maxPower]
- * @return whether it was successful
- */
-private fun ItemStack.updatePowerDurability(): Boolean {
-	if (!this.isPowerable || this.itemMeta !is Damageable) return false
-	this.editMeta {
-		// In order to update the durability bar we need to set it to *not* be unbreakable
-		it.isUnbreakable = false
-		(it as Damageable).damage =
-			(this.type.maxDurability - this.power!!.toFloat() /
-					this.customItem!!.maxPower * this.type.maxDurability).roundToInt()
-	}
-	return true
-}
 
 /**
  * Whether this ItemStack is a powerable custom item
@@ -40,6 +26,15 @@ val ItemStack.isPowerable: Boolean
  */
 val ItemStack.maxPower: Int?
 	get() = this.customItem?.maxPower
+
+
+@Deprecated("Prefer ItemType wrappers", ReplaceWith(
+	"(ItemType.of(this) as? CustomItemType)?.item",
+	"net.stellarica.server.material.type.item.ItemType",
+	"net.stellarica.server.material.type.item.CustomItemType"
+))
+val ItemStack.customItem: CustomItem?
+	get() = (ItemType.of(this) as? CustomItemType)?.item
 
 
 /**
@@ -56,20 +51,27 @@ var ItemStack.power: Int?
 		) ?: 0
 	}
 	set(value) {
-		if (!this.isPowerable) throw return
+		if (!this.isPowerable) return
 		value ?: return
+
 		val newPower = max(min(value, this.maxPower!!), 0)
+
 		val lore: MutableList<Component> = this.lore() ?: mutableListOf()
 		val text = "<gray>Power: $newPower/${this.maxPower}"
 		lore[lore.lastIndex] = text.asMiniMessage
 		this.lore(lore)
+
 		this.editMeta {
 			it.persistentDataContainer.set(
 				NamespacedKey(plugin, "item-power"),
 				PersistentDataType.INTEGER,
 				newPower
 			)
+			// In order to update the durability bar we need to set it to *not* be unbreakable
+			it.isUnbreakable = false
+			(it as Damageable).damage =
+				(this.type.maxDurability - this.power!!.toFloat() /
+						this.customItem!!.maxPower * this.type.maxDurability).roundToInt()
 		}
-		this.updatePowerDurability()
 	}
 

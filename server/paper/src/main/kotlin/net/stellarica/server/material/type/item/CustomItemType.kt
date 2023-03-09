@@ -20,14 +20,14 @@ value class CustomItemType(val item: CustomItem): ItemType {
 	}
 
 	override fun getBukkitItemStack(count: Int): org.bukkit.inventory.ItemStack {
-		val stack = org.bukkit.inventory.ItemStack(item.base, count)
+		val stack = org.bukkit.inventory.ItemStack(item.base.getBukkitItem(), count)
 		stack.editMeta { meta ->
 			meta.displayName(item.name.asMiniMessage)
 			val loreComponents = mutableListOf<Component>() // this can be code golfed
 			item.lore.forEach { loreComponents.add(it.asMiniMessage) }
 
-			if (item is PowerableCustomItem) {
-				loreComponents.add("<gray>Power: 0/$maxPower".asMiniMessage)
+			if (item.isPowerable) {
+				loreComponents.add("<gray>Power: 0/$item.maxPower".asMiniMessage)
 				meta.persistentDataContainer.set(
 					NamespacedKey(StellaricaServer.plugin, "power"),
 					PersistentDataType.INTEGER,
@@ -41,7 +41,7 @@ value class CustomItemType(val item: CustomItem): ItemType {
 			meta.persistentDataContainer.set(
 				NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
 				PersistentDataType.STRING,
-				item.id
+				item.id.path
 			)
 		}
 		return stack
