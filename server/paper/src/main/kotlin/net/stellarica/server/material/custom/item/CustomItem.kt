@@ -24,5 +24,13 @@ data class CustomItem(
 	val modelData: Int,
 
 	/** The allowed enchants for this item */
-	val allowedEnchants: MutableSet<Enchantment>? = null
-)
+	val allowedEnchants: MutableSet<Enchantment>? = null,
+
+	/**
+	 * The amount of power this item can hold.
+	 * If this is zero, the item cannot be powered
+	 * */
+	val maxPower: Int = 0
+) {
+	val isPowerable = maxPower > 0
+}

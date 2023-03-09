@@ -8,15 +8,17 @@ import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
-import net.stellarica.server.material.custom.item.CustomItemHandler
+import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.custom.item.isPowerable
 import net.stellarica.server.material.custom.item.power
-import net.stellarica.server.utils.extensions.customItem
+import net.stellarica.server.material.type.item.CustomItemType
+import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.entity.Player
 
 /**
  * Command handling for the custom item related commands.
  */
+@Suppress("Unused")
 @CommandAlias("customitem|item")
 class CustomItemCommands : BaseCommand() {
 
@@ -33,7 +35,7 @@ class CustomItemCommands : BaseCommand() {
 		@Default("1") count: Int,
 		@Optional target: Player = sender
 	) {
-		val item = CustomItemHandler[id] ?: run {
+		val item: CustomItem = null /*CustomItemHandler[id]*/ ?: run {
 			sender.sendRichMessage("<red>No custom item with the id '$id' found.")
 			return
 		}
@@ -41,7 +43,7 @@ class CustomItemCommands : BaseCommand() {
 			sender.sendRichMessage("<red>You do not have permission to give custom items to other players.")
 			return
 		}
-		target.inventory.addItem(item.getItem(count))
+		target.inventory.addItem(ItemType.of(item).getBukkitItemStack(count))
 		sender.sendRichMessage("Gave <b>$count</b> of ${item.name}<reset> to ${target.name}.")
 	}
 
@@ -53,7 +55,7 @@ class CustomItemCommands : BaseCommand() {
 	@CommandPermission("stellarica.customitems.get")
 	fun onGet(sender: Player) {
 		val item = sender.inventory.itemInMainHand
-		val custom = item.customItem ?: run {
+		val custom = (ItemType.of(item) as? CustomItemType)?.item ?: run {
 			sender.sendRichMessage("<gold>This item is not a custom item!")
 			return
 		}
@@ -84,7 +86,7 @@ class CustomItemCommands : BaseCommand() {
 	@CommandPermission("stellarica.customitems.setpower")
 	fun onSetPower(sender: Player, power: Int) {
 		val item = sender.inventory.itemInMainHand
-		val custom = item.customItem ?: run {
+		val custom = ItemType.of(item) as? CustomItemType ?: run {
 			sender.sendRichMessage("<gold>This item is not a custom item!")
 			return
 		}
@@ -93,7 +95,7 @@ class CustomItemCommands : BaseCommand() {
 			return
 		}
 		item.power = power
-		sender.sendRichMessage("<green>Set power to ${item.power}/${custom.maxPower}")
+		sender.sendRichMessage("<green>Set power to ${item.power}/${custom.item.maxPower}")
 	}
 }
 

@@ -12,5 +12,5 @@ data class CustomBlock(
 	/** The item used to place this block*/
 	private val item: ItemType?,
 	/** The drops on block break.*/
-	val drops: Map<ItemType, Int>
+	val drops: Map<ItemType, Int>,
 )

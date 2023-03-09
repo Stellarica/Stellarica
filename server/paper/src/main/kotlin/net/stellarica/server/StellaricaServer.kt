@@ -11,10 +11,9 @@ import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.crafts.starships.commands.StarshipCommands
 import net.stellarica.server.crafts.starships.commands.StarshipDebugCommands
 import net.stellarica.server.crafts.starships.listeners.InterfaceListener
-import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.custom.CustomItemCommands
-import net.stellarica.server.material.custom.item.listeners.ItemEnchantListener
-import net.stellarica.server.material.custom.item.listeners.PowerItemBreakListener
+import net.stellarica.server.material.custom.block.CustomBlockHandler
+import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
@@ -80,9 +79,9 @@ class StellaricaServer : JavaPlugin() {
 		// Register listeners here
 		arrayOf(
 			InterfaceListener(),
-			PowerItemBreakListener(),
-			ItemEnchantListener(),
 			MultiblockHandler,
+			CustomItemHandler,
+			CustomBlockHandler,
 			Handshake()
 		).forEach { getPluginManager().registerEvents(it, this) }
 
@@ -95,9 +94,11 @@ class StellaricaServer : JavaPlugin() {
 			TestDebugCommand(),
 			MultiblockCommands()
 		).forEach { commandManager.registerCommand(it) }
+		/*
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
 		) { CustomItemHandler.all.keys }
+		 */
 
 		// this is just for testing
 		MultiblockHandler.types.add(
