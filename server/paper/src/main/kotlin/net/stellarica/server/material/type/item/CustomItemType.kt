@@ -27,8 +27,8 @@ value class CustomItemType(val item: CustomItem): ItemType {
 			val loreComponents = mutableListOf<Component>() // this can be code golfed
 			item.lore.forEach { loreComponents.add(it.asMiniMessage) }
 
-			if (item.isPowerable) {
-				loreComponents.add("<gray>Power: 0/$item.maxPower".asMiniMessage)
+			if (item.isPowerable) { // todo: don't do this here. Duplicating the power lore is bad
+				loreComponents.add("<gray>Power: 0/${item.maxPower}".asMiniMessage)
 				meta.persistentDataContainer.set(
 					NamespacedKey(StellaricaServer.plugin, "power"),
 					PersistentDataType.INTEGER,
@@ -42,7 +42,7 @@ value class CustomItemType(val item: CustomItem): ItemType {
 			meta.persistentDataContainer.set(
 				NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
 				PersistentDataType.STRING,
-				item.id.path
+				item.id.toString()
 			)
 		}
 		return stack
