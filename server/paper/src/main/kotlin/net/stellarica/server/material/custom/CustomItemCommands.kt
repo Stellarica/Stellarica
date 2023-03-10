@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
+import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.custom.item.isPowerable
 import net.stellarica.server.material.custom.item.power
@@ -35,7 +36,7 @@ class CustomItemCommands : BaseCommand() {
 		@Default("1") count: Int,
 		@Optional target: Player = sender
 	) {
-		val item: CustomItem = null /*CustomItemHandler[id]*/ ?: run {
+		val item: CustomItem = (ItemType.of(StellaricaServer.identifier(id)) as? CustomItemType)?.item ?: run {
 			sender.sendRichMessage("<red>No custom item with the id '$id' found.")
 			return
 		}

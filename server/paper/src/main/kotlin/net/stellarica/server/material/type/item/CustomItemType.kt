@@ -6,6 +6,7 @@ import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.custom.item.CustomItem
+import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.utils.extensions.asMiniMessage
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -57,5 +58,9 @@ value class CustomItemType(val item: CustomItem): ItemType {
 
 	override fun getId(): ResourceLocation {
 		return item.id
+	}
+
+	override fun getBlock(): BlockType? {
+		return item.block?.let { BlockType.of(it) }
 	}
 }

@@ -1,6 +1,7 @@
 package net.stellarica.server.material.custom.item
 
 import net.minecraft.resources.ResourceLocation
+import net.stellarica.server.material.custom.block.CustomBlock
 import net.stellarica.server.material.type.item.VanillaItemType
 import org.bukkit.enchantments.Enchantment
 
@@ -25,6 +26,9 @@ data class CustomItem(
 
 	/** The allowed enchants for this item */
 	val allowedEnchants: MutableSet<Enchantment>? = null,
+
+	/** The block this item can be placed as */
+	val block: CustomBlock? = null,
 
 	/**
 	 * The amount of power this item can hold.

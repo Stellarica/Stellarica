@@ -1,7 +1,9 @@
 package net.stellarica.server.material.type.item
 
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
+import net.stellarica.server.material.type.block.BlockType
 import org.bukkit.Material
 
 @JvmInline
@@ -25,5 +27,9 @@ value class VanillaItemType(val item: Item): ItemType {
 	override fun getId(): ResourceLocation {
 		@Suppress("DEPRECATION")
 		return item.builtInRegistryHolder().key().location()
+	}
+
+	override fun getBlock(): BlockType? {
+		return (item as? BlockItem)?.block?.let { BlockType.of(it) }
 	}
 }

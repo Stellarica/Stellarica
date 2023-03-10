@@ -13,6 +13,7 @@ import net.stellarica.server.crafts.starships.commands.StarshipDebugCommands
 import net.stellarica.server.crafts.starships.listeners.InterfaceListener
 import net.stellarica.server.material.custom.CustomItemCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
+import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.multiblocks.MultiblockCommands
@@ -94,11 +95,11 @@ class StellaricaServer : JavaPlugin() {
 			TestDebugCommand(),
 			MultiblockCommands()
 		).forEach { commandManager.registerCommand(it) }
-		/*
+
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
-		) { CustomItemHandler.all.keys }
-		 */
+		) { CustomItems.all().map { it.id.path }}
+
 
 		// this is just for testing
 		MultiblockHandler.types.add(
