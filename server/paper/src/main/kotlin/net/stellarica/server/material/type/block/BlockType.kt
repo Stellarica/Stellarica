@@ -2,6 +2,7 @@ package net.stellarica.server.material.type.block
 
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.material.custom.block.CustomBlock
+import net.stellarica.server.material.custom.block.CustomBlocks
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.craftbukkit.v1_19_R2.block.data.CraftBlockData
 
@@ -38,8 +39,9 @@ interface BlockType {
 			return of((block.createBlockData() as CraftBlockData).state.block)
 		}
 
-		fun of(block: ResourceLocation): BlockType {
-			TODO()
+		fun of(block: ResourceLocation): BlockType? {
+			return CustomBlocks.byId(block)?.let { CustomBlockType(it) }
+				?: org.bukkit.Material.getMaterial(block.path)?.let { of(it) }
 		}
 	}
 }

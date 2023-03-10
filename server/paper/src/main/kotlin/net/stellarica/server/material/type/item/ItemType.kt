@@ -1,10 +1,13 @@
 package net.stellarica.server.material.type.item
 
 import net.minecraft.resources.ResourceLocation
+import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.type.block.BlockType
+import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack
+import org.bukkit.persistence.PersistentDataType
 
 interface ItemType {
 	fun getVanillaItemStack(count: Int = 1): net.minecraft.world.item.ItemStack
@@ -27,11 +30,15 @@ interface ItemType {
 		}
 
 		fun of(item: org.bukkit.inventory.ItemStack): ItemType {
-			TODO()
+			return item.itemMeta.persistentDataContainer.get(
+				NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
+				PersistentDataType.STRING,
+			)?.let { id -> ResourceLocation.tryParse(id)?.let { CustomItems.byId(it)?.let { CustomItemType(it) } } }
+				?: VanillaItemType((item as CraftItemStack).handle.item)
 		}
 
 		fun of(item: net.minecraft.world.item.ItemStack): ItemType {
-			TODO()
+			return of(item.bukkitStack)
 		}
 
 		fun of(item: org.bukkit.Material): VanillaItemType {

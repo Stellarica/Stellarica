@@ -17,8 +17,6 @@ import org.bukkit.event.block.BlockPistonRetractEvent
 import org.bukkit.event.block.BlockPlaceEvent
 
 object CustomBlockHandler: Listener {
-	private val blocks = mutableMapOf<ResourceLocation, CustomBlock>()
-
 	// For our purposes BlockPistonExtendEvent and BlockPistonRetractEvent can be handled the same way.
 	// TODO: There are some occasions where the block still changes, this needs to be resolved.
 	private fun noteBlockMovedByPiston(blocks: List<Block>, direction: BlockFace) {

@@ -21,7 +21,7 @@ import org.bukkit.entity.Player
  */
 @Suppress("Unused")
 @CommandAlias("customitem|item")
-class CustomItemCommands : BaseCommand() {
+class CustomMaterialCommands : BaseCommand() {
 
 	/**
 	 * Give a player a custom item

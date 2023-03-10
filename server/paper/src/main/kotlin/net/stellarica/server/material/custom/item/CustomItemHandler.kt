@@ -1,7 +1,5 @@
 package net.stellarica.server.material.custom.item
 
-import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.material.custom.item.CustomItemHandler.items
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.event.EventHandler
@@ -14,8 +12,6 @@ import org.bukkit.event.Listener
  * Utilities for dealing with custom items
  */
 object CustomItemHandler: Listener {
-	private val items = mutableMapOf<ResourceLocation, CustomItem>()
-
 	/**
 	 * Handles cancelling enchants for custom items, allows only those in [CustomItem.allowedEnchants]
 	 * @see [onAnvilEnchant]

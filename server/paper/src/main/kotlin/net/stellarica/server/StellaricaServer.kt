@@ -11,7 +11,7 @@ import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.crafts.starships.commands.StarshipCommands
 import net.stellarica.server.crafts.starships.commands.StarshipDebugCommands
 import net.stellarica.server.crafts.starships.listeners.InterfaceListener
-import net.stellarica.server.material.custom.CustomItemCommands
+import net.stellarica.server.material.custom.CustomMaterialCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.custom.item.CustomItemHandler
@@ -91,7 +91,7 @@ class StellaricaServer : JavaPlugin() {
 		arrayOf(
 			StarshipCommands(),
 			StarshipDebugCommands(),
-			CustomItemCommands(),
+			CustomMaterialCommands(),
 			TestDebugCommand(),
 			MultiblockCommands()
 		).forEach { commandManager.registerCommand(it) }
