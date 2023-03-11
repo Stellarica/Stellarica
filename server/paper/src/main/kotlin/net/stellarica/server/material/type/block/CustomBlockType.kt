@@ -7,15 +7,20 @@ import net.stellarica.server.material.custom.block.CustomBlock
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.Material
 import org.bukkit.block.data.BlockData
+import org.bukkit.block.data.type.NoteBlock
+import org.bukkit.craftbukkit.v1_19_R2.block.data.CraftBlockData
 
 @JvmInline
 value class CustomBlockType(val block: CustomBlock) : BlockType {
 	override fun getBukkitBlockData(): BlockData {
-		TODO("Not yet implemented")
+		return (Material.NOTE_BLOCK.createBlockData() as NoteBlock).apply {
+			this.note = block.note
+			this.instrument = block.instrument
+		}
 	}
 
 	override fun getVanillaBlockState(): net.minecraft.world.level.block.state.BlockState {
-		TODO("Not yet implemented")
+		return (getBukkitBlockData() as CraftBlockData).state
 	}
 
 	override fun getBukkitBlock(): Material {

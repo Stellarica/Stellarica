@@ -1,6 +1,9 @@
 package net.stellarica.server.material.custom.block
 
 import net.minecraft.resources.ResourceLocation
+import net.stellarica.server.StellaricaServer.Companion.klogger
+import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.utils.Tasks
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -47,20 +50,10 @@ object CustomBlockHandler: Listener {
 	}
 
 
-	@EventHandler
-	fun noteBlockPlaced(event: BlockPlaceEvent) {
-		if (event.blockPlaced.type != Material.NOTE_BLOCK) return
-
-		event.blockPlaced.setBlockData(
-			Bukkit.getServer().createBlockData(Material.NOTE_BLOCK),
-			false
-		) // A blank block data will have all sides set to true.
-	}
-
-
 	@EventHandler(priority = EventPriority.MONITOR)
 	fun onCustomBlockPlace(event: BlockPlaceEvent) {
-		event.blockPlaced.blockData = TODO()
+		if (event.blockPlaced.type != Material.NOTE_BLOCK) return
+		event.blockPlaced.blockData = ItemType.of(event.itemInHand).getBlock()!!.getBukkitBlockData().also { klogger.warn {it}}
 	}
 
 
