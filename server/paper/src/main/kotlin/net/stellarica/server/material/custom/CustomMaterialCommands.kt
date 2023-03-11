@@ -12,6 +12,7 @@ import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.custom.item.isPowerable
 import net.stellarica.server.material.custom.item.power
+import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.entity.Player
@@ -97,6 +98,15 @@ class CustomMaterialCommands : BaseCommand() {
 		}
 		item.power = power
 		sender.sendRichMessage("<green>Set power to ${item.power}/${custom.item.maxPower}")
+	}
+
+
+	@Subcommand("block")
+	@Description("Get the block you're looking at")
+	@CommandPermission("stellarica.customitems.block")
+	fun onBlock(sender: Player) {
+		val block = sender.getTargetBlockExact(10)
+		sender.sendRichMessage("<green>Block: ${BlockType.of(block!!)}")
 	}
 }
 
