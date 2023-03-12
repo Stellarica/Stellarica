@@ -40,7 +40,7 @@ data class OriginRelative(
 			return rotateCoordinates(
 				loc.let { Vec3i(it.x, it.y, it.z).toVec3().add(origin.toVec3()) },
 				origin.toVec3(),
-				(Math.PI * 2) - direction.getRotFromNorth().asRadians
+				direction.getRotFromNorth().asRadians
 			).toBlockPos()
 		}
 	}
