@@ -20,7 +20,7 @@ object CustomItems {
 		StellaricaServer.identifier("power_item"),
 		"Test Power Item",
 		listOf("This should be powerable"),
-		ItemType.of(Items.NETHERITE_HOE),
+		ItemType.of(Items.GOLDEN_HOE),
 		1,
 		maxPower = 1000
 	)
@@ -35,7 +35,7 @@ object CustomItems {
 		CustomBlocks.TEST_BLOCK
 	)
 
-	fun all(): Set<CustomItem> {
+	fun all(): Set<CustomItem> { // can't do lazy{} because reflection
 		return this::class.java.declaredFields.mapNotNull { it.get(this) as? CustomItem }.toSet()
 	}
 
