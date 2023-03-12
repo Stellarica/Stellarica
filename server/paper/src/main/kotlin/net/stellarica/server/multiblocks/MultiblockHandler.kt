@@ -9,8 +9,11 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
+import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.multiblocks.events.MultiblockDetectEvent
 import net.stellarica.server.multiblocks.events.MultiblockUndetectEvent
+import net.stellarica.server.utils.extensions.sendRichActionBar
 import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.Chunk
@@ -79,7 +82,16 @@ object MultiblockHandler : Listener {
 	@EventHandler
 	fun onPlayerAttemptDetect(event: PlayerInteractEvent) {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
-		event.player.sendMessage(detect(event.clickedBlock!!.toBlockPos(), event.player.world)?.type?.id.toString())
+		if (event.item?.let { ItemType.of(it) } != ItemType.of(CustomItems.DETECTOR)) return
+		multiblocks[event.clickedBlock!!.chunk]?.firstOrNull { it.origin == event.clickedBlock!!.toBlockPos() }?.let {
+			event.player.sendRichActionBar("<gold>Found already detected ${it.type.id.path}")
+			return
+		}
+		detect(event.clickedBlock!!.toBlockPos(), event.player.world)?.let {
+			event.player.sendRichActionBar("<green>Detected ${it.type.id.path}")
+			return
+		}
+		event.player.sendRichActionBar("<red>No multiblock detected")
 	}
 
 	@EventHandler

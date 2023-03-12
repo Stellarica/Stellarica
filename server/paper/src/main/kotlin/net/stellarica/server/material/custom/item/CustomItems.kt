@@ -35,6 +35,15 @@ object CustomItems {
 		CustomBlocks.TEST_BLOCK
 	)
 
+	val DETECTOR: CustomItem = CustomItem(
+		StellaricaServer.identifier("detector"),
+		"Detector",
+		listOf("Detects multiblocks"),
+		ItemType.of(Items.ARROW),
+		1,
+		null
+	)
+
 	fun all(): Set<CustomItem> { // can't do lazy{} because reflection
 		return this::class.java.declaredFields.mapNotNull { it.get(this) as? CustomItem }.toSet()
 	}
