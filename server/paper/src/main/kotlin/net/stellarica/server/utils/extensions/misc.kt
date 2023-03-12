@@ -11,3 +11,5 @@ val String.asMiniMessage: Component get() = MiniMessage.miniMessage().deserializ
 
 
 fun Audience.sendRichMessage(message: String) = this.sendMessage(message.asMiniMessage)
+
+fun Audience.sendRichActionBar(message: String) = this.sendActionBar(message.asMiniMessage)
