@@ -1,4 +1,4 @@
-package net.stellarica.server.customitems.commands
+package net.stellarica.server.material.custom
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
@@ -8,24 +8,22 @@ import co.aikar.commands.annotation.Default
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
-import net.stellarica.server.customitems.CustomItems
-import net.stellarica.server.customitems.isPowerable
-import net.stellarica.server.customitems.power
-import net.stellarica.server.utils.extensions.customItem
+import net.stellarica.server.StellaricaServer
+import net.stellarica.server.material.custom.item.CustomItem
+import net.stellarica.server.material.custom.item.isPowerable
+import net.stellarica.server.material.custom.item.power
+import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.type.item.CustomItemType
+import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.entity.Player
 
-/**
- * Command handling for the custom item related commands.
- */
-@CommandAlias("customitem|item")
-class CustomItemCommands : BaseCommand() {
+@Suppress("Unused")
+@CommandAlias("material|mat")
+class CustomMaterialCommands : BaseCommand() {
 
-	/**
-	 * Give a player a custom item
-	 */
 	@Subcommand("give")
 	@Description("Get a custom item")
-	@CommandPermission("stellarica.customitems.give.self")
+	@CommandPermission("stellarica.material.give.self")
 	@CommandCompletion("@customitems")
 	fun onGive(
 		sender: Player,
@@ -33,27 +31,25 @@ class CustomItemCommands : BaseCommand() {
 		@Default("1") count: Int,
 		@Optional target: Player = sender
 	) {
-		val item = CustomItems[id] ?: run {
+		val item: CustomItem = (ItemType.of(StellaricaServer.identifier(id)) as? CustomItemType)?.item ?: run {
 			sender.sendRichMessage("<red>No custom item with the id '$id' found.")
 			return
 		}
-		if (target != sender && !target.hasPermission("stellarica.customitems.give.other")) {
+		if (target != sender && !target.hasPermission("stellarica.material.give.other")) {
 			sender.sendRichMessage("<red>You do not have permission to give custom items to other players.")
 			return
 		}
-		target.inventory.addItem(item.getItem(count))
+		target.inventory.addItem(ItemType.of(item).getBukkitItemStack(count))
 		sender.sendRichMessage("Gave <b>$count</b> of ${item.name}<reset> to ${target.name}.")
 	}
 
-	/**
-	 * Get whether the held item is a custom item
-	 */
+
 	@Subcommand("get")
 	@Description("Check whether the held item is a custom item")
-	@CommandPermission("stellarica.customitems.get")
+	@CommandPermission("stellarica.material.debug")
 	fun onGet(sender: Player) {
 		val item = sender.inventory.itemInMainHand
-		val custom = item.customItem ?: run {
+		val custom = (ItemType.of(item) as? CustomItemType)?.item ?: run {
 			sender.sendRichMessage("<gold>This item is not a custom item!")
 			return
 		}
@@ -76,15 +72,13 @@ class CustomItemCommands : BaseCommand() {
 		)
 	}
 
-	/**
-	 * Set the power of the held custom item
-	 */
+
 	@Subcommand("setpower")
 	@Description("Set the power of the held item")
-	@CommandPermission("stellarica.customitems.setpower")
+	@CommandPermission("stellarica.material.debug")
 	fun onSetPower(sender: Player, power: Int) {
 		val item = sender.inventory.itemInMainHand
-		val custom = item.customItem ?: run {
+		val custom = ItemType.of(item) as? CustomItemType ?: run {
 			sender.sendRichMessage("<gold>This item is not a custom item!")
 			return
 		}
@@ -93,7 +87,16 @@ class CustomItemCommands : BaseCommand() {
 			return
 		}
 		item.power = power
-		sender.sendRichMessage("<green>Set power to ${item.power}/${custom.maxPower}")
+		sender.sendRichMessage("<green>Set power to ${item.power}/${custom.item.maxPower}")
+	}
+
+
+	@Subcommand("block")
+	@Description("Get the block type of the block you're looking at")
+	@CommandPermission("stellarica.material.debug")
+	fun onBlock(sender: Player) {
+		val block = sender.getTargetBlockExact(10)
+		sender.sendRichMessage("<green>Block: ${BlockType.of(block!!)}")
 	}
 }
 

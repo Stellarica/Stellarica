@@ -4,23 +4,10 @@ version: '${version}'
 description: The primary plugin for the Stellarica minecraft server.
 api-version: 1.19
 load: STARTUP
-authors: [ "Peter-Crawley", "trainb0y", "DoctorXeno" ]
+authors: [ "trainb0y", "Peter-Crawley", "DoctorXeno" ]
 website: https://github.com/Stellarica/Stellarica
 prefix: Stellarica
 permissions:
-  stellarica.config.reload:
-    description: Lets users reload the configuration file
-    default: op
-  stellarica.config.reset:
-    description: Lets users reset the configuration file
-    default: op
-  stellarica.config.*:
-    description: Wildcard permission
-    default: op
-    children:
-      stellarica.config.reload: true
-      stellarica.config.reset: true
-
   stellarica.starship.debug.setvelocity:
     description: Lets users set the velocity of a starship
     default: op
@@ -36,56 +23,13 @@ permissions:
   stellarica.starship.debug.contains:
     description: Lets users check whether a block is "inside" a ship
     default: op
-  stellarica.starship.debug.*:
-    description: Wildcard permission
-    default: op
-    children:
-      stellarica.starship.debug.setvelocity: true
-      stellarica.starship.debug.setacceleration: true
-      stellarica.starship.debug.get: true
-      stellarica.starship.debug.hitbox: true
-      stellarica.starship.debug.contains: true
 
-  stellarica.customitems.give.self:
-    description: Lets users give themselves custom items
+  stellarica.material.give.self:
+    description: Lets users give custom items to themselves
     default: op
-  stellarica.customitems.give.other:
-    description: Lets users give other players custom items
+  stellarica.material.give.other:
+    description: Lets users give custom items to others
     default: op
-  stellarica.customitems.get:
-    description: Lets users get debug information about custom items
+  stellarica.material.debug:
+    description: Debug commands for custom items and blocks
     default: op
-  stellarica.customitems.setpower:
-    description: Lets users set the power of custom items with a command
-    default: op
-  stellarica.customitems.give.*:
-    description: Wildcard permission
-    default: op
-    children:
-      stellarica.customitems.give.self: true
-      stellarica.customitems.give.other: true
-  stellarica.customitems.debug:
-    description: Debug commands for custom items
-    default: op
-    children:
-      stellarica.customitems.get: true
-      stellarica.customitems.setpower: true
-  stellarica.customitems.*:
-    description: Wildcard permission
-    default: op
-    children:
-      stellarica.customitems.give.*: true
-      stellarica.customitems.debug: true
-
-  stellarica.multiblocks.debug.multiblock:
-    description: Lets users get debug information about multiblocks
-    default: op
-  stellarica.multiblocks.debug.chunk:
-    description: Lets users get a list of multiblocks in a given chunk
-    default: op
-  stellarica.multiblocks.debug.*:
-    description: Wildcard permission
-    default: op
-    children:
-      stellarica.multiblocks.debug.multiblock: true
-      stellarica.multiblocks.debug.chunk: true

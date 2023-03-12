@@ -1,7 +1,10 @@
-package net.stellarica.server.material.block
+package net.stellarica.server.material.type.block
 
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.customblocks.CustomBlock
+import net.stellarica.server.material.custom.block.CustomBlock
+import net.stellarica.server.material.custom.block.CustomBlocks
+import net.stellarica.server.material.type.item.ItemType
+import org.bukkit.block.data.type.NoteBlock
 import org.bukkit.craftbukkit.v1_19_R2.block.data.CraftBlockData
 
 interface BlockType {
@@ -10,7 +13,8 @@ interface BlockType {
 	fun getBukkitBlock(): org.bukkit.Material
 	fun getVanillaBlock(): net.minecraft.world.level.block.Block
 	fun getId(): ResourceLocation
-	fun getStringId(): String
+	fun getStringId(): String = getId().path
+	fun getItem(): ItemType?
 
 	val isCustom: Boolean
 		get() = this is CustomBlockType
@@ -21,11 +25,19 @@ interface BlockType {
 		}
 
 		fun of(block: net.minecraft.world.level.block.state.BlockState): BlockType {
-			return of(block.block)
+			TODO()
+		}
+
+		fun of(block: org.bukkit.block.data.BlockData): BlockType {
+			if (block !is NoteBlock) return of(block.material)
+
+			return CustomBlocks.all().firstOrNull {
+				it.note == block.note && it.instrument == block.instrument
+			}?.let { CustomBlockType(it) } ?: of(block.material)
 		}
 
 		fun of(block: org.bukkit.block.BlockState): BlockType {
-			return of((block.blockData as CraftBlockData).state)
+			return of(block.blockData)
 		}
 
 		fun of(block: net.minecraft.world.level.block.Block): VanillaBlockType {
@@ -34,6 +46,15 @@ interface BlockType {
 
 		fun of(block: org.bukkit.Material): VanillaBlockType {
 			return of((block.createBlockData() as CraftBlockData).state.block)
+		}
+
+		fun of(block: ResourceLocation): BlockType? {
+			return CustomBlocks.byId(block)?.let { CustomBlockType(it) }
+				?: org.bukkit.Material.getMaterial(block.path)?.let { of(it) }
+		}
+
+		fun of(block: org.bukkit.block.Block): BlockType {
+			return of(block.blockData)
 		}
 	}
 }

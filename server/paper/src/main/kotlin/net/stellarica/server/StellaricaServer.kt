@@ -11,13 +11,11 @@ import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.crafts.starships.commands.StarshipCommands
 import net.stellarica.server.crafts.starships.commands.StarshipDebugCommands
 import net.stellarica.server.crafts.starships.listeners.InterfaceListener
-import net.stellarica.server.customblocks.CustomBlockListener
-import net.stellarica.server.customblocks.MushroomEventListener
-import net.stellarica.server.customitems.CustomItems
-import net.stellarica.server.customitems.commands.CustomItemCommands
-import net.stellarica.server.customitems.listeners.ItemEnchantListener
-import net.stellarica.server.customitems.listeners.PowerItemBreakListener
-import net.stellarica.server.material.block.BlockType
+import net.stellarica.server.material.custom.CustomMaterialCommands
+import net.stellarica.server.material.custom.block.CustomBlockHandler
+import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.material.custom.item.CustomItemHandler
+import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockType
@@ -81,12 +79,10 @@ class StellaricaServer : JavaPlugin() {
 
 		// Register listeners here
 		arrayOf(
-			MushroomEventListener(),
-			CustomBlockListener(),
 			InterfaceListener(),
-			PowerItemBreakListener(),
-			ItemEnchantListener(),
 			MultiblockHandler,
+			CustomItemHandler,
+			CustomBlockHandler,
 			Handshake()
 		).forEach { getPluginManager().registerEvents(it, this) }
 
@@ -95,13 +91,15 @@ class StellaricaServer : JavaPlugin() {
 		arrayOf(
 			StarshipCommands(),
 			StarshipDebugCommands(),
-			CustomItemCommands(),
+			CustomMaterialCommands(),
 			TestDebugCommand(),
 			MultiblockCommands()
 		).forEach { commandManager.registerCommand(it) }
+
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
-		) { CustomItems.all.keys }
+		) { CustomItems.all().map { it.id.path }}
+
 
 		// this is just for testing
 		MultiblockHandler.types.add(
