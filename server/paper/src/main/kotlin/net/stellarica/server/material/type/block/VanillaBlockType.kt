@@ -5,7 +5,6 @@ import net.minecraft.world.level.block.Block
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.Material
 import org.bukkit.block.data.BlockData
-import org.bukkit.craftbukkit.v1_19_R2.block.CraftBlockState
 
 
 @JvmInline

@@ -14,7 +14,7 @@ import org.bukkit.craftbukkit.v1_19_R2.inventory.CraftItemStack
 import org.bukkit.persistence.PersistentDataType
 
 @JvmInline
-value class CustomItemType(val item: CustomItem): ItemType {
+value class CustomItemType(val item: CustomItem) : ItemType {
 
 	override fun getVanillaItemStack(count: Int): ItemStack {
 		return (getBukkitItemStack(count) as CraftItemStack).handle

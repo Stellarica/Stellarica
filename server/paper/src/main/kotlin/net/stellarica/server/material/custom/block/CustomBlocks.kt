@@ -5,11 +5,12 @@ import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.custom.item.CustomItems
 import org.bukkit.Note
 
+@Suppress("unused")
 object CustomBlocks {
-	val TEST_BLOCK = CustomBlock(
+	val TEST_BLOCK: CustomBlock = CustomBlock(
 		StellaricaServer.identifier("test_block"),
-		CustomItems.TEST_ITEM,
-		note = Note.flat(1, Note.Tone.C),
+		CustomItems.TEST_BLOCK,
+		note = Note.natural(1, Note.Tone.C),
 		instrument = org.bukkit.Instrument.PIANO
 	)
 
