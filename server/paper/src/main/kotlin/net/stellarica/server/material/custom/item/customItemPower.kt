@@ -18,21 +18,23 @@ import kotlin.math.roundToInt
  * Whether this ItemStack is a powerable custom item
  */
 val ItemStack.isPowerable: Boolean
-	get() = this.customItem?.isPowerable ?: false
+	get() = (ItemType.of(this) as? CustomItemType)?.item?.isPowerable ?: false
 
 /**
  * The maximum power this item can hold
  * @see CustomItem.maxPower
  */
 val ItemStack.maxPower: Int?
-	get() = this.customItem?.maxPower
+	get() = (ItemType.of(this) as? CustomItemType)?.item?.maxPower
 
 
-@Deprecated("Prefer ItemType wrappers", ReplaceWith(
-	"(ItemType.of(this) as? CustomItemType)?.item",
-	"net.stellarica.server.material.type.item.ItemType",
-	"net.stellarica.server.material.type.item.CustomItemType"
-))
+@Deprecated(
+	"Prefer ItemType wrappers", ReplaceWith(
+		"(ItemType.of(this) as? CustomItemType)?.item",
+		"net.stellarica.server.material.type.item.ItemType",
+		"net.stellarica.server.material.type.item.CustomItemType"
+	)
+)
 val ItemStack.customItem: CustomItem?
 	get() = (ItemType.of(this) as? CustomItemType)?.item
 
@@ -71,7 +73,7 @@ var ItemStack.power: Int?
 			it.isUnbreakable = false
 			(it as Damageable).damage =
 				(this.type.maxDurability - this.power!!.toFloat() /
-						this.customItem!!.maxPower * this.type.maxDurability).roundToInt()
+						(ItemType.of(this) as? CustomItemType)?.item!!.maxPower * this.type.maxDurability).roundToInt()
 		}
 	}
 

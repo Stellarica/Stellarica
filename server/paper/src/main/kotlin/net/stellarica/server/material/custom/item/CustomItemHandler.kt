@@ -3,15 +3,15 @@ package net.stellarica.server.material.custom.item
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent
 import org.bukkit.event.inventory.PrepareAnvilEvent
-import org.bukkit.event.Listener
 
 /**
  * Keeps track of registed [items]
  * Utilities for dealing with custom items
  */
-object CustomItemHandler: Listener {
+object CustomItemHandler : Listener {
 	/**
 	 * Handles cancelling enchants for custom items, allows only those in [CustomItem.allowedEnchants]
 	 * @see [onAnvilEnchant]

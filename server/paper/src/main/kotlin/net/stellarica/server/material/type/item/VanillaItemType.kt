@@ -7,7 +7,7 @@ import net.stellarica.server.material.type.block.BlockType
 import org.bukkit.Material
 
 @JvmInline
-value class VanillaItemType(val item: Item): ItemType {
+value class VanillaItemType(val item: Item) : ItemType {
 	override fun getVanillaItemStack(count: Int): net.minecraft.world.item.ItemStack {
 		return net.minecraft.world.item.ItemStack(item, count)
 	}

@@ -29,11 +29,11 @@ interface BlockType {
 		}
 
 		fun of(block: org.bukkit.block.data.BlockData): BlockType {
-			val state = (block as CraftBlockData).state
-			if (state !is NoteBlock) return of(block.material)
-			return CustomBlocks.all().first {
-				it.note == state.note && it.instrument == state.instrument
-			}.let { CustomBlockType(it) }
+			if (block !is NoteBlock) return of(block.material)
+
+			return CustomBlocks.all().firstOrNull {
+				it.note == block.note && it.instrument == block.instrument
+			}?.let { CustomBlockType(it) } ?: of(block.material)
 		}
 
 		fun of(block: org.bukkit.block.BlockState): BlockType {

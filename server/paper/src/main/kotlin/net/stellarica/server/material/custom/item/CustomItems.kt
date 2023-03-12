@@ -25,13 +25,14 @@ object CustomItems {
 		maxPower = 1000
 	)
 
-	val TEST_BLOCK = CustomItem(
+	val TEST_BLOCK: CustomItem = CustomItem(
 		StellaricaServer.identifier("test_block"),
 		"Test Block",
 		listOf("Testing custom blocks"),
 		ItemType.of(Items.IRON_BLOCK),
 		1,
-		block = CustomBlocks.TEST_BLOCK
+		null,
+		CustomBlocks.TEST_BLOCK
 	)
 
 	fun all(): Set<CustomItem> {

@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.NoteBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -16,7 +17,7 @@ import org.spongepowered.asm.mixin.Overwrite;
 import javax.annotation.Nullable;
 
 @Mixin(NoteBlock.class)
-public class NoteBlockMixin {
+public abstract class NoteBlockMixin {
 
 	/**
 	 * @author trainb0y
@@ -53,4 +54,19 @@ public class NoteBlockMixin {
 	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block sourceBlock, BlockPos sourcePos, boolean notify) {
 
 	}
+	/**
+	 * @author trainb0y
+	 * @reason Yeah I know it's a bad idea
+	 */
+	@Overwrite
+	private BlockState setInstrument(LevelAccessor world, BlockPos pos, BlockState state) {
+		return state;
+	}
+
+	/**
+	 * @author trainb0y
+	 * @reason Did I ask? Do I care? No.
+	 */
+	@Overwrite
+	public void attack(BlockState state, Level world, BlockPos pos, Player player) {}
 }
