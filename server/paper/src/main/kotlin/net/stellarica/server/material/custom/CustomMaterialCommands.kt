@@ -17,19 +17,13 @@ import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.entity.Player
 
-/**
- * Command handling for the custom item related commands.
- */
 @Suppress("Unused")
-@CommandAlias("customitem|item")
+@CommandAlias("material|mat")
 class CustomMaterialCommands : BaseCommand() {
 
-	/**
-	 * Give a player a custom item
-	 */
 	@Subcommand("give")
 	@Description("Get a custom item")
-	@CommandPermission("stellarica.customitems.give.self")
+	@CommandPermission("stellarica.material.give.self")
 	@CommandCompletion("@customitems")
 	fun onGive(
 		sender: Player,
@@ -41,7 +35,7 @@ class CustomMaterialCommands : BaseCommand() {
 			sender.sendRichMessage("<red>No custom item with the id '$id' found.")
 			return
 		}
-		if (target != sender && !target.hasPermission("stellarica.customitems.give.other")) {
+		if (target != sender && !target.hasPermission("stellarica.material.give.other")) {
 			sender.sendRichMessage("<red>You do not have permission to give custom items to other players.")
 			return
 		}
@@ -49,12 +43,10 @@ class CustomMaterialCommands : BaseCommand() {
 		sender.sendRichMessage("Gave <b>$count</b> of ${item.name}<reset> to ${target.name}.")
 	}
 
-	/**
-	 * Get whether the held item is a custom item
-	 */
+
 	@Subcommand("get")
 	@Description("Check whether the held item is a custom item")
-	@CommandPermission("stellarica.customitems.get")
+	@CommandPermission("stellarica.material.debug")
 	fun onGet(sender: Player) {
 		val item = sender.inventory.itemInMainHand
 		val custom = (ItemType.of(item) as? CustomItemType)?.item ?: run {
@@ -80,12 +72,10 @@ class CustomMaterialCommands : BaseCommand() {
 		)
 	}
 
-	/**
-	 * Set the power of the held custom item
-	 */
+
 	@Subcommand("setpower")
 	@Description("Set the power of the held item")
-	@CommandPermission("stellarica.customitems.setpower")
+	@CommandPermission("stellarica.material.debug")
 	fun onSetPower(sender: Player, power: Int) {
 		val item = sender.inventory.itemInMainHand
 		val custom = ItemType.of(item) as? CustomItemType ?: run {
@@ -102,8 +92,8 @@ class CustomMaterialCommands : BaseCommand() {
 
 
 	@Subcommand("block")
-	@Description("Get the block you're looking at")
-	@CommandPermission("stellarica.customitems.block")
+	@Description("Get the block type of the block you're looking at")
+	@CommandPermission("stellarica.material.debug")
 	fun onBlock(sender: Player) {
 		val block = sender.getTargetBlockExact(10)
 		sender.sendRichMessage("<green>Block: ${BlockType.of(block!!)}")

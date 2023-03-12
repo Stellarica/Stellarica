@@ -27,18 +27,6 @@ val ItemStack.isPowerable: Boolean
 val ItemStack.maxPower: Int?
 	get() = (ItemType.of(this) as? CustomItemType)?.item?.maxPower
 
-
-@Deprecated(
-	"Prefer ItemType wrappers", ReplaceWith(
-		"(ItemType.of(this) as? CustomItemType)?.item",
-		"net.stellarica.server.material.type.item.ItemType",
-		"net.stellarica.server.material.type.item.CustomItemType"
-	)
-)
-val ItemStack.customItem: CustomItem?
-	get() = (ItemType.of(this) as? CustomItemType)?.item
-
-
 /**
  * The amount of power this item is currently holding.
  * Clamped between 0 and this item's [maxPower]
@@ -71,9 +59,7 @@ var ItemStack.power: Int?
 			)
 			// In order to update the durability bar we need to set it to *not* be unbreakable
 			it.isUnbreakable = false
-			(it as Damageable).damage =
-				(this.type.maxDurability - this.power!!.toFloat() /
-						(ItemType.of(this) as? CustomItemType)?.item!!.maxPower * this.type.maxDurability).roundToInt()
+			(it as Damageable).damage = ((1 - (newPower.toFloat() / this.maxPower!!)) * this.type.maxDurability).toInt()
 		}
 	}
 
