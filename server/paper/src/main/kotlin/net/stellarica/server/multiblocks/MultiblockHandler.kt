@@ -116,6 +116,7 @@ object MultiblockHandler : Listener {
 		event.chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)
 			?.let { string ->
 				Json.decodeFromString<Set<MultiblockData>>(string)
+					.filter { it.type in types.map { it.id.path } } // make sure it's a valid type still
 					.map { it.toInstance(event.world) }
 					.let { multiblocks.getOrPut(event.chunk) { mutableSetOf() }.addAll(it) }
 			}
