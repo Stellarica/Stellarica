@@ -18,7 +18,7 @@ import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.entity.Player
 
 @Suppress("Unused")
-@CommandAlias("material|mat")
+@CommandAlias("customitem|customblock")
 class CustomMaterialCommands : BaseCommand() {
 
 	@Subcommand("give")
