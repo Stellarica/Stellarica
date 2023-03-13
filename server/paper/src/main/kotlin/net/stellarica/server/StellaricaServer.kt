@@ -68,13 +68,6 @@ class StellaricaServer : JavaPlugin() {
 		// Plugin init
 		plugin = this
 
-		val i = OriginRelative(-1, 0, 2)
-		println("$i north ${i.getBlockPos(BlockPos.ZERO, Direction.NORTH)}")
-		println("$i south ${i.getBlockPos(BlockPos.ZERO, Direction.SOUTH)}")
-		println("$i east ${i.getBlockPos(BlockPos.ZERO, Direction.EAST)}")
-		println("$i west ${i.getBlockPos(BlockPos.ZERO, Direction.WEST)}")
-
-
 		networkHandler = BukkitNetworkHandler()
 
 		// Register listeners here
