@@ -128,12 +128,8 @@ open class Craft(
 	}
 
 	fun getMultiblock(pos: OriginRelative): MultiblockInstance? {
-		println()
-		println("origin: $origin, direction: $direction, pos: $pos")
 		val mb = pos.getBlockPos(origin, direction)
-		println("adjusted: $mb")
 		return MultiblockHandler[world.getChunkAt(mb).bukkitChunk].firstOrNull { it.origin == mb }
-			.also { println("found: $it") }
 	}
 
 	/**
@@ -253,14 +249,12 @@ open class Craft(
 		// move multiblocks
 		multiblocks.forEach { pos ->
 			val mb = getMultiblock(pos)!!
-			print("moved $mb to ")
 			val new = MultiblockInstance(
 				origin = modifier(mb.origin.toVec3()).toBlockPos(),
 				world = targetWorld.world,
 				direction = mb.direction.rotate(rotation),
 				typeId = mb.typeId
 			)
-			println(new)
 			MultiblockHandler[mb.chunk].remove(mb)
 			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkitChunk].add(new)
 		}
