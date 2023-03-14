@@ -383,24 +383,6 @@ open class Craft(
 			// as rotating the ship 4 times does not bring it back to the original position
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
-			val destination =
-				if (rotation != Rotation.NONE) rotateCoordinates(
-					it.location.toVec3(),
-					origin.toVec3().add(
-						Vec3(
-							0.5,
-							0.0,
-							0.5
-						)
-					), rotation
-				).toLocation(world.world)
-				else offset(it.location.toVec3()).toLocation(world.world)
-
-
-			destination.world = it.world // todo: fix
-
-			destination.pitch = it.location.pitch
-			destination.yaw = (it.location.yaw + rotation.asDegrees).toFloat()
 
 			Tasks.sync(
 			) { //intelij did that, idk. for everything that follows proceed with extreme caution. not sure it's fine to just copy paste a piece of before code to here but it's for future trainb0y to figure out i just wanna make it work and also this comment line appears to be getting a bit too long but i don't care
