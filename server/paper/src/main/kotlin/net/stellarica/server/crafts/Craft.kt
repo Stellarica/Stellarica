@@ -95,7 +95,6 @@ open class Craft(
 
 	companion object {
 		const val sizeLimit = 10000
-		val detectableKey = TagKey(Registries.BLOCK, identifier("starship_detectable"))
 	}
 
 	/**
@@ -284,14 +283,8 @@ open class Craft(
 
 			for (currentBlock in blocksToCheck) {
 
-				// todo: block tags for detection? this is idiocy
-				if (world.getBlockState(currentBlock).block !in setOf(
-						Blocks.JUKEBOX,
-						Blocks.GRAY_CONCRETE,
-						Blocks.FURNACE,
-						Blocks.IRON_BLOCK
-					)
-				) continue
+				// todo: block tags for detection? this is bad
+				if (world.getBlockState(currentBlock).isAir) continue
 
 				if (detectedBlocks.size > sizeLimit) {
 					owner?.sendRichMessage("<gold>Detection limit reached. (${sizeLimit} blocks)")
