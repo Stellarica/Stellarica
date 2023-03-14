@@ -3,6 +3,7 @@ package net.stellarica.server.crafts.starships.subsystems.weapons
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.AcceleratingProjectile
 import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.InstantProjectile
+import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.RailgunBullet
 import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.LinearProjectile
 import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.Projectile
 import net.stellarica.server.multiblocks.MultiblockType
@@ -40,5 +41,13 @@ enum class WeaponType(
 		OriginRelative(2, 0, 0),
 		1,
 		Multiblocks.TEST_INSTANT_WEAPON
+	),
+	RAILGUN(
+		RailgunBullet(200),
+		OriginRelative(3, 0, 0),
+		PI / 7,
+		OriginRelative(2, 0, 0),
+		1,
+		Multiblocks.RAILGUN
 	);
 }
