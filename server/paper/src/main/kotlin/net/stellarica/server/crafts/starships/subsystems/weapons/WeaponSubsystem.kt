@@ -20,7 +20,7 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 
 	override fun onShipPiloted() {
 		ship.multiblocks.forEach { multiblock ->
-			if (ship.getMultiblock(multiblock)?.type in WeaponType.values().map { it.multiblockType }) {
+			if (ship.getMultiblock(multiblock)?.type in WeaponType.values().map { it.multiblock }) {
 				multiblocks.add(multiblock)
 			}
 		}
@@ -32,7 +32,7 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 		val eye = ship.pilot!!.eyeLocation.direction.normalize()
 
 		WeaponType.values().sortedBy { it.priority }.forEach { type ->
-			multiblocks.map { ship.getMultiblock(it) }.filter { it?.type == type.multiblockType }
+			multiblocks.map { ship.getMultiblock(it) }.filter { it?.type == type.multiblock }
 				.forEach { multiblock ->
 
 					// the direction the weapon is facing

@@ -2,23 +2,17 @@ package net.stellarica.server
 
 import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
-import net.minecraft.core.BlockPos
-import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.world.level.block.Blocks
-import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.crafts.starships.commands.StarshipCommands
 import net.stellarica.server.crafts.starships.commands.StarshipDebugCommands
 import net.stellarica.server.crafts.starships.listeners.InterfaceListener
 import net.stellarica.server.material.custom.CustomMaterialCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
-import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.custom.item.CustomItemHandler
-import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
-import net.stellarica.server.multiblocks.MultiblockType
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.Handshake
 import net.stellarica.server.utils.extensions.TestDebugCommand
@@ -92,52 +86,5 @@ class StellaricaServer : JavaPlugin() {
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
 		) { CustomItems.all().map { it.id.path }}
-
-
-		// this is just for testing
-		MultiblockHandler.types.add(
-			MultiblockType(
-				identifier("test_linear_weapon"),
-				mapOf(
-					OriginRelative(0, 0, 0) to BlockType.of(Blocks.DIAMOND_BLOCK),
-					OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
-					OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
-				)
-			)
-		)
-		// this is just for testing
-		MultiblockHandler.types.add(
-			MultiblockType(
-				identifier("test_instant_weapon"),
-				mapOf(
-					OriginRelative(0, 0, 0) to BlockType.of(Blocks.EMERALD_BLOCK),
-					OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
-					OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
-				)
-			)
-		)
-		// this is just for testing
-		MultiblockHandler.types.add(
-			MultiblockType(
-				identifier("test_accelerating_weapon"),
-				mapOf(
-					OriginRelative(0, 0, 0) to BlockType.of(Blocks.GOLD_BLOCK),
-					OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
-					OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
-				)
-			)
-		)
-		MultiblockHandler.types.add(
-			MultiblockType(
-				identifier("test_shield"),
-				mapOf(
-					OriginRelative(0, 0, 0) to BlockType.of(Blocks.DIAMOND_BLOCK),
-					OriginRelative(1, 0, 0) to BlockType.of(Blocks.GLASS),
-					OriginRelative(-1, 0, 0) to BlockType.of(Blocks.GLASS),
-					OriginRelative(0, 0, 1) to BlockType.of(Blocks.GLASS),
-					OriginRelative(0, 0, -1) to BlockType.of(Blocks.GLASS),
-				)
-			)
-		)
 	}
 }
