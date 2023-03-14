@@ -1,13 +1,8 @@
 package net.stellarica.server.crafts.starships.subsystems.shields
 
-import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.StellaricaServer.Companion.identifier
-import net.stellarica.server.multiblocks.MultiblockHandler
+import net.stellarica.server.multiblocks.MultiblockType
+import net.stellarica.server.multiblocks.Multiblocks
 
-enum class ShieldType(val maxHealth: Int, private val multiblockId: ResourceLocation) {
-	TEST_SHIELD(100, identifier("test_shield"));
-
-	val multiblockType by lazy { // is this even safe, considering multiblock types can be reloaded?
-		MultiblockHandler.types.first { it.id == multiblockId }
-	}
+enum class ShieldType(val maxHealth: Int, val multiblock: MultiblockType) {
+	TEST_SHIELD(100, Multiblocks.TEST_SHIELD);
 }

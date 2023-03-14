@@ -15,7 +15,7 @@ class MultiblockCommands : BaseCommand() {
 	@Description("Dump multiblock types")
 	@CommandPermission("stellarica.multiblocks.debug")
 	fun onDumpTypes(sender: CommandSender) {
-		MultiblockHandler.types.forEach { type ->
+		Multiblocks.all().forEach { type ->
 			sender.sendRichMessage("")
 			sender.sendRichMessage(type.id.toString())
 			sender.sendRichMessage(type.blocks.entries.joinToString { "${it.key}: ${it.value}\n" })
