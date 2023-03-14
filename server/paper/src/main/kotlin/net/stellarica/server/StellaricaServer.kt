@@ -97,9 +97,31 @@ class StellaricaServer : JavaPlugin() {
 		// this is just for testing
 		MultiblockHandler.types.add(
 			MultiblockType(
-				identifier("test_weapon"),
+				identifier("test_linear_weapon"),
 				mapOf(
-					OriginRelative(0, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
+					OriginRelative(0, 0, 0) to BlockType.of(Blocks.DIAMOND_BLOCK),
+					OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
+					OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
+				)
+			)
+		)
+		// this is just for testing
+		MultiblockHandler.types.add(
+			MultiblockType(
+				identifier("test_instant_weapon"),
+				mapOf(
+					OriginRelative(0, 0, 0) to BlockType.of(Blocks.EMERALD_BLOCK),
+					OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
+					OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
+				)
+			)
+		)
+		// this is just for testing
+		MultiblockHandler.types.add(
+			MultiblockType(
+				identifier("test_accelerating_weapon"),
+				mapOf(
+					OriginRelative(0, 0, 0) to BlockType.of(Blocks.GOLD_BLOCK),
 					OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
 					OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
 				)
