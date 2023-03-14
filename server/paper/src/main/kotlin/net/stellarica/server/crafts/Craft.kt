@@ -405,11 +405,7 @@ open class Craft(
 				destination,
 				PlayerTeleportEvent.TeleportCause.PLUGIN,
 				TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
-				TeleportFlag.Relative.PITCH,
-				TeleportFlag.Relative.YAW,
-				TeleportFlag.Relative.Y,
-				TeleportFlag.Relative.X,
-				TeleportFlag.Relative.Z
+				*TeleportFlag.Relative.values()
 			)
 		}
 	}
