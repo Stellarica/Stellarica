@@ -29,6 +29,7 @@ import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.mixin.BlockEntityMixin
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockInstance
+import net.stellarica.server.utils.Tasks
 import net.stellarica.server.utils.extensions.sendRichMessage
 import net.stellarica.server.utils.extensions.toLocation
 import net.stellarica.server.utils.extensions.toVec3
@@ -401,12 +402,15 @@ open class Craft(
 			destination.pitch = it.location.pitch
 			destination.yaw = (it.location.yaw + rotation.asDegrees).toFloat()
 
-			it.teleport(
-				destination,
-				PlayerTeleportEvent.TeleportCause.PLUGIN,
-				TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
-				*TeleportFlag.Relative.values()
-			)
+			Tasks.syncDelay(1
+			) { //intelij did that, idk
+				it.teleport(
+					destination,
+					PlayerTeleportEvent.TeleportCause.PLUGIN,
+					TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
+					*TeleportFlag.Relative.values()
+				)
+			}
 		}
 	}
 
