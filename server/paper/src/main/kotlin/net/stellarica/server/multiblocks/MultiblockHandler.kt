@@ -28,14 +28,13 @@ import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.persistence.PersistentDataType
 
 object MultiblockHandler : Listener {
-	val types = mutableListOf<MultiblockType>()
 	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
 
 	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() }
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()
-		types.forEach {
+		Multiblocks.all().forEach {
 			val instance = it.detect(origin, world)
 			if (instance != null) {
 				possible.add(instance)
@@ -74,7 +73,7 @@ object MultiblockHandler : Listener {
 				BlockPos(oX, oY, oZ),
 				world,
 				direction,
-				StellaricaServer.identifier(type)
+				Multiblocks.byId(StellaricaServer.identifier(type))!!
 			)
 	}
 
@@ -116,7 +115,7 @@ object MultiblockHandler : Listener {
 		event.chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)
 			?.let { string ->
 				Json.decodeFromString<Set<MultiblockData>>(string)
-					.filter { it.type in types.map { it.id.path } } // make sure it's a valid type still
+					.filter { it.type in Multiblocks.all().map { it.id.path } } // make sure it's a valid type still
 					.map { it.toInstance(event.world) }
 					.let { multiblocks.getOrPut(event.chunk) { mutableSetOf() }.addAll(it) }
 			}

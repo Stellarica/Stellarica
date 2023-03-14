@@ -12,14 +12,12 @@ data class MultiblockInstance(
 	val origin: BlockPos,
 	val world: World,
 	val direction: Direction,
-	val typeId: ResourceLocation
+	val type: MultiblockType
 ) {
 
 	val chunk: Chunk
 		get() = world.getChunkAt(origin.toLocation(world))
 
-	val type: MultiblockType // this seems inefficient
-		get() = MultiblockHandler.types.first { it.id == typeId }
 
 	fun validate() = type.validate(direction, origin, world)
 
@@ -44,5 +42,4 @@ data class MultiblockInstance(
 		}
 		return false
 	}
-
 }

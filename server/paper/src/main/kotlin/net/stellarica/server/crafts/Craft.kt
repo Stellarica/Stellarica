@@ -253,7 +253,7 @@ open class Craft(
 				origin = modifier(mb.origin.toVec3()).toBlockPos(),
 				world = targetWorld.world,
 				direction = mb.direction.rotate(rotation),
-				typeId = mb.typeId
+				mb.type
 			)
 			MultiblockHandler[mb.chunk].remove(mb)
 			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkitChunk].add(new)
