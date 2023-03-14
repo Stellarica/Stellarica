@@ -245,9 +245,10 @@ open class Craft(
 		}
 		detectedBlocks = newDetectedBlocks
 
-		// move multiblocks
-		multiblocks.forEach { pos ->
-			val mb = getMultiblock(pos)!!
+		// move multiblocks, and remove any that no longer exist (i.e. were destroyed)
+		val mbs = mutableSetOf<MultiblockInstance>()
+		multiblocks.removeIf { pos -> getMultiblock(pos)?.also{mbs.add(it)} == null}
+		mbs.forEach {mb ->
 			val new = MultiblockInstance(
 				origin = modifier(mb.origin.toVec3()).toBlockPos(),
 				world = targetWorld.world,
@@ -257,6 +258,7 @@ open class Craft(
 			MultiblockHandler[mb.chunk].remove(mb)
 			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkitChunk].add(new)
 		}
+
 
 		// finish up
 		movePassengers(modifier, rotation)
