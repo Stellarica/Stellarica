@@ -44,8 +44,8 @@ object ShipControlHotbar : HotbarMenu() {
 
 			1 -> TODO() // ship.velocity -= Vec3(player.eyeLocation.direction.normalize())
 			2 -> TODO() // ship.velocity = Vec3.zero
-			4 -> ship.rotate(Rotation.CLOCKWISE_90)
-			5 -> ship.rotate(Rotation.COUNTERCLOCKWISE_90)
+			4 -> ship.rotate(Rotation.COUNTERCLOCKWISE_90)
+			5 -> ship.rotate(Rotation.CLOCKWISE_90)
 			7 -> ship.weapons.fire()
 			8 -> ship.deactivateCraft()
 		}
