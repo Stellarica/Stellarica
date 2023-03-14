@@ -402,7 +402,7 @@ open class Craft(
 			destination.pitch = it.location.pitch
 			destination.yaw = (it.location.yaw + rotation.asDegrees).toFloat()
 
-			Tasks.syncDelay(1
+			Tasks.syncDelay(3
 			) { //intelij did that, idk
 				it.teleport(
 					destination,
