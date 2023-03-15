@@ -70,7 +70,6 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 
 		plugin.server.pluginManager.registerEvents(this, plugin)
 		ShipControlHotbar.openMenu(pilot)
-		StarshipHUD.open(this)
 		subsystems.forEach { it.onShipPiloted() }
 
 		pilotedCrafts.add(this)
@@ -86,7 +85,6 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 		// close the ship HUD. this is really dumb
 		// todo: fix
 		this.passengers = pass
-		StarshipHUD.close(this)
 		this.passengers.clear()
 		// close the hotbar menu
 		ShipControlHotbar.closeMenu(pilot!!)
