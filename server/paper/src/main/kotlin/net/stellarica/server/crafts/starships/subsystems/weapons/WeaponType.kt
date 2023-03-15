@@ -42,12 +42,12 @@ enum class WeaponType(
 		1,
 		Multiblocks.TEST_INSTANT_WEAPON
 	),
-	RAILGUN(
+	DEMOMAN_RAILGUN(
 		RailgunBullet(200),
 		OriginRelative(3, 0, 0),
 		PI / 7,
 		OriginRelative(2, 0, 0),
 		1,
-		Multiblocks.RAILGUN
+		Multiblocks.DEMOMAN_RAILGUN
 	);
 }

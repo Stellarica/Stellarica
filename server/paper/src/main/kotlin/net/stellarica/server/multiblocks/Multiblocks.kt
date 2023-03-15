@@ -38,12 +38,14 @@ object Multiblocks {
 		)
 	)
 
-	val RAILGUN = MultiblockType(
-		identifier("test_railgun"),
+	val DEMOMAN_RAILGUN = MultiblockType(
+		identifier("demoman_railgun"),
 		mapOf(
 			OriginRelative(0, 0, 0) to BlockType.of(Blocks.GOLD_BLOCK),
 			OriginRelative(1, 0, 0) to BlockType.of(Blocks.EMERALD_BLOCK),
 			OriginRelative(2, 0, 0) to BlockType.of(Blocks.DROPPER),
+			OriginRelative(2, 0, 1) to BlockType.of(Blocks.BLAST_FURNACE),
+			OriginRelative(2, 0, -1) to BlockType.of(Blocks.BLAST_FURNACE),
 		)
 	)
 
