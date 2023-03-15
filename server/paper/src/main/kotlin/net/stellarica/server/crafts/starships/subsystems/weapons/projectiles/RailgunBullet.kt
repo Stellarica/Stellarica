@@ -15,12 +15,13 @@ class RailgunBullet(private val range: Int): Projectile<RailgunBullet.InstantPro
 	override val density = 1
 
 	override fun shoot(shooter: Craft, origin: Location) {
-		for (n in 0..25) cast(origin, InstantProjectileData(shooter))
+		for (n in 0..50) cast(origin, InstantProjectileData(shooter))
 	}
 
 	override fun onHitBlockOrEntity(data: InstantProjectileData, res: RayTraceResult): Boolean {
 		if (!data.shooter.contains(res.hitBlock?.toBlockPos())) {
 			// no ship suicide
+			res.hitBlock?.location?.createExplosion(1.5f, false, true)
 			res.hitBlock?.location?.block?.breakNaturally()
 		}
 			return false
