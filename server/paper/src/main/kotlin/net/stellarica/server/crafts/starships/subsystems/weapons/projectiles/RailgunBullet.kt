@@ -15,30 +15,26 @@ class RailgunBullet(private val range: Int): Projectile<RailgunBullet.InstantPro
 	override val density = 1
 
 	override fun shoot(shooter: Craft, origin: Location) {
-		cast(origin, InstantProjectileData(shooter))
+		for (n in 0..25) cast(origin, InstantProjectileData(shooter))
 	}
 
 	override fun onHitBlockOrEntity(data: InstantProjectileData, res: RayTraceResult): Boolean {
-		if (!data.shooter.contains(res.hitBlock?.toBlockPos())) // no ship suicide
-			res.hitBlock?.location?.createExplosion(1f, false, true)
+		if (!data.shooter.contains(res.hitBlock?.toBlockPos())) {
+			// no ship suicide
 			res.hitBlock?.location?.block?.breakNaturally()
-			fun shoot(shooter: Craft, origin: Location) {
-				cast(origin, InstantProjectileData(shooter))
-			}
-		return true
+		}
+			return false
 	}
 
 	override fun onHitCraft(data: InstantProjectileData, loc: Location, craft: Craft): Boolean {
 		return false
-	}
+	} //no touchy
 
 	override fun onServerTick(data: InstantProjectileData, loc: Location): Double {
-		loc.world.spawnParticle(Particle.EXPLOSION_NORMAL, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 		return if (data.hasShot) -1.0 else range.toDouble().also { data.hasShot = true }
-	}
+	} //no touchy
 
 	override fun onLocationStep(data: InstantProjectileData, loc: Location) {
-		if (!data.shooter.contains(loc.toBlockPos()))  // no ship suicide + no mid air explosions
-		loc.world.spawnParticle(Particle.SWEEP_ATTACK, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true);
+		loc.world.spawnParticle(Particle.SWEEP_ATTACK, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 	}
 }

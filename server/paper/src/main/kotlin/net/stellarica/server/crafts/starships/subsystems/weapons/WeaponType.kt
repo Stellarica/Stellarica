@@ -21,7 +21,7 @@ enum class WeaponType(
 	TEST_LINEAR_WEAPON(
 		LinearProjectile(30, 3.0),
 		OriginRelative(3, 0, 0),
-		PI / 8,
+		PI / 4,
 		OriginRelative(2, 0, 0),
 		1,
 		Multiblocks.TEST_LINEAR_WEAPON
@@ -29,7 +29,7 @@ enum class WeaponType(
 	TEST_ACCELERATING_WEAPON(
 		AcceleratingProjectile(40, 0.2, 0.2),
 		OriginRelative(3, 0, 0),
-		PI / 8,
+		PI / 4,
 		OriginRelative(2, 0, 0),
 		1,
 		Multiblocks.TEST_ACCELERATING_WEAPON
@@ -37,16 +37,16 @@ enum class WeaponType(
 	TEST_INSTANT_WEAPON(
 		InstantProjectile(100),
 		OriginRelative(3, 0, 0),
-		PI / 8,
+		PI / 4,
 		OriginRelative(2, 0, 0),
 		1,
 		Multiblocks.TEST_INSTANT_WEAPON
 	),
 	DEMOMAN_RAILGUN(
 		RailgunBullet(200),
-		OriginRelative(3, 0, 0),
-		PI / 7,
-		OriginRelative(2, 0, 0),
+		OriginRelative(6, 0, 0),
+		PI / 5,
+		OriginRelative(5, 0, 0),
 		1,
 		Multiblocks.DEMOMAN_RAILGUN
 	);
