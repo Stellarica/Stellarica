@@ -94,7 +94,7 @@ open class Craft(
 	}
 
 	companion object {
-		const val sizeLimit = 10000
+		const val sizeLimit = 50000
 	}
 
 	/**
