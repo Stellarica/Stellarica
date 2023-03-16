@@ -5,7 +5,7 @@ import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.crafts.starships.control.StarshipInterfaceScreen
 import net.stellarica.server.utils.extensions.toBlockPos
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_19_R2.CraftWorld
+import org.bukkit.craftbukkit.v1_19_R3.CraftWorld
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action

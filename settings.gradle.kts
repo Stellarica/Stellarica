@@ -7,7 +7,7 @@ pluginManagement {
 		maven("https://maven.fabricmc.net/") {
 			name = "Fabric"
 		}
-		maven("https://papermc.io/repo/repository/maven-public/") {
+		maven("https://repo.papermc.io/repository/maven-public/") {
 			name = "Paper"
 		}
 	}
