@@ -18,7 +18,7 @@ fun Location.toVec3(): Vec3 {
 }
 
 fun Location.toVec3i(): Vec3i {
-	return Vec3i(x, y, z)
+	return Vec3i(x.toInt(), y.toInt(), z.toInt())
 }
 
 fun BlockPos.toLocation(world: World?): Location {
