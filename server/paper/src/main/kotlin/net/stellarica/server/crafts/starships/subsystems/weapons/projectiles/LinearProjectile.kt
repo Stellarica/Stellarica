@@ -21,11 +21,10 @@ class LinearProjectile(override val time: Int, private val speed: Double):
 	}
 
 	override fun onLocationStep(data: LinearProjectileData, loc: Location) {
-		loc.world.spawnParticle(Particle.WATER_BUBBLE, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
+		loc.world.spawnParticle(Particle.FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 	}
 
 	override fun onServerTick(data: LinearProjectileData, loc: Location): Double {
-		//loc.world.spawnParticle(Particle.FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 		return speed
 	}
 
