@@ -4,6 +4,8 @@ import net.stellarica.server.crafts.Craft
 import net.stellarica.server.utils.extensions.toBlockPos
 import org.bukkit.Location
 import org.bukkit.Particle
+import org.bukkit.Sound
+import org.bukkit.SoundCategory
 import org.bukkit.util.RayTraceResult
 
 class InstantProjectile(private val range: Int): Projectile<InstantProjectile.InstantProjectileData> {
@@ -14,6 +16,7 @@ class InstantProjectile(private val range: Int): Projectile<InstantProjectile.In
 	override val density = 5
 
 	override fun shoot(shooter: Craft, origin: Location) {
+		origin.world.playSound(origin, Sound.ENTITY_BEE_HURT, SoundCategory.HOSTILE, 0.8f, 1f)
 		cast(origin, InstantProjectileData(shooter))
 	}
 
@@ -28,11 +31,11 @@ class InstantProjectile(private val range: Int): Projectile<InstantProjectile.In
 	}
 
 	override fun onServerTick(data: InstantProjectileData, loc: Location): Double {
-		loc.world.spawnParticle(Particle.FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
+		//loc.world.spawnParticle(Particle.FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 		return if (data.hasShot) -1.0 else range.toDouble().also { data.hasShot = true }
 	}
 
 	override fun onLocationStep(data: InstantProjectileData, loc: Location) {
-		loc.world.spawnParticle(Particle.SOUL_FIRE_FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
+		loc.world.spawnParticle(Particle.FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 	}
 }

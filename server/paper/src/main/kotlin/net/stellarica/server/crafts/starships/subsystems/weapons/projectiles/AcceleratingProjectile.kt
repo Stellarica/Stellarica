@@ -4,6 +4,8 @@ import net.stellarica.server.crafts.Craft
 import net.stellarica.server.utils.extensions.toBlockPos
 import org.bukkit.Location
 import org.bukkit.Particle
+import org.bukkit.Sound
+import org.bukkit.SoundCategory
 import org.bukkit.util.RayTraceResult
 
 class AcceleratingProjectile(override val time: Int, private val initialSpeed: Double, private val acceleration: Double):
@@ -12,15 +14,16 @@ Projectile<AcceleratingProjectile.AcceleratingProjectileData> {
 	override val density = 5
 
 	override fun shoot(shooter: Craft, origin: Location) {
+		origin.world.playSound(origin, Sound.ENTITY_WARDEN_HURT, SoundCategory.HOSTILE, 0.8f, 0f)
 		cast(origin, AcceleratingProjectileData(shooter, initialSpeed))
 	}
 
 	override fun onLocationStep(data: AcceleratingProjectileData, loc: Location) {
-		loc.world.spawnParticle(Particle.SOUL_FIRE_FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
+		loc.world.spawnParticle(Particle.SONIC_BOOM, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 	}
 
 	override fun onServerTick(data: AcceleratingProjectileData, loc: Location): Double {
-		loc.world.spawnParticle(Particle.FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
+		// loc.world.spawnParticle(Particle.FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 		data.speed += acceleration
 		return data.speed
 	}
