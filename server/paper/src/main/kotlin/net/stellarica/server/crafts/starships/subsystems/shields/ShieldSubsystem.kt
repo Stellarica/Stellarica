@@ -40,7 +40,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 
 	fun damage(loc: Location, dam: Int) {
 		// todo: stuff
-		loc.world.spawnParticle(Particle.REDSTONE, loc, 3, 0.5, 0.5, 0.5, 0.0, DustOptions(Color.BLUE, 3f), true)
+		loc.world.spawnParticle(Particle.REDSTONE, loc, 3, 0.5, 0.5, 0.5, 0.0, DustOptions(Color.AQUA, 3f), true)
 		shieldHealth -= dam
 	}
 }

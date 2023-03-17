@@ -36,6 +36,6 @@ class InstantProjectile(private val range: Int): Projectile<InstantProjectile.In
 	}
 
 	override fun onLocationStep(data: InstantProjectileData, loc: Location) {
-		loc.world.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, 0.0, Particle.DustOptions(Color.AQUA, 2f), true)
+		loc.world.spawnParticle(Particle.REDSTONE, loc, 1, 0.0, 0.0, 0.0, 0.0, Particle.DustOptions(Color.RED, 2f), true)
 	}
 }
