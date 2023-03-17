@@ -1,10 +1,12 @@
 package net.stellarica.server.crafts.starships.control
 
+import net.minecraft.core.Vec3i
 import net.minecraft.world.level.block.Rotation
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.utils.extensions.craft
 import net.stellarica.server.utils.extensions.hotbar
 import net.stellarica.server.utils.extensions.toBlockPos
+import net.stellarica.server.utils.extensions.toVec3i
 import net.stellarica.server.utils.gui.hotbar.HotbarMenu
 import net.stellarica.server.utils.gui.namedItem
 import org.bukkit.Material
@@ -17,12 +19,12 @@ object ShipControlHotbar : HotbarMenu() {
 	override val toggleable = true
 
 	private val menuEntries = mutableListOf(
-		namedItem(Material.LIME_STAINED_GLASS, "<green>Precision Movement", null),
+		namedItem(Material.LIME_STAINED_GLASS_PANE, "<green>Precision Movement", null),
+		namedItem(Material.YELLOW_STAINED_GLASS_PANE, "<yellow>Accelerate", null),
+		namedItem(Material.RED_STAINED_GLASS_PANE, "<red>Stop Ship", null),
 		null,
-		null,
-		null,
-		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Left", null), // these might be
-		namedItem(Material.BLUE_STAINED_GLASS, "<blue>Right", null),
+		namedItem(Material.BLUE_STAINED_GLASS_PANE, "<blue>Left", null), // these might be
+		namedItem(Material.BLUE_STAINED_GLASS_PANE, "<blue>Right", null),
 		null,
 		namedItem(Material.FIRE_CHARGE, "<red>Fire", null),
 		namedItem(Material.RED_CONCRETE, "<red>Unpilot Ship", null)
@@ -41,11 +43,10 @@ object ShipControlHotbar : HotbarMenu() {
 			0 -> ship.move(
 				player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(player.world).toBlockPos()
 			)
-
-			1 -> TODO() // ship.velocity -= Vec3(player.eyeLocation.direction.normalize())
-			2 -> TODO() // ship.velocity = Vec3.zero
-			4 -> ship.rotate(Rotation.CLOCKWISE_90)
-			5 -> ship.rotate(Rotation.COUNTERCLOCKWISE_90)
+			1 -> ship.velocity = ship.velocity.offset(player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(player.world).toVec3i())
+			2 -> ship.velocity = Vec3i.ZERO
+			4 -> ship.rotate(Rotation.COUNTERCLOCKWISE_90)
+			5 -> ship.rotate(Rotation.CLOCKWISE_90)
 			7 -> ship.weapons.fire()
 			8 -> ship.deactivateCraft()
 		}

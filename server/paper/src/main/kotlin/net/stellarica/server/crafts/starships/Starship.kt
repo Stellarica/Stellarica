@@ -2,6 +2,7 @@ package net.stellarica.server.crafts.starships
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.Vec3i
 import net.minecraft.server.level.ServerLevel
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.StellaricaServer.Companion.plugin
@@ -11,6 +12,7 @@ import net.stellarica.server.crafts.starships.subsystems.Subsystem
 import net.stellarica.server.crafts.starships.subsystems.armor.ArmorSubsystem
 import net.stellarica.server.crafts.starships.subsystems.shields.ShieldSubsystem
 import net.stellarica.server.crafts.starships.subsystems.weapons.WeaponSubsystem
+import net.stellarica.server.utils.Tasks
 import net.stellarica.server.utils.extensions.toBlockPos
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -33,6 +35,7 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 	val shields = ShieldSubsystem(this)
 	val armor = ArmorSubsystem(this)
 
+	var velocity: Vec3i = Vec3i.ZERO
 
 	/**
 	 * The player who is currently piloting this craft
@@ -74,6 +77,14 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 
 		pilotedCrafts.add(this)
 		messagePilot("<green>Piloted craft!")
+
+		Tasks.syncRepeat(5, 5) {
+			if (passengers.size <= 0) { // jank way to detect unpiloting
+				this.cancel()
+				return@syncRepeat
+			}
+			move(velocity)
+		}
 
 		return true
 	}
