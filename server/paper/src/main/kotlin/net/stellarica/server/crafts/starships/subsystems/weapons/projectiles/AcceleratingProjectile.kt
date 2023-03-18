@@ -33,7 +33,7 @@ Projectile<AcceleratingProjectile.AcceleratingProjectileData> {
 
 	override fun onHitBlockOrEntity(data: AcceleratingProjectileData, res: RayTraceResult): Boolean {
 		if (!data.shooter.contains(res.hitBlock?.toBlockPos())) // no ship suicide
-			res.hitBlock?.location?.createExplosion(4f, false, true)
+			res.hitBlock?.location?.createExplosion(6f, false, true)
 		return false
 	}
 

@@ -18,7 +18,7 @@ enum class WeaponType(
 	val multiblock: MultiblockType
 ) {
 	TEST_LINEAR_WEAPON(
-		LinearProjectile(30, 3.0),
+		LinearProjectile(60, 3.0),
 		OriginRelative(3, 0, 0),
 		PI / 6,
 		OriginRelative(2, 0, 0),
@@ -26,7 +26,7 @@ enum class WeaponType(
 		Multiblocks.TEST_LINEAR_WEAPON
 	),
 	TEST_ACCELERATING_WEAPON(
-		AcceleratingProjectile(40, 0.2, 0.2),
+		AcceleratingProjectile(50, 0.2, 0.2),
 		OriginRelative(3, 0, 0),
 		PI / 8,
 		OriginRelative(2, 0, 0),
@@ -34,7 +34,7 @@ enum class WeaponType(
 		Multiblocks.TEST_ACCELERATING_WEAPON
 	),
 	TEST_INSTANT_WEAPON(
-		InstantProjectile(100),
+		InstantProjectile(120),
 		OriginRelative(3, 0, 0),
 		PI / 7,
 		OriginRelative(2, 0, 0),
