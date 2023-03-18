@@ -86,7 +86,7 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 			}
 			move(velocity)
 			val percent = shields.shieldHealth / shields.maxShieldHealth.toFloat().coerceAtLeast(1f)
-			val num = (percent * 20).roundToInt()
+			val num = (percent * 20).roundToInt().coerceAtMost(20)
 
 			pilot.sendActionBar(("<dark_gray>[<gray>" + "|".repeat(20 - num) + "<blue>|".repeat(num) + "<dark_gray>]").asMiniMessage)
 		}
