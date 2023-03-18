@@ -25,8 +25,8 @@ object ShipControlHotbar : HotbarMenu() {
 		null,
 		namedItem(Material.BLUE_STAINED_GLASS_PANE, "<blue>Left", null), // these might be
 		namedItem(Material.BLUE_STAINED_GLASS_PANE, "<blue>Right", null),
-		null,
-		namedItem(Material.FIRE_CHARGE, "<red>Fire", null),
+		namedItem(Material.FIRE_CHARGE, "<red>Fire Heavy", null),
+		namedItem(Material.FLINT_AND_STEEL, "<red>Fire Light", null),
 		namedItem(Material.RED_CONCRETE, "<red>Unpilot Ship", null)
 	)
 
@@ -35,6 +35,8 @@ object ShipControlHotbar : HotbarMenu() {
 	}
 
 	override fun onButtonClicked(index: Int, player: Player) {
+		if (player.getCooldown(player.hotbar[index]!!.type) >= 1) return;
+
 		val ship = player.craft as? Starship ?: run {
 			player.sendRichMessage("<red>You are not piloting a starship, yet the ship menu is open! This is a bug!")
 			return
@@ -47,7 +49,14 @@ object ShipControlHotbar : HotbarMenu() {
 			2 -> ship.velocity = Vec3i.ZERO
 			4 -> ship.rotate(Rotation.COUNTERCLOCKWISE_90)
 			5 -> ship.rotate(Rotation.CLOCKWISE_90)
-			7 -> ship.weapons.fire()
+			6 -> {
+				ship.weapons.fireHeavy()
+				player.setCooldown(Material.FIRE_CHARGE, 60)
+			}
+			7 -> {
+				ship.weapons.fireLight()
+				player.setCooldown(Material.FLINT_AND_STEEL, 20)
+			}
 			8 -> ship.deactivateCraft()
 		}
 	}

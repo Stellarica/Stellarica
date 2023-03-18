@@ -4,6 +4,7 @@ import net.stellarica.common.utils.OriginRelative
 import net.stellarica.common.utils.toVec3
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.crafts.starships.subsystems.Subsystem
+import net.stellarica.server.multiblocks.MultiblockType
 import net.stellarica.server.utils.extensions.toLocation
 import net.stellarica.server.utils.extensions.toVector
 import org.bukkit.util.Vector
@@ -26,12 +27,15 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 		}
 	}
 
-	fun fire() {
+	fun fireLight() = fire(setOf(WeaponType.TEST_INSTANT_WEAPON, WeaponType.TEST_LINEAR_WEAPON))
+	fun fireHeavy() = fire(setOf(WeaponType.TEST_ACCELERATING_WEAPON))
+
+	fun fire(types: Set<WeaponType>) {
 
 		// the direction the pilot is facing
 		val eye = ship.pilot!!.eyeLocation.direction.normalize()
 
-		WeaponType.values().sortedBy { it.priority }.forEach { type ->
+		types.forEach { type ->
 			multiblocks.map { ship.getMultiblock(it) }.filter { it?.type == type.multiblock }
 				.forEach { multiblock ->
 

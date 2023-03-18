@@ -13,6 +13,7 @@ import net.stellarica.server.crafts.starships.subsystems.armor.ArmorSubsystem
 import net.stellarica.server.crafts.starships.subsystems.shields.ShieldSubsystem
 import net.stellarica.server.crafts.starships.subsystems.weapons.WeaponSubsystem
 import net.stellarica.server.utils.Tasks
+import net.stellarica.server.utils.extensions.asMiniMessage
 import net.stellarica.server.utils.extensions.toBlockPos
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -84,6 +85,10 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 				return@syncRepeat
 			}
 			move(velocity)
+			val percent = shields.shieldHealth / shields.maxShieldHealth.toFloat().coerceAtLeast(1f)
+			val num = (percent * 20).roundToInt()
+
+			pilot.sendActionBar(("<dark_gray>[<gray>" + "|".repeat(20 - num) + "<blue>|".repeat(num) + "<dark_gray>]").asMiniMessage)
 		}
 
 		return true

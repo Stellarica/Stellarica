@@ -34,7 +34,7 @@ class LinearProjectile(override val time: Int, private val speed: Double):
 
 	override fun onHitBlockOrEntity(data: LinearProjectileData, res: RayTraceResult): Boolean {
 		if (!data.shooter.contains(res.hitBlock?.toBlockPos())) // no ship suicide
-			res.hitBlock?.location?.createExplosion(2f, false, true)
+			res.hitBlock?.location?.createExplosion(3f, false, true)
 		return false
 	}
 
