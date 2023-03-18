@@ -23,7 +23,6 @@ Projectile<AcceleratingProjectile.AcceleratingProjectileData> {
 	}
 
 	override fun onServerTick(data: AcceleratingProjectileData, loc: Location): Double {
-		// loc.world.spawnParticle(Particle.FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
 		data.speed += acceleration
 		return data.speed
 	}

@@ -20,7 +20,7 @@ enum class WeaponType(
 	TEST_LINEAR_WEAPON(
 		LinearProjectile(30, 3.0),
 		OriginRelative(3, 0, 0),
-		PI / 8,
+		PI / 6,
 		OriginRelative(2, 0, 0),
 		1,
 		Multiblocks.TEST_LINEAR_WEAPON
@@ -36,7 +36,7 @@ enum class WeaponType(
 	TEST_INSTANT_WEAPON(
 		InstantProjectile(100),
 		OriginRelative(3, 0, 0),
-		PI / 8,
+		PI / 7,
 		OriginRelative(2, 0, 0),
 		1,
 		Multiblocks.TEST_INSTANT_WEAPON
