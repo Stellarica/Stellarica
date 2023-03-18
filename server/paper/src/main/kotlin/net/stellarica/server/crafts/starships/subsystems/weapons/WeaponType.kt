@@ -35,9 +35,9 @@ enum class WeaponType(
 	),
 	TEST_INSTANT_WEAPON(
 		InstantProjectile(120),
-		OriginRelative(3, 0, 0),
+		OriginRelative(5, 0, 0),
 		PI / 7,
-		OriginRelative(2, 0, 0),
+		OriginRelative(4, 0, 0),
 		1,
 		Multiblocks.TEST_INSTANT_WEAPON
 	);
