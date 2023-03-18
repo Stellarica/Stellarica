@@ -23,9 +23,16 @@ object Multiblocks {
 	val TEST_INSTANT_WEAPON = MultiblockType(
 		identifier("test_instant_weapon"),
 		mapOf(
-			OriginRelative(0, 0, 0) to BlockType.of(Blocks.EMERALD_BLOCK),
+			OriginRelative(0, 0, 0) to BlockType.of(Blocks.CHISELED_STONE_BRICKS),
 			OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
-			OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE)
+			OriginRelative(2, 0, 0) to BlockType.of(Blocks.REDSTONE_BLOCK),
+			OriginRelative(4, 0, 0) to BlockType.of(Blocks.RED_STAINED_GLASS),
+			OriginRelative(1, 0, 1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(2, 0, 1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(3, 0, 1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(1, 0, -1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(2, 0, -1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(3, 0, -1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL)
 		)
 	)
 
