@@ -26,9 +26,10 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.persistence.PersistentDataType
+import java.util.concurrent.ConcurrentHashMap
 
 object MultiblockHandler : Listener {
-	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
+	internal val multiblocks = ConcurrentHashMap<Chunk, MutableSet<MultiblockInstance>>()
 
 	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() }
 
