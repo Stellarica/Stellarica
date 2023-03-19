@@ -1,14 +1,24 @@
 package net.stellarica.server.multiblocks
 
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.tags.BlockTags
+import net.minecraft.tags.TagKey
+import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.StellaricaServer.Companion.identifier
+import net.stellarica.server.material.custom.block.CustomBlock
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.type.block.CustomBlockType
 import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.multiblocks.matching.BlockMatcher
+import net.stellarica.server.multiblocks.matching.BlockTagMatcher
+import net.stellarica.server.multiblocks.matching.MultiBlockMatcher
 import net.stellarica.server.multiblocks.matching.SingleBlockMatcher
+import org.bukkit.Material
+import org.bukkit.Tag
 
 @Suppress("Unused") // iea
 object Multiblocks {
@@ -80,11 +90,11 @@ object Multiblocks {
 	val TEST_SHIELD = MultiblockType(
 		identifier("test_shield"),
 		mapOf(
-			OriginRelative(0, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.DIAMOND_BLOCK)),
-			OriginRelative(1, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.GLASS)),
-			OriginRelative(-1, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.GLASS)),
-			OriginRelative(0, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.GLASS)),
-			OriginRelative(0, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.GLASS))
+			Pos(0, 0, 0) match Blocks.DIAMOND_BLOCK,
+			Pos(1, 0, 0) match Blocks.GLASS,
+			Pos(-1, 0, 0) match Blocks.GLASS,
+			Pos(0, 0, 1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
+			Pos(0, 0, -1) matchTag BlockTags.WOOL
 		)
 	)
 
@@ -97,4 +107,27 @@ object Multiblocks {
 		// maybe keep around a hashmap?
 		return all().firstOrNull { it.id == id }
 	}
+
+
+	private infix fun OriginRelative.matchTag(tag: TagKey<Block>): Pair<OriginRelative, BlockMatcher> {
+		return this to BlockTagMatcher(tag)
+	}
+
+	private infix fun OriginRelative.match(block: BlockType): Pair<OriginRelative, BlockMatcher> {
+		return this to SingleBlockMatcher(block)
+	}
+
+	private infix fun OriginRelative.match(block: Block): Pair<OriginRelative, BlockMatcher> {
+		return this match BlockType.of(block)
+	}
+
+	private infix fun OriginRelative.match(block: CustomBlock): Pair<OriginRelative, BlockMatcher> {
+		return this match BlockType.of(block)
+	}
+
+	private fun OriginRelative.matchAny(vararg blocks: BlockType): Pair<OriginRelative, BlockMatcher> {
+		return this to MultiBlockMatcher(blocks.toSet())
+	}
 }
+
+private typealias Pos = OriginRelative

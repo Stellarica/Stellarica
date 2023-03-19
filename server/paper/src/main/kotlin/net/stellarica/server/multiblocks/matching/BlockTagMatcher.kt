@@ -1,9 +1,12 @@
 package net.stellarica.server.multiblocks.matching
 
+import net.minecraft.tags.TagKey
+import net.minecraft.world.level.block.Block
 import net.stellarica.server.material.type.block.BlockType
 
-class BlockTagMatcher: BlockMatcher {
+@JvmInline
+value class BlockTagMatcher(private val tag: TagKey<Block>): BlockMatcher {
 	override fun matches(block: BlockType): Boolean {
-		TODO("Not yet implemented")
+		return block.getVanillaBlockState().tags.anyMatch { it == tag }
 	}
 }
