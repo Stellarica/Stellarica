@@ -43,7 +43,7 @@ data class MultiblockType(
 		blocks.forEach {
 			val rotatedLocation = rotationFunction(it.key)
 			val relativeLocation = origin.offset(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z)
-			if (it.value.matches(BlockType.of(world.getBlockState(relativeLocation.toLocation(world))))) {
+			if (!it.value.matches(BlockType.of(world.getBlockState(relativeLocation.toLocation(world))))) {
 				return false
 			} // A blocks we were expecting is missing, so break the function.
 		}
