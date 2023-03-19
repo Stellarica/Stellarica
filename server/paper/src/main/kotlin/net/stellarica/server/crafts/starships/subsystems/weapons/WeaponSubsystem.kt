@@ -54,7 +54,7 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 					val eyePitch = asin(-eye.y)
 					val eyeYaw = atan2(eye.x, eye.z)
 
-					val pitch = eyePitch /*.coerceIn(dirPitch - type.cone, dirPitch + type.cone) */ //this check had been seized by the balancing department
+					val pitch = eyePitch // .coerceIn(dirPitch - type.cone, dirPitch + type.cone)  //this check had been seized by the balancing department
 					val yaw = if (eyeYaw - type.cone > -PI) {
 						eyeYaw.coerceIn(dirYaw - type.cone, dirYaw + type.cone)
 					} else { // fix for atan2 range not going beneath -PI, breaking coerceIn
