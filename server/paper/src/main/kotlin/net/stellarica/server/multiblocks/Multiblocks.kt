@@ -14,9 +14,19 @@ object Multiblocks {
 	val TEST_LINEAR_WEAPON = MultiblockType(
 		identifier("test_linear_weapon"),
 		mapOf(
-			OriginRelative(0, 0, 0) to BlockType.of(Blocks.DIAMOND_BLOCK),
+			OriginRelative(0, 0, 0) to BlockType.of(Blocks.CHISELED_STONE_BRICKS),
 			OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
-			OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE)
+			OriginRelative(2, 0, 0) to BlockType.of(Blocks.COPPER_BLOCK),
+			OriginRelative(3, 0, 0) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(4, 0, 0) to BlockType.of(Blocks.COPPER_BLOCK),
+			OriginRelative(5, 0, 0) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(6, 0, 0) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(7, 0, 0) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(0, -1, 0) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(1, -1, 0) to BlockType.of(Blocks.DISPENSER),
+			OriginRelative(2, -1, 0) to BlockType.of(Blocks.IRON_BLOCK)
+			
+			
 		)
 	)
 
@@ -39,9 +49,30 @@ object Multiblocks {
 	val TEST_ACCELERATING_WEAPON = MultiblockType(
 		identifier("test_accelerating_weapon"),
 		mapOf(
-			OriginRelative(0, 0, 0) to BlockType.of(Blocks.GOLD_BLOCK),
-			OriginRelative(1, 0, 0) to BlockType.of(Blocks.IRON_BLOCK),
-			OriginRelative(2, 0, 0) to BlockType.of(Blocks.FURNACE),
+			OriginRelative(0, 0, 0) to BlockType.of(Blocks.CHISELED_STONE_BRICKS),
+			OriginRelative(1, 0, 0) to BlockType.of(Blocks.GOLD_BLOCK),
+			OriginRelative(2, 0, 0) to BlockType.of(Blocks.WHITE_STAINED_GLASS),
+			OriginRelative(3, 0, 0) to BlockType.of(Blocks.DIAMOND_BLOCK),
+			OriginRelative(4, 0, 0) to BlockType.of(Blocks.WHITE_STAINED_GLASS),
+			OriginRelative(5, 0, 0) to BlockType.of(Blocks.GOLD_BLOCK),
+			OriginRelative(6, 0, 0) to BlockType.of(Blocks.WHITE_STAINED_GLASS),
+			OriginRelative(7, 0, 0) to BlockType.of(Blocks.DISPENSER),
+			OriginRelative(0, 0, 1) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(1, 0, 1) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(2, 0, 1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(3, 0, 1) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(4, 0, 1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(5, 0, 1) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(6, 0, 1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(7, 0, 1) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(0, 0, -1) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(1, 0, -1) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(2, 0, -1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(3, 0, -1) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(4, 0, -1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(5, 0, -1) to BlockType.of(Blocks.IRON_BLOCK),
+			OriginRelative(6, 0, -1) to BlockType.of(Blocks.DEEPSLATE_TILE_WALL),
+			OriginRelative(7, 0, -1) to BlockType.of(Blocks.IRON_BLOCK)
 		)
 	)
 
