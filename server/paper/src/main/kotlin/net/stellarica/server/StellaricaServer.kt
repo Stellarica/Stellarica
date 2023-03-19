@@ -13,6 +13,7 @@ import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
+import net.stellarica.server.multiblocks.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.Handshake
 import net.stellarica.server.utils.extensions.TestDebugCommand
@@ -86,5 +87,8 @@ class StellaricaServer : JavaPlugin() {
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
 		) { CustomItems.all().map { it.id.path }}
+		commandManager.commandCompletions.registerCompletion(
+			"multiblocks"
+		) { Multiblocks.all().map { it.id.path }}
 	}
 }
