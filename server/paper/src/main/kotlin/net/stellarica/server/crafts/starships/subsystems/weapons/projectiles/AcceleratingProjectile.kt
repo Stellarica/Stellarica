@@ -14,7 +14,7 @@ Projectile<AcceleratingProjectile.AcceleratingProjectileData> {
 	override val density = 5
 
 	override fun shoot(shooter: Craft, origin: Location) {
-		origin.world.playSound(origin, Sound.ENTITY_WARDEN_HURT, SoundCategory.HOSTILE, 0.8f, 0f)
+		origin.world.playSound(origin, Sound.ENTITY_WARDEN_HURT, SoundCategory.HOSTILE, 2.0f, 0f)
 		cast(origin, AcceleratingProjectileData(shooter, initialSpeed))
 	}
 

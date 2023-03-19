@@ -16,7 +16,7 @@ class LinearProjectile(override val time: Int, private val speed: Double):
 	override val density = 5
 
 	override fun shoot(shooter: Craft, origin: Location) {
-		origin.world.playSound(origin, Sound.ENTITY_BEE_HURT, SoundCategory.HOSTILE, 0.8f, 0f)
+		origin.world.playSound(origin, Sound.ENTITY_BEE_HURT, SoundCategory.HOSTILE, 2.0f, 0f)
 		cast(origin, LinearProjectileData(shooter))
 	}
 
