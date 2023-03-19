@@ -19,17 +19,17 @@ enum class WeaponType(
 ) {
 	TEST_LINEAR_WEAPON(
 		LinearProjectile(60, 3.0),
-		OriginRelative(3, 0, 0),
+		OriginRelative(8, 0, 0),
 		PI / 6,
-		OriginRelative(2, 0, 0),
+		OriginRelative(7, 0, 0),
 		1,
 		Multiblocks.TEST_LINEAR_WEAPON
 	),
 	TEST_ACCELERATING_WEAPON(
 		AcceleratingProjectile(50, 0.2, 0.2),
-		OriginRelative(3, 0, 0),
+		OriginRelative(8, 0, 0),
 		PI / 8,
-		OriginRelative(2, 0, 0),
+		OriginRelative(7, 0, 0),
 		1,
 		Multiblocks.TEST_ACCELERATING_WEAPON
 	),
