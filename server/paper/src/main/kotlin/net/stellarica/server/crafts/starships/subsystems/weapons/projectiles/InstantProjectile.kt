@@ -17,7 +17,7 @@ class InstantProjectile(private val range: Int): Projectile<InstantProjectile.In
 	override val density = 5
 
 	override fun shoot(shooter: Craft, origin: Location) {
-		origin.world.playSound(origin, Sound.BLOCK_BEACON_DEACTIVATE, SoundCategory.HOSTILE, 0.8f, 1f)
+		origin.world.playSound(origin, Sound.BLOCK_BEACON_DEACTIVATE, SoundCategory.HOSTILE, 2.0f, 1f)
 		cast(origin, InstantProjectileData(shooter))
 	}
 
