@@ -23,6 +23,7 @@ import org.bukkit.Tag
 @Suppress("Unused") // iea
 object Multiblocks {
 	val LIGHT_RAILGUN = MultiblockType(
+		"Light Railgun",
 		identifier("light_railgun"),
 		mapOf(
 			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
@@ -42,6 +43,7 @@ object Multiblocks {
 	)
 
 	val PULSE_LASER = MultiblockType(
+		"Pulse Laser",
 		identifier("pulse_laser"),
 		mapOf(
 			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
@@ -58,6 +60,7 @@ object Multiblocks {
 	)
 
 	val PLASMA_CANNON = MultiblockType(
+		"Plasma Cannon",
 		identifier("plasma_cannon"),
 		mapOf(
 			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
@@ -88,6 +91,7 @@ object Multiblocks {
 	)
 
 	val TINY_SHIELD = MultiblockType(
+		"Tiny Shield",
 		identifier("tiny_shield"),
 		mapOf(
 			Pos(0, 0, 0) match Blocks.DIAMOND_BLOCK,
@@ -99,6 +103,7 @@ object Multiblocks {
 	)
 
 	val SMALL_SHIELD = MultiblockType(
+		"Small Shield",
 		identifier("small_shield"),
 		mapOf(
 			Pos(0, 0, 0) match Blocks.DIAMOND_BLOCK,
