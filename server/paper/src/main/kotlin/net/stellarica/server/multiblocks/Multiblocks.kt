@@ -22,8 +22,8 @@ import org.bukkit.Tag
 
 @Suppress("Unused") // iea
 object Multiblocks {
-	val TEST_LINEAR_WEAPON = MultiblockType(
-		identifier("test_linear_weapon"),
+	val LIGHT_RAILGUN = MultiblockType(
+		identifier("light_railgun"),
 		mapOf(
 			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
 			Pos(1, 0, 0) match Blocks.IRON_BLOCK,
@@ -41,8 +41,8 @@ object Multiblocks {
 		)
 	)
 
-	val TEST_INSTANT_WEAPON = MultiblockType(
-		identifier("test_instant_weapon"),
+	val PULSE_LASER = MultiblockType(
+		identifier("pulse_laser"),
 		mapOf(
 			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
 			Pos(1, 0, 0) match Blocks.IRON_BLOCK,
@@ -57,8 +57,8 @@ object Multiblocks {
 		)
 	)
 
-	val TEST_ACCELERATING_WEAPON = MultiblockType(
-		identifier("test_accelerating_weapon"),
+	val PLASMA_CANNON = MultiblockType(
+		identifier("plasma_cannon"),
 		mapOf(
 			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
 			Pos(1, 0, 0) match Blocks.GOLD_BLOCK,
@@ -87,14 +87,29 @@ object Multiblocks {
 		)
 	)
 
-	val TEST_SHIELD = MultiblockType(
-		identifier("test_shield"),
+	val TINY_SHIELD = MultiblockType(
+		identifier("tiny_shield"),
 		mapOf(
 			Pos(0, 0, 0) match Blocks.DIAMOND_BLOCK,
-			Pos(1, 0, 0) match Blocks.GLASS,
-			Pos(-1, 0, 0) match Blocks.GLASS,
+			Pos(1, 0, 0) matchTag BlockTags.IMPERMEABLE,
+			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE,
 			Pos(0, 0, 1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
-			Pos(0, 0, -1) matchTag BlockTags.WOOL
+			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE
+		)
+	)
+
+	val SMALL_SHIELD = MultiblockType(
+		identifier("small_shield"),
+		mapOf(
+			Pos(0, 0, 0) match Blocks.DIAMOND_BLOCK,
+			Pos(0, 0, 1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
+			Pos(0, 0, -1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
+			Pos(1, 0, -1) matchTag BlockTags.IMPERMEABLE,
+			Pos(1, 0, 0) matchTag BlockTags.IMPERMEABLE,
+			Pos(1, 0, 1) matchTag BlockTags.IMPERMEABLE,
+			Pos(-1, 0, -1) matchTag BlockTags.IMPERMEABLE,
+			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE,
+			Pos(-1, 0, 1) matchTag BlockTags.IMPERMEABLE
 		)
 	)
 
