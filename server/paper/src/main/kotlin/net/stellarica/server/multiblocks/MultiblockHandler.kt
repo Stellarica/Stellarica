@@ -13,6 +13,7 @@ import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.multiblocks.events.MultiblockDetectEvent
 import net.stellarica.server.multiblocks.events.MultiblockUndetectEvent
+import net.stellarica.server.utils.extensions.asMiniMessage
 import net.stellarica.server.utils.extensions.sendRichActionBar
 import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.extensions.toLocation
@@ -84,11 +85,11 @@ object MultiblockHandler : Listener {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
 		if (event.item?.let { ItemType.of(it) } != ItemType.of(CustomItems.DETECTOR)) return
 		multiblocks[event.clickedBlock!!.chunk]?.firstOrNull { it.origin == event.clickedBlock!!.toBlockPos() }?.let {
-			event.player.sendRichActionBar("<gold>Found already detected ${it.type.id.path}")
+			event.player.sendRichActionBar("<gold>Found already detected ${it.type.displayName.asMiniMessage}")
 			return
 		}
 		detect(event.clickedBlock!!.toBlockPos(), event.player.world)?.let {
-			event.player.sendRichActionBar("<green>Detected ${it.type.id.path}")
+			event.player.sendRichActionBar("<green>Detected ${it.type.displayName.asMiniMessage}")
 			return
 		}
 		event.player.sendRichActionBar("<red>No multiblock detected")
