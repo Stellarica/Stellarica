@@ -17,28 +17,28 @@ enum class WeaponType(
 	val priority: Int,
 	val multiblock: MultiblockType
 ) {
-	TEST_LINEAR_WEAPON(
+	LIGHT_RAILGUNN(
 		LinearProjectile(60, 3.0),
 		OriginRelative(8, 0, 0),
 		PI / 6,
 		OriginRelative(7, 0, 0),
 		1,
-		Multiblocks.TEST_LINEAR_WEAPON
+		Multiblocks.LIGHT_RAILGUN
 	),
-	TEST_ACCELERATING_WEAPON(
+	PLASMA_CANNON(
 		AcceleratingProjectile(50, 0.2, 0.2),
 		OriginRelative(8, 0, 0),
 		PI / 8,
 		OriginRelative(7, 0, 0),
 		1,
-		Multiblocks.TEST_ACCELERATING_WEAPON
+		Multiblocks.PLASMA_CANNON
 	),
-	TEST_INSTANT_WEAPON(
+	PULSE_LASER(
 		InstantProjectile(120),
 		OriginRelative(5, 0, 0),
 		PI / 7,
 		OriginRelative(4, 0, 0),
 		1,
-		Multiblocks.TEST_INSTANT_WEAPON
+		Multiblocks.PULSE_LASER
 	);
 }
