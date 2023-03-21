@@ -25,17 +25,17 @@ object Multiblocks {
 	val TEST_LINEAR_WEAPON = MultiblockType(
 		identifier("test_linear_weapon"),
 		mapOf(
-			OriginRelative(0, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.CHISELED_STONE_BRICKS)),
-			OriginRelative(1, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(2, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.COPPER_BLOCK)),
-			OriginRelative(3, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(4, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.COPPER_BLOCK)),
-			OriginRelative(5, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(6, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(7, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(0, -1, 0) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(1, -1, 0) to SingleBlockMatcher(BlockType.of(Blocks.DISPENSER)),
-			OriginRelative(2, -1, 0) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK))
+			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
+			Pos(1, 0, 0) match Blocks.IRON_BLOCK,
+			Pos(2, 0, 0) match Blocks.COPPER_BLOCK,
+			Pos(3, 0, 0) matchTag BlockTags.WALLS,
+			Pos(4, 0, 0) match Blocks.COPPER_BLOCK,
+			Pos(5, 0, 0) matchTag BlockTags.WALLS,
+			Pos(6, 0, 0) matchTag BlockTags.WALLS,
+			Pos(7, 0, 0) matchTag BlockTags.WALLS,
+			Pos(0, -1, 0) match Blocks.IRON_BLOCK,
+			Pos(1, -1, 0) match Blocks.DISPENSER,
+			Pos(2, -1, 0) match Blocks.IRON_BLOCK
 			
 			
 		)
@@ -44,46 +44,46 @@ object Multiblocks {
 	val TEST_INSTANT_WEAPON = MultiblockType(
 		identifier("test_instant_weapon"),
 		mapOf(
-			OriginRelative(0, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.CHISELED_STONE_BRICKS)),
-			OriginRelative(1, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(2, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.REDSTONE_BLOCK)),
-			OriginRelative(4, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.RED_STAINED_GLASS)),
-			OriginRelative(1, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(2, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(3, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(1, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(2, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(3, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL))
+			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
+			Pos(1, 0, 0) match Blocks.IRON_BLOCK,
+			Pos(2, 0, 0) match Blocks.REDSTONE_BLOCK,
+			Pos(4, 0, 0) matchTag BlockTags.IMPERMEABLE,
+			Pos(1, 0, 1) matchTag BlockTags.WALLS,
+			Pos(2, 0, 1) matchTag BlockTags.WALLS,
+			Pos(3, 0, 1) matchTag BlockTags.WALLS,
+			Pos(1, 0, -1) matchTag BlockTags.WALLS,
+			Pos(2, 0, -1) matchTag BlockTags.WALLS,
+			Pos(3, 0, -1) matchTag BlockTags.WALLS
 		)
 	)
 
 	val TEST_ACCELERATING_WEAPON = MultiblockType(
 		identifier("test_accelerating_weapon"),
 		mapOf(
-			OriginRelative(0, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.CHISELED_STONE_BRICKS)),
-			OriginRelative(1, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.GOLD_BLOCK)),
-			OriginRelative(2, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.WHITE_STAINED_GLASS)),
-			OriginRelative(3, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.DIAMOND_BLOCK)),
-			OriginRelative(4, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.WHITE_STAINED_GLASS)),
-			OriginRelative(5, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.GOLD_BLOCK)),
-			OriginRelative(6, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.WHITE_STAINED_GLASS)),
-			OriginRelative(7, 0, 0) to SingleBlockMatcher(BlockType.of(Blocks.DISPENSER)),
-			OriginRelative(0, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(1, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(2, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(3, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(4, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(5, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(6, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(7, 0, 1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(0, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(1, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(2, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(3, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(4, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(5, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK)),
-			OriginRelative(6, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.DEEPSLATE_TILE_WALL)),
-			OriginRelative(7, 0, -1) to SingleBlockMatcher(BlockType.of(Blocks.IRON_BLOCK))
+			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
+			Pos(1, 0, 0) match Blocks.GOLD_BLOCK,
+			Pos(2, 0, 0) matchTag BlockTags.IMPERMEABLE,
+			Pos(3, 0, 0) match Blocks.DIAMOND_BLOCK,
+			Pos(4, 0, 0) matchTag BlockTags.IMPERMEABLE,
+			Pos(5, 0, 0) match Blocks.GOLD_BLOCK,
+			Pos(6, 0, 0) matchTag BlockTags.IMPERMEABLE,
+			Pos(7, 0, 0) match Blocks.DISPENSER,
+			Pos(0, 0, 1) match Blocks.IRON_BLOCK,
+			Pos(1, 0, 1) match Blocks.IRON_BLOCK,
+			Pos(2, 0, 1) matchTag BlockTags.WALLS,
+			Pos(3, 0, 1) match Blocks.IRON_BLOCK,
+			Pos(4, 0, 1) matchTag BlockTags.WALLS,
+			Pos(5, 0, 1) match Blocks.IRON_BLOCK,
+			Pos(6, 0, 1) matchTag BlockTags.WALLS,
+			Pos(7, 0, 1) match Blocks.IRON_BLOCK,
+			Pos(0, 0, -1) match Blocks.IRON_BLOCK,
+			Pos(1, 0, -1) match Blocks.IRON_BLOCK,
+			Pos(2, 0, -1) matchTag BlockTags.WALLS,
+			Pos(3, 0, -1) match Blocks.IRON_BLOCK,
+			Pos(4, 0, -1) matchTag BlockTags.WALLS,
+			Pos(5, 0, -1) match Blocks.IRON_BLOCK,
+			Pos(6, 0, -1) matchTag BlockTags.WALLS,
+			Pos(7, 0, -1) match Blocks.IRON_BLOCK
 		)
 	)
 
