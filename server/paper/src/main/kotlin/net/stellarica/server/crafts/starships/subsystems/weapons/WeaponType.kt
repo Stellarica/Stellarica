@@ -17,7 +17,7 @@ enum class WeaponType(
 	val priority: Int,
 	val multiblock: MultiblockType
 ) {
-	LIGHT_RAILGUNN(
+	LIGHT_RAILGUN(
 		LinearProjectile(60, 3.0),
 		OriginRelative(8, 0, 0),
 		PI / 6,

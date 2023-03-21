@@ -27,8 +27,8 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 		}
 	}
 
-	fun fireLight() = fire(setOf(WeaponType.TEST_INSTANT_WEAPON, WeaponType.TEST_LINEAR_WEAPON))
-	fun fireHeavy() = fire(setOf(WeaponType.TEST_ACCELERATING_WEAPON))
+	fun fireLight() = fire(setOf(WeaponType.PULSE_LASER, WeaponType.LIGHT_RAILGUN))
+	fun fireHeavy() = fire(setOf(WeaponType.PLASMA_CANNON))
 
 	fun fire(types: Set<WeaponType>) {
 
