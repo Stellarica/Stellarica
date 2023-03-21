@@ -10,6 +10,7 @@ import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.World
 
 data class MultiblockType(
+	val displayName: String,
 	val id: ResourceLocation,
 	val blocks: Map<OriginRelative, BlockMatcher>
 ) {
