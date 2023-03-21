@@ -85,11 +85,11 @@ object MultiblockHandler : Listener {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
 		if (event.item?.let { ItemType.of(it) } != ItemType.of(CustomItems.DETECTOR)) return
 		multiblocks[event.clickedBlock!!.chunk]?.firstOrNull { it.origin == event.clickedBlock!!.toBlockPos() }?.let {
-			event.player.sendRichActionBar("<gold>Found already detected ${it.type.displayName.asMiniMessage}")
+			event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")
 			return
 		}
 		detect(event.clickedBlock!!.toBlockPos(), event.player.world)?.let {
-			event.player.sendRichActionBar("<green>Detected ${it.type.displayName.asMiniMessage}")
+			event.player.sendRichActionBar("<green>Detected ${it.type.displayName}")
 			return
 		}
 		event.player.sendRichActionBar("<red>No multiblock detected")
