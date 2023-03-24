@@ -35,7 +35,7 @@ object ShipControlHotbar : HotbarMenu() {
 	}
 
 	override fun onButtonClicked(index: Int, player: Player) {
-		if (player.getCooldown(player.hotbar[index]!!.type) >= 1) return;
+		if ((player.hotbar[index]?.type?.let { player.getCooldown(it) } ?: 0) >= 1) return;
 
 		val ship = player.craft as? Starship ?: run {
 			player.sendRichMessage("<red>You are not piloting a starship, yet the ship menu is open! This is a bug!")
