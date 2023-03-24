@@ -8,9 +8,7 @@ import net.kyori.adventure.audience.ForwardingAudience
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Vec3i
-import net.minecraft.core.registries.Registries
 import net.minecraft.server.level.ServerLevel
-import net.minecraft.tags.TagKey
 import net.minecraft.world.level.Level
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.Rotation
@@ -24,7 +22,6 @@ import net.stellarica.common.utils.rotate
 import net.stellarica.common.utils.rotateCoordinates
 import net.stellarica.common.utils.toBlockPos
 import net.stellarica.common.utils.toVec3
-import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.mixin.BlockEntityMixin
 import net.stellarica.server.multiblocks.MultiblockHandler
@@ -53,54 +50,33 @@ open class Craft(
 	var owner: Player? = null
 ) : ForwardingAudience {
 
+	companion object {
+		const val sizeLimit = 500000
+	}
+
 	var detectedBlocks = mutableSetOf<BlockPos>()
 
-	/**
-	 * The.. uh.. passengers...
-	 */
 	var passengers = mutableSetOf<Entity>()
 
-	/**
-	 * The number of detected blocks
-	 */
-	val blockCount: Int
+	val detectedBlockCount: Int
 		get() = detectedBlocks.size
 
 	var initialBlockCount: Int = 1
 		private set
 
 	val hullIntegrityPercent
-		get() = blockCount / initialBlockCount.toDouble()
+		get() = detectedBlockCount / initialBlockCount.toDouble()
 
 	var multiblocks = mutableSetOf<OriginRelative>()
 
 
-
-	private data class RelativeColumn(val x: Int, val z: Int) {
-		constructor(pos: OriginRelative) : this(pos.x, pos.z)
-	}
-
 	/**
-	 * The blocks considered to be "inside" of the ship, but not neccecarily detected.
+	 * Holds the min and max relative Y values for each column in the ship
+	 * Can be used to check if a certain block is "inside" though not neccecarily detected
+	 * @see contains
 	 */
 	private var contents = mutableMapOf<RelativeColumn, Pair<Int, Int>>()
 
-	/**
-	 * Message this craft's pilot, if it has one.
-	 * If the ship isn't being piloted, message the owner.
-	 * MiniMessage formatting is allowed
-	 *
-	 * @see messagePassengers
-	 */
-	fun messagePilot(message: String) {
-		if (this is Starship) {
-			pilot?.sendRichMessage(message) ?: owner?.sendRichMessage(message)
-		}
-	}
-
-	companion object {
-		const val sizeLimit = 50000
-	}
 
 	/**
 	 * @return Whether [block] is considered to be inside this craft
@@ -144,6 +120,7 @@ open class Craft(
 	 * @see change
 	 */
 	fun move(offset: Vec3i) {
+		val t1 = System.currentTimeMillis()
 		val change = offset.toVec3()
 		// don't want to let them pass a vec3
 		// since the ships snap to blocks but entities can actually move by that much
@@ -151,7 +128,9 @@ open class Craft(
 
 		change({ current ->
 			return@change current.add(change)
-		}, world)
+		}, world) {
+			messagePilot("Moved in ${System.currentTimeMillis() - t1}ms")
+		}
 	}
 
 	/**
@@ -176,18 +155,19 @@ open class Craft(
 	) {
 		// calculate new blocks locations
 		val targetsCHM = ConcurrentHashMap<BlockPos, BlockPos>()
+
 		runBlocking {
-			detectedBlocks.chunked(500).forEach { section ->
+			detectedBlocks.chunked(100).forEach { section ->
 				// chunk into sections to process parallel
 				launch(Dispatchers.Default) {
-					section.forEach { current ->
-						targetsCHM[current] = modifier(current.toVec3()).toBlockPos()
-					}
+					val new = section.zip(section.map { current -> modifier(current.toVec3()).toBlockPos() })
+					targetsCHM.putAll(new)
 				}
 			}
 		}
 
-		// possible optimization because iterating over a CHM is pain
+		// possible slight optimization because iterating over a CHM is pain
+		// tested it, but not very thoroughly. Converting to a map *is* slow and takes time
 		val targets = targetsCHM.toMap()
 
 		// We need to get the original blockstates before we start setting blocks
@@ -208,6 +188,8 @@ open class Craft(
 			targets.values.forEach { target ->
 				val state = targetWorld.getBlockState(target)
 
+				// todo: now that we're back to Paper we can use ChunkSnapshots, and should be able to check for collisions
+				// in parallel when we calculate the new block positions
 				if (!state.isAir && !detectedBlocks.contains(target)) {
 					sendRichMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
 					return
@@ -220,7 +202,7 @@ open class Craft(
 			}
 		}
 
-		// iterating over twice isn't great
+		// iterating over twice isn't great, maybe there's a way to condense it?
 		val newDetectedBlocks = mutableSetOf<BlockPos>()
 		targets.forEach { (current, target) ->
 			val currentBlock = original.getOrElse(current) { world.getBlockState(current) }
@@ -243,14 +225,14 @@ open class Craft(
 			}
 		}
 
+		// if this ever happens its a really good sign something died lol
 		if (newDetectedBlocks.size != detectedBlocks.size)
 			println("Lost ${detectedBlocks.size - newDetectedBlocks.size} blocks while moving! This is a bug!")
 
-		if (world == targetWorld) {
-			// set air where we were
-			detectedBlocks.removeAll(newDetectedBlocks)
-			detectedBlocks.forEach { setBlockFast(world, it, Blocks.AIR.defaultBlockState()) }
-		}
+		// set air where we were
+		if (world == targetWorld) detectedBlocks.removeAll(newDetectedBlocks)
+		detectedBlocks.forEach { setBlockFast(world, it, Blocks.AIR.defaultBlockState()) }
+
 		detectedBlocks = newDetectedBlocks
 
 		// move multiblocks, and remove any that no longer exist (i.e. were destroyed)
@@ -416,6 +398,23 @@ open class Craft(
 				*TeleportFlag.Relative.values()
 			)
 		}
+	}
+
+	/**
+	 * Message this craft's pilot, if it has one.
+	 * If the ship isn't being piloted, message the owner.
+	 * MiniMessage formatting is allowed
+	 *
+	 * @see messagePassengers
+	 */
+	fun messagePilot(message: String) {
+		if (this is Starship) {
+			pilot?.sendRichMessage(message) ?: owner?.sendRichMessage(message)
+		}
+	}
+
+	private data class RelativeColumn(val x: Int, val z: Int) {
+		constructor(pos: OriginRelative) : this(pos.x, pos.z)
 	}
 
 	override fun audiences() = passengers
