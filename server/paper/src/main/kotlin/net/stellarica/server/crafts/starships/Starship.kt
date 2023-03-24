@@ -89,9 +89,9 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 			if (velocity.x == 0 && velocity.y == 0 && velocity.z == 0) return@syncRepeat
 			move(velocity)
 			val percent = shields.shieldHealth / shields.maxShieldHealth.toFloat().coerceAtLeast(1f)
-			val num = (percent * 20).roundToInt().coerceAtMost(20)
+			val num = (percent * 40).roundToInt().coerceAtMost(40)
 
-			pilot.sendActionBar(("<dark_gray>[<gray>" + "|".repeat(20 - num) + "<blue>|".repeat(num) + "<dark_gray>]").asMiniMessage)
+			pilot.sendActionBar(("<dark_gray>[<gray>" + "|".repeat(40 - num) + "<blue>|".repeat(num) + "<dark_gray>]").asMiniMessage)
 		}
 
 		return true
