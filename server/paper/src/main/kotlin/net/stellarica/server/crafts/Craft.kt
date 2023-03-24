@@ -290,15 +290,23 @@ open class Craft(
 
 				// Slightly condensed from MSP's nonsense, but this could be improved
 				for (x in -1..1) {
-					for (y in -1..1) {
-						for (z in -1..1) {
-							if (x == y && z == y && y == 0) continue
-							val block = currentBlock.offset(x, y, z)
-							if (!checkedBlocks.contains(block)) {
-								checkedBlocks.add(block)
-								nextBlocksToCheck.add(block)
-							}
-						}
+					val block = currentBlock.offset(x, 0, 0)
+					if (!checkedBlocks.contains(block)) {
+						checkedBlocks.add(block)
+						nextBlocksToCheck.add(block)
+					}
+				}
+				for (z in -1..1) {
+					val block = currentBlock.offset(0, 0, z)
+					if (!checkedBlocks.contains(block)) {
+						checkedBlocks.add(block)
+						nextBlocksToCheck.add(block)
+					}
+				}
+				for (y in -1..1) {
+					val block = currentBlock.offset(0, y, 0)
+					if (!checkedBlocks.contains(block)) {
+						nextBlocksToCheck.add(block)
 					}
 				}
 			}
