@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Vec3i
 import net.minecraft.server.level.ServerLevel
+import net.stellarica.common.utils.toVec3
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.stellarica.server.crafts.Craft
@@ -84,6 +85,8 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 				this.cancel()
 				return@syncRepeat
 			}
+			// there's gotta be a better way to check this
+			if (velocity.x == 0 && velocity.y == 0 && velocity.z == 0) return@syncRepeat
 			move(velocity)
 			val percent = shields.shieldHealth / shields.maxShieldHealth.toFloat().coerceAtLeast(1f)
 			val num = (percent * 20).roundToInt().coerceAtMost(20)
