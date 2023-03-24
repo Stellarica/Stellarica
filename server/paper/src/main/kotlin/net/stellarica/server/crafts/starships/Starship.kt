@@ -54,7 +54,7 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 	fun activateCraft(pilot: Player): Boolean {
 		// Determine passengers, pilot
 		if (this.pilot != null) return false
-		if (this.blockCount == 0) {
+		if (this.detectedBlockCount == 0) {
 			pilot.sendRichMessage("<red>Cannot pilot empty craft, detect it first!")
 			return false
 		}
