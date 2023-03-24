@@ -30,7 +30,11 @@ class StarshipDebugCommands : BaseCommand() {
 			sender.sendRichMessage("<red>You are not piloting a starship!")
 			return
 		}
+
+		// todo: make this exist again
+		/*
 		ship.bounds.forEach {
+
 			val pos = it.getBlockPos(ship.origin, ship.direction)
 			sender.world.spawnParticle(
 				Particle.BLOCK_MARKER,
@@ -43,6 +47,8 @@ class StarshipDebugCommands : BaseCommand() {
 				Material.BARRIER.createBlockData()
 			)
 		}
+
+		 */
 		sender.world.spawnParticle(
 			Particle.BLOCK_MARKER,
 			ship.origin.toLocation(sender.world),

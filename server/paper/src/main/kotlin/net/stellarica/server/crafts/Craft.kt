@@ -75,10 +75,15 @@ open class Craft(
 	var multiblocks = mutableSetOf<OriginRelative>()
 
 
+
+	private data class RelativeColumn(val x: Int, val z: Int) {
+		constructor(pos: OriginRelative) : this(pos.x, pos.z)
+	}
+
 	/**
 	 * The blocks considered to be "inside" of the ship, but not neccecarily detected.
 	 */
-	var bounds = mutableSetOf<OriginRelative>()
+	private var contents = mutableMapOf<RelativeColumn, Pair<Int, Int>>()
 
 	/**
 	 * Message this craft's pilot, if it has one.
@@ -102,26 +107,29 @@ open class Craft(
 	 */
 	fun contains(block: BlockPos?): Boolean {
 		block ?: return false
-		return detectedBlocks.contains(block) || bounds.contains(
-			OriginRelative.getOriginRelative(
-				block,
-				origin,
-				direction
-			)
+		if (detectedBlocks.contains(block)) return true
+		val rel = OriginRelative.getOriginRelative(
+			block,
+			origin,
+			direction
 		)
+		val extremes = contents[RelativeColumn(rel)] ?: return false
+		return extremes.first <= rel.y && extremes.second >= rel.y
 	}
 
-	private fun calculateHitbox() {
-		// might cause issues if run when direction isn't north?
+	private fun calculateContents() {
+		contents.clear()
 		detectedBlocks
 			.map { pos ->
+				// might cause issues if run when direction isn't north?
 				OriginRelative.getOriginRelative(pos, origin, direction)
 			}
-			.sortedBy { -it.y }
 			.forEach { block ->
-				val max = bounds.filter { it.x == block.x && it.z == block.z }.maxByOrNull { it.y }?.y ?: block.y
-				for (y in block.y..max) {
-					bounds.add(OriginRelative(block.x, y, block.z))
+				val extremes = contents.getOrPut(RelativeColumn(block)) { Pair(block.y, block.y); return@forEach }
+				if (block.y < extremes.first) {
+					contents[RelativeColumn(block)] = Pair(block.y, extremes.second)
+				} else if (block.y > extremes.second) {
+					contents[RelativeColumn(block)] = Pair(extremes.first, block.y)
 				}
 			}
 	}
@@ -321,11 +329,11 @@ open class Craft(
 					"(${detectedBlocks.size / elapsed.coerceAtLeast(1)} blocks/ms)"
 		)
 		owner?.sendRichMessage(
-			"<gray>Calculated Hitbox in ${
+			"<gray>Calculated Contents in ${
 				measureTimeMillis {
-					calculateHitbox()
+					calculateContents()
 				}
-			}ms. (${bounds.size} blocks)")
+			}ms.")
 
 		// Detect all multiblocks
 		multiblocks.clear()
