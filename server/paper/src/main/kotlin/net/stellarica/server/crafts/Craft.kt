@@ -289,23 +289,22 @@ open class Craft(
 				chunks.add(world.getChunkAt(currentBlock).bukkitChunk)
 
 				// Slightly condensed from MSP's nonsense, but this could be improved
-				for (x in -1..1) {
+				for (x in listOf(-1, 1)) {
 					val block = currentBlock.offset(x, 0, 0)
 					if (!checkedBlocks.contains(block)) {
-						checkedBlocks.add(block)
 						nextBlocksToCheck.add(block)
 					}
 				}
-				for (z in -1..1) {
+				for (z in listOf(-1, 1)) {
 					val block = currentBlock.offset(0, 0, z)
 					if (!checkedBlocks.contains(block)) {
-						checkedBlocks.add(block)
 						nextBlocksToCheck.add(block)
 					}
 				}
 				for (y in -1..1) {
 					val block = currentBlock.offset(0, y, 0)
 					if (!checkedBlocks.contains(block)) {
+						checkedBlocks.add(block)
 						nextBlocksToCheck.add(block)
 					}
 				}
