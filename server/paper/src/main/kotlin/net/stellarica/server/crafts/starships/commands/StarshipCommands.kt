@@ -4,10 +4,12 @@ import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
+import net.minecraft.world.level.block.Blocks
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.utils.extensions.craft
 import org.bukkit.entity.Player
+import kotlin.random.Random
 
 /**
  * Command handling for the starship related commands.
@@ -33,6 +35,21 @@ class StarshipCommands : BaseCommand() {
 			ship.passengers.remove(sender)
 			sender.sendRichMessage("<green>Stopped riding!")
 		}
+	}
+
+	@Subcommand("nuke")
+	@Description("Bye bye ship... :(")
+	private fun onNuke(sender: Player) {
+		val ship = getPilotedShip(sender) ?: return
+		val blocks = ship.detectedBlocks.toSet() // is this neccecary?
+		val state = Blocks.AIR.defaultBlockState()
+
+		ship.deactivateCraft()
+
+		for (block in blocks) {
+			ship.world.setBlock(block, state, 0)
+		}
+		sender.sendRichMessage("<red>Ship nuked!")
 	}
 
 	private fun getPilotedShip(sender: Player): Starship? {
