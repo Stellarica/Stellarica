@@ -157,7 +157,7 @@ open class Craft(
 		val targetsCHM = ConcurrentHashMap<BlockPos, BlockPos>()
 
 		runBlocking {
-			detectedBlocks.chunked(100).forEach { section ->
+			detectedBlocks.chunked(detectedBlocks.size / 8 + 256).forEach { section ->
 				// chunk into sections to process parallel
 				launch(Dispatchers.Default) {
 					val new = section.zip(section.map { current -> modifier(current.toVec3()).toBlockPos() })
@@ -289,16 +289,23 @@ open class Craft(
 				chunks.add(world.getChunkAt(currentBlock).bukkitChunk)
 
 				// Slightly condensed from MSP's nonsense, but this could be improved
-				for (x in -1..1) {
-					for (y in -1..1) {
-						for (z in -1..1) {
-							if (x == y && z == y && y == 0) continue
-							val block = currentBlock.offset(x, y, z)
-							if (!checkedBlocks.contains(block)) {
-								checkedBlocks.add(block)
-								nextBlocksToCheck.add(block)
-							}
-						}
+				for (x in listOf(-1, 1)) {
+					val block = currentBlock.offset(x, 0, 0)
+					if (!checkedBlocks.contains(block)) {
+						nextBlocksToCheck.add(block)
+					}
+				}
+				for (z in listOf(-1, 1)) {
+					val block = currentBlock.offset(0, 0, z)
+					if (!checkedBlocks.contains(block)) {
+						nextBlocksToCheck.add(block)
+					}
+				}
+				for (y in -1..1) {
+					val block = currentBlock.offset(0, y, 0)
+					if (!checkedBlocks.contains(block)) {
+						checkedBlocks.add(block)
+						nextBlocksToCheck.add(block)
 					}
 				}
 			}
