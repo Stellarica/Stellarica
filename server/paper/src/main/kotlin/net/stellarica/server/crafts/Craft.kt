@@ -157,7 +157,7 @@ open class Craft(
 		val targetsCHM = ConcurrentHashMap<BlockPos, BlockPos>()
 
 		runBlocking {
-			detectedBlocks.chunked(100).forEach { section ->
+			detectedBlocks.chunked(detectedBlocks.size / 8 + 256).forEach { section ->
 				// chunk into sections to process parallel
 				launch(Dispatchers.Default) {
 					val new = section.zip(section.map { current -> modifier(current.toVec3()).toBlockPos() })
