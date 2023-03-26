@@ -16,6 +16,7 @@ import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.Handshake
+import net.stellarica.server.transfer.pipes.PipeDebugCommands
 import net.stellarica.server.utils.extensions.TestDebugCommand
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.NamespacedKey
@@ -81,7 +82,8 @@ class StellaricaServer : JavaPlugin() {
 			StarshipDebugCommands(),
 			CustomMaterialCommands(),
 			TestDebugCommand(),
-			MultiblockCommands()
+			MultiblockCommands(),
+			PipeDebugCommands()
 		).forEach { commandManager.registerCommand(it) }
 
 		commandManager.commandCompletions.registerCompletion(

@@ -1,12 +1,15 @@
 package net.stellarica.server.transfer
 
 abstract class NodeNetwork<T: Transferable> {
-	abstract val primaryNode: Node<T>
+	val inputs = mutableSetOf<Node<T>>()
 
 	abstract fun detect()
 
 	fun tick() {
-		
+		for (input in inputs) {
+			validateDown(input)
+			transferDown(input)
+		}
 	}
 
 	private fun transferDown(node: Node<T>) {
