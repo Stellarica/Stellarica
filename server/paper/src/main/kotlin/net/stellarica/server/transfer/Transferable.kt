@@ -1,5 +1,3 @@
 package net.stellarica.server.transfer
 
-interface Transferable {
-
-}
+interface Transferable
