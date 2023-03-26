@@ -13,7 +13,7 @@ class PipeNetwork(
 ) : NodeNetwork<Fuel>() {
 	var direction = Direction.NORTH
 
-	override fun detect() {
+	fun detect() {
 		nodes.clear()
 		val start = System.currentTimeMillis()
 
@@ -68,6 +68,10 @@ class PipeNetwork(
 	private fun isRod(pos: OriginRelative) : Boolean = world.getBlockState(pos(pos)).block == Blocks.LIGHTNING_ROD
 	private fun isInput(pos: OriginRelative) : Boolean = world.getBlockState(pos(pos)).block == Blocks.WAXED_CUT_COPPER
 	private fun pos(pos: OriginRelative) = pos.getBlockPos(origin, direction)
+
+	override fun tick() {
+		TODO("Not yet implemented")
+	}
 }
 
 private operator fun OriginRelative.plus(other: OriginRelative) = OriginRelative(x + other.x, y + other.y, z + other.z)
