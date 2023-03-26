@@ -5,10 +5,7 @@ import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.common.utils.OriginRelative
-import net.stellarica.server.transfer.Node
 import net.stellarica.server.transfer.NodeNetwork
-import net.stellarica.server.transfer.pipes.node.PipeJunction
-import net.stellarica.server.transfer.pipes.node.PipeNode
 
 class PipeNetwork(
 	val origin: BlockPos,
@@ -17,7 +14,7 @@ class PipeNetwork(
 	var direction = Direction.NORTH
 
 	override fun detect() {
-		inputs.clear()
+		nodes.clear()
 		val start = System.currentTimeMillis()
 
 		val undirectedNodes = mutableSetOf<Set<OriginRelative>>()
@@ -32,34 +29,7 @@ class PipeNetwork(
 				)
 			}
 		}")
-		println("Sorting nodes")
-		println("Input Positons: $inputsPositions")
-		inputsPositions.forEach { inputs.add(constructOrderedNodes(it, undirectedNodes, inputsPositions.toMutableSet())) }
-		println("Input Nodes: $inputs")
-
-		fun printOut(node: PipeNode, depth: Int) {
-			println("${"\t".repeat(depth)}${node.pos}")
-			node.outgoingConnections.forEach {
-				printOut(it as PipeNode, depth + 1)
-			}
-		}
-		inputs.forEach {
-			printOut(it as PipeNode, 0)
-		}
 		println("Elapsed time ${System.currentTimeMillis() - start}ms")
-	}
-
-	private fun constructOrderedNodes(nodePos: OriginRelative, positions: MutableSet<Set<OriginRelative>>, constructedNodes: MutableSet<OriginRelative>) : Node<Fuel> {
-		val node = PipeJunction(nodePos)
-		constructedNodes.add(nodePos)
-		positions.filter { it.contains(nodePos) }.forEach { connection ->
-			val other = connection.toMutableSet().also {it.remove(nodePos)}.first()
-			if (other !in constructedNodes) {
-				node.outgoingConnections.add(constructOrderedNodes(other, positions, constructedNodes))
-				constructedNodes.add(other)
-			}
-		}
-		return node
 	}
 
 	private fun detectConnectedPairs(
