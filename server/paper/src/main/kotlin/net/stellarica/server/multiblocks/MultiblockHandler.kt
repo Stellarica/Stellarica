@@ -11,9 +11,6 @@ import net.stellarica.server.StellaricaServer
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.type.item.ItemType
-import net.stellarica.server.multiblocks.events.MultiblockDetectEvent
-import net.stellarica.server.multiblocks.events.MultiblockUndetectEvent
-import net.stellarica.server.utils.extensions.asMiniMessage
 import net.stellarica.server.utils.extensions.sendRichActionBar
 import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.extensions.toLocation
@@ -44,7 +41,6 @@ object MultiblockHandler : Listener {
 		}
 		// return the largest possible, in case there are multiple
 		return possible.maxByOrNull { it.type.blocks.size }?.also {
-			if (!MultiblockDetectEvent(it).callEvent()) return null // maybe check for a smaller one?
 			val chunk = world.getChunkAt(origin.toLocation(world))
 			multiblocks.getOrPut(chunk) { mutableSetOf() }.add(it)
 			(chunk as CraftChunk).handle.isUnsaved = true
@@ -104,7 +100,6 @@ object MultiblockHandler : Listener {
 			val invalid = mutableSetOf<MultiblockInstance>()
 			for (multiblock in mbSet) {
 				if (!multiblock.validate()) {
-					MultiblockUndetectEvent(multiblock).callEvent()
 					invalid.add(multiblock)
 				}
 			}
