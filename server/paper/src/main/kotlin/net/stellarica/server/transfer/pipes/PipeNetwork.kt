@@ -7,6 +7,9 @@ import net.minecraft.world.level.block.Blocks
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.transfer.Node
 import net.stellarica.server.transfer.NodeNetwork
+import net.stellarica.server.transfer.pipes.node.PipeJunction
+import net.stellarica.server.transfer.pipes.node.PipeNode
+import java.nio.channels.Pipe
 
 class PipeNetwork(
 	val origin: BlockPos,
@@ -15,9 +18,13 @@ class PipeNetwork(
 	var direction = Direction.NORTH
 
 	override fun detect() {
+		inputs.clear()
+		val start = System.currentTimeMillis()
+
 		val undirectedNodes = mutableSetOf<Set<OriginRelative>>()
+		val inputsPositions = mutableSetOf<OriginRelative>()
 		println("Starting node detection")
-		detectDown(OriginRelative(0,0,0), undirectedNodes, mutableSetOf(OriginRelative(0,0,0)), mutableSetOf())
+		detectDown(OriginRelative(0,0,0), undirectedNodes, mutableSetOf(OriginRelative(0,0,0)), inputsPositions)
 		println("Found undirected nodes:\n${
 			undirectedNodes.joinToString("\n") {
 				"${it.first()} <-> ${it.last()}".replace(
@@ -26,6 +33,34 @@ class PipeNetwork(
 				)
 			}
 		}")
+		println("Sorting nodes")
+		println("Input Positons: $inputsPositions")
+		inputsPositions.forEach { inputs.add(constructNodes(it, undirectedNodes, inputsPositions.toMutableSet())) }
+		println("Input Nodes: $inputs")
+
+		fun printOut(node: PipeNode, depth: Int) {
+			println("${"\t".repeat(depth)}${node.pos}")
+			node.outgoingConnections.forEach {
+				printOut(it as PipeNode, depth + 1)
+			}
+		}
+		inputs.forEach {
+			printOut(it as PipeNode, 0)
+		}
+		println("Elapsed time ${System.currentTimeMillis() - start}ms")
+	}
+
+	fun constructNodes(nodePos: OriginRelative, positions: MutableSet<Set<OriginRelative>>, constructedNodes: MutableSet<OriginRelative>) : Node<Fuel> {
+		val node = PipeJunction(nodePos)
+		constructedNodes.add(nodePos)
+		positions.filter { it.contains(nodePos) }.forEach { connection ->
+			val other = connection.toMutableSet().also {it.remove(nodePos)}.first()
+			if (other !in constructedNodes) {
+				node.outgoingConnections.add(constructNodes(other, positions, constructedNodes))
+				constructedNodes.add(other)
+			}
+		}
+		return node
 	}
 
 	fun detectDown(
@@ -54,7 +89,7 @@ class PipeNetwork(
 							}
 							nodes.add(setOf(pos, next))
 						}
-						else break
+						break
 					}
 				}
 			}
