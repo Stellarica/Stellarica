@@ -19,7 +19,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 	val maxShieldHealth: Int
 		get(): Int {
 			var h = 0
-			multiblocks.forEach { multiblock ->
+			for (multiblock in multiblocks) {
 				ShieldType.values().firstOrNull {
 					it.multiblock == ship.getMultiblock(multiblock)?.type
 				}?.let {
@@ -30,7 +30,7 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 		}
 
 	override fun onShipPiloted() {
-		ship.multiblocks.forEach { multiblock ->
+		for (multiblock in ship.multiblocks) {
 			if (ship.getMultiblock(multiblock)?.type in ShieldType.values().map { it.multiblock }) {
 				multiblocks.add(multiblock)
 			}

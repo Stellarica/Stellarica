@@ -15,7 +15,7 @@ data class MultiblockType(
 	val blocks: Map<OriginRelative, BlockMatcher>
 ) {
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
-		setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST).forEach { facing ->
+		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
 			if (validate(facing, origin, world)) {
 				return MultiblockInstance(
 					origin,

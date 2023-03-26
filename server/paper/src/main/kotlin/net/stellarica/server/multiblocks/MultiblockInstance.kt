@@ -37,8 +37,8 @@ data class MultiblockInstance(
 	 * Does not take into account world
 	 */
 	fun contains(loc: BlockPos): Boolean {
-		type.blocks.keys.forEach {
-			if (it == getOriginRelative(loc)) return true
+		for (pos in type.blocks.keys) {
+			if (pos == getOriginRelative(loc)) return true
 		}
 		return false
 	}

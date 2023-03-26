@@ -36,8 +36,8 @@ object MultiblockHandler : Listener {
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()
-		Multiblocks.all().forEach {
-			val instance = it.detect(origin, world)
+		for (type in Multiblocks.all()) {
+			val instance = type.detect(origin, world)
 			if (instance != null) {
 				possible.add(instance)
 			}
@@ -100,9 +100,9 @@ object MultiblockHandler : Listener {
 		// twice per second
 		if (event.tickNumber % 10 != 0) return
 
-		multiblocks.forEach { (_, mbSet) ->
+		for ((_, mbSet) in multiblocks) {
 			val invalid = mutableSetOf<MultiblockInstance>()
-			mbSet.forEach { multiblock ->
+			for (multiblock in mbSet) {
 				if (!multiblock.validate()) {
 					MultiblockUndetectEvent(multiblock).callEvent()
 					invalid.add(multiblock)

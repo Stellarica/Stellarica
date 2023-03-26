@@ -48,8 +48,8 @@ private fun registerShapelessRecipe(itemStack: ItemStack, ingredients: List<Item
 		return
 	}
 	val recipe = ShapelessRecipe(key, itemStack)
-	ingredients.forEach {
-		recipe.addIngredient(it.getBukkitItemStack())
+	for (ingredient in ingredients) {
+		recipe.addIngredient(ingredient.getBukkitItemStack())
 	}
 	Bukkit.addRecipe(recipe)
 }

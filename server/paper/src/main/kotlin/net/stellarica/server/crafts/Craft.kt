@@ -157,7 +157,7 @@ open class Craft(
 		val targetsCHM = ConcurrentHashMap<BlockPos, BlockPos>()
 
 		runBlocking {
-			detectedBlocks.chunked(detectedBlocks.size / 8 + 256).forEach { section ->
+			for (section in detectedBlocks.chunked(detectedBlocks.size / 8 + 256)) {
 				// chunk into sections to process parallel
 				launch(Dispatchers.Default) {
 					val new = section.zip(section.map { current -> modifier(current.toVec3()).toBlockPos() })
@@ -238,7 +238,7 @@ open class Craft(
 		// move multiblocks, and remove any that no longer exist (i.e. were destroyed)
 		val mbs = mutableSetOf<MultiblockInstance>()
 		multiblocks.removeIf { pos -> getMultiblock(pos)?.also{mbs.add(it)} == null}
-		mbs.forEach {mb ->
+		for (mb in mbs) {
 			val new = MultiblockInstance(
 				origin = modifier(mb.origin.toVec3()).toBlockPos(),
 				world = targetWorld.world,
@@ -369,7 +369,7 @@ open class Craft(
 	 */
 	@Suppress("UnstableApiUsage")
 	fun movePassengers(offset: (Vec3) -> Vec3, rotation: Rotation = Rotation.NONE) {
-		passengers.forEach {
+		for (passenger in passengers) {
 			// TODO: FIX
 			// this is not a good solution because if there is any rotation, the player will not be translated by the offset
 			// The result is that any ship movement that attempts to rotate and move in the same action will break.
@@ -381,7 +381,7 @@ open class Craft(
 			// However, without this dumb fix players do not rotate to the proper relative location
 			val destination =
 				if (rotation != Rotation.NONE) rotateCoordinates(
-					it.location.toVec3(),
+					passenger.location.toVec3(),
 					origin.toVec3().add(
 						Vec3(
 							0.5,
@@ -390,15 +390,15 @@ open class Craft(
 						)
 					), rotation
 				).toLocation(world.world)
-				else offset(it.location.toVec3()).toLocation(world.world)
+				else offset(passenger.location.toVec3()).toLocation(world.world)
 
 
-			destination.world = it.world // todo: fix
+			destination.world = passenger.world // todo: fix
 
-			destination.pitch = it.location.pitch
-			destination.yaw = (it.location.yaw + rotation.asDegrees).toFloat()
+			destination.pitch = passenger.location.pitch
+			destination.yaw = (passenger.location.yaw + rotation.asDegrees).toFloat()
 
-			it.teleport(
+			passenger.teleport(
 				destination,
 				PlayerTeleportEvent.TeleportCause.PLUGIN,
 				TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...

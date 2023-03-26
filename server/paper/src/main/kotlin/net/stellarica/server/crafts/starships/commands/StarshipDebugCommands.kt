@@ -59,8 +59,8 @@ class StarshipDebugCommands : BaseCommand() {
 			0.0,
 			Material.LAPIS_BLOCK.createBlockData()
 		)
-		ship.multiblocks.forEach{
-			val pos = it.getBlockPos(ship.origin, ship.direction)
+		for (multiblock in ship.multiblocks) {
+			val pos = multiblock.getBlockPos(ship.origin, ship.direction)
 			sender.world.spawnParticle(
 				Particle.BLOCK_MARKER,
 				pos.toLocation(sender.world),

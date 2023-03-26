@@ -8,17 +8,17 @@ import org.bukkit.plugin.messaging.PluginMessageListener
 
 class BukkitNetworkHandler : PluginMessageListener {
 	init {
-		Channel.values().forEach {
-			plugin.server.messenger.registerIncomingPluginChannel(plugin, it.bukkit, this)
-			plugin.server.messenger.registerOutgoingPluginChannel(plugin, it.bukkit)
+		for (channel in Channel.values()) {
+			plugin.server.messenger.registerIncomingPluginChannel(plugin, channel.bukkit, this)
+			plugin.server.messenger.registerOutgoingPluginChannel(plugin, channel.bukkit)
 		}
 	}
 
 	private val listeners = mutableSetOf<Pair<Channel, (ByteArray, Player) -> Unit>>()
 
 	fun broadcastPacket(channel: Channel, packet: ByteArray) {
-		plugin.moddedPlayers.forEach {
-			sendPacket(channel, it, packet)
+		for (player in plugin.moddedPlayers) {
+			sendPacket(channel, player, packet)
 		}
 	}
 

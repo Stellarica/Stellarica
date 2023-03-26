@@ -31,8 +31,8 @@ object CustomItemHandler : Listener {
 	@EventHandler
 	fun onAnvilEnchant(event: PrepareAnvilEvent) {
 		val item = event.result?.let { ItemType.of(it) } as? CustomItemType ?: return
-		event.result!!.enchantments.keys.forEach {
-			if (it !in (item.item.allowedEnchants ?: mutableSetOf())) event.result = null
+		for (enchant in event.result!!.enchantments.keys) {
+			if (enchant !in (item.item.allowedEnchants ?: mutableSetOf())) event.result = null
 			return
 		}
 	}

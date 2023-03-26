@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack
  */
 val Player.craft: Craft?
 	get() {
-		pilotedCrafts.forEach { ship ->
+		for (ship in pilotedCrafts) {
 			if (ship.passengers.contains(this)) return ship
 		}
 		return null
