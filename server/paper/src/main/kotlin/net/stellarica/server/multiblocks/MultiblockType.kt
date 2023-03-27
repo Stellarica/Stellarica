@@ -28,7 +28,7 @@ interface MultiblockType {
 					facing,
 					this,
 					@Suppress("DEPRECATION")
-					dataType::class.primaryConstructor!!.call(null) // this is in no way horribly scuffed :iea:
+					dataType::class.primaryConstructor!!.call() // this is in no way horribly scuffed :iea:
 				)
 			}
 		}

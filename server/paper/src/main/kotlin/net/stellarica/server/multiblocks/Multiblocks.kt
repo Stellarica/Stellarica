@@ -20,6 +20,7 @@ import net.stellarica.server.multiblocks.matching.MultiBlockMatcher
 import net.stellarica.server.multiblocks.matching.SingleBlockMatcher
 import org.bukkit.Material
 import org.bukkit.Tag
+import org.bukkit.block.data.Powerable
 
 @Suppress("Unused") // iea
 object Multiblocks {
@@ -41,7 +42,7 @@ object Multiblocks {
 
 		)
 
-		override val dataType = object: MultiblockData() {}
+		override val dataType = EmptyMultiblockData()
 
 		override fun tick(instance: MultiblockInstance) {
 
@@ -65,7 +66,7 @@ object Multiblocks {
 			Pos(3, 0, -1) matchTag BlockTags.WALLS
 		)
 
-		override val dataType = object: MultiblockData() {}
+		override val dataType = EmptyMultiblockData()
 
 		override fun tick(instance: MultiblockInstance) {
 
@@ -102,7 +103,7 @@ object Multiblocks {
 			Pos(7, 0, -1) match Blocks.IRON_BLOCK
 		)
 
-		override val dataType = object: MultiblockData() {}
+		override val dataType = EmptyMultiblockData()
 
 		override fun tick(instance: MultiblockInstance) {
 
@@ -120,14 +121,10 @@ object Multiblocks {
 			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE
 		)
 
-		inner class Data: MultiblockData() {
-			var power: Int = 0
-		}
-
-		override val dataType = Data()
+		override val dataType = PowerableMultiblockData()
 
 		override fun tick(instance: MultiblockInstance) {
-			val data = (instance.data as Data)
+			val data = (instance.data as PowerableMultiblockData)
 			data.power += 1
 			println(data.power)
 		}
@@ -149,7 +146,7 @@ object Multiblocks {
 		)
 
 
-		override val dataType = object: MultiblockData() {}
+		override val dataType = EmptyMultiblockData()
 
 		override fun tick(instance: MultiblockInstance) {
 
