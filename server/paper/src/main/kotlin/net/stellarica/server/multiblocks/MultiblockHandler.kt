@@ -24,6 +24,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.persistence.PersistentDataType
+import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
 object MultiblockHandler : Listener {
@@ -50,6 +51,7 @@ object MultiblockHandler : Listener {
 	// can't use multiblockinstance as we don't want to serialize the world or the type
 	@Serializable
 	private data class MultiblockData(
+		val id: String,
 		val type: String,
 		val oX: Int,
 		val oY: Int,
@@ -59,6 +61,7 @@ object MultiblockHandler : Listener {
 
 		constructor(multiblock: MultiblockInstance) :
 				this(
+					multiblock.id.toString(),
 					multiblock.type.id.path,
 					multiblock.origin.x,
 					multiblock.origin.y,
@@ -68,6 +71,7 @@ object MultiblockHandler : Listener {
 
 		fun toInstance(world: World) =
 			MultiblockInstance(
+				UUID.fromString(id),
 				BlockPos(oX, oY, oZ),
 				world,
 				direction,

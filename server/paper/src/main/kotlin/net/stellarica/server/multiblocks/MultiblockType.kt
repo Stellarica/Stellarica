@@ -1,5 +1,6 @@
 package net.stellarica.server.multiblocks
 
+import kotlinx.serialization.Serializable
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
@@ -8,16 +9,21 @@ import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.multiblocks.matching.BlockMatcher
 import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.World
+import java.util.UUID
 
 interface MultiblockType {
 	val displayName: String
 	val id: ResourceLocation
 	val blocks: Map<OriginRelative, BlockMatcher>
 
+	@Serializable
+	sealed interface MultiblockData
+
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
 			if (validate(facing, origin, world)) {
 				return MultiblockInstance(
+					UUID.randomUUID(),
 					origin,
 					world,
 					facing,

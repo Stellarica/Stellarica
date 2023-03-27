@@ -2,13 +2,14 @@ package net.stellarica.server.multiblocks
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.Chunk
 import org.bukkit.World
+import java.util.UUID
 
 data class MultiblockInstance(
+	val id: UUID,
 	val origin: BlockPos,
 	val world: World,
 	val direction: Direction,
