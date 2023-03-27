@@ -7,6 +7,7 @@ import net.minecraft.world.level.block.Blocks
 import net.stellarica.common.utils.OriginRelative
 import org.jgrapht.graph.DefaultEdge
 import org.jgrapht.graph.DefaultUndirectedGraph
+import org.jgrapht.traverse.DepthFirstIterator
 
 class PipeNetwork(
 	val origin: BlockPos,
@@ -20,12 +21,23 @@ class PipeNetwork(
 		val start = System.currentTimeMillis()
 
 		val undirectedNodes = mutableSetOf<Pair<OriginRelative, OriginRelative>>()
-		val inputsPositions = mutableSetOf<OriginRelative>()
+		val inputs = mutableSetOf<OriginRelative>()
+		val outputs = mutableSetOf<OriginRelative>()
+
 		println("Starting node detection")
-		detectConnectedPairs(OriginRelative(0,0,0), undirectedNodes, mutableSetOf(OriginRelative(0,0,0)), inputsPositions)
+		detectConnectedPairs(OriginRelative(0,0,0), undirectedNodes, mutableSetOf(OriginRelative(0,0,0)), inputs, outputs)
+
+		fun createNode(pos: OriginRelative): PipeNode {
+			return when (pos) {
+				in inputs -> InputNode(pos).also { it.content = 400; println("hi input") }
+				in outputs -> OutputNode(pos)
+				else -> Node(pos)
+			}
+		}
+
 		for ((p1, p2) in undirectedNodes) {
-			val n1 = PipeNode(p1)
-			val n2 = PipeNode(p2)
+			val n1 = createNode(p1)
+			val n2 = createNode(p2)
 			graph.addVertex(n1)
 			graph.addVertex(n2)
 			graph.addEdge(n1, n2)
@@ -34,11 +46,55 @@ class PipeNetwork(
 		println("Graph: $graph")
 	}
 
+	fun tick() {
+		for (node in DepthFirstIterator(graph)) {
+			// find all connected nodes
+			// this is pain and should be fixed
+			val connectedNodes = graph.outgoingEdgesOf(node).map { edge ->
+				var other = graph.getEdgeSource(edge)
+				if (other == node) other = graph.getEdgeTarget(edge)
+				other
+			}
+
+			// get demand from connected nodes
+			var demand = 0
+			for (other in connectedNodes) {
+				if (other.content < node.content) {
+					demand += node.content - other.content
+				}
+			}
+			// if there's no demand, don't do anything
+			if (demand <= 0) continue
+
+			// if we can't supply all demand, supply a fraction of it
+			// if we have enough fuel to satisfy all demand, this will be 1
+			var num = 1f
+			while (demand / num > node.content) {
+				num++
+			}
+
+			for (other in connectedNodes) {
+				if (other.content < node.content) {
+					val transfer = ((node.content - other.content) / num).toInt()
+					other.inputBuffer += transfer
+					node.outputBuffer += transfer
+				}
+			}
+		}
+
+		// apply changes at once
+		for (node in DepthFirstIterator(graph)) {
+			node.content += node.inputBuffer
+			node.content -= node.outputBuffer
+		}
+	}
+
 	private fun detectConnectedPairs(
 		pos: OriginRelative,
 		nodes: MutableSet<Pair<OriginRelative, OriginRelative>>,
 		detected: MutableSet<OriginRelative>,
-		inputs: MutableSet<OriginRelative>
+		inputs: MutableSet<OriginRelative>,
+		outputs: MutableSet<OriginRelative>
 	) {
 		for (rel in listOf(
 			OriginRelative(0,0,1),
@@ -55,8 +111,9 @@ class PipeNetwork(
 					if (isCopper(next)) {
 						if (next !in detected) {
 							if (isInput(next)) inputs.add(next)
+							if (isOutput(next)) outputs.add(next)
 							detected.add(next)
-							detectConnectedPairs(next, nodes, detected, inputs)
+							detectConnectedPairs(next, nodes, detected, inputs, outputs)
 						}
 						if (!nodes.contains(pos to next) && !nodes.contains(next to pos)) nodes.add(pos to next)
 					}
@@ -69,6 +126,7 @@ class PipeNetwork(
 	private fun isCopper(pos: OriginRelative) : Boolean = world.getBlockState(pos(pos)).block == Blocks.WAXED_COPPER_BLOCK || isInput(pos)
 	private fun isRod(pos: OriginRelative) : Boolean = world.getBlockState(pos(pos)).block == Blocks.LIGHTNING_ROD
 	private fun isInput(pos: OriginRelative) : Boolean = world.getBlockState(pos(pos)).block == Blocks.WAXED_CUT_COPPER
+	private fun isOutput(pos: OriginRelative) : Boolean = world.getBlockState(pos(pos)).block == Blocks.WAXED_CUT_COPPER_SLAB
 	private fun pos(pos: OriginRelative) = pos.getBlockPos(origin, direction)
 }
 
