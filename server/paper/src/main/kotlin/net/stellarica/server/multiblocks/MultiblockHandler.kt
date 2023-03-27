@@ -101,6 +101,8 @@ object MultiblockHandler : Listener {
 			for (multiblock in mbSet) {
 				if (!multiblock.validate()) {
 					invalid.add(multiblock)
+				} else {
+					multiblock.type.tick(multiblock)
 				}
 			}
 			mbSet.removeAll(invalid)

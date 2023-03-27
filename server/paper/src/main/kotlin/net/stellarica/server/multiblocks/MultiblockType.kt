@@ -9,11 +9,11 @@ import net.stellarica.server.multiblocks.matching.BlockMatcher
 import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.World
 
-data class MultiblockType(
-	val displayName: String,
-	val id: ResourceLocation,
+interface MultiblockType {
+	val displayName: String
+	val id: ResourceLocation
 	val blocks: Map<OriginRelative, BlockMatcher>
-) {
+
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
 			if (validate(facing, origin, world)) {
@@ -50,4 +50,6 @@ data class MultiblockType(
 		}
 		return true // Valid multiblocks of this type there
 	}
+
+	fun tick(instance: MultiblockInstance)
 }

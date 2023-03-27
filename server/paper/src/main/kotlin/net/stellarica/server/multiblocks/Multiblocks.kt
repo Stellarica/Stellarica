@@ -22,10 +22,10 @@ import org.bukkit.Tag
 
 @Suppress("Unused") // iea
 object Multiblocks {
-	val LIGHT_RAILGUN = MultiblockType(
-		"Light Railgun",
-		identifier("light_railgun"),
-		mapOf(
+	val LIGHT_RAILGUN = object: MultiblockType {
+		override val displayName = "Light Railgun"
+		override val id = identifier("light_railgun")
+		override val blocks = mapOf(
 			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
 			Pos(1, 0, 0) match Blocks.IRON_BLOCK,
 			Pos(2, 0, 0) match Blocks.COPPER_BLOCK,
@@ -37,15 +37,19 @@ object Multiblocks {
 			Pos(0, -1, 0) match Blocks.IRON_BLOCK,
 			Pos(1, -1, 0) match Blocks.DISPENSER,
 			Pos(2, -1, 0) match Blocks.IRON_BLOCK
-			
-			
-		)
-	)
 
-	val PULSE_LASER = MultiblockType(
-		"Pulse Laser",
-		identifier("pulse_laser"),
-		mapOf(
+		)
+
+		override fun tick(instance: MultiblockInstance) {
+
+		}
+	}
+
+
+	val PULSE_LASER = object: MultiblockType {
+		override val displayName = "Pulse Laser"
+		override val id = identifier("pulse_laser")
+		override val blocks = mapOf(
 			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
 			Pos(1, 0, 0) match Blocks.IRON_BLOCK,
 			Pos(2, 0, 0) match Blocks.REDSTONE_BLOCK,
@@ -57,12 +61,16 @@ object Multiblocks {
 			Pos(2, 0, -1) matchTag BlockTags.WALLS,
 			Pos(3, 0, -1) matchTag BlockTags.WALLS
 		)
-	)
 
-	val PLASMA_CANNON = MultiblockType(
-		"Plasma Cannon",
-		identifier("plasma_cannon"),
-		mapOf(
+		override fun tick(instance: MultiblockInstance) {
+
+		}
+	}
+
+	val PLASMA_CANNON = object: MultiblockType {
+		override val displayName = "Plasma Cannon"
+		override val id = identifier("plasma_cannon")
+		override val blocks = mapOf(
 			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
 			Pos(1, 0, 0) match Blocks.GOLD_BLOCK,
 			Pos(2, 0, 0) matchTag BlockTags.IMPERMEABLE,
@@ -88,24 +96,32 @@ object Multiblocks {
 			Pos(6, 0, -1) matchTag BlockTags.WALLS,
 			Pos(7, 0, -1) match Blocks.IRON_BLOCK
 		)
-	)
 
-	val TINY_SHIELD = MultiblockType(
-		"Tiny Shield",
-		identifier("tiny_shield"),
-		mapOf(
+		override fun tick(instance: MultiblockInstance) {
+
+		}
+	}
+
+	val TINY_SHIELD = object: MultiblockType {
+		override val displayName = "Tiny Shield"
+		override val id = identifier("tiny_shield")
+		override val blocks = mapOf(
 			Pos(0, 0, 0) match Blocks.DIAMOND_BLOCK,
 			Pos(1, 0, 0) matchTag BlockTags.IMPERMEABLE,
 			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE,
 			Pos(0, 0, 1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
 			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE
 		)
-	)
 
-	val SMALL_SHIELD = MultiblockType(
-		"Small Shield",
-		identifier("small_shield"),
-		mapOf(
+		override fun tick(instance: MultiblockInstance) {
+
+		}
+	}
+
+	val SMALL_SHIELD = object: MultiblockType {
+		override val displayName = "Small Shield"
+		override val id = identifier("small_shield")
+		override val blocks = mapOf(
 			Pos(0, 0, 0) match Blocks.DIAMOND_BLOCK,
 			Pos(0, 0, 1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
 			Pos(0, 0, -1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
@@ -116,7 +132,12 @@ object Multiblocks {
 			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE,
 			Pos(-1, 0, 1) matchTag BlockTags.IMPERMEABLE
 		)
-	)
+
+		override fun tick(instance: MultiblockInstance) {
+
+		}
+	}
+
 
 	fun all(): Set<MultiblockType> { // can't do lazy{} because reflection
 		return this::class.java.declaredFields.mapNotNull { it.get(this) as? MultiblockType }.toSet()
