@@ -5,36 +5,38 @@ import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.common.utils.OriginRelative
-import net.stellarica.server.transfer.NodeNetwork
+import org.jgrapht.graph.DefaultEdge
+import org.jgrapht.graph.DefaultUndirectedGraph
 
 class PipeNetwork(
 	val origin: BlockPos,
 	val world: ServerLevel
-) : NodeNetwork<Fuel>() {
+) {
 	var direction = Direction.NORTH
 
+	val graph = DefaultUndirectedGraph<PipeNode, DefaultEdge>(DefaultEdge::class.java)
+
 	fun detect() {
-		nodes.clear()
 		val start = System.currentTimeMillis()
 
-		val undirectedNodes = mutableSetOf<Set<OriginRelative>>()
+		val undirectedNodes = mutableSetOf<Pair<OriginRelative, OriginRelative>>()
 		val inputsPositions = mutableSetOf<OriginRelative>()
 		println("Starting node detection")
 		detectConnectedPairs(OriginRelative(0,0,0), undirectedNodes, mutableSetOf(OriginRelative(0,0,0)), inputsPositions)
-		println("Found undirected nodes:\n${
-			undirectedNodes.joinToString("\n") {
-				"${it.first()} <-> ${it.last()}".replace(
-					"OriginRelative",
-					""
-				)
-			}
-		}")
+		for ((p1, p2) in undirectedNodes) {
+			val n1 = PipeNode(p1)
+			val n2 = PipeNode(p2)
+			graph.addVertex(n1)
+			graph.addVertex(n2)
+			graph.addEdge(n1, n2)
+		}
 		println("Elapsed time ${System.currentTimeMillis() - start}ms")
+		println("Graph: $graph")
 	}
 
 	private fun detectConnectedPairs(
 		pos: OriginRelative,
-		nodes: MutableSet<Set<OriginRelative>>,
+		nodes: MutableSet<Pair<OriginRelative, OriginRelative>>,
 		detected: MutableSet<OriginRelative>,
 		inputs: MutableSet<OriginRelative>
 	) {
@@ -56,7 +58,7 @@ class PipeNetwork(
 							detected.add(next)
 							detectConnectedPairs(next, nodes, detected, inputs)
 						}
-						nodes.add(setOf(pos, next))
+						if (!nodes.contains(pos to next) && !nodes.contains(next to pos)) nodes.add(pos to next)
 					}
 					break
 				}
@@ -68,10 +70,6 @@ class PipeNetwork(
 	private fun isRod(pos: OriginRelative) : Boolean = world.getBlockState(pos(pos)).block == Blocks.LIGHTNING_ROD
 	private fun isInput(pos: OriginRelative) : Boolean = world.getBlockState(pos(pos)).block == Blocks.WAXED_CUT_COPPER
 	private fun pos(pos: OriginRelative) = pos.getBlockPos(origin, direction)
-
-	override fun tick() {
-		TODO("Not yet implemented")
-	}
 }
 
 private operator fun OriginRelative.plus(other: OriginRelative) = OriginRelative(x + other.x, y + other.y, z + other.z)
