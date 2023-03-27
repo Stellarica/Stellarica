@@ -240,10 +240,12 @@ open class Craft(
 		multiblocks.removeIf { pos -> getMultiblock(pos)?.also{mbs.add(it)} == null}
 		for (mb in mbs) {
 			val new = MultiblockInstance(
-				origin = modifier(mb.origin.toVec3()).toBlockPos(),
-				world = targetWorld.world,
-				direction = mb.direction.rotate(rotation),
-				mb.type
+				mb.id,
+				modifier(mb.origin.toVec3()).toBlockPos(),
+				targetWorld.world,
+				mb.direction.rotate(rotation),
+				mb.type,
+				mb.data
 			)
 			MultiblockHandler[mb.chunk].remove(mb)
 			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkitChunk].add(new)

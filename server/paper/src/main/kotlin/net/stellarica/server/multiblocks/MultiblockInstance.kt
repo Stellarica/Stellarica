@@ -13,7 +13,8 @@ data class MultiblockInstance(
 	val origin: BlockPos,
 	val world: World,
 	val direction: Direction,
-	val type: MultiblockType
+	val type: MultiblockType,
+	val data: MultiblockData
 ) {
 
 	val chunk: Chunk

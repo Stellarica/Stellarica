@@ -1,5 +1,6 @@
 package net.stellarica.server.multiblocks
 
+import kotlinx.serialization.Serializable
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.TagKey
@@ -40,6 +41,8 @@ object Multiblocks {
 
 		)
 
+		override val dataType = object: MultiblockData() {}
+
 		override fun tick(instance: MultiblockInstance) {
 
 		}
@@ -61,6 +64,8 @@ object Multiblocks {
 			Pos(2, 0, -1) matchTag BlockTags.WALLS,
 			Pos(3, 0, -1) matchTag BlockTags.WALLS
 		)
+
+		override val dataType = object: MultiblockData() {}
 
 		override fun tick(instance: MultiblockInstance) {
 
@@ -97,6 +102,8 @@ object Multiblocks {
 			Pos(7, 0, -1) match Blocks.IRON_BLOCK
 		)
 
+		override val dataType = object: MultiblockData() {}
+
 		override fun tick(instance: MultiblockInstance) {
 
 		}
@@ -113,8 +120,16 @@ object Multiblocks {
 			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE
 		)
 
-		override fun tick(instance: MultiblockInstance) {
+		inner class Data: MultiblockData() {
+			var power: Int = 0
+		}
 
+		override val dataType = Data()
+
+		override fun tick(instance: MultiblockInstance) {
+			val data = (instance.data as Data)
+			data.power += 1
+			println(data.power)
 		}
 	}
 
@@ -132,6 +147,9 @@ object Multiblocks {
 			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE,
 			Pos(-1, 0, 1) matchTag BlockTags.IMPERMEABLE
 		)
+
+
+		override val dataType = object: MultiblockData() {}
 
 		override fun tick(instance: MultiblockInstance) {
 

@@ -10,14 +10,13 @@ import net.stellarica.server.multiblocks.matching.BlockMatcher
 import net.stellarica.server.utils.extensions.toLocation
 import org.bukkit.World
 import java.util.UUID
+import kotlin.reflect.full.primaryConstructor
 
 interface MultiblockType {
 	val displayName: String
 	val id: ResourceLocation
 	val blocks: Map<OriginRelative, BlockMatcher>
-
-	@Serializable
-	sealed interface MultiblockData
+	val dataType : MultiblockData
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
@@ -27,7 +26,9 @@ interface MultiblockType {
 					origin,
 					world,
 					facing,
-					this
+					this,
+					@Suppress("DEPRECATION")
+					dataType::class.primaryConstructor!!.call(null) // this is in no way horribly scuffed :iea:
 				)
 			}
 		}

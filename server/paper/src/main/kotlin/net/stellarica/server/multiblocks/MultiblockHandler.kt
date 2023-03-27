@@ -50,13 +50,14 @@ object MultiblockHandler : Listener {
 
 	// can't use multiblockinstance as we don't want to serialize the world or the type
 	@Serializable
-	private data class MultiblockData(
+	private data class PersistentMultiblockData(
 		val id: String,
 		val type: String,
 		val oX: Int,
 		val oY: Int,
 		val oZ: Int,
-		val direction: Direction
+		val direction: Direction,
+		val data: MultiblockData
 	) {
 
 		constructor(multiblock: MultiblockInstance) :
@@ -66,7 +67,8 @@ object MultiblockHandler : Listener {
 					multiblock.origin.x,
 					multiblock.origin.y,
 					multiblock.origin.z,
-					multiblock.direction
+					multiblock.direction,
+					multiblock.data
 				)
 
 		fun toInstance(world: World) =
@@ -75,7 +77,8 @@ object MultiblockHandler : Listener {
 				BlockPos(oX, oY, oZ),
 				world,
 				direction,
-				Multiblocks.byId(StellaricaServer.identifier(type))!!
+				Multiblocks.byId(StellaricaServer.identifier(type))!!,
+				data
 			)
 	}
 
@@ -117,7 +120,7 @@ object MultiblockHandler : Listener {
 	fun onChunkLoad(event: ChunkLoadEvent) {
 		event.chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)
 			?.let { string ->
-				Json.decodeFromString<Set<MultiblockData>>(string)
+				Json.decodeFromString<Set<PersistentMultiblockData>>(string)
 					.filter { it.type in Multiblocks.all().map { it.id.path } } // make sure it's a valid type still
 					.map { it.toInstance(event.world) }
 					.let { multiblocks.getOrPut(event.chunk) { mutableSetOf() }.addAll(it) }
@@ -130,7 +133,7 @@ object MultiblockHandler : Listener {
 		event.chunk.persistentDataContainer.set(
 			namespacedKey("multiblocks"),
 			PersistentDataType.STRING,
-			Json.encodeToString(multiblocks[event.chunk]!!.map { MultiblockData(it) })
+			Json.encodeToString(multiblocks[event.chunk]!!.map { PersistentMultiblockData(it) })
 		)
 	}
 }
