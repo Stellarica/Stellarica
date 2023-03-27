@@ -11,6 +11,7 @@ import net.stellarica.server.StellaricaServer
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.utils.Tasks
 import net.stellarica.server.utils.extensions.sendRichActionBar
 import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.extensions.toLocation
@@ -31,6 +32,20 @@ object MultiblockHandler : Listener {
 	internal val multiblocks = ConcurrentHashMap<Chunk, MutableSet<MultiblockInstance>>()
 
 	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() }
+
+	init { Tasks.syncRepeat(5, 10) {
+		for ((_, mbSet) in multiblocks) {
+			val invalid = mutableSetOf<MultiblockInstance>()
+			for (multiblock in mbSet) {
+				if (!multiblock.validate()) {
+					invalid.add(multiblock)
+				} else {
+					multiblock.type.tick(multiblock)
+				}
+			}
+			mbSet.removeAll(invalid)
+		}
+	}}
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()
@@ -96,24 +111,6 @@ object MultiblockHandler : Listener {
 			return
 		}
 		event.player.sendRichActionBar("<red>No multiblock detected")
-	}
-
-	@EventHandler
-	fun onServerTick(event: ServerTickStartEvent) {
-		// twice per second
-		if (event.tickNumber % 10 != 0) return
-
-		for ((_, mbSet) in multiblocks) {
-			val invalid = mutableSetOf<MultiblockInstance>()
-			for (multiblock in mbSet) {
-				if (!multiblock.validate()) {
-					invalid.add(multiblock)
-				} else {
-					multiblock.type.tick(multiblock)
-				}
-			}
-			mbSet.removeAll(invalid)
-		}
 	}
 
 	@EventHandler
