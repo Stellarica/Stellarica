@@ -24,6 +24,7 @@ class InterfaceListener : Listener {
 	fun onPlayerInteractEvent(event: PlayerInteractEvent) {
 		if (event.hand == EquipmentSlot.HAND && event.action == Action.RIGHT_CLICK_BLOCK && !event.player.isSneaking) {
 			if (event.clickedBlock!!.type == Material.JUKEBOX) {
+				if (!event.player.hasPermission("stellarica.starship")) return
 				StarshipInterfaceScreen(
 					event.player,
 					Starship(

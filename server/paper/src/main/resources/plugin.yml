@@ -8,14 +8,8 @@ authors: [ "trainb0y", "Peter-Crawley", "DoctorXeno" ]
 website: https://github.com/Stellarica/Stellarica
 prefix: Stellarica
 permissions:
-  stellarica.starship.debug.setvelocity:
-    description: Lets users set the velocity of a starship
-    default: op
-  stellarica.starship.debug.setacceleration:
-    description: Lets users set the acceleration of a starship
-    default: op
-  stellarica.starship.debug.get:
-    description: Lets users get the current movement data
+  stellarica.starship:
+    description: Lets users use starships
     default: op
   stellarica.starship.debug.hitbox:
     description: Lets users view the hitbox of a ship
