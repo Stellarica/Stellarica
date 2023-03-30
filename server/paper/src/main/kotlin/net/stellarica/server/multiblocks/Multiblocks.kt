@@ -134,23 +134,14 @@ object Multiblocks {
 		override val id = identifier("small_shield")
 		override val blocks = mapOf(
 			Pos(0, 0, 0) match Blocks.DIAMOND_BLOCK,
-			Pos(0, 0, 1) matchTag BlockTags.IMPERMEABLE,
-			Pos(0, 0, -1) matchTag BlockTags.IMPERMEABLE,
-			Pos(1, 0, -1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
+			Pos(0, 0, 1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
+			Pos(0, 0, -1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
+			Pos(1, 0, -1) matchTag BlockTags.IMPERMEABLE,
 			Pos(1, 0, 0) matchTag BlockTags.IMPERMEABLE,
-			Pos(1, 0, 1) .matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
-			Pos(-1, 0, -1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
+			Pos(1, 0, 1) matchTag BlockTags.IMPERMEABLE,
+			Pos(-1, 0, -1) matchTag BlockTags.IMPERMEABLE,
 			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE,
-			Pos(-1, 0, 1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
-			Pos(0, -1, 0) match Blocks.DIAMOND_BLOCK,
-			Pos(0, -1, 1) matchTag BlockTags.IMPERMEABLE,
-			Pos(0, -1, -1) matchTag BlockTags.IMPERMEABLE,
-			Pos(1, -1, -1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
-			Pos(1, -1, 0) matchTag BlockTags.IMPERMEABLE,
-			Pos(1, -1, 1) .matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
-			Pos(-1, -1, -1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
-			Pos(-1, -1, 0) matchTag BlockTags.IMPERMEABLE,
-			Pos(-1, -1, 1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
+			Pos(-1, 0, 1) matchTag BlockTags.IMPERMEABLE
 		)
 
 
