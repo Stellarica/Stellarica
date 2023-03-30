@@ -120,7 +120,6 @@ open class Craft(
 	 * @see change
 	 */
 	fun move(offset: Vec3i) {
-		val t1 = System.currentTimeMillis()
 		val change = offset.toVec3()
 		// don't want to let them pass a vec3
 		// since the ships snap to blocks but entities can actually move by that much
@@ -128,9 +127,7 @@ open class Craft(
 
 		change({ current ->
 			return@change current.add(change)
-		}, world) {
-			messagePilot("Moved in ${System.currentTimeMillis() - t1}ms")
-		}
+		}, world)
 	}
 
 	/**

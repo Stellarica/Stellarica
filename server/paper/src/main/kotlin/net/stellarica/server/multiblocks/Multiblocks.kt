@@ -126,7 +126,6 @@ object Multiblocks {
 		override fun tick(instance: MultiblockInstance) {
 			val data = (instance.data as PowerableMultiblockData)
 			data.power += 1
-			println(data.power)
 		}
 	}
 
