@@ -110,7 +110,7 @@ object Multiblocks {
 		}
 	}
 	
-	val Battle Cannon = object: MultiblockType {
+	val BATTLE_CANNON = object: MultiblockType {
 		override val displayName = "Battle Cannon"
 		override val id = identifier("battle_cannon")
 		override val blocks = mapOf(
