@@ -26,7 +26,7 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 		}
 	}
 
-	fun fireLight() = fire(setOf(WeaponType.PULSE_LASER, WeaponType.LIGHT_RAILGUN))
+	fun fireLight() = fire(WeaponType.values().toMutableSet().also { it.remove(WeaponType.PLASMA_CANNON) })
 	fun fireHeavy() = fire(setOf(WeaponType.PLASMA_CANNON))
 
 	fun fire(types: Set<WeaponType>) {
