@@ -52,7 +52,7 @@ enum class WeaponType(
 	BATTLE_CANNON(
 		LinearProjectile(
 			2f,
-			Particle.CAMPFIRE_SMOKE_PARTICLE,
+			Particle.CAMPFIRE_COSY_SMOKE,
 			Sound.ENTITY_GENERIC_EXPLODE,
 			80,
 			3.0
