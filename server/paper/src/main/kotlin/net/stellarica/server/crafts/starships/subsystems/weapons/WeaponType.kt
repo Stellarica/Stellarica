@@ -24,9 +24,9 @@ enum class WeaponType(
 		LinearProjectile(
 			1f,
 			Particle.FLAME,
-			Sound.ENTITY_FIREWORK_ROCKET_LAUNCH,
-			60,
-			3.0
+			Sound.ITEM_TOTEM_USE,
+			120,
+			5.0
 		),
 		OriginRelative(8, 0, 0),
 		PI / 6,
@@ -38,7 +38,7 @@ enum class WeaponType(
 		AcceleratingProjectile(
 			2f,
 			Particle.SONIC_BOOM,
-			Sound.ENTITY_WARDEN_SONIC_BOOM,
+			Sound.BLOCK_CONDUIT_ACTIVATE,
 			50,
 			0.2,
 			0.2
@@ -48,6 +48,20 @@ enum class WeaponType(
 		OriginRelative(7, 0, 0),
 		1,
 		Multiblocks.PLASMA_CANNON
+	),
+	BATTLE_CANNON(
+		LinearProjectile(
+			2f,
+			Particle.CAMPFIRE_SMOKE_PARTICLE,
+			Sound.ENTITY_GENERIC_EXPLODE,
+			80,
+			3.0
+		),
+		OriginRelative(9, 0, 0),
+		PI / 6,
+		OriginRelative(8, 0, 0),
+		1,
+		Multiblocks.BATTLE_CANNON
 	),
 	PULSE_LASER(
 		InstantProjectile(
