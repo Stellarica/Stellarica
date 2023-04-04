@@ -64,9 +64,6 @@ open class Craft(
 	var initialBlockCount: Int = 1
 		private set
 
-	val hullIntegrityPercent
-		get() = detectedBlockCount / initialBlockCount.toDouble()
-
 	var multiblocks = mutableSetOf<OriginRelative>()
 
 
@@ -75,7 +72,7 @@ open class Craft(
 	 * Can be used to check if a certain block is "inside" though not neccecarily detected
 	 * @see contains
 	 */
-	private var contents = mutableMapOf<RelativeColumn, Pair<Int, Int>>()
+	var contents = mutableMapOf<RelativeColumn, Pair<Int, Int>>()
 
 
 	/**
@@ -95,19 +92,20 @@ open class Craft(
 
 	private fun calculateContents() {
 		contents.clear()
-		detectedBlocks
-			.map { pos ->
-				// might cause issues if run when direction isn't north?
-				OriginRelative.getOriginRelative(pos, origin, direction)
+		detectedBlocks.forEach { pos ->
+			// might cause issues if run when direction isn't north?
+			// juuust to be safe...
+			if (direction != Direction.NORTH) throw IllegalStateException("Direction is not north")
+
+			val block = OriginRelative.getOriginRelative(pos, origin, direction)
+			val extremes = contents.getOrPut(RelativeColumn(block)) { Pair(block.y, block.y) }
+
+			if (block.y < extremes.first) {
+				contents[RelativeColumn(block)] = Pair(block.y, extremes.second)
+			} else if (block.y > extremes.second) {
+				contents[RelativeColumn(block)] = Pair(extremes.first, block.y)
 			}
-			.forEach { block ->
-				val extremes = contents.getOrPut(RelativeColumn(block)) { Pair(block.y, block.y); return@forEach }
-				if (block.y < extremes.first) {
-					contents[RelativeColumn(block)] = Pair(block.y, extremes.second)
-				} else if (block.y > extremes.second) {
-					contents[RelativeColumn(block)] = Pair(extremes.first, block.y)
-				}
-			}
+		}
 	}
 
 	fun getMultiblock(pos: OriginRelative): MultiblockInstance? {
@@ -419,7 +417,7 @@ open class Craft(
 		}
 	}
 
-	private data class RelativeColumn(val x: Int, val z: Int) {
+	data class RelativeColumn(val x: Int, val z: Int) {
 		constructor(pos: OriginRelative) : this(pos.x, pos.z)
 	}
 
