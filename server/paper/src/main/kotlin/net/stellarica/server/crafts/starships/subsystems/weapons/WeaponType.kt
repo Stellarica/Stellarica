@@ -60,7 +60,7 @@ enum class WeaponType(
 		),
 		OriginRelative(9, 0, 0),
 		PI / 6,
-		OriginRelative(8, 0, 0),
+		OriginRelative(7, 0, 0),
 		1,
 		Multiblocks.BATTLE_CANNON
 	),
