@@ -90,7 +90,7 @@ open class Craft(
 			direction
 		)
 		val extremes = contents[RelativeColumn(rel)] ?: return false
-		return extremes.first <= rel.y && extremes.second >= rel.y
+		return extremes.first >= rel.y && extremes.second <= rel.y
 	}
 
 	private fun calculateContents() {
