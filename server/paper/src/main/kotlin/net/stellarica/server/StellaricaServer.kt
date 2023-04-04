@@ -80,7 +80,6 @@ class StellaricaServer : JavaPlugin() {
 			StarshipCommands(),
 			StarshipDebugCommands(),
 			CustomMaterialCommands(),
-			TestDebugCommand(),
 			MultiblockCommands()
 		).forEach { commandManager.registerCommand(it) }
 

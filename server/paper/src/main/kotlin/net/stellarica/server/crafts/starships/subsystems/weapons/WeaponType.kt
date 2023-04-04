@@ -12,6 +12,7 @@ import org.bukkit.Particle
 import org.bukkit.Sound
 import kotlin.math.PI
 
+@Suppress("unused")
 enum class WeaponType(
 	val projectile: Projectile<*>,
 	val direction: OriginRelative,
