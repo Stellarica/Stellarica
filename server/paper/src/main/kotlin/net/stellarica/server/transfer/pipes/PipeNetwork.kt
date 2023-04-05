@@ -5,12 +5,17 @@ import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.common.utils.OriginRelative
+import kotlin.math.min
 
 
 class PipeNetwork(
 	val origin: BlockPos,
 	val world: ServerLevel
 ) {
+	companion object {
+		const val maxTransfer = 50
+	}
+
 	var direction = Direction.NORTH
 
 	var nodes = mutableMapOf<OriginRelative, PipeNode>()
@@ -43,12 +48,11 @@ class PipeNetwork(
 
 	fun tick() {
 		for (node in nodes.values) {
-
 			// get demand from connected nodes
 			var demand = 0
 			for (other in node.connections.mapNotNull { nodes[it] }) {
 				if (other.content < node.content) {
-					demand += node.content - other.content
+					demand += min(node.content - other.content, maxTransfer)
 				}
 			}
 			// if there's no demand, don't do anything
@@ -56,6 +60,7 @@ class PipeNetwork(
 
 			// if we can't supply all demand, supply a fraction of it
 			// if we have enough fuel to satisfy all demand, this will be 1
+			// kinda jank but it seems to work
 			var num = 1f
 			while (demand / num > node.content) {
 				num++
@@ -63,7 +68,7 @@ class PipeNetwork(
 
 			for (other in node.connections.mapNotNull { nodes[it] }) {
 				if (other.content < node.content) {
-					val transfer = ((node.content - other.content) / num).toInt()
+					val transfer = min(((node.content - other.content) / num).toInt(), maxTransfer)
 					other.inputBuffer += transfer
 					node.outputBuffer += transfer
 				}
