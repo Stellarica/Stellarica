@@ -1,6 +1,5 @@
 package net.stellarica.server.multiblocks
 
-import com.destroystokyo.paper.event.server.ServerTickStartEvent
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -8,6 +7,7 @@ import kotlinx.serialization.json.Json
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.stellarica.server.StellaricaServer
+import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.type.item.ItemType
@@ -26,10 +26,9 @@ import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
 
 object MultiblockHandler : Listener {
-	internal val multiblocks = ConcurrentHashMap<Chunk, MutableSet<MultiblockInstance>>()
+	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
 
 	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() }
 
@@ -97,6 +96,24 @@ object MultiblockHandler : Listener {
 			)
 	}
 
+	private fun loadFromChunk(chunk: Chunk) {
+		chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)
+			?.let { string ->
+				Json.decodeFromString<Set<PersistentMultiblockData>>(string)
+					.filter { it.type in Multiblocks.all().map { it.id.path } } // make sure it's a valid type still
+					.map { it.toInstance(chunk.world) }
+					.let { multiblocks.getOrPut(chunk) { mutableSetOf() }.addAll(it) }
+			}
+	}
+
+	private fun saveToChunk(chunk: Chunk, force: Boolean = false) {
+		if (!force && multiblocks[chunk]?.isEmpty() != false) return
+		chunk.persistentDataContainer.set(
+			namespacedKey("multiblocks"),
+			PersistentDataType.STRING,
+			Json.encodeToString(multiblocks[chunk]!!.map { PersistentMultiblockData(it) })
+		)
+	}
 
 	@EventHandler
 	fun onPlayerAttemptDetect(event: PlayerInteractEvent) {
@@ -115,22 +132,20 @@ object MultiblockHandler : Listener {
 
 	@EventHandler
 	fun onChunkLoad(event: ChunkLoadEvent) {
-		event.chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)
-			?.let { string ->
-				Json.decodeFromString<Set<PersistentMultiblockData>>(string)
-					.filter { it.type in Multiblocks.all().map { it.id.path } } // make sure it's a valid type still
-					.map { it.toInstance(event.world) }
-					.let { multiblocks.getOrPut(event.chunk) { mutableSetOf() }.addAll(it) }
-			}
+		try {
+			loadFromChunk(event.chunk)
+		} catch (e: Exception) {
+			klogger.error { "Failed to load multiblocks from chunk at ${event.chunk.x}, ${event.chunk.z}" }
+			e.printStackTrace()
+			klogger.error { "Clearing multiblock data for the chunk" }
+			multiblocks[event.chunk] = mutableSetOf()
+			saveToChunk(event.chunk, true)
+		}
 	}
 
 	@EventHandler
 	fun onChunkUnload(event: ChunkUnloadEvent) {
-		if (multiblocks[event.chunk]?.isEmpty() != false) return
-		event.chunk.persistentDataContainer.set(
-			namespacedKey("multiblocks"),
-			PersistentDataType.STRING,
-			Json.encodeToString(multiblocks[event.chunk]!!.map { PersistentMultiblockData(it) })
-		)
+		saveToChunk(event.chunk)
+		multiblocks.remove(event.chunk)
 	}
 }

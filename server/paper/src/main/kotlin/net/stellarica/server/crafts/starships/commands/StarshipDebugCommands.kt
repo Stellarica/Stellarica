@@ -5,6 +5,8 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
+import net.stellarica.common.utils.OriginRelative
+import net.stellarica.server.crafts.Craft
 import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.utils.extensions.craft
 import net.stellarica.server.utils.extensions.toBlockPos
@@ -31,24 +33,22 @@ class StarshipDebugCommands : BaseCommand() {
 			return
 		}
 
-		// todo: make this exist again
-		/*
-		ship.bounds.forEach {
-
-			val pos = it.getBlockPos(ship.origin, ship.direction)
-			sender.world.spawnParticle(
-				Particle.BLOCK_MARKER,
-				pos.toLocation(sender.world),
-				1,
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				Material.BARRIER.createBlockData()
-			)
+		for ((col, extremes) in ship.contents) {
+			for (y in extremes.first..extremes.second) {
+				val pos = OriginRelative(col.x, y, col.z).getBlockPos(ship.origin, ship.direction)
+				sender.world.spawnParticle(
+					Particle.BLOCK_MARKER,
+					pos.toLocation(sender.world),
+					1,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					Material.BARRIER.createBlockData()
+				)
+			}
 		}
 
-		 */
 		sender.world.spawnParticle(
 			Particle.BLOCK_MARKER,
 			ship.origin.toLocation(sender.world),
@@ -85,7 +85,7 @@ class StarshipDebugCommands : BaseCommand() {
 			sender.sendRichMessage("<red>You are not piloting a starship!")
 			return
 		}
-		sender.sendMessage(ship.contains(sender.getTargetBlockExact(20)?.toBlockPos()).toString())
+		sender.sendRichMessage(ship.contains(sender.getTargetBlockExact(20)?.toBlockPos()).toString())
 	}
 
 

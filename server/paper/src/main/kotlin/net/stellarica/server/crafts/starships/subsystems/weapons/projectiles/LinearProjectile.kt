@@ -1,27 +1,34 @@
 package net.stellarica.server.crafts.starships.subsystems.weapons.projectiles;
 
-import com.destroystokyo.paper.ParticleBuilder
 import net.stellarica.server.crafts.Craft
 import net.stellarica.server.utils.extensions.toBlockPos
-import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
 import org.bukkit.util.RayTraceResult
 
-class LinearProjectile(override val time: Int, private val speed: Double):
+class LinearProjectile(
+	private val explosionPower: Float,
+	private val particle: Particle,
+	private val sound: Sound,
+
+	override val time: Int,
+	private val speed: Double,
+
+	private val redstoneParticleData: Particle.DustOptions? = null
+):
 	Projectile<LinearProjectile.LinearProjectileData> {
 
 	override val density = 5
 
 	override fun shoot(shooter: Craft, origin: Location) {
-		origin.world.playSound(origin, Sound.ENTITY_BEE_HURT, SoundCategory.HOSTILE, 2.0f, 0f)
+		origin.world.playSound(origin, sound, SoundCategory.HOSTILE, 0f, 0f)
 		cast(origin, LinearProjectileData(shooter))
 	}
 
 	override fun onLocationStep(data: LinearProjectileData, loc: Location) {
-		loc.world.spawnParticle(Particle.FLAME, loc, 1, 0.0, 0.0, 0.0, 0.0, null, true)
+		loc.world.spawnParticle(particle, loc, 1, 0.0, 0.0, 0.0, 0.0, redstoneParticleData, true)
 	}
 
 	override fun onServerTick(data: LinearProjectileData, loc: Location): Double {
@@ -34,7 +41,7 @@ class LinearProjectile(override val time: Int, private val speed: Double):
 
 	override fun onHitBlockOrEntity(data: LinearProjectileData, res: RayTraceResult): Boolean {
 		if (!data.shooter.contains(res.hitBlock?.toBlockPos())) // no ship suicide
-			res.hitBlock?.location?.createExplosion(3f, false, true)
+			res.hitBlock?.location?.createExplosion(explosionPower, false, true)
 		return false
 	}
 

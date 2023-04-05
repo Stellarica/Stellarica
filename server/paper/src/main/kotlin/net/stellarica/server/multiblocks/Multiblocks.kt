@@ -109,6 +109,31 @@ object Multiblocks {
 
 		}
 	}
+	
+	val BATTLE_CANNON = object: MultiblockType {
+		override val displayName = "Battle Cannon"
+		override val id = identifier("battle_cannon")
+		override val blocks = mapOf(
+			Pos(0, 0, 0) match Blocks.CHISELED_STONE_BRICKS,
+			Pos(1, 0, 0) match Blocks.IRON_BLOCK,
+			Pos(2, 0, 0) match Blocks.IRON_BLOCK,
+			Pos(3, 0, 0) matchTag BlockTags.SLABS,
+			Pos(4, 0, 0) matchTag BlockTags.SLABS,
+			Pos(5, 0, 0) matchTag BlockTags.WALLS,
+			Pos(6, 0, 0) matchTag BlockTags.WALLS,
+			Pos(7, 0, 0) matchTag BlockTags.WALLS,
+			Pos(0, -1, 0) matchTag BlockTags.SLABS,
+			Pos(1, -1, 0) match Blocks.DISPENSER,
+		 	Pos(2, -1, 0) match Blocks.IRON_BLOCK,
+			Pos(3, -1, 0) matchTag BlockTags.SLABS
+		)
+
+		override val dataType = EmptyMultiblockData()
+
+		override fun tick(instance: MultiblockInstance) {
+
+		}
+	}
 
 	val TINY_SHIELD = object: MultiblockType {
 		override val displayName = "Tiny Shield"
@@ -118,7 +143,7 @@ object Multiblocks {
 			Pos(1, 0, 0) matchTag BlockTags.IMPERMEABLE,
 			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE,
 			Pos(0, 0, 1).matchAny(BlockType.of(Blocks.IRON_BLOCK), BlockType.of(Blocks.GOLD_BLOCK)),
-			Pos(-1, 0, 0) matchTag BlockTags.IMPERMEABLE
+			Pos(0, 0, -1) matchTag BlockTags.IMPERMEABLE
 		)
 
 		override val dataType = PowerableMultiblockData()
@@ -126,7 +151,6 @@ object Multiblocks {
 		override fun tick(instance: MultiblockInstance) {
 			val data = (instance.data as PowerableMultiblockData)
 			data.power += 1
-			println(data.power)
 		}
 	}
 
