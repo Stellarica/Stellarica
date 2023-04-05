@@ -1,5 +1,6 @@
 package net.stellarica.common.utils
 
+import kotlinx.serialization.Serializable
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Vec3i
@@ -8,6 +9,7 @@ import net.minecraft.core.Vec3i
 /**
  * Coordinates relative to the origin of something
  */
+@Serializable
 data class OriginRelative(
 	/**
 	 * The x component
