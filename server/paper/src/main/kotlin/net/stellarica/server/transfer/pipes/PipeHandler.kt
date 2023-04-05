@@ -168,9 +168,28 @@ object PipeHandler: Listener {
 
 	private fun validateAllNetworks() {
 		// check that all active networks are in loaded chunks
+		for (active in activeNetworks.values.flatten()) {
+			if (!active.isInLoadedChunks()) {
+				activeNetworks.getOrPut(active.world.bukkit) { mutableSetOf() }.remove(active)
+				inactiveNetworks.getOrPut(active.world.bukkit) { mutableSetOf() }.add(active)
+			}
+		}
 
 		// see if any inactive networks are in loaded chunks and should be active
+		for (inactive in inactiveNetworks.values.flatten()) {
+			if (inactive.isInLoadedChunks()) {
+				inactiveNetworks.getOrPut(inactive.world.bukkit) { mutableSetOf() }.remove(inactive)
+				activeNetworks.getOrPut(inactive.world.bukkit) { mutableSetOf() }.add(inactive)
+			}
+		}
 
 		// check that all connections in active networks are valid
+		for (active in activeNetworks.values.flatten()) {
+			for (node in active.nodes.values) {
+				for (connection in node.connections) {
+
+				}
+			}
+		}
 	}
 }
