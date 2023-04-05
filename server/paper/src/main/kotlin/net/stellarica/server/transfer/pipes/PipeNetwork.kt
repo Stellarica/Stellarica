@@ -34,13 +34,10 @@ class PipeNetwork(
 		}
 
 		for ((p1, p2) in undirectedNodes) {
-			val n1 = nodes.getOrPut(p1) { createNode(p1) }
-			val n2 =  nodes.getOrPut(p2) { createNode(p2) }
-			n2.connections.add(n1)
-			n1.connections.add(n2)
+			nodes.getOrPut(p1) { createNode(p1) }.connections.add(p2)
+			nodes.getOrPut(p2) { createNode(p2) }.connections.add(p1)
 		}
 		println("Elapsed time ${System.currentTimeMillis() - start}ms")
-		//println("Graph: $nodes")
 	}
 
 
@@ -49,7 +46,7 @@ class PipeNetwork(
 
 			// get demand from connected nodes
 			var demand = 0
-			for (other in node.connections) {
+			for (other in node.connections.mapNotNull { nodes[it] }) {
 				if (other.content < node.content) {
 					demand += node.content - other.content
 				}
@@ -64,7 +61,7 @@ class PipeNetwork(
 				num++
 			}
 
-			for (other in node.connections) {
+			for (other in node.connections.mapNotNull { nodes[it] }) {
 				if (other.content < node.content) {
 					val transfer = ((node.content - other.content) / num).toInt()
 					other.inputBuffer += transfer

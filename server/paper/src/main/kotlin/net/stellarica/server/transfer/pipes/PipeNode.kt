@@ -8,7 +8,7 @@ abstract class PipeNode(
 	var inputBuffer: Int,
 	var outputBuffer: Int
 ) {
-	val connections = mutableSetOf<PipeNode>()
+	val connections = mutableSetOf<OriginRelative>()
 
 	override fun toString(): String {
 		return "pos=$pos, content=$content, inputBuffer=$inputBuffer, outputBuffer=$outputBuffer"
