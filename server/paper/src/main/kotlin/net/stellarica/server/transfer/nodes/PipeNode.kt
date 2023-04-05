@@ -9,6 +9,10 @@ abstract class PipeNode: Node {
 	override var inputBuffer: Int = 0
 	override var content: Int = 0
 	override val connections: MutableSet<OriginRelative> = mutableSetOf()
+
+	override fun toString(): String {
+		return "<C: $content, ${connections.size} connections>"
+	}
 }
 
 @Serializable

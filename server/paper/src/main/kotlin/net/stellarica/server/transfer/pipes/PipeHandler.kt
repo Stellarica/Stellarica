@@ -189,41 +189,30 @@ object PipeHandler: Listener {
 			val temp = detectPipeNetwork(active.origin, active.world)!!
 			inactiveNetworks[active.world.bukkit]!!.remove(temp)
 
-			// check for removed or new connections
-			for ((pos, node) in active.nodes) {
-				val tempNode = temp.nodes[pos]
-				if (tempNode?.connections != node.connections) {
-					// either there is a new connection, or a connection broke
-					val newConnections = tempNode!!.connections - node.connections
-					val removedConnections = node.connections - tempNode.connections
-
-					for (removed in removedConnections) {
-						// maybe it is now a new separate network
-						val newNet = detectPipeNetwork(removed.getBlockPos(active.origin, active.direction), active.world) ?: continue
-
-						// any fuel that was in that part of our network should be transfered to the new network
-						for ((newPos, newNode) in newNet.nodes) {
-							newNode.content = active.nodes[newPos]?.content ?: 0
-							active.nodes[newPos]?.content = 0 // just to be sure...
-						}
-					}
-
-					node.connections.addAll(newConnections)
-					node.connections.removeAll(removedConnections)
-				}
-			}
-
 
 			// remove gone nodes
 			active.nodes.keys.toSet().forEach {
 				if (temp.nodes[it] == null) active.nodes.remove(it)
 			}
 
+			// remove trailing connections
+			active.nodes.values.forEach { node ->
+				node.connections.removeIf { temp.nodes[it] == null }
+			}
+
 			// add new nodes
 			active.nodes.putAll(temp.nodes.filter { active.nodes[it.key] == null })
 
+
+			// copy over new connections
+			active.nodes.values.forEach { node ->
+				node.connections.addAll(temp.nodes[node.pos]!!.connections)
+			}
+
+
 			// remove isolated nodes
 			active.nodes.values.removeIf { it.connections.isEmpty() }
+
 
 			if (active.nodes.isEmpty()) {
 				activeNetworks[active.world.bukkit]!!.remove(active)
