@@ -8,13 +8,13 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
 import net.stellarica.common.utils.OriginRelative
+import net.stellarica.common.utils.toVec3
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.transfer.nodes.Node
 import net.stellarica.server.transfer.nodes.NormalPipeNode
 import net.stellarica.server.transfer.nodes.PipeInputNode
 import net.stellarica.server.transfer.nodes.PipeNode
 import net.stellarica.server.transfer.nodes.PipeOutputNode
-import net.stellarica.server.transfer.pipes.PipeHandler.isPartOfNetwork
 import net.stellarica.server.utils.Tasks
 import net.stellarica.server.utils.extensions.bukkit
 import net.stellarica.server.utils.extensions.vanilla
@@ -25,9 +25,9 @@ import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.event.world.WorldUnloadEvent
 import org.bukkit.persistence.PersistentDataType
 
-object PipeHandler: Listener {
+object PipeHandler : Listener {
 	init {
-		Tasks.syncRepeat(10,10) {
+		Tasks.syncRepeat(10, 10) {
 			tickActiveNetworks()
 		}
 		Tasks.syncRepeat(10, 20) {
@@ -52,7 +52,14 @@ object PipeHandler: Listener {
 		val inputs = mutableSetOf<OriginRelative>()
 		val outputs = mutableSetOf<OriginRelative>()
 
-		detectConnectedPairs(net, OriginRelative(0,0,0), undirectedNodes, mutableSetOf(OriginRelative(0,0,0)), inputs, outputs)
+		detectConnectedPairs(
+			net,
+			OriginRelative(0, 0, 0),
+			undirectedNodes,
+			mutableSetOf(OriginRelative(0, 0, 0)),
+			inputs,
+			outputs
+		)
 
 		fun createNode(pos: OriginRelative): PipeNode {
 			return when (pos) {
@@ -85,12 +92,12 @@ object PipeHandler: Listener {
 		outputs: MutableSet<OriginRelative>
 	) {
 		for (rel in listOf(
-			OriginRelative(0,0,1),
-			OriginRelative(0,0,-1),
-			OriginRelative(0,1,0),
-			OriginRelative(0,-1,0),
-			OriginRelative(1,0,0),
-			OriginRelative(-1,0,0)
+			OriginRelative(0, 0, 1),
+			OriginRelative(0, 0, -1),
+			OriginRelative(0, 1, 0),
+			OriginRelative(0, -1, 0),
+			OriginRelative(1, 0, 0),
+			OriginRelative(-1, 0, 0)
 		)) {
 			if (net.isRod(pos + rel)) {
 				for (dist in 1..maxConnectionLength) {
@@ -119,7 +126,7 @@ object PipeHandler: Listener {
 		val oZ: Int,
 		val direction: Direction
 	) {
-		constructor(net: PipeNetwork): this(
+		constructor(net: PipeNetwork) : this(
 			net.nodes.values.toSet(),
 			net.origin.x,
 			net.origin.y,
@@ -137,7 +144,10 @@ object PipeHandler: Listener {
 
 	@EventHandler
 	fun onWorldLoad(event: WorldLoadEvent) {
-		event.world.persistentDataContainer.get(StellaricaServer.namespacedKey("pipenetworks"), PersistentDataType.STRING)
+		event.world.persistentDataContainer.get(
+			StellaricaServer.namespacedKey("pipenetworks"),
+			PersistentDataType.STRING
+		)
 			?.let { string ->
 				Json.decodeFromString<Set<PersistentNetworkData>>(string)
 					.map { it.toNetwork(event.world.vanilla) }
@@ -201,51 +211,111 @@ object PipeHandler: Listener {
 	}
 
 	private fun validateActiveNetworks() {
-		// check that all connections in active networks are valid
 		for (active in activeNetworks.values.flatten()) {
-			// really jank solution: detect a new network and compare against it
-			val temp = detectPipeNetwork(active.origin, active.world)!!
-			inactiveNetworks[active.world.bukkit]!!.remove(temp)
+			validateActiveNetwork(active)
+		}
+	}
 
-			// remove gone nodes
-			for (loc in active.nodes.keys.toSet()) {
-				if (temp.nodes[loc] != null) continue
+	private fun validateActiveNetwork(active: PipeNetwork) {
+		// todo: deduplicate code lol
+		val undirectedNodes = mutableSetOf<Pair<OriginRelative, OriginRelative>>()
+		val inputs = mutableSetOf<OriginRelative>()
+		val outputs = mutableSetOf<OriginRelative>()
 
-				// check to see if this is a disconnected separate network or something
-				// ensure it isnt already part of an existing network
-				if(!loc.getBlockPos(active.origin, active.direction).isPartOfNetwork(active.world.bukkit)) {
-					println("detecting new detatched network")
-					val new = detectPipeNetwork(loc.getBlockPos(active.origin, active.direction), active.world)
-					// todo: transfer any fuel
+		detectConnectedPairs(
+			active,
+			OriginRelative(0, 0, 0),
+			undirectedNodes,
+			mutableSetOf(OriginRelative(0, 0, 0)),
+			inputs,
+			outputs
+		)
+
+		fun createNode(pos: OriginRelative): PipeNode {
+			return when (pos) {
+				in inputs -> PipeInputNode(pos).also { it.content = 400 }
+				in outputs -> PipeOutputNode(pos)
+				else -> NormalPipeNode(pos)
+			}
+		}
+
+		val allValidConnections = undirectedNodes.map { mutableSetOf(it.first, it.second) }.toSet()
+		val existing = mutableSetOf<Set<OriginRelative>>()
+
+		for ((loc, node) in active.nodes) {
+			for (connection in node.connections) {
+				existing.add(setOf(loc, connection))
+			}
+		}
+
+		for (new in allValidConnections - existing) {
+			// we didn't previously have these connections, expand the network
+			val node1 = active.nodes.getOrPut(new.first()) { createNode(new.first()) }
+			val node2 = active.nodes.getOrPut(new.last()) { createNode(new.last()) }
+			node1.connections.add(node2.pos)
+			node2.connections.add(node1.pos)
+		}
+
+		for (existingConnection in existing) {
+			if (allValidConnections.contains(existingConnection)) continue
+
+			// this connection is invalid
+			println("invalid connection $existingConnection")
+
+			// remove the connection
+			active.nodes[existingConnection.first()]!!.connections.remove(existingConnection.last())
+			active.nodes[existingConnection.last()]!!.connections.remove(existingConnection.first())
+
+			// determine which side of this break is larger
+			// note that it still might be the same network if there was a loop
+			fun recurse(pos: OriginRelative, checked: MutableSet<OriginRelative>) {
+				checked.add(pos)
+				for (connection in active.nodes[pos]!!.connections) {
+					if (!checked.contains(connection)) {
+						recurse(connection, checked)
+					}
 				}
-
-				println("Removing $loc")
-				active.nodes.remove(loc)
 			}
 
-			// remove trailing connections
-			for (node in active.nodes.values) {
-				node.connections.removeIf { temp.nodes[it] == null }
+			// determine the nodes contained in each side of the break
+			val checked1 = mutableSetOf<OriginRelative>()
+			recurse(existingConnection.first(), checked1)
+			val checked2 = mutableSetOf<OriginRelative>()
+			recurse(existingConnection.last(), checked2)
+
+			if (checked1 == checked2) {
+				// there was a loop, it's still the same network, we don't need to do anything
+				continue
 			}
 
-			// add new nodes
-			active.nodes.putAll(temp.nodes.filter { active.nodes[it.key] == null })
+			// otherwise, we need to split the network
+			// figure out which side contains the current origin, that will stay as this one
+			val current = if (checked1.contains(OriginRelative(0, 0, 0))) checked1 else checked2
+			val other = if (checked1.contains(OriginRelative(0, 0, 0))) checked2 else checked1
 
 
-			// copy over new connections
-			for (node in active.nodes.values) {
-				val old = node.connections.toSet()
-				node.connections.addAll(temp.nodes[node.pos]!!.connections)
+			val newOrigin =
+				(if (current.contains(existingConnection.last())) existingConnection.first() else existingConnection.last()).getBlockPos(
+					active.origin,
+					active.direction
+				)
+			val offset = newOrigin.immutable().subtract(active.origin)
+
+			val newNet = PipeNetwork(newOrigin, active.world, Direction.NORTH)
+			activeNetworks[active.world.bukkit]!!.add(newNet)
+
+			// move the disconnected nodes to the new network
+			newNet.nodes.putAll(active.nodes.filter { it.key in other })
+			// adjust the origin relative coordinates of the other one to reflect its new origin
+			newNet.nodes =
+				newNet.nodes.mapKeys { it.key.plus(OriginRelative(offset.x, offset.y, offset.z)) }.toMutableMap()
+			for (newNode in newNet.nodes.values) {
+				newNode.connections =
+					newNode.connections.map { it.plus(OriginRelative(offset.x, offset.y, offset.z)) }.toMutableSet()
 			}
 
-
-			// remove isolated nodes
-			active.nodes.values.removeIf { it.connections.isEmpty() }
-
-
-			if (active.nodes.isEmpty()) {
-				activeNetworks[active.world.bukkit]!!.remove(active)
-			}
+			// remove the new network from the current one
+			active.nodes = active.nodes.filter { it.key in other }.toMutableMap()
 		}
 	}
 }
