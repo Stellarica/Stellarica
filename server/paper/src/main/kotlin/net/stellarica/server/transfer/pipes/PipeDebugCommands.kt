@@ -36,9 +36,9 @@ class PipeDebugCommands : BaseCommand() {
 
 	@Subcommand("networks")
 	fun onDumpNetworks(sender: Player) {
-		sender.sendRichMessage("Node Count - Total Fuel")
+		sender.sendRichMessage("Origin - Node Count - Total Fuel")
 		for (network in PipeHandler.activeNetworks[sender.world]!!) {
-			sender.sendRichMessage("${network.nodes.size} - ${network.nodes.values.map {it.content}.sum()}")
+			sender.sendRichMessage("(${network.origin.x}, ${network.origin.y}, ${network.origin.z}) - ${network.nodes.size} - ${network.nodes.values.map {it.content}.sum()}")
 		}
 	}
 }

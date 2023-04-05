@@ -294,11 +294,8 @@ object PipeHandler : Listener {
 			val other = if (checked1.contains(OriginRelative(0, 0, 0))) checked2 else checked1
 
 
-			val newOrigin =
-				(if (current.contains(existingConnection.last())) existingConnection.first() else existingConnection.last()).getBlockPos(
-					active.origin,
-					active.direction
-				)
+			val newOrigin = (if (current.contains(existingConnection.last())) existingConnection.first() else existingConnection.last())
+				.getBlockPos(active.origin, active.direction)
 			val offset = newOrigin.immutable().subtract(active.origin)
 
 			val newNet = PipeNetwork(newOrigin, active.world, Direction.NORTH)
@@ -306,22 +303,45 @@ object PipeHandler : Listener {
 
 			// move the disconnected nodes to the new network
 			newNet.nodes.putAll(active.nodes.filter { it.key in other })
+
 			// adjust the origin relative coordinates of the other one to reflect its new origin
-			newNet.nodes =
-				newNet.nodes.mapKeys { it.key.plus(OriginRelative(offset.x, offset.y, offset.z)) }.toMutableMap()
+			newNet.nodes = newNet.nodes.mapKeys {
+				it.key.plus(OriginRelative(offset.x, offset.y, offset.z))
+			}.toMutableMap()
 			for (newNode in newNet.nodes.values) {
-				newNode.connections =
-					newNode.connections.map { it.plus(OriginRelative(offset.x, offset.y, offset.z)) }.toMutableSet()
+				newNode.connections = newNode.connections.map {
+					it.plus(OriginRelative(offset.x, offset.y, offset.z))
+				}.toMutableSet()
 			}
 
 			// remove the new network from the current one
-			active.nodes = active.nodes.filter { it.key in other }.toMutableMap()
+			active.nodes = active.nodes.filter { it.key !in other }.toMutableMap()
 		}
 
 		for (new in allValidConnections - existing) {
 			// we didn't previously have these connections, expand the network
-			val node1 = active.nodes.getOrPut(new.first()) { createNode(new.first()) }
-			val node2 = active.nodes.getOrPut(new.last()) { createNode(new.last()) }
+
+			fun checkForOtherNetwork(rel: OriginRelative): Node {
+				if (rel.getBlockPos(active.origin, active.direction).isPartOfNetwork(active.world.bukkit)) {
+					// connecting two networks together
+					val other = getPipeNetwork(rel.getBlockPos(active.origin, active.direction), active.world.bukkit)!!
+
+					// fix relative coordinates
+					val offset = active.origin.immutable().subtract(other.origin).let { OriginRelative(it.x, it.y, it.z) }
+					active.nodes.putAll(other.nodes.mapKeys { it.value.connections.map { it.plus(offset) }; it.key.plus(offset) })
+
+					other.nodes.clear()
+					if (!activeNetworks[active.world.bukkit]!!.remove(other))
+						throw IllegalStateException("Tried to merge networks but the other was not active!")
+					return active.nodes[rel]!!
+				} else {
+					// no other network, just create the node
+					return createNode(rel)
+				}
+			}
+
+			val node1 = active.nodes.getOrPut(new.first()) { checkForOtherNetwork(new.first()) }
+			val node2 = active.nodes.getOrPut(new.last()) { checkForOtherNetwork(new.last()) }
 			node1.connections.add(node2.pos)
 			node2.connections.add(node1.pos)
 		}

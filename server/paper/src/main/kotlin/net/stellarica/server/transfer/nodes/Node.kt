@@ -8,6 +8,7 @@ sealed interface Node {
 	val pos: OriginRelative
 	var connections: MutableSet<OriginRelative>
 	var content: Int
+	var capacity: Int
 	var inputBuffer: Int
 	var outputBuffer: Int
 }

@@ -11,26 +11,19 @@ abstract class Network {
 	fun tick() {
 		for (node in nodes.values) {
 			// get demand from connected nodes
-			var demand = 0
+			var demanding = 0
 			for (other in node.connections.mapNotNull { nodes[it] }) {
 				if (other.content < node.content) {
-					demand += min(node.content - other.content, maxTransferRate)
+					demanding++
 				}
 			}
 			// if there's no demand, don't do anything
-			if (demand <= 0) continue
-
-			// if we can't supply all demand, supply a fraction of it
-			// if we have enough fuel to satisfy all demand, this will be 1
-			// kinda jank but it seems to work
-			var num = 1f
-			while (demand / num > node.content) {
-				num++
-			}
+			if (demanding == 0) continue
 
 			for (other in node.connections.mapNotNull { nodes[it] }) {
 				if (other.content < node.content) {
-					val transfer = min(((node.content - other.content) / num).toInt(), maxTransferRate)
+					// this means that a node connected to many other nodes may not transfer optimally!
+					val transfer = min(min(min((node.content / demanding), maxTransferRate), other.capacity), node.content - node.outputBuffer)
 					other.inputBuffer += transfer
 					node.outputBuffer += transfer
 				}
