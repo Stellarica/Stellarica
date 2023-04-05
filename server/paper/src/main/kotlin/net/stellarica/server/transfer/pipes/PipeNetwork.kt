@@ -10,8 +10,8 @@ import net.stellarica.server.transfer.nodes.Node
 
 
 class PipeNetwork(
-	val origin: BlockPos,
-	val world: ServerLevel,
+	var origin: BlockPos,
+	var world: ServerLevel,
 	var direction: Direction = Direction.NORTH,
 	override var nodes: MutableMap<OriginRelative, Node> = mutableMapOf()
 ): Network() {

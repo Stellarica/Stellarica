@@ -26,6 +26,9 @@ import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.mixin.BlockEntityMixin
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockInstance
+import net.stellarica.server.transfer.pipes.PipeHandler
+import net.stellarica.server.transfer.pipes.PipeNetwork
+import net.stellarica.server.utils.extensions.bukkit
 import net.stellarica.server.utils.extensions.sendRichMessage
 import net.stellarica.server.utils.extensions.toLocation
 import net.stellarica.server.utils.extensions.toVec3
@@ -65,6 +68,8 @@ open class Craft(
 		private set
 
 	var multiblocks = mutableSetOf<OriginRelative>()
+
+	var pipes = mutableSetOf<PipeNetwork>()
 
 
 	/**
@@ -244,6 +249,17 @@ open class Craft(
 			)
 			MultiblockHandler[mb.chunk].remove(mb)
 			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkitChunk].add(new)
+		}
+
+		// move pipe networks
+		for (net in pipes) {
+			if (!PipeHandler.activeNetworks[net.world.bukkit]!!.remove(net)) {
+				throw IllegalStateException("Pipe network not found in active networks! This is a bug!")
+			}
+			net.origin = modifier(net.origin.toVec3()).toBlockPos()
+			net.direction = net.direction.rotate(rotation)
+			net.world = targetWorld
+			PipeHandler.activeNetworks.getOrPut(targetWorld.bukkit){ mutableSetOf() }.add(net)
 		}
 
 
