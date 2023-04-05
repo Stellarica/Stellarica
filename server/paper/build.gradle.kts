@@ -25,8 +25,6 @@ dependencies {
 	implementation("com.mineinabyss:protocolburrito:${property("protocolburrito_version")}") // Designed to be installed separately but uh.. :cringe:
 	compileOnly("com.comphenix.protocol:ProtocolLib:${property("protocollib_version")}")
 
-	implementation("org.jgrapht:jgrapht-core:${property("jgrapht_version")}")
-
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${property("kotlin_coroutines_version")}")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kx_ser_version")}")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:${property("kotlin_version")}")
