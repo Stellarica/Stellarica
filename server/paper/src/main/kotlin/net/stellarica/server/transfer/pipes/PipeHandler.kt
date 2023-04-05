@@ -9,8 +9,6 @@ import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.multiblocks.MultiblockHandler
-import net.stellarica.server.multiblocks.Multiblocks
 import net.stellarica.server.transfer.nodes.Node
 import net.stellarica.server.transfer.nodes.NormalPipeNode
 import net.stellarica.server.transfer.nodes.PipeInputNode
@@ -19,12 +17,9 @@ import net.stellarica.server.transfer.nodes.PipeOutputNode
 import net.stellarica.server.utils.Tasks
 import net.stellarica.server.utils.extensions.bukkit
 import net.stellarica.server.utils.extensions.vanilla
-import org.bukkit.Chunk
 import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.world.ChunkLoadEvent
-import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.event.world.WorldUnloadEvent
 import org.bukkit.persistence.PersistentDataType
@@ -32,10 +27,13 @@ import org.bukkit.persistence.PersistentDataType
 object PipeHandler: Listener {
 	init {
 		Tasks.syncRepeat(10,10) {
-			tickAllNetworks()
+			tickActiveNetworks()
 		}
 		Tasks.syncRepeat(10, 20) {
-			validateAllNetworks()
+			activateNetworks()
+		}
+		Tasks.syncRepeat(10, 40) {
+			validateActiveNetworks()
 		}
 	}
 
@@ -69,7 +67,7 @@ object PipeHandler: Listener {
 		}
 
 		// todo: don't fail silently
-		if (net.nodes.size > maxNodes) return null
+		if (net.nodes.isEmpty() || net.nodes.size > maxNodes) return null
 
 		inactiveNetworks.getOrPut(world.bukkit) { mutableSetOf() }.add(net)
 		return net
@@ -160,13 +158,13 @@ object PipeHandler: Listener {
 	}
 
 
-	private fun tickAllNetworks() {
+	private fun tickActiveNetworks() {
 		for (net in activeNetworks.values.flatten()) {
 			net.tick()
 		}
 	}
 
-	private fun validateAllNetworks() {
+	private fun activateNetworks() {
 		// check that all active networks are in loaded chunks
 		for (active in activeNetworks.values.flatten()) {
 			if (!active.isInLoadedChunks()) {
@@ -182,13 +180,53 @@ object PipeHandler: Listener {
 				activeNetworks.getOrPut(inactive.world.bukkit) { mutableSetOf() }.add(inactive)
 			}
 		}
+	}
 
+	private fun validateActiveNetworks() {
 		// check that all connections in active networks are valid
 		for (active in activeNetworks.values.flatten()) {
-			for (node in active.nodes.values) {
-				for (connection in node.connections) {
+			// really jank solution: detect a new network and compare against it
+			val temp = detectPipeNetwork(active.origin, active.world)!!
+			inactiveNetworks[active.world.bukkit]!!.remove(temp)
 
+			// check for removed or new connections
+			for ((pos, node) in active.nodes) {
+				val tempNode = temp.nodes[pos]
+				if (tempNode?.connections != node.connections) {
+					// either there is a new connection, or a connection broke
+					val newConnections = tempNode!!.connections - node.connections
+					val removedConnections = node.connections - tempNode.connections
+
+					for (removed in removedConnections) {
+						// maybe it is now a new separate network
+						val newNet = detectPipeNetwork(removed.getBlockPos(active.origin, active.direction), active.world) ?: continue
+
+						// any fuel that was in that part of our network should be transfered to the new network
+						for ((newPos, newNode) in newNet.nodes) {
+							newNode.content = active.nodes[newPos]?.content ?: 0
+							active.nodes[newPos]?.content = 0 // just to be sure...
+						}
+					}
+
+					node.connections.addAll(newConnections)
+					node.connections.removeAll(removedConnections)
 				}
+			}
+
+
+			// remove gone nodes
+			active.nodes.keys.toSet().forEach {
+				if (temp.nodes[it] == null) active.nodes.remove(it)
+			}
+
+			// add new nodes
+			active.nodes.putAll(temp.nodes.filter { active.nodes[it.key] == null })
+
+			// remove isolated nodes
+			active.nodes.values.removeIf { it.connections.isEmpty() }
+
+			if (active.nodes.isEmpty()) {
+				activeNetworks[active.world.bukkit]!!.remove(active)
 			}
 		}
 	}
