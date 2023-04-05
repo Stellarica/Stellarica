@@ -248,14 +248,6 @@ object PipeHandler : Listener {
 			}
 		}
 
-		for (new in allValidConnections - existing) {
-			// we didn't previously have these connections, expand the network
-			val node1 = active.nodes.getOrPut(new.first()) { createNode(new.first()) }
-			val node2 = active.nodes.getOrPut(new.last()) { createNode(new.last()) }
-			node1.connections.add(node2.pos)
-			node2.connections.add(node1.pos)
-		}
-
 		for (existingConnection in existing) {
 			if (allValidConnections.contains(existingConnection)) continue
 
@@ -263,14 +255,22 @@ object PipeHandler : Listener {
 			println("invalid connection $existingConnection")
 
 			// remove the connection
-			active.nodes[existingConnection.first()]!!.connections.remove(existingConnection.last())
-			active.nodes[existingConnection.last()]!!.connections.remove(existingConnection.first())
+			// if some other invalid connection caused the node to go poof, now is the time to check
+			val n1 = active.nodes[existingConnection.first()]
+			val n2 = active.nodes[existingConnection.last()]
+			if (n1 == null || n2 == null) {
+				println("invalid node in connection $existingConnection")
+				continue
+			}
+
+			n1.connections.remove(existingConnection.last())
+			n2.connections.remove(existingConnection.first())
 
 			// determine which side of this break is larger
 			// note that it still might be the same network if there was a loop
 			fun recurse(pos: OriginRelative, checked: MutableSet<OriginRelative>) {
 				checked.add(pos)
-				for (connection in active.nodes[pos]!!.connections) {
+				for (connection in active.nodes[pos]?.connections ?: setOf()) {
 					if (!checked.contains(connection)) {
 						recurse(connection, checked)
 					}
@@ -316,6 +316,14 @@ object PipeHandler : Listener {
 
 			// remove the new network from the current one
 			active.nodes = active.nodes.filter { it.key in other }.toMutableMap()
+		}
+
+		for (new in allValidConnections - existing) {
+			// we didn't previously have these connections, expand the network
+			val node1 = active.nodes.getOrPut(new.first()) { createNode(new.first()) }
+			val node2 = active.nodes.getOrPut(new.last()) { createNode(new.last()) }
+			node1.connections.add(node2.pos)
+			node2.connections.add(node1.pos)
 		}
 	}
 }

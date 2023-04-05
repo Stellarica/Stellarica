@@ -24,18 +24,21 @@ class PipeDebugCommands : BaseCommand() {
 		pipes[sender]?.tick()
 	}
 
-	@Subcommand("remove")
-	fun onRemove(sender: Player) {
-		pipes.remove(sender)
-	}
-
-	@Subcommand("getNode")
+	@Subcommand("node")
 	fun onGetNode(sender: Player) {
 		val b = sender.getTargetBlockExact(10)?.toBlockPos() ?: return
 		val net = pipes[sender] ?: return
 		val rel = OriginRelative.getOriginRelative(b, net.origin, net.direction)
 		net.nodes[rel]?.let {
 			sender.sendRichMessage(it.toString())
+		}
+	}
+
+	@Subcommand("networks")
+	fun onDumpNetworks(sender: Player) {
+		sender.sendRichMessage("Node Count - Total Fuel")
+		for (network in PipeHandler.activeNetworks[sender.world]!!) {
+			sender.sendRichMessage("${network.nodes.size} - ${network.nodes.values.map {it.content}.sum()}")
 		}
 	}
 }
