@@ -69,8 +69,6 @@ open class Craft(
 
 	var multiblocks = mutableSetOf<OriginRelative>()
 
-	var pipes = mutableSetOf<PipeNetwork>()
-
 
 	/**
 	 * Holds the min and max relative Y values for each column in the ship
@@ -252,10 +250,7 @@ open class Craft(
 		}
 
 		// move pipe networks
-		for (net in pipes) {
-			if (!PipeHandler.activeNetworks[net.world.bukkit]!!.remove(net)) {
-				throw IllegalStateException("Pipe network not found in active networks! This is a bug!")
-			}
+		for (net in PipeHandler.activeNetworks[world.bukkit]!!.filter { it.origin in detectedBlocks }) {
 			net.origin = modifier(net.origin.toVec3()).toBlockPos()
 			net.direction = net.direction.rotate(rotation)
 			net.world = targetWorld
