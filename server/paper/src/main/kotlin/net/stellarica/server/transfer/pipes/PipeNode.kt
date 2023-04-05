@@ -2,30 +2,36 @@ package net.stellarica.server.transfer.pipes
 
 import net.stellarica.common.utils.OriginRelative
 
-interface PipeNode {
-	val pos: OriginRelative
-	var content: Int
-	var inputBuffer: Int
+abstract class PipeNode(
+	val pos: OriginRelative,
+	var content: Int,
+	var inputBuffer: Int,
 	var outputBuffer: Int
+) {
+	val connections = mutableSetOf<PipeNode>()
+
+	override fun toString(): String {
+		return "pos=$pos, content=$content, inputBuffer=$inputBuffer, outputBuffer=$outputBuffer"
+	}
 }
 
-data class InputNode(
-	override val pos: OriginRelative,
-	override var outputBuffer: Int = 0,
-	override var inputBuffer: Int = 0,
-	override var content: Int = 0
-) : PipeNode
+class InputNode(
+	pos: OriginRelative,
+	outputBuffer: Int = 0,
+	inputBuffer: Int = 0,
+	content: Int = 0
+) : PipeNode(pos, content, inputBuffer, outputBuffer)
 
-data class Node(
-	override val pos: OriginRelative,
-	override var outputBuffer: Int = 0,
-	override var inputBuffer: Int = 0,
-	override var content: Int = 0
-) : PipeNode
+class Node(
+	pos: OriginRelative,
+	outputBuffer: Int = 0,
+	inputBuffer: Int = 0,
+	content: Int = 0
+) : PipeNode(pos, content, inputBuffer, outputBuffer)
 
-data class OutputNode(
-	override val pos: OriginRelative,
-	override var outputBuffer: Int = 0,
-	override var inputBuffer: Int = 0,
-	override var content: Int = 0
-) : PipeNode
+class OutputNode(
+	pos: OriginRelative,
+	outputBuffer: Int = 0,
+	inputBuffer: Int = 0,
+	content: Int = 0
+) : PipeNode(pos, content, inputBuffer, outputBuffer)

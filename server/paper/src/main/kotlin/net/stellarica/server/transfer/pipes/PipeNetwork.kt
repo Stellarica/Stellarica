@@ -5,9 +5,7 @@ import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.common.utils.OriginRelative
-import org.jgrapht.graph.DefaultEdge
-import org.jgrapht.graph.DefaultUndirectedGraph
-import org.jgrapht.traverse.DepthFirstIterator
+
 
 class PipeNetwork(
 	val origin: BlockPos,
@@ -15,7 +13,7 @@ class PipeNetwork(
 ) {
 	var direction = Direction.NORTH
 
-	val graph = DefaultUndirectedGraph<PipeNode, DefaultEdge>(DefaultEdge::class.java)
+	var nodes = mutableMapOf<OriginRelative, PipeNode>()
 
 	fun detect() {
 		val start = System.currentTimeMillis()
@@ -36,29 +34,22 @@ class PipeNetwork(
 		}
 
 		for ((p1, p2) in undirectedNodes) {
-			val n1 = createNode(p1)
-			val n2 = createNode(p2)
-			graph.addVertex(n1)
-			graph.addVertex(n2)
-			graph.addEdge(n1, n2)
+			val n1 = nodes.getOrPut(p1) { createNode(p1) }
+			val n2 =  nodes.getOrPut(p2) { createNode(p2) }
+			n2.connections.add(n1)
+			n1.connections.add(n2)
 		}
 		println("Elapsed time ${System.currentTimeMillis() - start}ms")
-		println("Graph: $graph")
+		//println("Graph: $nodes")
 	}
 
+
 	fun tick() {
-		for (node in DepthFirstIterator(graph)) {
-			// find all connected nodes
-			// this is pain and should be fixed
-			val connectedNodes = graph.outgoingEdgesOf(node).map { edge ->
-				var other = graph.getEdgeSource(edge)
-				if (other == node) other = graph.getEdgeTarget(edge)
-				other
-			}
+		for (node in nodes.values) {
 
 			// get demand from connected nodes
 			var demand = 0
-			for (other in connectedNodes) {
+			for (other in node.connections) {
 				if (other.content < node.content) {
 					demand += node.content - other.content
 				}
@@ -73,7 +64,7 @@ class PipeNetwork(
 				num++
 			}
 
-			for (other in connectedNodes) {
+			for (other in node.connections) {
 				if (other.content < node.content) {
 					val transfer = ((node.content - other.content) / num).toInt()
 					other.inputBuffer += transfer
@@ -83,9 +74,11 @@ class PipeNetwork(
 		}
 
 		// apply changes at once
-		for (node in DepthFirstIterator(graph)) {
+		for (node in nodes.values) {
 			node.content += node.inputBuffer
 			node.content -= node.outputBuffer
+			node.inputBuffer = 0
+			node.outputBuffer = 0
 		}
 	}
 
