@@ -17,6 +17,7 @@ import net.stellarica.server.multiblocks.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.Handshake
 import net.stellarica.server.transfer.pipes.PipeDebugCommands
+import net.stellarica.server.transfer.pipes.PipeHandler
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -71,6 +72,7 @@ class StellaricaServer : JavaPlugin() {
 			MultiblockHandler,
 			CustomItemHandler,
 			CustomBlockHandler,
+			PipeHandler,
 			Handshake()
 		).forEach { getPluginManager().registerEvents(it, this) }
 

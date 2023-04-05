@@ -27,6 +27,9 @@ data class OriginRelative(
 		return Companion.getBlockPos(this, origin, direction)
 	}
 
+	operator fun plus(other: OriginRelative) = OriginRelative(x + other.x, y + other.y, z + other.z)
+	operator fun times(dist: Int) = OriginRelative(x * dist, y * dist, z * dist)
+
 	companion object {
 		// this would be better as a constructor
 		fun getOriginRelative(loc: BlockPos, origin: BlockPos, direction: Direction): OriginRelative {

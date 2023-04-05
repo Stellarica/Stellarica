@@ -16,9 +16,7 @@ class PipeDebugCommands : BaseCommand() {
 	@Subcommand("detect")
 	fun onDetect(sender: Player) {
 		val b = sender.getTargetBlockExact(10)?.toBlockPos() ?: return
-		val net = PipeNetwork(b, (sender.world as CraftWorld).handle)
-		net.detect()
-		pipes[sender] = net
+		pipes[sender] = PipeHandler.detectPipeNetwork(b, (sender.world as CraftWorld).handle)!!
 	}
 
 	@Subcommand("tick")
