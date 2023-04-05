@@ -14,6 +14,7 @@ import net.stellarica.server.transfer.nodes.NormalPipeNode
 import net.stellarica.server.transfer.nodes.PipeInputNode
 import net.stellarica.server.transfer.nodes.PipeNode
 import net.stellarica.server.transfer.nodes.PipeOutputNode
+import net.stellarica.server.transfer.pipes.PipeHandler.isPartOfNetwork
 import net.stellarica.server.utils.Tasks
 import net.stellarica.server.utils.extensions.bukkit
 import net.stellarica.server.utils.extensions.vanilla
@@ -65,6 +66,8 @@ object PipeHandler: Listener {
 			net.nodes.getOrPut(p1) { createNode(p1) }.connections.add(p2)
 			net.nodes.getOrPut(p2) { createNode(p2) }.connections.add(p1)
 		}
+
+		// todo: merge with any existing networks
 
 		// todo: don't fail silently
 		if (net.nodes.isEmpty() || net.nodes.size > maxNodes) return null
@@ -182,6 +185,21 @@ object PipeHandler: Listener {
 		}
 	}
 
+	private fun BlockPos.isPartOfNetwork(world: World): Boolean {
+		var found = false
+		for (net in (activeNetworks[world]!! + inactiveNetworks[world]!!)) {
+			if (net.contains(this)) found = true
+		}
+		return found
+	}
+
+	private fun getPipeNetwork(pos: BlockPos, world: World): PipeNetwork? {
+		for (net in (activeNetworks[world]!! + inactiveNetworks[world]!!)) {
+			if (net.contains(pos)) return net
+		}
+		return null
+	}
+
 	private fun validateActiveNetworks() {
 		// check that all connections in active networks are valid
 		for (active in activeNetworks.values.flatten()) {
@@ -189,14 +207,24 @@ object PipeHandler: Listener {
 			val temp = detectPipeNetwork(active.origin, active.world)!!
 			inactiveNetworks[active.world.bukkit]!!.remove(temp)
 
-
 			// remove gone nodes
-			active.nodes.keys.toSet().forEach {
-				if (temp.nodes[it] == null) active.nodes.remove(it)
+			for (loc in active.nodes.keys.toSet()) {
+				if (temp.nodes[loc] != null) continue
+
+				// check to see if this is a disconnected separate network or something
+				// ensure it isnt already part of an existing network
+				if(!loc.getBlockPos(active.origin, active.direction).isPartOfNetwork(active.world.bukkit)) {
+					println("detecting new detatched network")
+					val new = detectPipeNetwork(loc.getBlockPos(active.origin, active.direction), active.world)
+					// todo: transfer any fuel
+				}
+
+				println("Removing $loc")
+				active.nodes.remove(loc)
 			}
 
 			// remove trailing connections
-			active.nodes.values.forEach { node ->
+			for (node in active.nodes.values) {
 				node.connections.removeIf { temp.nodes[it] == null }
 			}
 
@@ -205,7 +233,8 @@ object PipeHandler: Listener {
 
 
 			// copy over new connections
-			active.nodes.values.forEach { node ->
+			for (node in active.nodes.values) {
+				val old = node.connections.toSet()
 				node.connections.addAll(temp.nodes[node.pos]!!.connections)
 			}
 

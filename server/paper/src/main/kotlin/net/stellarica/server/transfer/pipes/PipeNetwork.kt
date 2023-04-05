@@ -23,6 +23,9 @@ class PipeNetwork(
 	fun isOutput(pos: OriginRelative) : Boolean = world.getBlockState(pos(pos)).block == Blocks.WAXED_CUT_COPPER_SLAB
 	fun pos(pos: OriginRelative) = pos.getBlockPos(origin, direction)
 
+	fun contains(pos: BlockPos) = nodes[OriginRelative.getOriginRelative(pos, origin, direction)] != null
+
+
 	fun isInLoadedChunks(): Boolean {
 		for (pos in nodes.keys) {
 			// jank alert
