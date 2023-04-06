@@ -6,6 +6,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.Vec3i
 import net.minecraft.server.level.ServerLevel
 import net.stellarica.common.utils.OriginRelative
 import net.stellarica.common.utils.toVec3
@@ -211,59 +212,115 @@ object PipeHandler : Listener {
 	}
 
 	private fun validateActiveNetworks() {
+		val removedNetworks = mutableSetOf<PipeNetwork>()
 		for (active in activeNetworks.values.flatten()) {
-			validateActiveNetwork(active)
+
+			if (active in removedNetworks) continue
+
+			// todo: deduplicate code lol
+			val undirectedNodes = mutableSetOf<Pair<OriginRelative, OriginRelative>>()
+			val inputs = mutableSetOf<OriginRelative>()
+			val outputs = mutableSetOf<OriginRelative>()
+
+			detectConnectedPairs(
+				active,
+				OriginRelative(0, 0, 0),
+				undirectedNodes,
+				mutableSetOf(OriginRelative(0, 0, 0)),
+				inputs,
+				outputs
+			)
+
+			val allConnections = undirectedNodes.map { mutableSetOf(it.first, it.second) }.toSet()
+			val existingConnections = mutableSetOf<Set<OriginRelative>>()
+
+			for ((loc, node) in active.nodes) {
+				for (connection in node.connections) {
+					existingConnections.add(setOf(loc, connection))
+				}
+			}
+			if (active !in removedNetworks && isValidNetwork(active)) {
+				trimInvalidNodes(active, existingConnections, allConnections)
+				removedNetworks.addAll(expandNetwork(active, existingConnections, allConnections))
+			} else {
+				removedNetworks.add(active)
+			}
+		}
+		for (removed in removedNetworks) {
+			activeNetworks[removed.world.bukkit]!!.remove(removed)
 		}
 	}
 
-	private fun validateActiveNetwork(active: PipeNetwork) {
-		if (active.nodes.isEmpty()) {
-			// empty network? crong
-			activeNetworks[active.world.bukkit]!!.remove(active)
-			return
-		}
+	/** Whether this network is valid */
+	private fun isValidNetwork(active: PipeNetwork): Boolean {
+		return active.nodes.isNotEmpty()
+	}
 
-		// todo: deduplicate code lol
-		val undirectedNodes = mutableSetOf<Pair<OriginRelative, OriginRelative>>()
-		val inputs = mutableSetOf<OriginRelative>()
-		val outputs = mutableSetOf<OriginRelative>()
+	/**
+	 *
+	 * @return any networks that were consumed
+	 */
+	private fun expandNetwork(active: PipeNetwork, existingConnections: Set<Set<OriginRelative>>, validConnections: Set<Set<OriginRelative>>): Set<PipeNetwork> {
+		val consumed = mutableSetOf<PipeNetwork>()
+		for (new in validConnections - existingConnections) {
+			// we didn't previously have these connections, expand the network
 
-		detectConnectedPairs(
-			active,
-			OriginRelative(0, 0, 0),
-			undirectedNodes,
-			mutableSetOf(OriginRelative(0, 0, 0)),
-			inputs,
-			outputs
-		)
+			fun checkForOtherNetwork(rel: OriginRelative): Node {
+				if (rel.getBlockPos(active.origin, active.direction).isPartOfNetwork(active.world.bukkit)) {
+					println("Found a network to merge to")
+					// connecting two networks together
+					val other = getPipeNetwork(rel.getBlockPos(active.origin, active.direction), active.world.bukkit)!!
 
-		fun createNode(pos: OriginRelative): PipeNode {
-			return when (pos) {
-				in inputs -> PipeInputNode(pos).also { it.content = 400 }
-				in outputs -> PipeOutputNode(pos)
-				else -> NormalPipeNode(pos)
+					// fix relative coordinates
+					val offset = other.origin.immutable().subtract(active.origin).let { OriginRelative(it.x, it.y, it.z) }
+					active.nodes.putAll(other.nodes.mapKeys { it.value.connections.map { it.plus(offset) }; it.key.plus(offset) })
+
+					consumed.add(other)
+					return active.nodes[rel]!!
+				} else {
+					// no other network, just create the node
+					println("No existing network found, creating new node")
+					return NormalPipeNode(rel) // todo: use the proper type
+				}
 			}
+
+			val node1 = active.nodes.getOrPut(new.first()) { checkForOtherNetwork(new.first()) }
+			val node2 = active.nodes.getOrPut(new.last()) { checkForOtherNetwork(new.last()) }
+			node1.connections.add(node2.pos)
+			node2.connections.add(node1.pos)
+			println("Connected: ${node1.pos} and ${node2.pos}")
 		}
+		return consumed
+	}
 
-		val allValidConnections = undirectedNodes.map { mutableSetOf(it.first, it.second) }.toSet()
-		val existing = mutableSetOf<Set<OriginRelative>>()
+	private fun shiftNetworkCoordinates(net: PipeNetwork, offset: Vec3i) {
+		val rel = OriginRelative(offset.x, offset.y, offset.z)
+		net.origin = net.origin.immutable().offset(offset)
 
-		for ((loc, node) in active.nodes) {
-			for (connection in node.connections) {
-				existing.add(setOf(loc, connection))
-			}
-		}
+		net.nodes = net.nodes.mapKeys {
+			it.value.connections = it.value.connections.map { pos ->
+				pos.plus(rel)
+			}.toMutableSet()
+			it.key.plus(OriginRelative(offset.x, offset.y, offset.z))
+		}.toMutableMap()
+	}
 
-		for (existingConnection in existing) {
-			if (allValidConnections.contains(existingConnection)) continue
+
+	private fun trimInvalidNodes(active: PipeNetwork, existingConnections: Set<Set<OriginRelative>>, validConnections: Set<Set<OriginRelative>>) {
+		for (existingConnection in existingConnections) {
+			if (validConnections.contains(existingConnection)) continue
 
 			// this connection is invalid
 			println("invalid connection $existingConnection")
 
 			// remove the connection
 			// if some other invalid connection caused the node to go poof, now is the time to check
-			active.nodes[existingConnection.first()]?.connections?.remove(existingConnection.last()) ?: println("invalid node in connection $existingConnection")
-			active.nodes[existingConnection.last()]?.connections?.remove(existingConnection.first()) ?: println("invalid node in connection $existingConnection")
+			if (active.nodes[existingConnection.first()]?.connections?.remove(existingConnection.last()) == null || active.nodes[existingConnection.last()]?.connections?.remove(existingConnection.first())  == null) {
+				println("invalid node in connection $existingConnection")
+				// cant make a new network out of an invalid node
+				// the connection was already removed so we can just abort
+				continue
+			}
 
 			// determine the nodes of both sides of the break
 			// note that it still might be the same network if there was a loop
@@ -309,48 +366,9 @@ object PipeHandler : Listener {
 			newNet.nodes.putAll(disconnected)
 			active.nodes = active.nodes.filter { it.key !in other }.toMutableMap()
 
-			println("New network: ${newNet.nodes}")
 			// adjust the origin relative coordinates of the other one to reflect its new origin
-			newNet.nodes = newNet.nodes.mapKeys {
-				it.key.plus(OriginRelative(offset.x, offset.y, offset.z))
-			}.toMutableMap()
-			for (newNode in newNet.nodes.values) {
-				newNode.connections = newNode.connections.map {
-					it.plus(OriginRelative(offset.x, offset.y, offset.z))
-				}.toMutableSet()
-			}
-			println("Adjusted coordinates of new network: ${newNet.nodes}")
-		}
-
-		for (new in allValidConnections - existing) {
-			// we didn't previously have these connections, expand the network
-
-			fun checkForOtherNetwork(rel: OriginRelative): Node {
-				if (rel.getBlockPos(active.origin, active.direction).isPartOfNetwork(active.world.bukkit)) {
-					println("Found a network to merge to")
-					// connecting two networks together
-					val other = getPipeNetwork(rel.getBlockPos(active.origin, active.direction), active.world.bukkit)!!
-
-					// fix relative coordinates
-					val offset = other.origin.immutable().subtract(active.origin).let { OriginRelative(it.x, it.y, it.z) }
-					active.nodes.putAll(other.nodes.mapKeys { it.value.connections.map { it.plus(offset) }; it.key.plus(offset) })
-
-					other.nodes.clear()
-					if (!activeNetworks[active.world.bukkit]!!.remove(other))
-						throw IllegalStateException("Tried to merge networks but the other was not active!")
-					return active.nodes[rel]!!
-				} else {
-					// no other network, just create the node
-					println("No existing network found, creating new node")
-					return createNode(rel)
-				}
-			}
-
-			val node1 = active.nodes.getOrPut(new.first()) { checkForOtherNetwork(new.first()) }
-			val node2 = active.nodes.getOrPut(new.last()) { checkForOtherNetwork(new.last()) }
-			node1.connections.add(node2.pos)
-			node2.connections.add(node1.pos)
-			println("Connected: ${node1.pos} and ${node2.pos}")
+			shiftNetworkCoordinates(newNet, offset)
+			println("New network: ${newNet.nodes}")
 		}
 	}
 }
