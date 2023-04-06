@@ -212,6 +212,7 @@ object PipeHandler : Listener {
 	}
 
 	private fun validateActiveNetworks() {
+		println("\nvalidating pipe networks..")
 		val removedNetworks = mutableSetOf<PipeNetwork>()
 		for (active in activeNetworks.values.flatten()) {
 
@@ -272,8 +273,10 @@ object PipeHandler : Listener {
 					val other = getPipeNetwork(rel.getBlockPos(active.origin, active.direction), active.world.bukkit)!!
 
 					// fix relative coordinates
-					val offset = other.origin.immutable().subtract(active.origin).let { OriginRelative(it.x, it.y, it.z) }
-					active.nodes.putAll(other.nodes.mapKeys { it.value.connections.map { it.plus(offset) }; it.key.plus(offset) })
+					val offset = other.origin.immutable().subtract(active.origin)
+					shiftNetworkCoordinates(other, offset)
+
+					active.nodes.putAll(other.nodes )
 
 					consumed.add(other)
 					return active.nodes[rel]!!
@@ -352,12 +355,17 @@ object PipeHandler : Listener {
 
 			val newOrigin = (if (current.contains(existingConnection.last())) existingConnection.first() else existingConnection.last())
 				.getBlockPos(active.origin, active.direction)
-			val offset = active.origin.immutable().subtract(newOrigin)
+			val offset = newOrigin.immutable().subtract(active.origin)
+
+			if (getPipeNetwork(newOrigin, active.world.bukkit) != active) {
+				println("Broken part is already part of another network (new?) might be a bug")
+				continue
+			}
 
 			println("New origin: $newOrigin")
 			println("Offset: $offset")
 
-			val newNet = PipeNetwork(newOrigin, active.world, Direction.NORTH)
+			val newNet = PipeNetwork(active.origin, active.world, Direction.NORTH)
 			activeNetworks[active.world.bukkit]!!.add(newNet)
 
 			// move the disconnected nodes to the new network and remove them from the current one
