@@ -2,7 +2,6 @@ package net.stellarica.client
 
 import net.fabricmc.api.ClientModInitializer
 import net.stellarica.client.network.FabricNetworkHandler
-import net.stellarica.client.network.Handshake
 import net.stellarica.common.CommonTest
 
 @Suppress("Unused")
@@ -15,7 +14,5 @@ object StellaricaClient : ClientModInitializer {
 		CommonTest().doStuff()
 
 		networkHandler = FabricNetworkHandler()
-
-		val h = Handshake()
 	}
 }

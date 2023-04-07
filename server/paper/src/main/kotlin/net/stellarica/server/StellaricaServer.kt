@@ -15,7 +15,6 @@ import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
-import net.stellarica.server.networking.Handshake
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -70,7 +69,6 @@ class StellaricaServer : JavaPlugin() {
 			MultiblockHandler,
 			CustomItemHandler,
 			CustomBlockHandler,
-			Handshake()
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		// Register commands here
