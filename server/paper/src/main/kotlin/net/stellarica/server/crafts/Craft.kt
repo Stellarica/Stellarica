@@ -176,22 +176,19 @@ open class Craft(
 
 		// check for collisions
 		// if the world we're moving to isn't the world we're coming from, the whole map of original states we got is useless
-		if (world == targetWorld) {
-			targets.values.forEach { target ->
-				val state = targetWorld.getBlockState(target)
+		val sameWorld = world == targetWorld
+		targets.values.forEach { target ->
+			val state = targetWorld.getBlockState(target)
 
-				// todo: now that we're back to Paper we can use ChunkSnapshots, and should be able to check for collisions
-				// in parallel when we calculate the new block positions
-				if (!state.isAir && !detectedBlocks.contains(target)) {
-					sendRichMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
-					return
-				}
-
-				// also use this time to get the original state of these blocks
-				if (state.hasBlockEntity()) entities[target] = targetWorld.getBlockEntity(target)!!
-
-				original[target] = state
+			if (!state.isAir && !(sameWorld && detectedBlocks.contains(target))) {
+				sendRichMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
+				return
 			}
+
+			// also use this time to get the original state of these blocks
+			if (state.hasBlockEntity()) entities[target] = targetWorld.getBlockEntity(target)!!
+
+			original[target] = state
 		}
 
 		// iterating over twice isn't great, maybe there's a way to condense it?
