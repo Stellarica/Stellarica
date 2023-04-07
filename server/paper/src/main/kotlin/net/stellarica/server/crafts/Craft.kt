@@ -64,9 +64,6 @@ open class Craft(
 	val detectedBlockCount: Int
 		get() = detectedBlocks.size
 
-	var initialBlockCount: Int = 1
-		private set
-
 	var multiblocks = mutableSetOf<OriginRelative>()
 
 
@@ -371,10 +368,6 @@ open class Craft(
 		chunk.isUnsaved = true
 	}
 
-	/**
-	 * Move all passengers by offset.
-	 * Uses bukkit to teleport entities, and NMS to move players.
-	 */
 	@Suppress("UnstableApiUsage")
 	fun movePassengers(offset: (Vec3) -> Vec3, rotation: Rotation = Rotation.NONE) {
 		for (passenger in passengers) {
@@ -415,13 +408,6 @@ open class Craft(
 		}
 	}
 
-	/**
-	 * Message this craft's pilot, if it has one.
-	 * If the ship isn't being piloted, message the owner.
-	 * MiniMessage formatting is allowed
-	 *
-	 * @see messagePassengers
-	 */
 	fun messagePilot(message: String) {
 		if (this is Starship) {
 			pilot?.sendRichMessage(message) ?: owner?.sendRichMessage(message)

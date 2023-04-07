@@ -112,6 +112,12 @@ abstract class Screen : Listener {
 		}
 	}
 
+	fun setAll(vararg slots: Pair<Int, ItemStack>) {
+		slots.forEach {
+			inventory.setItem(it.first, it.second)
+		}
+	}
+
 	/**
 	 * Handles player inventory click events
 	 */
