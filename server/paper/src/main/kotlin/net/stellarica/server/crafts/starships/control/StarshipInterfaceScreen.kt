@@ -14,10 +14,14 @@ import org.bukkit.event.inventory.InventoryType
 class StarshipInterfaceScreen(player: Player, private val craft: Starship) : Screen() {
 	init {
 		createScreen(player, InventoryType.HOPPER, "Starship Interface")
-
-		inventory.setItem(0, namedItem(Material.MINECART, "Detect Starship", null))
-		if (player.isPilotingCraft) inventory.setItem(1, namedItem(Material.COMPASS, "Unpilot Starship", null))
-		else inventory.setItem(1, namedItem(Material.COMPASS, "Pilot Starship", null))
+		setAll(
+			0 to namedItem(Material.MINECART, "Detect Starship", null),
+			1 to if (!player.isPilotingCraft) {
+				namedItem(Material.COMPASS, "Pilot Starship")
+			} else {
+				namedItem(Material.COMPASS, "Unpilot Starship")
+			}
+		)
 	}
 
 	override fun onScreenButtonClicked(slot: Int) {

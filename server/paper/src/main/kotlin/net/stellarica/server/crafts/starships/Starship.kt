@@ -23,9 +23,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockExplodeEvent
 import kotlin.math.roundToInt
 
-/**
- * Base Starship class
- */
 class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner: Player? = null) :
 	Craft(origin, direction, world, owner), Listener {
 
@@ -39,9 +36,6 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 
 	var velocity: Vec3i = Vec3i.ZERO
 
-	/**
-	 * The player who is currently piloting this craft
-	 */
 	var pilot: Player? = null
 		private set
 
@@ -49,7 +43,6 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 	/**
 	 * Activates the craft and registers it in [pilotedCrafts]
 	 * @param pilot the pilot, who controls the ship
-	 * @throws AlreadyPilotedException if the ship is already piloted
 	 * @return whether the craft was successfully activated
 	 */
 	fun activateCraft(pilot: Player): Boolean {
