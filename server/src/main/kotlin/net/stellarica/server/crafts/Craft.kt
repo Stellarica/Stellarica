@@ -26,6 +26,7 @@ import net.stellarica.server.crafts.starships.Starship
 import net.stellarica.server.mixin.BlockEntityMixin
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockInstance
+import net.stellarica.server.utils.extensions.bukkit
 import net.stellarica.server.utils.extensions.sendRichMessage
 import net.stellarica.server.utils.extensions.toLocation
 import net.stellarica.server.utils.extensions.toVec3
@@ -107,7 +108,7 @@ open class Craft(
 
 	fun getMultiblock(pos: OriginRelative): MultiblockInstance? {
 		val mb = pos.getBlockPos(origin, direction)
-		return MultiblockHandler[world.getChunkAt(mb).bukkitChunk].firstOrNull { it.origin == mb }
+		return MultiblockHandler[world.getChunkAt(mb).bukkit].firstOrNull { it.origin == mb }
 	}
 
 	/**
@@ -237,7 +238,7 @@ open class Craft(
 				mb.data
 			)
 			MultiblockHandler[mb.chunk].remove(mb)
-			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkitChunk].add(new)
+			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkit].add(new)
 		}
 
 
@@ -277,7 +278,7 @@ open class Craft(
 				}
 
 				detectedBlocks.add(currentBlock)
-				chunks.add(world.getChunkAt(currentBlock).bukkitChunk)
+				chunks.add(world.getChunkAt(currentBlock).bukkit)
 
 				// Slightly condensed from MSP's nonsense, but this could be improved
 				for (x in listOf(-1, 1)) {
