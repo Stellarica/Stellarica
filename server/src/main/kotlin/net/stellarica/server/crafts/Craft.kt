@@ -23,7 +23,6 @@ import net.stellarica.common.utils.rotateCoordinates
 import net.stellarica.common.utils.toBlockPos
 import net.stellarica.common.utils.toVec3
 import net.stellarica.server.crafts.starships.Starship
-import net.stellarica.server.mixin.BlockEntityMixin
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockInstance
 import net.stellarica.server.transfer.pipes.PipeHandler
@@ -110,7 +109,7 @@ open class Craft(
 
 	fun getMultiblock(pos: OriginRelative): MultiblockInstance? {
 		val mb = pos.getBlockPos(origin, direction)
-		return MultiblockHandler[world.getChunkAt(mb).bukkitChunk].firstOrNull { it.origin == mb }
+		return MultiblockHandler[world.getChunkAt(mb).bukkit].firstOrNull { it.origin == mb }
 	}
 
 	/**
@@ -179,22 +178,19 @@ open class Craft(
 
 		// check for collisions
 		// if the world we're moving to isn't the world we're coming from, the whole map of original states we got is useless
-		if (world == targetWorld) {
-			targets.values.forEach { target ->
-				val state = targetWorld.getBlockState(target)
+		val sameWorld = world == targetWorld
+		targets.values.forEach { target ->
+			val state = targetWorld.getBlockState(target)
 
-				// todo: now that we're back to Paper we can use ChunkSnapshots, and should be able to check for collisions
-				// in parallel when we calculate the new block positions
-				if (!state.isAir && !detectedBlocks.contains(target)) {
-					sendRichMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
-					return
-				}
-
-				// also use this time to get the original state of these blocks
-				if (state.hasBlockEntity()) entities[target] = targetWorld.getBlockEntity(target)!!
-
-				original[target] = state
+			if (!state.isAir && !(sameWorld && detectedBlocks.contains(target))) {
+				sendRichMessage("<gold>Blocked by ${world.getBlockState(target).block.name} at <bold>(${target.x}, ${target.y}, ${target.z}</bold>)!\"")
+				return
 			}
+
+			// also use this time to get the original state of these blocks
+			if (state.hasBlockEntity()) entities[target] = targetWorld.getBlockEntity(target)!!
+
+			original[target] = state
 		}
 
 		// iterating over twice isn't great, maybe there's a way to condense it?
@@ -212,7 +208,7 @@ open class Craft(
 
 				world.getChunk(current).removeBlockEntity(current)
 
-				(entity as BlockEntityMixin).setWorldPosition(target)
+				entity.blockPos = target
 				entity.level = targetWorld
 				entity.setChanged()
 
@@ -243,7 +239,7 @@ open class Craft(
 				mb.data
 			)
 			MultiblockHandler[mb.chunk].remove(mb)
-			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkitChunk].add(new)
+			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkit].add(new)
 		}
 
 		// move pipe networks
@@ -291,7 +287,7 @@ open class Craft(
 				}
 
 				detectedBlocks.add(currentBlock)
-				chunks.add(world.getChunkAt(currentBlock).bukkitChunk)
+				chunks.add(world.getChunkAt(currentBlock).bukkit)
 
 				// Slightly condensed from MSP's nonsense, but this could be improved
 				for (x in listOf(-1, 1)) {

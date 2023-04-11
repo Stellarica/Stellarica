@@ -60,7 +60,15 @@ class StellaricaServer : JavaPlugin() {
 	lateinit var networkHandler: BukkitNetworkHandler
 
 	override fun onEnable() {
-		// Plugin init
+		if (this.server.name != "Nebula") klogger.error {
+			"""
+			Stellarica requires the Nebula server software, but seems to be running on ${this.server.name}!
+			You can find Nebula at https://github.com/Stellarica/Nebula
+				
+			The plugin will attempt to load anyway, but many features will be broken!
+			""".trimIndent()
+		}
+
 		plugin = this
 
 		networkHandler = BukkitNetworkHandler()

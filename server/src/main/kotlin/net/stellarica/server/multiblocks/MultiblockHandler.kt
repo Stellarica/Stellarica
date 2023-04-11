@@ -15,6 +15,7 @@ import net.stellarica.server.utils.Tasks
 import net.stellarica.server.utils.extensions.sendRichActionBar
 import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.extensions.toLocation
+import net.stellarica.server.utils.extensions.vanilla
 import org.bukkit.Chunk
 import org.bukkit.World
 import org.bukkit.craftbukkit.v1_19_R3.CraftChunk
@@ -58,7 +59,7 @@ object MultiblockHandler : Listener {
 		return possible.maxByOrNull { it.type.blocks.size }?.also {
 			val chunk = world.getChunkAt(origin.toLocation(world))
 			multiblocks.getOrPut(chunk) { mutableSetOf() }.add(it)
-			(chunk as CraftChunk).handle.isUnsaved = true
+			chunk.vanilla.isUnsaved = true
 		}
 	}
 

@@ -29,5 +29,4 @@ pluginManagement {
 }
 include("client")
 include("common")
-include("server:mixin")
-include("server:paper")
+include("server")
