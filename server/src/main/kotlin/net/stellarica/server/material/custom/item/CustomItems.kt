@@ -44,6 +44,16 @@ object CustomItems {
 		null
 	)
 
+	val ADAMANTITE_BLOCK: CustomItem = CustomItem(
+		StellaricaServer.identifier("adamantite_block"),
+		"Block of Adamantite",
+		listOf(),
+		ItemType.of(Items.NOTE_BLOCK),
+		2,
+		null,
+		CustomBlocks.ADAMANTITE_BLOCK
+	)
+
 	fun all(): Set<CustomItem> { // can't do lazy{} because reflection
 		return this::class.java.declaredFields.mapNotNull { it.get(this) as? CustomItem }.toSet()
 	}

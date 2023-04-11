@@ -14,6 +14,13 @@ object CustomBlocks {
 		instrument = org.bukkit.Instrument.PIANO
 	)
 
+	val ADAMANTITE_BLOCK: CustomBlock = CustomBlock(
+		StellaricaServer.identifier("adamantite_block"),
+		CustomItems.ADAMANTITE_BLOCK,
+		note = Note.natural(1, Note.Tone.D),
+		instrument = org.bukkit.Instrument.PIANO
+	)
+
 	fun all(): Set<CustomBlock> {
 		return this::class.java.declaredFields.mapNotNull { it.get(this) as? CustomBlock }.toSet()
 	}
