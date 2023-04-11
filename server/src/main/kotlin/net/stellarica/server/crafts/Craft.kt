@@ -23,7 +23,6 @@ import net.stellarica.common.utils.rotateCoordinates
 import net.stellarica.common.utils.toBlockPos
 import net.stellarica.common.utils.toVec3
 import net.stellarica.server.crafts.starships.Starship
-import net.stellarica.server.mixin.BlockEntityMixin
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.MultiblockInstance
 import net.stellarica.server.utils.extensions.bukkit
@@ -207,7 +206,7 @@ open class Craft(
 
 				world.getChunk(current).removeBlockEntity(current)
 
-				(entity as BlockEntityMixin).setWorldPosition(target)
+				entity.blockPos = target
 				entity.level = targetWorld
 				entity.setChanged()
 

@@ -9,15 +9,15 @@ repositories {
 	maven("https://repo.mineinabyss.com/releases") // ProtocolBurrito
 	maven("https://repo.aikar.co/content/groups/aikar/") // acf-paper
 	maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
+	maven("https://repo.stellarica.net/snapshots")
 	mavenCentral()
 }
 
 
 dependencies {
 	implementation(project(":common", "namedElements"))
-
-	paperDevBundle("${property("minecraft_version")}-R0.1-SNAPSHOT")
-	compileOnly("io.papermc.paper:paper-api:${property("minecraft_version")}-R0.1-SNAPSHOT")
+	paperweightDevelopmentBundle("net.stellarica.nebula:dev-bundle:${property("minecraft_version")}-R0.1-SNAPSHOT")
+	compileOnly("net.stellarica.nebula:nebula-api:${property("minecraft_version")}-R0.1-SNAPSHOT")
 
 	implementation("io.github.microutils:kotlin-logging-jvm:${property("kt_log_version")}")
 
