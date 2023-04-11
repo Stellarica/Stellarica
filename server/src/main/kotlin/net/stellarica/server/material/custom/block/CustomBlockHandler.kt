@@ -22,7 +22,6 @@ object CustomBlockHandler : Listener {
 		if (!type.isCustom || type.getBlock() == null) return
 
 		event.blockPlaced.blockData = type.getBlock()!!.getBukkitBlockData()
-		klogger.warn { event.blockPlaced.blockData }
 	}
 
 	@EventHandler
