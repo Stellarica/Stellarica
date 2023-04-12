@@ -1,0 +1,31 @@
+package net.stellarica.server.material.custom.feature.blasters
+
+import net.stellarica.server.material.custom.items.power
+import net.stellarica.server.material.type.item.CustomItemType
+import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.utils.extensions.sendRichActionBar
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.block.Action
+import org.bukkit.event.player.PlayerInteractEvent
+
+object BlasterListener: Listener {
+	@EventHandler
+	fun onPlayerClick(event: PlayerInteractEvent) {
+		if (event.action != Action.LEFT_CLICK_BLOCK || event.action != Action.LEFT_CLICK_BLOCK) return
+		val held = event.player.inventory.itemInMainHand
+		val heldType = (ItemType.of(held) as? CustomItemType)?.item ?: return
+		val blasterType = BlasterType.values().firstOrNull { it.item == heldType } ?: return
+		event.isCancelled = true
+
+		if (held.power!! < blasterType.powerCost) {
+			event.player.sendRichActionBar("<red>Out of Power!")
+			return
+		}
+
+		held.power = held.power!! - blasterType.powerCost
+		event.player.setCooldown(held.type, blasterType.cooldown)
+
+		blasterType.projectile.shoot()
+	}
+}

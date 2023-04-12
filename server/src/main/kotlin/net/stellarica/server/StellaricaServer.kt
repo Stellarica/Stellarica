@@ -77,6 +77,7 @@ class StellaricaServer : JavaPlugin() {
 			MultiblockHandler,
 			CustomItemHandler,
 			CustomBlockHandler,
+			BlasterListener
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		// Register commands here

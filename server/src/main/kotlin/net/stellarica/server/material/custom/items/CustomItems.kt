@@ -28,6 +28,16 @@ object CustomItems {
 		CustomBlocks.ADAMANTITE_BLOCK
 	)
 
+	val TEST_BLASTER: CustomItem = CustomItem(
+		StellaricaServer.identifier("test_blaster"),
+		"<aqua>Blaster",
+		listOf("<dark_gray>pew pew"),
+		ItemType.of(Items.GOLDEN_SHOVEL),
+		2,
+		null,
+		maxPower = 100
+	)
+
 	fun all(): Set<CustomItem> { // can't do lazy{} because reflection
 		return this::class.java.declaredFields.mapNotNull { it.get(this) as? CustomItem }.toSet()
 	}
