@@ -1,10 +1,10 @@
 package net.stellarica.server.crafts.starships.subsystems.weapons
 
 import net.stellarica.common.utils.OriginRelative
-import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.AcceleratingProjectile
-import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.InstantProjectile
-import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.LinearProjectile
-import net.stellarica.server.crafts.starships.subsystems.weapons.projectiles.Projectile
+import net.stellarica.server.projectiles.AcceleratingProjectile
+import net.stellarica.server.projectiles.InstantProjectile
+import net.stellarica.server.projectiles.LinearProjectile
+import net.stellarica.server.projectiles.Projectile
 import net.stellarica.server.multiblocks.MultiblockType
 import net.stellarica.server.multiblocks.Multiblocks
 import org.bukkit.Color

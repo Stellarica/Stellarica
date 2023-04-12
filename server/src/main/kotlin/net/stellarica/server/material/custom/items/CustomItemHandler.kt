@@ -1,4 +1,4 @@
-package net.stellarica.server.material.custom.item
+package net.stellarica.server.material.custom.items
 
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType

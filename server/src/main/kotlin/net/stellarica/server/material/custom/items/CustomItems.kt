@@ -1,9 +1,9 @@
-package net.stellarica.server.material.custom.item
+package net.stellarica.server.material.custom.items
 
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Items
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.material.custom.block.CustomBlocks
+import net.stellarica.server.material.custom.blocks.CustomBlocks
 import net.stellarica.server.material.type.item.ItemType
 
 @Suppress("Unused") // iea

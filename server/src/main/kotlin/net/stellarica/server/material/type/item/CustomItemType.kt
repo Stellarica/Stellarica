@@ -5,8 +5,8 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.material.custom.item.CustomItem
-import net.stellarica.server.material.custom.item.power
+import net.stellarica.server.material.custom.items.CustomItem
+import net.stellarica.server.material.custom.items.power
 import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.utils.extensions.asMiniMessage
 import org.bukkit.Material

@@ -8,9 +8,9 @@ import net.stellarica.server.crafts.starships.commands.StarshipCommands
 import net.stellarica.server.crafts.starships.commands.StarshipDebugCommands
 import net.stellarica.server.crafts.starships.listeners.InterfaceListener
 import net.stellarica.server.material.custom.CustomMaterialCommands
-import net.stellarica.server.material.custom.block.CustomBlockHandler
-import net.stellarica.server.material.custom.item.CustomItemHandler
-import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.material.custom.blocks.CustomBlockHandler
+import net.stellarica.server.material.custom.items.CustomItemHandler
+import net.stellarica.server.material.custom.items.CustomItems
 import net.stellarica.server.multiblocks.MultiblockCommands
 import net.stellarica.server.multiblocks.MultiblockHandler
 import net.stellarica.server.multiblocks.Multiblocks

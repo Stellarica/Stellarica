@@ -1,4 +1,4 @@
-package net.stellarica.server.material.custom.item
+package net.stellarica.server.material.custom.items
 
 import net.kyori.adventure.text.Component
 import net.stellarica.server.StellaricaServer.Companion.plugin
@@ -11,7 +11,6 @@ import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 
 /**

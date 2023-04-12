@@ -9,7 +9,7 @@ import net.minecraft.core.Direction
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
-import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.material.custom.items.CustomItems
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.utils.Tasks
 import net.stellarica.server.utils.extensions.sendRichActionBar
@@ -18,7 +18,6 @@ import net.stellarica.server.utils.extensions.toLocation
 import net.stellarica.server.utils.extensions.vanilla
 import org.bukkit.Chunk
 import org.bukkit.World
-import org.bukkit.craftbukkit.v1_19_R3.CraftChunk
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action

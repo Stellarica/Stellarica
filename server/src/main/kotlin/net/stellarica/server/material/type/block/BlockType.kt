@@ -1,8 +1,8 @@
 package net.stellarica.server.material.type.block
 
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.material.custom.block.CustomBlock
-import net.stellarica.server.material.custom.block.CustomBlocks
+import net.stellarica.server.material.custom.blocks.CustomBlock
+import net.stellarica.server.material.custom.blocks.CustomBlocks
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.block.data.type.NoteBlock
 import org.bukkit.craftbukkit.v1_19_R3.block.data.CraftBlockData

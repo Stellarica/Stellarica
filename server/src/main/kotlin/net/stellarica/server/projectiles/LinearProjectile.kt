@@ -1,4 +1,4 @@
-package net.stellarica.server.crafts.starships.subsystems.weapons.projectiles;
+package net.stellarica.server.projectiles;
 
 import net.stellarica.server.crafts.Craft
 import net.stellarica.server.utils.extensions.toBlockPos

@@ -1,7 +1,7 @@
-package net.stellarica.server.material.custom.item
+package net.stellarica.server.material.custom.items
 
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.material.custom.block.CustomBlock
+import net.stellarica.server.material.custom.blocks.CustomBlock
 import net.stellarica.server.material.type.item.VanillaItemType
 import org.bukkit.enchantments.Enchantment
 
