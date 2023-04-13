@@ -15,7 +15,7 @@ interface MultiblockType {
 	val displayName: String
 	val id: ResourceLocation
 	val blocks: Map<OriginRelative, BlockMatcher>
-	val dataType : MultiblockData
+	val dataType: MultiblockData
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {

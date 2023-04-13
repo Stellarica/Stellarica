@@ -21,7 +21,7 @@ class AcceleratingProjectile(
 	private val acceleration: Double,
 
 	private val redstoneParticleData: Particle.DustOptions? = null
-):
+) :
 	Projectile<AcceleratingProjectile.AcceleratingProjectileData> {
 
 	override val density = 5
@@ -33,6 +33,7 @@ class AcceleratingProjectile(
 	override fun shoot(shooter: LivingEntity, origin: Location) {
 		shootA(shooter, origin)
 	}
+
 	private fun shootA(shooter: Any, origin: Location) {
 		origin.world.playSound(origin, sound, SoundCategory.HOSTILE, 2.0f, 0f)
 		cast(origin, AcceleratingProjectileData(shooter, initialSpeed))

@@ -32,19 +32,21 @@ object MultiblockHandler : Listener {
 
 	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() }
 
-	init { Tasks.syncRepeat(5, 10) {
-		for ((_, mbSet) in multiblocks) {
-			val invalid = mutableSetOf<MultiblockInstance>()
-			for (multiblock in mbSet) {
-				if (!multiblock.validate()) {
-					invalid.add(multiblock)
-				} else {
-					multiblock.type.tick(multiblock)
+	init {
+		Tasks.syncRepeat(5, 10) {
+			for ((_, mbSet) in multiblocks) {
+				val invalid = mutableSetOf<MultiblockInstance>()
+				for (multiblock in mbSet) {
+					if (!multiblock.validate()) {
+						invalid.add(multiblock)
+					} else {
+						multiblock.type.tick(multiblock)
+					}
 				}
+				mbSet.removeAll(invalid)
 			}
-			mbSet.removeAll(invalid)
 		}
-	}}
+	}
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()

@@ -1,12 +1,12 @@
 package net.stellarica.server.craft.starship.subsystem.weapon
 
 import net.stellarica.common.util.OriginRelative
+import net.stellarica.server.multiblock.MultiblockType
+import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.projectile.AcceleratingProjectile
 import net.stellarica.server.projectile.InstantProjectile
 import net.stellarica.server.projectile.LinearProjectile
 import net.stellarica.server.projectile.Projectile
-import net.stellarica.server.multiblock.MultiblockType
-import net.stellarica.server.multiblock.Multiblocks
 import org.bukkit.Color
 import org.bukkit.Particle
 import org.bukkit.Sound

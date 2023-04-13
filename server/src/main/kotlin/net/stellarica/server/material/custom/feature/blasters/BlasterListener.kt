@@ -9,7 +9,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 
-object BlasterListener: Listener {
+object BlasterListener : Listener {
 	@EventHandler
 	fun onPlayerClick(event: PlayerInteractEvent) {
 		if (event.action != Action.LEFT_CLICK_BLOCK && event.action != Action.LEFT_CLICK_AIR) return

@@ -1,7 +1,6 @@
 package net.stellarica.server.craft.starship
 
 import net.minecraft.core.Direction
-import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.craft.starship.control.StarshipInterfaceScreen
 import net.stellarica.server.util.extension.toBlockPos
 import org.bukkit.Material

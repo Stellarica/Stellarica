@@ -47,7 +47,7 @@ object Tasks {
 	// (allows blocks to call cancel(), etc.)
 	// can't be inline because BukkitRunnable is a class, however BukkitTask is an interface
 	// might be worth looking into in the future
-	class Run(inline val block: BukkitRunnable.() -> Unit): BukkitRunnable() {
+	class Run(inline val block: BukkitRunnable.() -> Unit) : BukkitRunnable() {
 		override fun run() {
 			this.block()
 		}

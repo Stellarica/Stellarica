@@ -19,7 +19,7 @@ class InstantProjectile(
 	private val range: Int,
 
 	private val redstoneParticleData: Particle.DustOptions? = null
-): Projectile<InstantProjectile.InstantProjectileData> {
+) : Projectile<InstantProjectile.InstantProjectileData> {
 
 	data class InstantProjectileData(val shooter: Any, var hasShot: Boolean = false)
 
@@ -33,6 +33,7 @@ class InstantProjectile(
 	override fun shoot(shooter: LivingEntity, origin: Location) {
 		shootA(shooter, origin)
 	}
+
 	private fun shootA(shooter: Any, origin: Location) {
 		origin.world.playSound(origin, sound, SoundCategory.HOSTILE, 2.0f, 0f)
 		cast(origin, InstantProjectileData(shooter))

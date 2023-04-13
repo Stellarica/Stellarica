@@ -224,7 +224,7 @@ open class Craft(
 
 		// move multiblocks, and remove any that no longer exist (i.e. were destroyed)
 		val mbs = mutableSetOf<MultiblockInstance>()
-		multiblocks.removeIf { pos -> getMultiblock(pos)?.also{mbs.add(it)} == null}
+		multiblocks.removeIf { pos -> getMultiblock(pos)?.also { mbs.add(it) } == null }
 		for (mb in mbs) {
 			val new = MultiblockInstance(
 				mb.id,

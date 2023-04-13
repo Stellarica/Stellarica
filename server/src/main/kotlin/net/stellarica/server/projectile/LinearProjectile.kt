@@ -20,7 +20,7 @@ class LinearProjectile(
 	private val speed: Double,
 
 	private val redstoneParticleData: Particle.DustOptions? = null
-):
+) :
 	Projectile<LinearProjectile.LinearProjectileData> {
 
 	override val density = 5

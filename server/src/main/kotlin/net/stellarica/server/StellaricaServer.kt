@@ -3,10 +3,10 @@ package net.stellarica.server
 import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
+import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.craft.starship.StarshipCommands
 import net.stellarica.server.craft.starship.StarshipDebugCommands
-import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.material.custom.CustomMaterialCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.feature.blasters.BlasterListener
@@ -92,9 +92,9 @@ class StellaricaServer : JavaPlugin() {
 
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
-		) { CustomItems.all().map { it.id.path }}
+		) { CustomItems.all().map { it.id.path } }
 		commandManager.commandCompletions.registerCompletion(
 			"multiblocks"
-		) { Multiblocks.all().map { it.id.path }}
+		) { Multiblocks.all().map { it.id.path } }
 	}
 }

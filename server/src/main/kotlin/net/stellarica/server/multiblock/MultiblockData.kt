@@ -6,11 +6,11 @@ import kotlinx.serialization.Serializable
 sealed interface MultiblockData
 
 @Serializable
-open class EmptyMultiblockData: MultiblockData {
+open class EmptyMultiblockData : MultiblockData {
 	var power = 0
 }
 
 @Serializable
-open class PowerableMultiblockData: MultiblockData {
+open class PowerableMultiblockData : MultiblockData {
 	var power = 0
 }

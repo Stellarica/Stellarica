@@ -10,8 +10,10 @@ import org.bukkit.inventory.ItemStack
  * @param lore the lore of the item
  */
 fun namedItem(material: Material, name: String, lore: MutableList<String>? = null): ItemStack {
-	return ItemStack(material).also{ it.editMeta { meta ->
-		meta.displayName(name.asMiniMessage)
-		meta.lore(lore?.map { it.asMiniMessage})
-	}}
+	return ItemStack(material).also {
+		it.editMeta { meta ->
+			meta.displayName(name.asMiniMessage)
+			meta.lore(lore?.map { it.asMiniMessage })
+		}
+	}
 }

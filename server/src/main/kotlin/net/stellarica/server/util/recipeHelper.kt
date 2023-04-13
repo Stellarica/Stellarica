@@ -13,10 +13,14 @@ import org.bukkit.inventory.ShapelessRecipe
  * @see registerShapelessRecipe
  */
 private fun registerShapedRecipe(itemStack: ItemStack, matrix: List<ItemType?>) {
-	val key =  StellaricaServer.namespacedKey("recipe_${ItemType.of(itemStack).getStringId()}")
+	val key = StellaricaServer.namespacedKey("recipe_${ItemType.of(itemStack).getStringId()}")
 	if (Bukkit.getRecipe(key) != null) {
 		StellaricaServer.klogger.warn { "A recipe is already registered with key ${key.key}!" }
-		StellaricaServer.klogger.warn { "Cannot register bukkit shapeless recipe for ${ItemType.of(itemStack).getStringId()}" }
+		StellaricaServer.klogger.warn {
+			"Cannot register bukkit shapeless recipe for ${
+				ItemType.of(itemStack).getStringId()
+			}"
+		}
 		return
 	}
 	val recipe = ShapedRecipe(key, itemStack).shape("abc", "def", "ghi")

@@ -16,7 +16,7 @@ import net.stellarica.server.multiblock.matching.SingleBlockMatcher
 
 @Suppress("Unused") // iea
 object Multiblocks {
-	val LIGHT_RAILGUN = object: MultiblockType {
+	val LIGHT_RAILGUN = object : MultiblockType {
 		override val displayName = "Light Railgun"
 		override val id = identifier("light_railgun")
 		override val blocks = mapOf(
@@ -42,7 +42,7 @@ object Multiblocks {
 	}
 
 
-	val PULSE_LASER = object: MultiblockType {
+	val PULSE_LASER = object : MultiblockType {
 		override val displayName = "Pulse Laser"
 		override val id = identifier("pulse_laser")
 		override val blocks = mapOf(
@@ -65,7 +65,7 @@ object Multiblocks {
 		}
 	}
 
-	val PLASMA_CANNON = object: MultiblockType {
+	val PLASMA_CANNON = object : MultiblockType {
 		override val displayName = "Plasma Cannon"
 		override val id = identifier("plasma_cannon")
 		override val blocks = mapOf(
@@ -101,8 +101,8 @@ object Multiblocks {
 
 		}
 	}
-	
-	val BATTLE_CANNON = object: MultiblockType {
+
+	val BATTLE_CANNON = object : MultiblockType {
 		override val displayName = "Battle Cannon"
 		override val id = identifier("battle_cannon")
 		override val blocks = mapOf(
@@ -116,7 +116,7 @@ object Multiblocks {
 			Pos(7, 0, 0) matchTag BlockTags.WALLS,
 			Pos(0, -1, 0) matchTag BlockTags.SLABS,
 			Pos(1, -1, 0) match Blocks.DISPENSER,
-		 	Pos(2, -1, 0) match Blocks.IRON_BLOCK,
+			Pos(2, -1, 0) match Blocks.IRON_BLOCK,
 			Pos(3, -1, 0) matchTag BlockTags.SLABS
 		)
 
@@ -127,7 +127,7 @@ object Multiblocks {
 		}
 	}
 
-	val TINY_SHIELD = object: MultiblockType {
+	val TINY_SHIELD = object : MultiblockType {
 		override val displayName = "Tiny Shield"
 		override val id = identifier("tiny_shield")
 		override val blocks = mapOf(
@@ -146,7 +146,7 @@ object Multiblocks {
 		}
 	}
 
-	val SMALL_SHIELD = object: MultiblockType {
+	val SMALL_SHIELD = object : MultiblockType {
 		override val displayName = "Small Shield"
 		override val id = identifier("small_shield")
 		override val blocks = mapOf(
