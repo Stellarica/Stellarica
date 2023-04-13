@@ -208,44 +208,64 @@ object PipeHandler : Listener {
 	}
 
 	private fun validateActiveNetworks() {
-		println("\nvalidating pipe networks..")
-		val removedNetworks = mutableSetOf<PipeNetwork>()
-		for (active in activeNetworks.values.flatten()) {
+		for (net in activeNetworks.values.flatten()) {
+			doStuffToNetwork(net)
+		}
+	}
 
-			if (active in removedNetworks) continue
 
-			// todo: deduplicate code lol
-			val undirectedNodes = mutableSetOf<Pair<OriginRelative, OriginRelative>>()
-			val inputs = mutableSetOf<OriginRelative>()
-			val outputs = mutableSetOf<OriginRelative>()
+	fun doStuffToNetwork(network: PipeNetwork) {
+		activeNetworks[network.world]!!.remove(network)
 
-			detectConnectedPairs(
-				active,
-				OriginRelative(0, 0, 0),
-				undirectedNodes,
-				mutableSetOf(OriginRelative(0, 0, 0)),
-				inputs,
-				outputs
-			)
+		// get all valid connections
+		// todo: deduplicate code lol
+		val undirectedNodes = mutableSetOf<Pair<OriginRelative, OriginRelative>>()
+		val inputs = mutableSetOf<OriginRelative>()
+		val outputs = mutableSetOf<OriginRelative>()
 
-			val allConnections = undirectedNodes.map { mutableSetOf(it.first, it.second) }.toSet()
-			val existingConnections = mutableSetOf<Set<OriginRelative>>()
+		detectConnectedPairs(
+			network,
+			OriginRelative(0, 0, 0),
+			undirectedNodes,
+			mutableSetOf(OriginRelative(0, 0, 0)),
+			inputs,
+			outputs
+		)
 
-			for ((loc, node) in active.nodes) {
-				for (connection in node.connections) {
-					existingConnections.add(setOf(loc, connection))
-				}
-			}
-			if (active !in removedNetworks && isValidNetwork(active)) {
-				trimInvalidNodes(active, existingConnections, allConnections)
-				removedNetworks.addAll(expandNetwork(active, existingConnections, allConnections))
-			} else {
-				removedNetworks.add(active)
+		val allConnections = undirectedNodes.map { mutableSetOf(it.first, it.second) }.toSet()
+		val existingConnections = mutableSetOf<Set<OriginRelative>>()
+
+		for ((loc, node) in network.nodes) {
+			for (connection in node.connections) {
+				existingConnections.add(setOf(loc, connection))
 			}
 		}
-		for (removed in removedNetworks) {
-			activeNetworks[removed.world]!!.remove(removed)
+
+		val newValidConnections = allConnections.filter { it !in existingConnections }
+		val newInvalidConnections = existingConnections.filter { it !in allConnections }
+
+		// there are now a few cases:
+		// - nothing changed, add it back to activeNetworks and we're done here
+		// - a connection was added
+		//	Either
+		// 		- we can add it to this network if it isn't in one
+		// 		- or we need to merge networks
+		// - a connection was removed
+		// Either
+		//		- we can remove it from this network, and it's no longer part of one
+		// 		- we need to split the network
+
+		if (newValidConnections.isEmpty() && newInvalidConnections.isEmpty()) {
+			// do nothing, nothing changed
+			activeNetworks[network.world]!!.add(network)
+			return
 		}
+
+		val networks = mutableSetOf(network)
+		// split any broken connections first
+
+
+		// and then merge
 	}
 
 	/** Whether this network is valid */
@@ -253,126 +273,100 @@ object PipeHandler : Listener {
 		return active.nodes.isNotEmpty()
 	}
 
-	/**
-	 *
-	 * @return any networks that were consumed
-	 */
-	private fun expandNetwork(active: PipeNetwork, existingConnections: Set<Set<OriginRelative>>, validConnections: Set<Set<OriginRelative>>): Set<PipeNetwork> {
-		val consumed = mutableSetOf<PipeNetwork>()
-		for (new in validConnections - existingConnections) {
-			// we didn't previously have these connections, expand the network
+	private fun mergeNetworks(vararg nets: PipeNetwork): PipeNetwork {
+		// in theory you can just add one network to another, but that was causing issues
 
-			fun checkForOtherNetwork(rel: OriginRelative): Node {
-				if (rel.getBlockPos(active.origin, active.direction).isPartOfNetwork(active.world)) {
-					println("Found a network to merge to")
-					// connecting two networks together
-					val other = getPipeNetwork(rel.getBlockPos(active.origin, active.direction), active.world)!!
+		val world = nets.first().world
+		nets.forEach { if (it.world != world) throw IllegalStateException() }
 
-					// fix relative coordinates
-					val offset = other.origin.immutable().subtract(active.origin)
-					shiftNetworkCoordinates(other, offset)
+		data class AbsoluteNode(val pos: BlockPos, val content: Int, val connections: Set<BlockPos>)
 
-					active.nodes.putAll(other.nodes )
+		val nodes = mutableListOf<AbsoluteNode>()
 
-					consumed.add(other)
-					return active.nodes[rel]!!
-				} else {
-					// no other network, just create the node
-					println("No existing network found, creating new node")
-					return NormalPipeNode(rel) // todo: use the proper type
-				}
+		for (net in nets) {
+			for (node in net.nodes) {
+				nodes.add(AbsoluteNode(
+					node.key.getBlockPos(net.origin, net.direction),
+					node.value.content,
+					node.value.connections.map { it.getBlockPos(net.origin, net.direction) }.toSet()
+				))
 			}
-
-			val node1 = active.nodes.getOrPut(new.first()) { checkForOtherNetwork(new.first()) }
-			val node2 = active.nodes.getOrPut(new.last()) { checkForOtherNetwork(new.last()) }
-			node1.connections.add(node2.pos)
-			node2.connections.add(node1.pos)
-			println("Connected: ${node1.pos} and ${node2.pos}")
 		}
-		return consumed
+
+		val origin = nets.first().origin
+
+		val newNodes = mutableMapOf<OriginRelative, Node>()
+		for (node in nodes) {
+			val pos = OriginRelative.getOriginRelative(node.pos, origin, Direction.NORTH)
+			newNodes[pos] = (NormalPipeNode( // todo: fix
+				pos
+			).also {
+				it.connections = node.connections.map { OriginRelative.getOriginRelative(it, origin, Direction.NORTH) }.toMutableSet()
+				it.content = node.content
+			})
+		}
+
+
+		return PipeNetwork(
+			origin,
+			world,
+			Direction.NORTH,
+			newNodes
+		)
 	}
 
-	private fun shiftNetworkCoordinates(net: PipeNetwork, offset: Vec3i) {
-		val rel = OriginRelative(offset.x, offset.y, offset.z)
-		net.origin = net.origin.immutable().offset(offset)
+	private fun splitNetwork(network: PipeNetwork, p1: BlockPos, p2: BlockPos): Set<PipeNetwork> {
+		val o1 = OriginRelative.getOriginRelative(p1, network.origin, network.direction)
+		val o2 = OriginRelative.getOriginRelative(p1, network.origin, network.direction)
 
-		net.nodes = net.nodes.mapKeys {
-			it.value.connections = it.value.connections.map { pos ->
-				pos.plus(rel)
-			}.toMutableSet()
-			it.key.plus(OriginRelative(offset.x, offset.y, offset.z))
-		}.toMutableMap()
-	}
-
-
-	private fun trimInvalidNodes(active: PipeNetwork, existingConnections: Set<Set<OriginRelative>>, validConnections: Set<Set<OriginRelative>>) {
-		for (existingConnection in existingConnections) {
-			if (validConnections.contains(existingConnection)) continue
-
-			// this connection is invalid
-			println("invalid connection $existingConnection")
-
-			// remove the connection
-			// if some other invalid connection caused the node to go poof, now is the time to check
-			if (active.nodes[existingConnection.first()]?.connections?.remove(existingConnection.last()) == null || active.nodes[existingConnection.last()]?.connections?.remove(existingConnection.first())  == null) {
-				println("invalid node in connection $existingConnection")
-				// cant make a new network out of an invalid node
-				// the connection was already removed so we can just abort
-				continue
-			}
-
-			// determine the nodes of both sides of the break
-			// note that it still might be the same network if there was a loop
-			fun recurse(pos: OriginRelative, checked: MutableSet<OriginRelative>) {
-				checked.add(pos)
-				for (connection in active.nodes[pos]?.connections ?: setOf()) {
-					if (!checked.contains(connection)) {
-						recurse(connection, checked)
-					}
+		// determine the nodes of both sides of the break
+		// note that it still might be the same network if there was a loop
+		fun recurse(pos: OriginRelative, checked: MutableSet<OriginRelative>) {
+			checked.add(pos)
+			for (connection in network.nodes[pos]?.connections ?: setOf()) {
+				if (!checked.contains(connection)) {
+					recurse(connection, checked)
 				}
 			}
-			val checked1 = mutableSetOf<OriginRelative>()
-			recurse(existingConnection.first(), checked1)
-			val checked2 = mutableSetOf<OriginRelative>()
-			recurse(existingConnection.last(), checked2)
-
-			if (checked1 == checked2) {
-				// there was a loop, it's still the same network, we don't need to do anything
-				println("Still the same network, no need to split.")
-				continue
-			}
-
-			println("Splitting network")
-			// otherwise, we need to split the network
-			// figure out which side contains the current origin, that will stay as this one
-			val current = if (checked1.contains(OriginRelative(0, 0, 0))) checked1 else checked2
-			val other = if (checked1.contains(OriginRelative(0, 0, 0))) checked2 else checked1
-
-
-			val newOrigin = (if (current.contains(existingConnection.last())) existingConnection.first() else existingConnection.last())
-				.getBlockPos(active.origin, active.direction)
-			val offset = newOrigin.immutable().subtract(active.origin)
-
-			if (getPipeNetwork(newOrigin, active.world) != active) {
-				println("Broken part is already part of another network (new?) might be a bug")
-				continue
-			}
-
-			println("New origin: $newOrigin")
-			println("Offset: $offset")
-
-			val newNet = PipeNetwork(active.origin, active.world, Direction.NORTH)
-			activeNetworks[active.world]!!.add(newNet)
-
-			// move the disconnected nodes to the new network and remove them from the current one
-			val disconnected = active.nodes.filter { it.key in other }
-			println("${disconnected.size} disconnected nodes: $disconnected")
-			newNet.nodes.putAll(disconnected)
-			active.nodes = active.nodes.filter { it.key !in other }.toMutableMap()
-
-			// adjust the origin relative coordinates of the other one to reflect its new origin
-			shiftNetworkCoordinates(newNet, offset)
-			println("New network: ${newNet.nodes}")
 		}
+		val checked1 = mutableSetOf<OriginRelative>()
+		recurse(o1, checked1)
+		val checked2 = mutableSetOf<OriginRelative>()
+		recurse(o2, checked2)
+
+		if (checked1 == checked2) {
+			// there was a loop, it's still the same network, we don't need to do anything
+			println("Still the same network, no need to split.")
+			return setOf(network)
+		}
+
+		println("Splitting network")
+
+		data class AbsoluteNode(val content: Int, val connections: Set<BlockPos>)
+
+		val nodes = mutableMapOf<BlockPos, AbsoluteNode>()
+		for (node in network.nodes) {
+			nodes[node.key.getBlockPos(network.origin, network.direction)] = (AbsoluteNode(
+				node.value.content,
+				node.value.connections.map { it.getBlockPos(network.origin, network.direction) }.toSet()
+			))
+		}
+
+		val nets = mutableSetOf<PipeNetwork>()
+		for (n in arrayOf(checked1, checked2)) {
+			val g = n.map { it.getBlockPos(network.origin, network.direction)}
+			val newNetwork = PipeNetwork(g.first(), network.world, Direction.NORTH)
+			for (node in g) {
+				val pos = OriginRelative.getOriginRelative(node, newNetwork.origin, newNetwork.direction)
+				newNetwork.nodes[pos] = NormalPipeNode( // todo: fix
+					pos
+				).also {
+					it.content = nodes[node]!!.content
+					it.connections = nodes[node]!!.connections.map { OriginRelative.getOriginRelative(it, newNetwork.origin, newNetwork.direction)}.toMutableSet()
+				}
+			}
+			nets.add(newNetwork)
+		}
+		return nets.toSet()
 	}
 }

@@ -32,7 +32,7 @@ class PipeNetwork(
 	fun isInLoadedChunks(): Boolean {
 		for (pos in nodes.keys) {
 			val c = OriginRelative.getBlockPos(pos, origin, direction)
-			if (world.isChunkLoaded(c.x, c.z)) return true
+			if (world.isChunkLoaded(world.getChunkAt(c.toLocation(world)))) return true
 		}
 		return false
 	}
