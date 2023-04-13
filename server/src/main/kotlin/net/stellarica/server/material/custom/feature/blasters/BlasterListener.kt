@@ -23,6 +23,8 @@ object BlasterListener: Listener {
 			return
 		}
 
+		if (event.player.getCooldown(held.type) > 0) return
+
 		held.power = held.power!! - blasterType.powerCost
 		event.player.setCooldown(held.type, blasterType.cooldown)
 
