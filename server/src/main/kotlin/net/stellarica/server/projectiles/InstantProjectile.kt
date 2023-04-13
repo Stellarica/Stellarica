@@ -6,10 +6,13 @@ import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Sound
 import org.bukkit.SoundCategory
+import org.bukkit.entity.LivingEntity
 import org.bukkit.util.RayTraceResult
 
 class InstantProjectile(
 	private val explosionPower: Float,
+	private val entityDamage: Double,
+
 	private val particle: Particle,
 	private val sound: Sound,
 
@@ -18,19 +21,31 @@ class InstantProjectile(
 	private val redstoneParticleData: Particle.DustOptions? = null
 ): Projectile<InstantProjectile.InstantProjectileData> {
 
-	data class InstantProjectileData(val shooter: Craft, var hasShot: Boolean = false)
+	data class InstantProjectileData(val shooter: Any, var hasShot: Boolean = false)
 
 	override val time = 5 // value is basically ignored
 	override val density = 5
 
 	override fun shoot(shooter: Craft, origin: Location) {
+		shootA(shooter, origin)
+	}
+
+	override fun shoot(shooter: LivingEntity, origin: Location) {
+		shootA(shooter, origin)
+	}
+	private fun shootA(shooter: Any, origin: Location) {
 		origin.world.playSound(origin, sound, SoundCategory.HOSTILE, 2.0f, 0f)
 		cast(origin, InstantProjectileData(shooter))
 	}
 
 	override fun onHitBlockOrEntity(data: InstantProjectileData, res: RayTraceResult): Boolean {
-		if (!data.shooter.contains(res.hitBlock?.toBlockPos())) // no ship suicide
-			res.hitBlock?.location?.createExplosion(explosionPower, false, true)
+		if (data.shooter is Craft) {
+			if (data.shooter.contains(res.hitBlock?.toBlockPos())) return false;// no ship suicide
+		} else if (data.shooter is LivingEntity) {
+			if (res.hitEntity == data.shooter) return false
+			else (res.hitEntity as? LivingEntity)?.damage(entityDamage)
+		}
+		if (explosionPower > 0) res.hitBlock?.location?.createExplosion(explosionPower, false, true)
 		return false
 	}
 

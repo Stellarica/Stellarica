@@ -7,6 +7,7 @@ import net.stellarica.server.utils.extensions.toBlockPos
 import net.stellarica.server.utils.extensions.toVec3i
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Location
+import org.bukkit.entity.LivingEntity
 import org.bukkit.util.RayTraceResult
 
 interface Projectile<T> {
@@ -17,6 +18,7 @@ interface Projectile<T> {
 	val density: Int
 
 	fun shoot(shooter: Craft, origin: Location)
+	fun shoot(shooter: LivingEntity, origin: Location)
 
 	/** Called every step * density times per tick, at incremental locations */
 	fun onLocationStep(data: T, loc: Location)
