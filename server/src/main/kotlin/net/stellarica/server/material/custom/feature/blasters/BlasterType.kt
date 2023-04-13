@@ -1,9 +1,9 @@
 package net.stellarica.server.material.custom.feature.blasters
 
-import net.stellarica.server.projectiles.LinearProjectile
-import net.stellarica.server.projectiles.Projectile
-import net.stellarica.server.material.custom.items.CustomItem
-import net.stellarica.server.material.custom.items.CustomItems
+import net.stellarica.server.projectile.LinearProjectile
+import net.stellarica.server.projectile.Projectile
+import net.stellarica.server.material.custom.item.CustomItem
+import net.stellarica.server.material.custom.item.CustomItems
 import org.bukkit.Color
 import org.bukkit.Particle
 import org.bukkit.Sound

@@ -1,9 +1,9 @@
 package net.stellarica.server.material.custom.feature.blasters
 
-import net.stellarica.server.material.custom.items.power
+import net.stellarica.server.material.custom.item.power
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
-import net.stellarica.server.utils.extensions.sendRichActionBar
+import net.stellarica.server.util.extension.sendRichActionBar
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action

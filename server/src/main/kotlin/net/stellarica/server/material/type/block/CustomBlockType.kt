@@ -3,7 +3,7 @@ package net.stellarica.server.material.type.block
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
-import net.stellarica.server.material.custom.blocks.CustomBlock
+import net.stellarica.server.material.custom.block.CustomBlock
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.Material
 import org.bukkit.block.data.BlockData

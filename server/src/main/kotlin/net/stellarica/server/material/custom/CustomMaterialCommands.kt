@@ -9,9 +9,9 @@ import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Optional
 import co.aikar.commands.annotation.Subcommand
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.material.custom.items.CustomItem
-import net.stellarica.server.material.custom.items.isPowerable
-import net.stellarica.server.material.custom.items.power
+import net.stellarica.server.material.custom.item.CustomItem
+import net.stellarica.server.material.custom.item.isPowerable
+import net.stellarica.server.material.custom.item.power
 import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
