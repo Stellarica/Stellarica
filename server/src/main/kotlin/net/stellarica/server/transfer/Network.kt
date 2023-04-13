@@ -1,7 +1,7 @@
 package net.stellarica.server.transfer
 
-import net.stellarica.common.utils.OriginRelative
-import net.stellarica.server.transfer.nodes.Node
+import net.stellarica.common.util.OriginRelative
+import net.stellarica.server.transfer.node.Node
 import kotlin.math.min
 
 abstract class Network {

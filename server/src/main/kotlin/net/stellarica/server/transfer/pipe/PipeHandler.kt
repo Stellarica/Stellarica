@@ -1,4 +1,4 @@
-package net.stellarica.server.transfer.pipes
+package net.stellarica.server.transfer.pipe
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -7,18 +7,14 @@ import kotlinx.serialization.json.Json
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Vec3i
-import net.minecraft.server.level.ServerLevel
-import net.stellarica.common.utils.OriginRelative
-import net.stellarica.common.utils.toVec3
+import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.transfer.nodes.Node
-import net.stellarica.server.transfer.nodes.NormalPipeNode
-import net.stellarica.server.transfer.nodes.PipeInputNode
-import net.stellarica.server.transfer.nodes.PipeNode
-import net.stellarica.server.transfer.nodes.PipeOutputNode
-import net.stellarica.server.utils.Tasks
-import net.stellarica.server.utils.extensions.bukkit
-import net.stellarica.server.utils.extensions.vanilla
+import net.stellarica.server.transfer.node.Node
+import net.stellarica.server.transfer.node.NormalPipeNode
+import net.stellarica.server.transfer.node.PipeInputNode
+import net.stellarica.server.transfer.node.PipeNode
+import net.stellarica.server.transfer.node.PipeOutputNode
+import net.stellarica.server.util.Tasks
 import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -46,7 +42,7 @@ object PipeHandler : Listener {
 	val activeNetworks = mutableMapOf<World, MutableSet<PipeNetwork>>()
 	val inactiveNetworks = mutableMapOf<World, MutableSet<PipeNetwork>>()
 
-	fun detectPipeNetwork(origin: BlockPos, world: ServerLevel): PipeNetwork? {
+	fun detectPipeNetwork(origin: BlockPos, world: World): PipeNetwork? {
 		val net = PipeNetwork(origin, world)
 
 		val undirectedNodes = mutableSetOf<Pair<OriginRelative, OriginRelative>>()
@@ -80,7 +76,7 @@ object PipeHandler : Listener {
 		// todo: don't fail silently
 		if (net.nodes.isEmpty() || net.nodes.size > maxNodes) return null
 
-		inactiveNetworks.getOrPut(world.bukkit) { mutableSetOf() }.add(net)
+		inactiveNetworks.getOrPut(world) { mutableSetOf() }.add(net)
 		return net
 	}
 
@@ -135,7 +131,7 @@ object PipeHandler : Listener {
 			net.direction
 		)
 
-		fun toNetwork(world: ServerLevel): PipeNetwork {
+		fun toNetwork(world: World): PipeNetwork {
 			val net = PipeNetwork(BlockPos(oX, oY, oZ), world, direction)
 			net.nodes.putAll(nodes.map { it.pos to it })
 			return net
@@ -151,7 +147,7 @@ object PipeHandler : Listener {
 		)
 			?.let { string ->
 				Json.decodeFromString<Set<PersistentNetworkData>>(string)
-					.map { it.toNetwork(event.world.vanilla) }
+					.map { it.toNetwork(event.world) }
 					.let { inactiveNetworks.getOrPut(event.world) { mutableSetOf() }.addAll(it) }
 			}
 	}
@@ -182,16 +178,16 @@ object PipeHandler : Listener {
 		// check that all active networks are in loaded chunks
 		for (active in activeNetworks.values.flatten()) {
 			if (!active.isInLoadedChunks()) {
-				activeNetworks.getOrPut(active.world.bukkit) { mutableSetOf() }.remove(active)
-				inactiveNetworks.getOrPut(active.world.bukkit) { mutableSetOf() }.add(active)
+				activeNetworks.getOrPut(active.world) { mutableSetOf() }.remove(active)
+				inactiveNetworks.getOrPut(active.world) { mutableSetOf() }.add(active)
 			}
 		}
 
 		// see if any inactive networks are in loaded chunks and should be active
 		for (inactive in inactiveNetworks.values.flatten()) {
 			if (inactive.isInLoadedChunks()) {
-				inactiveNetworks.getOrPut(inactive.world.bukkit) { mutableSetOf() }.remove(inactive)
-				activeNetworks.getOrPut(inactive.world.bukkit) { mutableSetOf() }.add(inactive)
+				inactiveNetworks.getOrPut(inactive.world) { mutableSetOf() }.remove(inactive)
+				activeNetworks.getOrPut(inactive.world) { mutableSetOf() }.add(inactive)
 			}
 		}
 	}
@@ -248,7 +244,7 @@ object PipeHandler : Listener {
 			}
 		}
 		for (removed in removedNetworks) {
-			activeNetworks[removed.world.bukkit]!!.remove(removed)
+			activeNetworks[removed.world]!!.remove(removed)
 		}
 	}
 
@@ -267,10 +263,10 @@ object PipeHandler : Listener {
 			// we didn't previously have these connections, expand the network
 
 			fun checkForOtherNetwork(rel: OriginRelative): Node {
-				if (rel.getBlockPos(active.origin, active.direction).isPartOfNetwork(active.world.bukkit)) {
+				if (rel.getBlockPos(active.origin, active.direction).isPartOfNetwork(active.world)) {
 					println("Found a network to merge to")
 					// connecting two networks together
-					val other = getPipeNetwork(rel.getBlockPos(active.origin, active.direction), active.world.bukkit)!!
+					val other = getPipeNetwork(rel.getBlockPos(active.origin, active.direction), active.world)!!
 
 					// fix relative coordinates
 					val offset = other.origin.immutable().subtract(active.origin)
@@ -357,7 +353,7 @@ object PipeHandler : Listener {
 				.getBlockPos(active.origin, active.direction)
 			val offset = newOrigin.immutable().subtract(active.origin)
 
-			if (getPipeNetwork(newOrigin, active.world.bukkit) != active) {
+			if (getPipeNetwork(newOrigin, active.world) != active) {
 				println("Broken part is already part of another network (new?) might be a bug")
 				continue
 			}
@@ -366,7 +362,7 @@ object PipeHandler : Listener {
 			println("Offset: $offset")
 
 			val newNet = PipeNetwork(active.origin, active.world, Direction.NORTH)
-			activeNetworks[active.world.bukkit]!!.add(newNet)
+			activeNetworks[active.world]!!.add(newNet)
 
 			// move the disconnected nodes to the new network and remove them from the current one
 			val disconnected = active.nodes.filter { it.key in other }

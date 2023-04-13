@@ -1,11 +1,10 @@
-package net.stellarica.server.transfer.pipes
+package net.stellarica.server.transfer.pipe
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.Subcommand
-import net.stellarica.common.utils.OriginRelative
-import net.stellarica.server.utils.extensions.toBlockPos
-import org.bukkit.craftbukkit.v1_19_R3.CraftWorld
+import net.stellarica.common.util.OriginRelative
+import net.stellarica.server.util.extension.toBlockPos
 import org.bukkit.entity.Player
 
 @Suppress("Unused")
@@ -16,7 +15,7 @@ class PipeDebugCommands : BaseCommand() {
 	@Subcommand("detect")
 	fun onDetect(sender: Player) {
 		val b = sender.getTargetBlockExact(10)?.toBlockPos() ?: return
-		pipes[sender] = PipeHandler.detectPipeNetwork(b, (sender.world as CraftWorld).handle)!!
+		pipes[sender] = PipeHandler.detectPipeNetwork(b, sender.world)!!
 	}
 
 	@Subcommand("tick")

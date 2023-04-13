@@ -23,6 +23,7 @@ import net.stellarica.common.util.toVec3
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.MultiblockInstance
+import net.stellarica.server.transfer.pipe.PipeHandler
 import net.stellarica.server.util.extension.bukkit
 import net.stellarica.server.util.extension.sendRichMessage
 import net.stellarica.server.util.extension.toLocation
@@ -195,7 +196,7 @@ open class Craft(
 			val currentBlock = original.getOrElse(current) { world.getBlockState(current) }
 
 			// set the blocks
-			setBlockFast(targetWorld, target, currentBlock.rotate(rotation))
+			targetWorld.setBlockFast(target, currentBlock.rotate(rotation))
 			newDetectedBlocks.add(target)
 
 			// move any entities
@@ -239,11 +240,11 @@ open class Craft(
 		}
 
 		// move pipe networks
-		for (net in PipeHandler.activeNetworks[world.bukkit]!!.filter { it.origin in detectedBlocks }) {
+		for (net in PipeHandler.activeNetworks[world.world]!!.filter { it.origin in detectedBlocks }) {
 			net.origin = modifier(net.origin.toVec3()).toBlockPos()
 			net.direction = net.direction.rotate(rotation)
-			net.world = targetWorld
-			PipeHandler.activeNetworks.getOrPut(targetWorld.bukkit){ mutableSetOf() }.add(net)
+			net.world = targetWorld.world
+			PipeHandler.activeNetworks.getOrPut(targetWorld.world){ mutableSetOf() }.add(net)
 		}
 
 

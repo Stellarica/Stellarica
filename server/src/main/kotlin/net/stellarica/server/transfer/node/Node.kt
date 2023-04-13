@@ -1,7 +1,7 @@
-package net.stellarica.server.transfer.nodes
+package net.stellarica.server.transfer.node
 
 import kotlinx.serialization.Serializable
-import net.stellarica.common.utils.OriginRelative
+import net.stellarica.common.util.OriginRelative
 
 @Serializable
 sealed interface Node {

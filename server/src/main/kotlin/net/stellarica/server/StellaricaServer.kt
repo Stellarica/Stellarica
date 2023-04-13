@@ -16,8 +16,8 @@ import net.stellarica.server.multiblock.MultiblockCommands
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
-import net.stellarica.server.transfer.pipes.PipeDebugCommands
-import net.stellarica.server.transfer.pipes.PipeHandler
+import net.stellarica.server.transfer.pipe.PipeDebugCommands
+import net.stellarica.server.transfer.pipe.PipeHandler
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
