@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 object BlasterListener: Listener {
 	@EventHandler
 	fun onPlayerClick(event: PlayerInteractEvent) {
-		if (event.action != Action.LEFT_CLICK_BLOCK || event.action != Action.LEFT_CLICK_BLOCK) return
+		if (event.action != Action.LEFT_CLICK_BLOCK && event.action != Action.LEFT_CLICK_AIR) return
 		val held = event.player.inventory.itemInMainHand
 		val heldType = (ItemType.of(held) as? CustomItemType)?.item ?: return
 		val blasterType = BlasterType.values().firstOrNull { it.item == heldType } ?: return
@@ -26,6 +26,6 @@ object BlasterListener: Listener {
 		held.power = held.power!! - blasterType.powerCost
 		event.player.setCooldown(held.type, blasterType.cooldown)
 
-		blasterType.projectile.shoot()
+		blasterType.projectile.shoot(event.player, event.player.eyeLocation.clone().subtract(0.0, 0.3, 0.0))
 	}
 }

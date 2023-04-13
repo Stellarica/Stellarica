@@ -24,6 +24,7 @@ enum class WeaponType(
 	LIGHT_RAILGUN(
 		LinearProjectile(
 			1f,
+			5.0,
 			Particle.FLAME,
 			Sound.ITEM_TOTEM_USE,
 			120,
@@ -38,6 +39,7 @@ enum class WeaponType(
 	PLASMA_CANNON(
 		AcceleratingProjectile(
 			2f,
+			8.0,
 			Particle.SONIC_BOOM,
 			Sound.BLOCK_CONDUIT_ACTIVATE,
 			50,
@@ -53,6 +55,7 @@ enum class WeaponType(
 	BATTLE_CANNON(
 		LinearProjectile(
 			2f,
+			8.0,
 			Particle.CAMPFIRE_COSY_SMOKE,
 			Sound.ENTITY_GENERIC_EXPLODE,
 			80,
@@ -67,6 +70,7 @@ enum class WeaponType(
 	PULSE_LASER(
 		InstantProjectile(
 			2f,
+			3.0,
 			Particle.REDSTONE,
 			Sound.ENTITY_BEE_HURT,
 			120,
