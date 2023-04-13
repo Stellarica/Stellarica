@@ -2,7 +2,7 @@ package net.stellarica.server.material.custom.item
 
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
-import net.stellarica.server.utils.Tasks
+import net.stellarica.server.util.Tasks
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent

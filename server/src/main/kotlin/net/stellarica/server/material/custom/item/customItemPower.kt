@@ -4,14 +4,13 @@ import net.kyori.adventure.text.Component
 import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
-import net.stellarica.server.utils.extensions.asMiniMessage
+import net.stellarica.server.util.extension.asMiniMessage
 import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.Damageable
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.math.roundToInt
 
 
 /**

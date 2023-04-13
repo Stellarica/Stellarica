@@ -1,7 +1,6 @@
 package net.stellarica.server.material.custom.block
 
 import net.minecraft.world.entity.item.ItemEntity
-import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.material.type.block.CustomBlockType
 import net.stellarica.server.material.type.item.ItemType
@@ -22,7 +21,6 @@ object CustomBlockHandler : Listener {
 		if (!type.isCustom || type.getBlock() == null) return
 
 		event.blockPlaced.blockData = type.getBlock()!!.getBukkitBlockData()
-		klogger.warn { event.blockPlaced.blockData }
 	}
 
 	@EventHandler
