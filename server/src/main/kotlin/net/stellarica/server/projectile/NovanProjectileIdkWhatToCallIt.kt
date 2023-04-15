@@ -5,6 +5,7 @@ import org.bukkit.Particle
 import org.bukkit.Sound
 
 class NovanProjectileIdkWhatToCallIt(
+	val muzzleFlash: Float,
 	explosionPower: Float,
 	entityDamage: Double,
 	particle: Particle,
@@ -15,6 +16,6 @@ class NovanProjectileIdkWhatToCallIt(
 ) : LinearProjectile(explosionPower, entityDamage, particle, sound, time, speed, redstoneParticleData) {
 	override fun shootA(shooter: Any, origin: Location) {
 		super.shootA(shooter, origin)
-		origin.world.createExplosion(origin, 0f, false, false)
+		origin.world.createExplosion(origin, muzzleFlash, false, false)
 	}
 }

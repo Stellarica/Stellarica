@@ -55,6 +55,7 @@ enum class WeaponType(
 	),
 	BATTLE_CANNON(
 		NovanProjectileIdkWhatToCallIt(
+			4f,
 			2f,
 			8.0,
 			Particle.CAMPFIRE_COSY_SMOKE,
