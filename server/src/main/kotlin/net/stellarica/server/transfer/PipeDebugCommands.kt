@@ -1,9 +1,8 @@
-package net.stellarica.server.transfer.pipe
+package net.stellarica.server.transfer
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.Subcommand
-import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.util.extension.toBlockPos
 import org.bukkit.entity.Player
 
@@ -19,6 +18,11 @@ class PipeDebugCommands : BaseCommand() {
 
 	@Subcommand("addFuel")
 	fun onAddFuel(sender: Player, fuel: Int) {
-		PipeHandler.nodes[sender.world]?.get(sender.getTargetBlockExact(10)?.toBlockPos())?.content?.plus(fuel)
+		PipeHandler.nodes[sender.world]!![sender.getTargetBlockExact(10)?.toBlockPos()]!!.content += fuel
+	}
+
+	@Subcommand("dump")
+	fun onDump() {
+		println(PipeHandler.nodes)
 	}
 }

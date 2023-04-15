@@ -23,7 +23,6 @@ import net.stellarica.common.util.toVec3
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.MultiblockInstance
-import net.stellarica.server.transfer.pipe.PipeHandler
 import net.stellarica.server.util.extension.bukkit
 import net.stellarica.server.util.extension.sendRichMessage
 import net.stellarica.server.util.extension.toLocation

@@ -1,8 +1,7 @@
-package net.stellarica.server.transfer.pipe
+package net.stellarica.server.transfer
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
-import net.stellarica.server.transfer.node.Node
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPos
 import org.bukkit.Material
@@ -68,9 +67,10 @@ object PipeHandler : Listener {
 		if (isNode(pos, world) && nodes[world]?.containsKey(pos) != true) {
 			val newNode = Node(pos)
 			for (otherNode in getConnectionsFrom(pos, world)) {
-				nodes.getOrPut(world) { mutableMapOf() }.getOrPut(otherNode) { Node(otherNode)}.connections.add(pos)
+				nodes.getOrPut(world) { mutableMapOf() }.getOrPut(otherNode) { Node(otherNode) }.connections.add(pos)
 				newNode.connections.add(otherNode)
 			}
+			nodes[world]!!.put(pos, newNode)
 		}
 	}
 
