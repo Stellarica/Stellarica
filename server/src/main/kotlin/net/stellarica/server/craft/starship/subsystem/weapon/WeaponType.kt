@@ -6,6 +6,7 @@ import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.projectile.AcceleratingProjectile
 import net.stellarica.server.projectile.InstantProjectile
 import net.stellarica.server.projectile.LinearProjectile
+import net.stellarica.server.projectile.NovanProjectileIdkWhatToCallIt
 import net.stellarica.server.projectile.Projectile
 import org.bukkit.Color
 import org.bukkit.Particle
@@ -53,7 +54,7 @@ enum class WeaponType(
 		Multiblocks.PLASMA_CANNON
 	),
 	BATTLE_CANNON(
-		LinearProjectile(
+		NovanProjectileIdkWhatToCallIt(
 			2f,
 			8.0,
 			Particle.CAMPFIRE_COSY_SMOKE,

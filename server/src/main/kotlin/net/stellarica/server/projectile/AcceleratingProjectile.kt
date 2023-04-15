@@ -9,7 +9,7 @@ import org.bukkit.SoundCategory
 import org.bukkit.entity.LivingEntity
 import org.bukkit.util.RayTraceResult
 
-class AcceleratingProjectile(
+open class AcceleratingProjectile(
 	private val explosionPower: Float,
 	private val entityDamage: Double,
 

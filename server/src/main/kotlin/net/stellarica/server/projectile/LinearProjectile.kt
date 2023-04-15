@@ -9,7 +9,7 @@ import org.bukkit.SoundCategory
 import org.bukkit.entity.LivingEntity
 import org.bukkit.util.RayTraceResult
 
-class LinearProjectile(
+open class LinearProjectile(
 	private val explosionPower: Float,
 	private val entityDamage: Double,
 
@@ -33,7 +33,7 @@ class LinearProjectile(
 		shootA(shooter, origin)
 	}
 
-	private fun shootA(shooter: Any, origin: Location) {
+	protected open fun shootA(shooter: Any, origin: Location) {
 		origin.world.playSound(origin, sound, SoundCategory.HOSTILE, 2f, 0f)
 		cast(origin, LinearProjectileData(shooter))
 	}
