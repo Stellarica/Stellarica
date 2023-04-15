@@ -30,7 +30,7 @@ interface ItemType {
 		}
 
 		fun of(item: org.bukkit.inventory.ItemStack): ItemType {
-			return item.itemMeta.persistentDataContainer.get(
+			return item.itemMeta?.persistentDataContainer?.get(
 				NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
 				PersistentDataType.STRING,
 			)?.let { id -> ResourceLocation.tryParse(id)?.let { CustomItems.byId(it)?.let { CustomItemType(it) } } }
