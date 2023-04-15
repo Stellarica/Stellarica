@@ -101,4 +101,8 @@ class StellaricaServer : JavaPlugin() {
 			"multiblocks"
 		) { Multiblocks.all().map { it.id.path } }
 	}
+
+	override fun onDisable() {
+		PipeHandler.savePipes()
+	}
 }
