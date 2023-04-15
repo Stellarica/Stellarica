@@ -1,7 +1,6 @@
 package net.stellarica.server.transfer
 
 import net.minecraft.core.BlockPos
-import net.stellarica.server.transfer.PipeHandler
 
 class Node(
 	val pos: BlockPos,

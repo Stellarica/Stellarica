@@ -24,6 +24,7 @@ object PipeHandler : Listener {
 	init {
 		Tasks.syncRepeat(20, 20) {
 			for (world in nodes.keys) {
+				validateConnections(world)
 				tickPipes(world)
 			}
 		}
@@ -59,30 +60,31 @@ object PipeHandler : Listener {
 			node.outputBuffer = 0
 		}
 	}
+	
+	private fun validateConnections(world: World) {
+		nodes[world] ?: return
+
+		nodes[world] = nodes[world]!!.filter { isNode(it.key, world) }.toMutableMap()
+
+		for ((pos, node) in nodes[world]!!) {
+			// will remove any invalid connections
+			node.connections = getConnectionsFrom(pos, world).toMutableSet()
+
+			// will create nodes for any new ones
+			for (con in node.connections) {
+				if (nodes[world]!![con] == null) {
+					nodes[world]!![con] = Node(con)
+				}
+			}
+		}
+	}
 
 	@EventHandler
 	fun onBlockPlaced(event: BlockPlaceEvent) {
 		val pos = event.block.toBlockPos()
 		val world = event.block.world
-		if (isNode(pos, world) && nodes[world]?.containsKey(pos) != true) {
-			val newNode = Node(pos)
-			for (otherNode in getConnectionsFrom(pos, world)) {
-				nodes.getOrPut(world) { mutableMapOf() }.getOrPut(otherNode) { Node(otherNode) }.connections.add(pos)
-				newNode.connections.add(otherNode)
-			}
-			nodes[world]!!.put(pos, newNode)
-		}
-	}
-
-	@EventHandler
-	fun onBlockBroken(event: BlockBreakEvent) {
-		val pos = event.block.toBlockPos()
-		val world = event.block.world
-		if (nodes[world]?.get(pos) != null) {
-			for (connection in nodes[world]!!.remove(pos)!!.connections) {
-				nodes[world]!![connection]!!.connections.remove(pos)
-			}
-		}
+		// it will be automatically connected later
+		if (isNode(pos, world)) nodes.getOrPut(world){mutableMapOf()}[pos] =  Node(pos)
 	}
 
 	@EventHandler
