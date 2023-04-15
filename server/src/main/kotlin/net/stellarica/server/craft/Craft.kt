@@ -240,12 +240,14 @@ open class Craft(
 		}
 
 		// move pipe networks
+		/*
 		for (net in PipeHandler.activeNetworks[world.world]!!.filter { it.origin in detectedBlocks }) {
 			net.origin = modifier(net.origin.toVec3()).toBlockPos()
 			net.direction = net.direction.rotate(rotation)
 			net.world = targetWorld.world
 			PipeHandler.activeNetworks.getOrPut(targetWorld.world){ mutableSetOf() }.add(net)
 		}
+		 */
 
 
 		// finish up
