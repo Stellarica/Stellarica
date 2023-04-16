@@ -6,11 +6,15 @@ import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.multiblock.matching.BlockTagMatcher
 import net.stellarica.server.multiblock.matching.MultiBlockMatcher
 import net.stellarica.server.multiblock.matching.SingleBlockMatcher
+import net.stellarica.server.util.extension.toBlockPos
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
 @Suppress("Unused")
 @CommandAlias("multiblock|mb")
@@ -64,6 +68,23 @@ class MultiblockCommands : BaseCommand() {
 	@Description("Dump loaded multiblocks")
 	fun onDumpMultiblocks(sender: CommandSender) {
 		sender.sendRichMessage(MultiblockHandler.multiblocks.toString())
+	}
+
+	@Subcommand("instance")
+	@Description("Get multiblock instance")
+	fun onInstance(sender: Player) {
+		val block = sender.getTargetBlockExact(10)
+		val mb = MultiblockHandler[block!!.chunk].firstOrNull { it.contains(block.toBlockPos()) } ?: run {
+			sender.sendRichMessage("<red>No multiblock found!")
+			return
+		}
+		sender.sendRichMessage("""
+			Type: ${mb.type.displayName}
+			Origin: ${mb.origin}
+			Direction: ${mb.direction}
+			ID: ${mb.id}
+			Data: ${Json.encodeToString(mb.data)}
+		""".trimIndent())
 	}
 }
 

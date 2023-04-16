@@ -33,7 +33,7 @@ object MultiblockHandler : Listener {
 	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() }
 
 	init {
-		Tasks.syncRepeat(5, 10) {
+		Tasks.syncRepeat(5, 20) {
 			for ((_, mbSet) in multiblocks) {
 				val invalid = mutableSetOf<MultiblockInstance>()
 				for (multiblock in mbSet) {

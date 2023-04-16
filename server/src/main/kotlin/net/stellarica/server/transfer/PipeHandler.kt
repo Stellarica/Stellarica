@@ -21,7 +21,6 @@ import org.bukkit.persistence.PersistentDataType
 import kotlin.math.min
 
 object PipeHandler : Listener {
-	const val maxTransferRate = 50
 	const val maxConnectionLength = 16
 	const val nodeCapacity = 100
 
@@ -41,26 +40,26 @@ object PipeHandler : Listener {
 
 	private fun tickPipes(world: World) {
 		for ((_, node) in nodes[world] ?: mutableMapOf()) {
-			// get demand from connected nodes
-			var demanding = 0
-			for (other in node.connections.mapNotNull { nodes[world]!![it] }) {
-				if (other.content < node.content) {
-					demanding++
-				}
-			}
-			// if there's no demand, don't do anything
-			if (demanding == 0) continue
+			val connections = node.connections.mapNotNull { nodes[world]!![it] }
 
-			for (other in node.connections.mapNotNull { nodes[world]!![it] }) {
-				if (other.content < node.content) {
-					// this means that a node connected to many other nodes may not transfer optimally!
-					val transfer = min(
-						min(min((node.content / demanding), maxTransferRate), other.capacity),
-						node.content - node.outputBuffer
-					)
-					other.inputBuffer += transfer
-					node.outputBuffer += transfer
-				}
+			// get demand from connected nodes
+			val demanding = connections.filter { it.content < node.content }
+			val sum = demanding.sumOf { it.content } + node.content
+
+			// if there's no demand, don't do anything
+			if (demanding.isEmpty()) continue
+			val average = sum / demanding.count()
+
+			for (other in demanding) {
+				val transfer = min(min(
+					average - other.content, // this node's deficit
+					(node.content - average) / demanding.count() // the maximum amount we can afford to give to any one
+				), min (
+					other.capacity - other.content, // the other's empty space
+					0 // no backflow
+				))
+				other.inputBuffer += transfer
+				node.outputBuffer += transfer
 			}
 		}
 

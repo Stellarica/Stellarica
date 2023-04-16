@@ -1,5 +1,6 @@
 package net.stellarica.server.multiblock
 
+import net.minecraft.core.Vec3i
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.tags.BlockTags
 import net.minecraft.tags.TagKey
@@ -9,6 +10,7 @@ import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.material.custom.block.CustomBlock
 import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.multiblock.FuelableMultiblockData.Companion.transferFuelWith
 import net.stellarica.server.multiblock.matching.BlockMatcher
 import net.stellarica.server.multiblock.matching.BlockTagMatcher
 import net.stellarica.server.multiblock.matching.MultiBlockMatcher
@@ -183,9 +185,11 @@ object Multiblocks {
 
 		override val dataType = FuelableMultiblockData()
 
+		val pipeContactPoint = OriginRelative(0, -1, 0)
+
 		override fun tick(instance: MultiblockInstance) {
-			val node = PipeHandler[instance.world][instance.origin.offset(0, -1, 0)] ?: return
-			node.content = node.capacity
+			(instance.data as FuelableMultiblockData).fuel = instance.data.capacity
+			transferFuelWith(instance, pipeContactPoint)
 		}
 	}
 
@@ -202,9 +206,11 @@ object Multiblocks {
 
 		override val dataType = FuelableMultiblockData()
 
+		val pipeContactPoint = OriginRelative(0, -1, 0)
+
 		override fun tick(instance: MultiblockInstance) {
 			(instance.data as FuelableMultiblockData).fuel = 0
-			PipeHandler[instance.world][instance.origin.offset(0, -1, 0)]?.content = 0
+			transferFuelWith(instance, pipeContactPoint)
 		}
 	}
 
@@ -221,8 +227,10 @@ object Multiblocks {
 
 		override val dataType = FuelableMultiblockData()
 
-		override fun tick(instance: MultiblockInstance) {
+		val pipeContactPoint = OriginRelative(0, -1, 0)
 
+		override fun tick(instance: MultiblockInstance) {
+			transferFuelWith(instance, pipeContactPoint)
 		}
 	}
 
