@@ -77,7 +77,7 @@ object PipeHandler : Listener {
 			// todo: if (world.isChunkLoaded(pos))
 
 			// will remove any invalid connections
-			node.connections = getConnectionsFrom(pos, world).toMutableSet()
+			node.connections = getConnectionsFrom(pos, world)
 
 			// will create nodes for any new ones
 			for (con in node.connections) {
@@ -96,7 +96,7 @@ object PipeHandler : Listener {
 		if (isNode(pos, world)) nodes.getOrPut(world){mutableMapOf()}[pos] =  Node(pos)
 	}
 
-	private fun getConnectionsFrom(pos: BlockPos, world: World): Set<BlockPos> {
+	private fun getConnectionsFrom(pos: BlockPos, world: World): MutableSet<BlockPos> {
 		val found = mutableSetOf<BlockPos>()
 		for (rel in listOf(
 			Vec3i(0, 0, 1),
@@ -115,7 +115,7 @@ object PipeHandler : Listener {
 				break
 			}
 		}
-		return found.toSet()
+		return found
 	}
 
 	@Serializable
