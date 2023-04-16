@@ -14,11 +14,11 @@ import org.bukkit.command.CommandSender
 
 @Suppress("Unused")
 @CommandAlias("multiblock|mb")
+@CommandPermission("stellarica.debug.multiblock")
 class MultiblockCommands : BaseCommand() {
 
 	@Subcommand("types")
 	@Description("Dump multiblock types")
-	@CommandPermission("stellarica.multiblocks.debug")
 	@CommandCompletion("@multiblocks")
 	fun onDumpType(sender: CommandSender, id: String) {
 		val type = Multiblocks.byId(identifier(id)) ?: run {
@@ -62,7 +62,6 @@ class MultiblockCommands : BaseCommand() {
 
 	@Subcommand("loaded")
 	@Description("Dump loaded multiblocks")
-	@CommandPermission("stellarica.multiblocks.debug")
 	fun onDumpMultiblocks(sender: CommandSender) {
 		sender.sendRichMessage(MultiblockHandler.multiblocks.toString())
 	}

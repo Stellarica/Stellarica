@@ -240,8 +240,8 @@ open class Craft(
 
 		// move pipes
 		// primarily filter by distance because contains is slower
-		val nodes = PipeHandler.nodes.getOrPut(world.world){ mutableMapOf() }
-		val newNodes = PipeHandler.nodes.getOrPut(targetWorld.world){ mutableMapOf() }
+		val nodes = PipeHandler[world.world]
+		val newNodes = PipeHandler[targetWorld.world]
 		val nearbyPipeNodes = nodes.filter {
 			it.key.distSqr(origin) < 200 * 200 && detectedBlocks.contains(it.key)
 		}.values

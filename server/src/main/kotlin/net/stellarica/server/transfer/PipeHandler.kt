@@ -15,9 +15,7 @@ import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
-import org.bukkit.event.server.PluginDisableEvent
 import org.bukkit.event.world.WorldLoadEvent
-import org.bukkit.event.world.WorldUnloadEvent
 import org.bukkit.persistence.PersistentDataType
 import kotlin.math.min
 
@@ -26,7 +24,10 @@ object PipeHandler : Listener {
 	const val maxConnectionLength = 16
 	const val nodeCapacity = 100
 
-	val nodes = mutableMapOf<World, MutableMap<BlockPos, Node>>()
+	private val nodes = mutableMapOf<World, MutableMap<BlockPos, Node>>()
+	operator fun get(world: World): MutableMap<BlockPos, Node> {
+		return nodes.getOrPut(world) { mutableMapOf() }
+	}
 
 	init {
 		Tasks.syncRepeat(20, 20) {
@@ -52,7 +53,10 @@ object PipeHandler : Listener {
 			for (other in node.connections.mapNotNull { nodes[world]!![it] }) {
 				if (other.content < node.content) {
 					// this means that a node connected to many other nodes may not transfer optimally!
-					val transfer = min(min(min((node.content / demanding), maxTransferRate), other.capacity), node.content - node.outputBuffer)
+					val transfer = min(
+						min(min((node.content / demanding), maxTransferRate), other.capacity),
+						node.content - node.outputBuffer
+					)
 					other.inputBuffer += transfer
 					node.outputBuffer += transfer
 				}
@@ -67,7 +71,7 @@ object PipeHandler : Listener {
 			node.outputBuffer = 0
 		}
 	}
-	
+
 	private fun validateConnections(world: World) {
 		nodes[world] ?: return
 
@@ -93,19 +97,22 @@ object PipeHandler : Listener {
 		val pos = event.block.toBlockPos()
 		val world = event.block.world
 		// it will be automatically connected later
-		if (isNode(pos, world)) nodes.getOrPut(world){mutableMapOf()}[pos] =  Node(pos)
+		if (isNode(pos, world)) nodes.getOrPut(world) { mutableMapOf() }[pos] = Node(pos)
 	}
+
+	// turns out instantiating this every time getConnectionsFrom was called is slow, so here we are.
+	private val offsets = arrayOf(
+		Vec3i(0, 0, 1),
+		Vec3i(0, 0, -1),
+		Vec3i(0, 1, 0),
+		Vec3i(0, -1, 0),
+		Vec3i(1, 0, 0),
+		Vec3i(-1, 0, 0)
+	)
 
 	private fun getConnectionsFrom(pos: BlockPos, world: World): MutableSet<BlockPos> {
 		val found = mutableSetOf<BlockPos>()
-		for (rel in listOf(
-			Vec3i(0, 0, 1),
-			Vec3i(0, 0, -1),
-			Vec3i(0, 1, 0),
-			Vec3i(0, -1, 0),
-			Vec3i(1, 0, 0),
-			Vec3i(-1, 0, 0)
-		)) {
+		for (rel in offsets) {
 			for (dist in 1..maxConnectionLength) {
 				val next = pos.offset(rel.multiply(dist))
 				if (isConnector(next, world)) continue
@@ -123,13 +130,13 @@ object PipeHandler : Listener {
 		val x: Int,
 		val y: Int,
 		val z: Int,
-		val content: Int
+		val c: Int
 	)
 
 	@EventHandler
 	fun onWorldLoad(event: WorldLoadEvent) {
 		if (!nodes[event.world].isNullOrEmpty()) {
-			klogger.warn { "Loading pipe data for ${event.world.name}, but there is already existing data!"}
+			klogger.warn { "Loading pipe data for ${event.world.name}, but there is already existing data!" }
 		}
 		nodes[event.world] = mutableMapOf()
 		event.world.persistentDataContainer.get(
@@ -139,7 +146,7 @@ object PipeHandler : Listener {
 			val data: Array<PersistentNodeData> = Json.decodeFromString(string)
 			for (n in data) {
 				val pos = BlockPos(n.x, n.y, n.z)
-				nodes[event.world]!![pos] = Node(pos, content=n.content)
+				nodes[event.world]!![pos] = Node(pos, content = n.c)
 			}
 		}
 	}
@@ -157,7 +164,7 @@ object PipeHandler : Listener {
 						it.key.z,
 						it.value.content
 					)
-				}).also { println(it) }
+				})
 			)
 		}
 	}
