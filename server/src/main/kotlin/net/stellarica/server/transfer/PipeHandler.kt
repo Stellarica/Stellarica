@@ -22,7 +22,7 @@ import kotlin.math.min
 
 object PipeHandler : Listener {
 	const val maxConnectionLength = 16
-	const val nodeCapacity = 100
+	const val nodeCapacity = 10
 
 	private val nodes = mutableMapOf<World, MutableMap<BlockPos, Node>>()
 	operator fun get(world: World): MutableMap<BlockPos, Node> {
@@ -44,20 +44,25 @@ object PipeHandler : Listener {
 
 			// get demand from connected nodes
 			val demanding = connections.filter { it.content < node.content }
-			val sum = demanding.sumOf { it.content } + node.content
-
-			// if there's no demand, don't do anything
 			if (demanding.isEmpty()) continue
+
+			val sum = demanding.sumOf { it.content }
 			val average = sum / demanding.count()
+
+			// pain and suffering because it means that the order in which
+			// demanding nodes are iterated through can change how much fuel they get
+			// but it works well enough:tm:
+			var available = node.content - average
 
 			for (other in demanding) {
 				val transfer = min(min(
-					average - other.content, // this node's deficit
-					(node.content - average) / demanding.count() // the maximum amount we can afford to give to any one
-				), min (
-					other.capacity - other.content, // the other's empty space
-					0 // no backflow
-				))
+					node.content - other.content, // this node's deficit
+					other.capacity - other.content // the other's empty space
+				),
+					available
+				).coerceAtLeast(0)
+				if (transfer > 0) println("t: $transfer")
+				available -= transfer
 				other.inputBuffer += transfer
 				node.outputBuffer += transfer
 			}
