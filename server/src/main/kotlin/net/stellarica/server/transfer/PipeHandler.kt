@@ -10,6 +10,7 @@ import net.stellarica.server.StellaricaServer
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPos
+import net.stellarica.server.util.extension.toLocation
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.event.EventHandler
@@ -75,10 +76,14 @@ object PipeHandler : Listener {
 	private fun validateConnections(world: World) {
 		nodes[world] ?: return
 
-		nodes[world] = nodes[world]!!.filter { isNode(it.key, world) }.toMutableMap()
+		nodes[world] = nodes[world]!!.filter {
+			val loc = it.key.toLocation(world)
+			!loc.isChunkLoaded || loc.block.type == Material.COPPER_BLOCK
+		}.toMutableMap()
 
 		for ((pos, node) in nodes[world]!!.toMap()) {
-			// todo: if (world.isChunkLoaded(pos))
+			// if the chunk isn't loaded just assume it's valid
+			if(!pos.toLocation(world).isChunkLoaded) continue
 
 			// will remove any invalid connections
 			node.connections = getConnectionsFrom(pos, world)
@@ -97,7 +102,8 @@ object PipeHandler : Listener {
 		val pos = event.block.toBlockPos()
 		val world = event.block.world
 		// it will be automatically connected later
-		if (isNode(pos, world)) nodes.getOrPut(world) { mutableMapOf() }[pos] = Node(pos)
+		if (world.getBlockState(pos.x, pos.y, pos.z).type == Material.COPPER_BLOCK)
+			nodes.getOrPut(world) { mutableMapOf() }[pos] = Node(pos)
 	}
 
 	// turns out instantiating this every time getConnectionsFrom was called is slow, so here we are.
@@ -115,9 +121,10 @@ object PipeHandler : Listener {
 		for (rel in offsets) {
 			for (dist in 1..maxConnectionLength) {
 				val next = pos.offset(rel.multiply(dist))
-				if (isConnector(next, world)) continue
-				if (isNode(next, world)) {
-					found.add(next)
+				when (world.getBlockState(next.x, next.y, next.z).type) {
+					Material.LIGHTNING_ROD -> continue
+					Material.COPPER_BLOCK -> found.add(next)
+					else -> {}
 				}
 				break
 			}
@@ -167,13 +174,5 @@ object PipeHandler : Listener {
 				})
 			)
 		}
-	}
-
-	private fun isConnector(blockPos: BlockPos, world: World): Boolean {
-		return world.getBlockAt(blockPos.x, blockPos.y, blockPos.z).type == Material.LIGHTNING_ROD
-	}
-
-	private fun isNode(blockPos: BlockPos, world: World): Boolean {
-		return world.getBlockAt(blockPos.x, blockPos.y, blockPos.z).type == Material.WAXED_COPPER_BLOCK
 	}
 }
