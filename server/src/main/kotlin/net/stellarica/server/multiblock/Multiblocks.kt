@@ -13,6 +13,7 @@ import net.stellarica.server.multiblock.matching.BlockMatcher
 import net.stellarica.server.multiblock.matching.BlockTagMatcher
 import net.stellarica.server.multiblock.matching.MultiBlockMatcher
 import net.stellarica.server.multiblock.matching.SingleBlockMatcher
+import net.stellarica.server.transfer.PipeHandler
 
 @Suppress("Unused") // iea
 object Multiblocks {
@@ -163,6 +164,62 @@ object Multiblocks {
 
 
 		override val dataType = EmptyMultiblockData()
+
+		override fun tick(instance: MultiblockInstance) {
+
+		}
+	}
+
+	val DEBUG_FUEL_SOURCE = object : MultiblockType {
+		override val displayName = "Fuel Source (debug)"
+		override val id = identifier("debug_fuel_source")
+		override val blocks = mapOf(
+			Pos(0, 0, 0) match Blocks.BARREL,
+			Pos(1, 0, 0) match Blocks.IRON_BLOCK,
+			Pos(-1, 0, 0) match Blocks.IRON_BLOCK,
+			Pos(0, 0, 1) match Blocks.IRON_BLOCK,
+			Pos(0, 0, -1) match Blocks.IRON_BLOCK,
+		)
+
+		override val dataType = FuelableMultiblockData()
+
+		override fun tick(instance: MultiblockInstance) {
+			val node = PipeHandler[instance.world][instance.origin.offset(0, -1, 0)] ?: return
+			node.content = node.capacity
+		}
+	}
+
+	val DEBUG_FUEL_VOID = object : MultiblockType {
+		override val displayName = "Fuel Void (debug)"
+		override val id = identifier("debug_fuel_void")
+		override val blocks = mapOf(
+			Pos(0, 0, 0) match Blocks.BARREL,
+			Pos(1, 0, 0) match Blocks.GOLD_BLOCK,
+			Pos(-1, 0, 0) match Blocks.GOLD_BLOCK,
+			Pos(0, 0, 1) match Blocks.GOLD_BLOCK,
+			Pos(0, 0, -1) match Blocks.GOLD_BLOCK,
+		)
+
+		override val dataType = FuelableMultiblockData()
+
+		override fun tick(instance: MultiblockInstance) {
+			(instance.data as FuelableMultiblockData).fuel = 0
+			PipeHandler[instance.world][instance.origin.offset(0, -1, 0)]?.content = 0
+		}
+	}
+
+	val DEBUG_FUEL_STORAGE = object : MultiblockType {
+		override val displayName = "Fuel Storage (debug)"
+		override val id = identifier("debug_fuel_storage")
+		override val blocks = mapOf(
+			Pos(0, 0, 0) match Blocks.BARREL,
+			Pos(1, 0, 0) match Blocks.EMERALD_BLOCK,
+			Pos(-1, 0, 0) match Blocks.EMERALD_BLOCK,
+			Pos(0, 0, 1) match Blocks.EMERALD_BLOCK,
+			Pos(0, 0, -1) match Blocks.EMERALD_BLOCK,
+		)
+
+		override val dataType = FuelableMultiblockData()
 
 		override fun tick(instance: MultiblockInstance) {
 
