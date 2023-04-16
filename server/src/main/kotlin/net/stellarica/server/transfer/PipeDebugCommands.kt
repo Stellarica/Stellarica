@@ -25,4 +25,12 @@ class PipeDebugCommands : BaseCommand() {
 	fun onDump() {
 		println(PipeHandler.nodes)
 	}
+
+	@Subcommand("sum")
+	fun onSum(sender: Player) {
+		var sum = 0
+		var count = 0
+		PipeHandler.nodes.values.forEach { it.values.forEach { sum += it.content; count++ } }
+		sender.sendRichMessage("$sum across $count nodes")
+	}
 }

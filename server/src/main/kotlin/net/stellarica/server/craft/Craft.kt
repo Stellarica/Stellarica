@@ -23,6 +23,7 @@ import net.stellarica.common.util.toVec3
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.MultiblockInstance
+import net.stellarica.server.transfer.PipeHandler
 import net.stellarica.server.util.extension.bukkit
 import net.stellarica.server.util.extension.sendRichMessage
 import net.stellarica.server.util.extension.toLocation
@@ -208,6 +209,7 @@ open class Craft(
 				entity.level = targetWorld
 				entity.setChanged()
 
+
 				targetWorld.getChunk(target).setBlockEntity(entity)
 			}
 		}
@@ -219,8 +221,6 @@ open class Craft(
 		// set air where we were
 		if (world == targetWorld) detectedBlocks.removeAll(newDetectedBlocks)
 		detectedBlocks.forEach { world.setBlockFast(it, Blocks.AIR.defaultBlockState()) }
-
-		detectedBlocks = newDetectedBlocks
 
 		// move multiblocks, and remove any that no longer exist (i.e. were destroyed)
 		val mbs = mutableSetOf<MultiblockInstance>()
@@ -238,20 +238,27 @@ open class Craft(
 			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkit].add(new)
 		}
 
-		// move pipe networks
-		/*
-		for (net in PipeHandler.activeNetworks[world.world]!!.filter { it.origin in detectedBlocks }) {
-			net.origin = modifier(net.origin.toVec3()).toBlockPos()
-			net.direction = net.direction.rotate(rotation)
-			net.world = targetWorld.world
-			PipeHandler.activeNetworks.getOrPut(targetWorld.world){ mutableSetOf() }.add(net)
-		}
-		 */
+		// move pipes
+		// primarily filter by distance because contains is slower
+		val nodes = PipeHandler.nodes.getOrPut(world.world){ mutableMapOf() }
+		val newNodes = PipeHandler.nodes.getOrPut(targetWorld.world){ mutableMapOf() }
+		val nearbyPipeNodes = nodes.filter {
+			it.key.distSqr(origin) < 200 * 200 && detectedBlocks.contains(it.key)
+		}.values
 
+		nearbyPipeNodes.forEach {  nodes.remove(it.pos) }
+
+		for (node in nearbyPipeNodes) {
+			val newPos = modifier(node.pos.toVec3()).toBlockPos()
+			node.pos = newPos
+			node.connections = node.connections.map { modifier(it.toVec3()).toBlockPos() }.toMutableSet()
+			newNodes[newPos] = node
+		}
 
 		// finish up
 		movePassengers(modifier, rotation)
 		world = targetWorld
+		detectedBlocks = newDetectedBlocks
 		origin = modifier(origin.toVec3()).toBlockPos()
 		direction = direction.rotate(rotation)
 		callback()
