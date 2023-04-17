@@ -22,8 +22,8 @@ import org.bukkit.entity.Player
 @CommandPermission("stellarica.debug.multiblock")
 class MultiblockCommands : BaseCommand() {
 
-	@Subcommand("types")
-	@Description("Dump multiblock types")
+	@Subcommand("type")
+	@Description("Get information about a multiblock type")
 	@CommandCompletion("@multiblocks")
 	fun onDumpType(sender: CommandSender, id: String) {
 		val type = Multiblocks.byId(identifier(id)) ?: run {
