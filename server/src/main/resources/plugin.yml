@@ -4,7 +4,7 @@ version: '${version}'
 description: The primary plugin for the Stellarica minecraft server.
 api-version: 1.19
 load: STARTUP
-authors: [ "trainb0y", "Peter-Crawley", "DoctorXeno" ]
+authors: [ "trainb0y", "Astralchroma", "HyperSoop", "Longy", "NovaManGood2110", "DoctorXeno" ]
 website: https://github.com/Stellarica/Stellarica
 prefix: Stellarica
 permissions:
