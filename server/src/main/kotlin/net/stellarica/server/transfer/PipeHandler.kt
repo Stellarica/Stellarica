@@ -61,7 +61,6 @@ object PipeHandler : Listener {
 				),
 					available
 				).coerceAtLeast(0)
-				if (transfer > 0) println("t: $transfer")
 				available -= transfer
 				other.inputBuffer += transfer
 				node.outputBuffer += transfer
