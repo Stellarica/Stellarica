@@ -9,7 +9,7 @@ import net.stellarica.server.multiblock.MultiblockType
 
 @Suppress("unused")
 object DebugMultiblocks : MultiblockDef() {
-	val DEBUG_FUEL_SOURCE = object : MultiblockType {
+	val DEBUG_FUEL_SOURCE = object : MultiblockType() {
 		override val displayName = "Fuel Source (debug)"
 		override val id = StellaricaServer.identifier("debug_fuel_source")
 		override val blocks = mapOf(
@@ -30,7 +30,7 @@ object DebugMultiblocks : MultiblockDef() {
 		}
 	}
 
-	val DEBUG_FUEL_VOID = object : MultiblockType {
+	val DEBUG_FUEL_VOID = object : MultiblockType() {
 		override val displayName = "Fuel Void (debug)"
 		override val id = StellaricaServer.identifier("debug_fuel_void")
 		override val blocks = mapOf(
@@ -51,7 +51,7 @@ object DebugMultiblocks : MultiblockDef() {
 		}
 	}
 
-	val DEBUG_FUEL_STORAGE = object : MultiblockType {
+	val DEBUG_FUEL_STORAGE = object : MultiblockType() {
 		override val displayName = "Fuel Storage (debug)"
 		override val id = StellaricaServer.identifier("debug_fuel_storage")
 		override val blocks = mapOf(

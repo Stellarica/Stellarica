@@ -9,7 +9,7 @@ import net.stellarica.server.multiblock.MultiblockType
 
 @Suppress("unused")
 object WeaponMultiblocks : MultiblockDef() {
-	val LIGHT_RAILGUN = object : MultiblockType {
+	val LIGHT_RAILGUN = object : MultiblockType() {
 		override val displayName = "Light Railgun"
 		override val id = StellaricaServer.identifier("light_railgun")
 		override val blocks = mapOf(
@@ -26,16 +26,10 @@ object WeaponMultiblocks : MultiblockDef() {
 			pos(2, -1, 0) match Blocks.IRON_BLOCK
 
 		)
-
-		override val dataType = EmptyMultiblockData()
-
-		override fun tick(instance: MultiblockInstance) {
-
-		}
 	}
 
 
-	val PULSE_LASER = object : MultiblockType {
+	val PULSE_LASER = object : MultiblockType() {
 		override val displayName = "Pulse Laser"
 		override val id = StellaricaServer.identifier("pulse_laser")
 		override val blocks = mapOf(
@@ -50,15 +44,9 @@ object WeaponMultiblocks : MultiblockDef() {
 			pos(2, 0, -1) matchTag BlockTags.WALLS,
 			pos(3, 0, -1) matchTag BlockTags.WALLS
 		)
-
-		override val dataType = EmptyMultiblockData()
-
-		override fun tick(instance: MultiblockInstance) {
-
-		}
 	}
 
-	val PLASMA_CANNON = object : MultiblockType {
+	val PLASMA_CANNON = object : MultiblockType() {
 		override val displayName = "Plasma Cannon"
 		override val id = StellaricaServer.identifier("plasma_cannon")
 		override val blocks = mapOf(
@@ -87,15 +75,9 @@ object WeaponMultiblocks : MultiblockDef() {
 			pos(6, 0, -1) matchTag BlockTags.WALLS,
 			pos(7, 0, -1) match Blocks.IRON_BLOCK
 		)
-
-		override val dataType = EmptyMultiblockData()
-
-		override fun tick(instance: MultiblockInstance) {
-
-		}
 	}
 
-	val BATTLE_CANNON = object : MultiblockType {
+	val BATTLE_CANNON = object : MultiblockType() {
 		override val displayName = "Battle Cannon"
 		override val id = StellaricaServer.identifier("battle_cannon")
 		override val blocks = mapOf(
@@ -112,11 +94,5 @@ object WeaponMultiblocks : MultiblockDef() {
 			pos(2, -1, 0) match Blocks.IRON_BLOCK,
 			pos(3, -1, 0) matchTag BlockTags.SLABS
 		)
-
-		override val dataType = EmptyMultiblockData()
-
-		override fun tick(instance: MultiblockInstance) {
-
-		}
 	}
 }

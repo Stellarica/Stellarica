@@ -5,6 +5,7 @@ import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.multiblock.data.EmptyMultiblockData
 import net.stellarica.server.multiblock.data.MultiblockData
 import net.stellarica.server.multiblock.matching.BlockMatcher
 import net.stellarica.server.util.extension.toLocation
@@ -12,11 +13,11 @@ import org.bukkit.World
 import java.util.UUID
 import kotlin.reflect.full.primaryConstructor
 
-interface MultiblockType {
-	val displayName: String
-	val id: ResourceLocation
-	val blocks: Map<OriginRelative, BlockMatcher>
-	val dataType: MultiblockData
+abstract class MultiblockType {
+	abstract val displayName: String
+	abstract val id: ResourceLocation
+	abstract val blocks: Map<OriginRelative, BlockMatcher>
+	open val dataType: MultiblockData = EmptyMultiblockData()
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
@@ -58,5 +59,5 @@ interface MultiblockType {
 		return true // Valid multiblocks of this type there
 	}
 
-	fun tick(instance: MultiblockInstance)
+	open fun tick(instance: MultiblockInstance) {}
 }
