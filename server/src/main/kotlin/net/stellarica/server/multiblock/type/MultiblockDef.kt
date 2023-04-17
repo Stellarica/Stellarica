@@ -11,7 +11,7 @@ import net.stellarica.server.multiblock.matching.MultiBlockMatcher
 import net.stellarica.server.multiblock.matching.SingleBlockMatcher
 
 sealed class MultiblockDef {
-	protected infix fun OriginRelative.matchTag(tag: TagKey<Block>): Pair<OriginRelative, BlockMatcher> {
+	protected infix fun OriginRelative.match(tag: TagKey<Block>): Pair<OriginRelative, BlockMatcher> {
 		return this to BlockTagMatcher(tag)
 	}
 
@@ -27,7 +27,7 @@ sealed class MultiblockDef {
 		return this match BlockType.of(block)
 	}
 
-	protected fun OriginRelative.matchAny(vararg blocks: BlockType): Pair<OriginRelative, BlockMatcher> {
+	protected fun OriginRelative.match(vararg blocks: BlockType): Pair<OriginRelative, BlockMatcher> {
 		return this to MultiBlockMatcher(blocks.toSet())
 	}
 
