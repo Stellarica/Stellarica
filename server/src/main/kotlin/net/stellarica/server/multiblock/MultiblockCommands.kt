@@ -12,6 +12,7 @@ import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.multiblock.matching.BlockTagMatcher
 import net.stellarica.server.multiblock.matching.MultiBlockMatcher
 import net.stellarica.server.multiblock.matching.SingleBlockMatcher
+import net.stellarica.server.multiblock.type.Multiblocks
 import net.stellarica.server.util.extension.toBlockPos
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player

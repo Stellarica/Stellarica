@@ -2,7 +2,8 @@ package net.stellarica.server.craft.starship.subsystem.weapon
 
 import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.multiblock.MultiblockType
-import net.stellarica.server.multiblock.Multiblocks
+import net.stellarica.server.multiblock.type.Multiblocks
+import net.stellarica.server.multiblock.type.WeaponMultiblocks
 import net.stellarica.server.projectile.AcceleratingProjectile
 import net.stellarica.server.projectile.InstantProjectile
 import net.stellarica.server.projectile.LinearProjectile
@@ -34,7 +35,7 @@ enum class WeaponType(
 		PI / 6,
 		OriginRelative(7, 0, 0),
 		1,
-		Multiblocks.LIGHT_RAILGUN
+		WeaponMultiblocks.LIGHT_RAILGUN
 	),
 	PLASMA_CANNON(
 		AcceleratingProjectile(
@@ -50,7 +51,7 @@ enum class WeaponType(
 		PI / 8,
 		OriginRelative(7, 0, 0),
 		1,
-		Multiblocks.PLASMA_CANNON
+		WeaponMultiblocks.PLASMA_CANNON
 	),
 	BATTLE_CANNON(
 		LinearProjectile(
@@ -65,7 +66,7 @@ enum class WeaponType(
 		PI / 6,
 		OriginRelative(7, 0, 0),
 		1,
-		Multiblocks.BATTLE_CANNON
+		WeaponMultiblocks.BATTLE_CANNON
 	),
 	PULSE_LASER(
 		InstantProjectile(
@@ -80,6 +81,6 @@ enum class WeaponType(
 		PI / 7,
 		OriginRelative(4, 0, 0),
 		1,
-		Multiblocks.PULSE_LASER
+		WeaponMultiblocks.PULSE_LASER
 	);
 }
