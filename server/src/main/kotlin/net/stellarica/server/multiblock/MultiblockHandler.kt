@@ -11,6 +11,7 @@ import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.multiblock.type.Multiblocks
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.sendRichActionBar
 import net.stellarica.server.util.extension.toBlockPos
@@ -33,7 +34,7 @@ object MultiblockHandler : Listener {
 	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() }
 
 	init {
-		Tasks.syncRepeat(5, 10) {
+		Tasks.syncRepeat(5, 20) {
 			for ((_, mbSet) in multiblocks) {
 				val invalid = mutableSetOf<MultiblockInstance>()
 				for (multiblock in mbSet) {
@@ -50,7 +51,7 @@ object MultiblockHandler : Listener {
 
 	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()
-		for (type in Multiblocks.all()) {
+		for (type in Multiblocks.all) {
 			val instance = type.detect(origin, world)
 			if (instance != null) {
 				possible.add(instance)
@@ -102,7 +103,7 @@ object MultiblockHandler : Listener {
 		chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)
 			?.let { string ->
 				Json.decodeFromString<Set<PersistentMultiblockData>>(string)
-					.filter { it.type in Multiblocks.all().map { it.id.path } } // make sure it's a valid type still
+					.filter { it.type in Multiblocks.all.map { it.id.path } } // make sure it's a valid type still
 					.map { it.toInstance(chunk.world) }
 					.let { multiblocks.getOrPut(chunk) { mutableSetOf() }.addAll(it) }
 			}

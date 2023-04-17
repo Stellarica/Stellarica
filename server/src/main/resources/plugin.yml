@@ -4,20 +4,13 @@ version: '${version}'
 description: The primary plugin for the Stellarica minecraft server.
 api-version: 1.19
 load: STARTUP
-authors: [ "trainb0y", "Peter-Crawley", "DoctorXeno" ]
+authors: [ "trainb0y", "Astralchroma", "HyperSoop", "Longy", "NovaManGood2110", "DoctorXeno" ]
 website: https://github.com/Stellarica/Stellarica
 prefix: Stellarica
 permissions:
   stellarica.starship:
     description: Lets users use starships
     default: op
-  stellarica.starship.debug.hitbox:
-    description: Lets users view the hitbox of a ship
-    default: op
-  stellarica.starship.debug.contains:
-    description: Lets users check whether a block is "inside" a ship
-    default: op
-
   stellarica.material.give.self:
     description: Lets users give custom items to themselves
     default: op
@@ -25,5 +18,15 @@ permissions:
     description: Lets users give custom items to others
     default: op
   stellarica.material.debug:
+    description: Debug commands for custom items and blocks
+    default: op
+
+  stellarica.debug.starship:
+    description: Debug commands for starships
+    default: op
+  stellarica.debug.pipe:
+    description: Debug commands for pipes
+    default: op
+  stellarica.debug.material:
     description: Debug commands for custom items and blocks
     default: op

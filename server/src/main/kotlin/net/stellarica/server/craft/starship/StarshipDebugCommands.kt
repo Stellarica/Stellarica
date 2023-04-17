@@ -18,13 +18,13 @@ import org.bukkit.entity.Player
  */
 @Suppress("Unused")
 @CommandAlias("shipdebug")
+@CommandPermission("stellarica.debug.starship")
 class StarshipDebugCommands : BaseCommand() {
 	/**
 	 * Display the hitbox of the craft
 	 */
 	@Subcommand("contents")
 	@Description("View the ship's contants")
-	@CommandPermission("stellarica.starship.debug.contants")
 	private fun onShowHitbox(sender: Player) {
 		val ship = sender.craft ?: run {
 			sender.sendRichMessage("<red>You are not piloting a starship!")
@@ -77,7 +77,6 @@ class StarshipDebugCommands : BaseCommand() {
 	 */
 	@Subcommand("contains")
 	@Description("Whether a block is 'inside' the ship")
-	@CommandPermission("stellarica.starship.debug.contains")
 	private fun onCheckContains(sender: Player) {
 		val ship = sender.craft ?: run {
 			sender.sendRichMessage("<red>You are not piloting a starship!")

@@ -14,8 +14,10 @@ import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.multiblock.MultiblockCommands
 import net.stellarica.server.multiblock.MultiblockHandler
-import net.stellarica.server.multiblock.Multiblocks
+import net.stellarica.server.multiblock.type.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
+import net.stellarica.server.transfer.PipeDebugCommands
+import net.stellarica.server.transfer.PipeHandler
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -78,6 +80,7 @@ class StellaricaServer : JavaPlugin() {
 			MultiblockHandler,
 			CustomItemHandler,
 			CustomBlockHandler,
+			PipeHandler,
 			BlasterListener
 		).forEach { getPluginManager().registerEvents(it, this) }
 
@@ -87,7 +90,8 @@ class StellaricaServer : JavaPlugin() {
 			StarshipCommands(),
 			StarshipDebugCommands(),
 			CustomMaterialCommands(),
-			MultiblockCommands()
+			MultiblockCommands(),
+			PipeDebugCommands()
 		).forEach { commandManager.registerCommand(it) }
 
 		commandManager.commandCompletions.registerCompletion(
@@ -95,6 +99,10 @@ class StellaricaServer : JavaPlugin() {
 		) { CustomItems.all().map { it.id.path } }
 		commandManager.commandCompletions.registerCompletion(
 			"multiblocks"
-		) { Multiblocks.all().map { it.id.path } }
+		) { Multiblocks.all.map { it.id.path } }
+	}
+
+	override fun onDisable() {
+		PipeHandler.savePipes()
 	}
 }
