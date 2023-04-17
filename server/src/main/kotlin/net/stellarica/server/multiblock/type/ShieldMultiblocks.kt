@@ -4,10 +4,10 @@ import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.type.block.BlockType
-import net.stellarica.server.multiblock.EmptyMultiblockData
+import net.stellarica.server.multiblock.data.EmptyMultiblockData
 import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.multiblock.MultiblockType
-import net.stellarica.server.multiblock.PowerableMultiblockData
+import net.stellarica.server.multiblock.data.PowerableMultiblockData
 
 @Suppress("unused")
 object ShieldMultiblocks : MultiblockDef() {

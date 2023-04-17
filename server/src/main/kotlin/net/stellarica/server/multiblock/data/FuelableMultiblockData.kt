@@ -1,23 +1,11 @@
-package net.stellarica.server.multiblock
+package net.stellarica.server.multiblock.data
 
 import kotlinx.serialization.Serializable
 import net.stellarica.common.util.OriginRelative
+import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.transfer.PipeHandler
 import kotlin.math.abs
 import kotlin.math.min
-
-@Serializable
-sealed interface MultiblockData
-
-@Serializable
-open class EmptyMultiblockData : MultiblockData {
-	var power = 0
-}
-
-@Serializable
-open class PowerableMultiblockData : MultiblockData {
-	var power = 0
-}
 
 @Serializable
 open class FuelableMultiblockData : MultiblockData {

@@ -3,7 +3,7 @@ package net.stellarica.server.multiblock.type
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.multiblock.FuelableMultiblockData
+import net.stellarica.server.multiblock.data.FuelableMultiblockData
 import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.multiblock.MultiblockType
 

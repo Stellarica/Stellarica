@@ -3,7 +3,7 @@ package net.stellarica.server.multiblock.type
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.multiblock.EmptyMultiblockData
+import net.stellarica.server.multiblock.data.EmptyMultiblockData
 import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.multiblock.MultiblockType
 

@@ -3,6 +3,7 @@ package net.stellarica.server.multiblock
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.stellarica.common.util.OriginRelative
+import net.stellarica.server.multiblock.data.MultiblockData
 import net.stellarica.server.util.extension.toLocation
 import org.bukkit.Chunk
 import org.bukkit.World

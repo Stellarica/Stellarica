@@ -11,6 +11,7 @@ import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.multiblock.data.MultiblockData
 import net.stellarica.server.multiblock.type.Multiblocks
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.sendRichActionBar
