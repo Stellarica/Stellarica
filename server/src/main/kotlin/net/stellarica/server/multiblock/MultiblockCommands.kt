@@ -79,13 +79,15 @@ class MultiblockCommands : BaseCommand() {
 			sender.sendRichMessage("<red>No multiblock found!")
 			return
 		}
-		sender.sendRichMessage("""
+		sender.sendRichMessage(
+			"""
 			Type: ${mb.type.displayName}
 			Origin: ${mb.origin}
 			Direction: ${mb.direction}
 			ID: ${mb.id}
 			Data: ${Json.encodeToString(mb.data)}
-		""".trimIndent())
+		""".trimIndent()
+		)
 	}
 }
 

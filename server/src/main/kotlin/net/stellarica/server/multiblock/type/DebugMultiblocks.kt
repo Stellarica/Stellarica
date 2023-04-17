@@ -8,7 +8,7 @@ import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.multiblock.MultiblockType
 
 @Suppress("unused")
-object DebugMultiblocks: MultiblockDef() {
+object DebugMultiblocks : MultiblockDef() {
 	val DEBUG_FUEL_SOURCE = object : MultiblockType {
 		override val displayName = "Fuel Source (debug)"
 		override val id = StellaricaServer.identifier("debug_fuel_source")

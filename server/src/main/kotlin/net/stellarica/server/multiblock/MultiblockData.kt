@@ -23,6 +23,7 @@ open class PowerableMultiblockData : MultiblockData {
 open class FuelableMultiblockData : MultiblockData {
 	var fuel = 0
 	var capacity = 100
+
 	companion object {
 		fun transferFuelWith(instance: MultiblockInstance, fuelPoint: OriginRelative) {
 			val fuelPos = fuelPoint.getBlockPos(instance.origin, instance.direction)

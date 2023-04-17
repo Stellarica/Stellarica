@@ -10,7 +10,7 @@ import net.stellarica.server.multiblock.MultiblockType
 import net.stellarica.server.multiblock.PowerableMultiblockData
 
 @Suppress("unused")
-object ShieldMultiblocks: MultiblockDef() {
+object ShieldMultiblocks : MultiblockDef() {
 	val TINY_SHIELD = object : MultiblockType {
 		override val displayName = "Tiny Shield"
 		override val id = StellaricaServer.identifier("tiny_shield")

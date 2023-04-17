@@ -2,7 +2,6 @@ package net.stellarica.server.craft.starship.subsystem.weapon
 
 import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.multiblock.MultiblockType
-import net.stellarica.server.multiblock.type.Multiblocks
 import net.stellarica.server.multiblock.type.WeaponMultiblocks
 import net.stellarica.server.projectile.AcceleratingProjectile
 import net.stellarica.server.projectile.InstantProjectile

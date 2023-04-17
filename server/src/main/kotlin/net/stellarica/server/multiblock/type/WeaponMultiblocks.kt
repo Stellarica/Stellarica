@@ -8,7 +8,7 @@ import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.multiblock.MultiblockType
 
 @Suppress("unused")
-object WeaponMultiblocks: MultiblockDef() {
+object WeaponMultiblocks : MultiblockDef() {
 	val LIGHT_RAILGUN = object : MultiblockType {
 		override val displayName = "Light Railgun"
 		override val id = StellaricaServer.identifier("light_railgun")

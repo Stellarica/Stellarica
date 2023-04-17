@@ -246,7 +246,7 @@ open class Craft(
 			it.key.distSqr(origin) < 200 * 200 && detectedBlocks.contains(it.key)
 		}.values
 
-		nearbyPipeNodes.forEach {  nodes.remove(it.pos) }
+		nearbyPipeNodes.forEach { nodes.remove(it.pos) }
 
 		for (node in nearbyPipeNodes) {
 			val newPos = modifier(node.pos.toVec3()).toBlockPos()

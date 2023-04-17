@@ -55,10 +55,11 @@ object PipeHandler : Listener {
 			var available = node.content - average
 
 			for (other in demanding) {
-				val transfer = min(min(
-					node.content - other.content, // this node's deficit
-					other.capacity - other.content // the other's empty space
-				),
+				val transfer = min(
+					min(
+						node.content - other.content, // this node's deficit
+						other.capacity - other.content // the other's empty space
+					),
 					available
 				).coerceAtLeast(0)
 				available -= transfer
@@ -86,7 +87,7 @@ object PipeHandler : Listener {
 
 		for ((pos, node) in nodes[world]!!.toMap()) {
 			// if the chunk isn't loaded just assume it's valid
-			if(!pos.toLocation(world).isChunkLoaded) continue
+			if (!pos.toLocation(world).isChunkLoaded) continue
 
 			// will remove any invalid connections
 			node.connections = getConnectionsFrom(pos, world)
