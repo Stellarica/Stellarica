@@ -24,14 +24,10 @@ data class MultiblockInstance(
 
 	fun validate() = type.validate(direction, origin, world)
 
-	/**
-	 * @return the world location of [position]
-	 */
+	/** @return the world location of [position] */
 	fun getLocation(position: OriginRelative) = position.getBlockPos(origin, direction)
 
-	/**
-	 * @return the origin relative position of [loc]
-	 */
+	/** @return the origin relative position of [loc] */
 	fun getOriginRelative(loc: BlockPos) = OriginRelative.getOriginRelative(loc, this.origin, this.direction)
 
 

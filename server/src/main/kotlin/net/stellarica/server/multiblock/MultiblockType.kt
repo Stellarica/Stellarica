@@ -41,6 +41,8 @@ abstract class MultiblockType {
 	 */
 	fun validate(facing: Direction, origin: BlockPos, world: World): Boolean {
 		fun rotationFunction(it: OriginRelative) = when (facing) {
+			// todo: OriginRelative.getBlockPos exists, but isn't this performant
+			// should probably make that use something similar to this
 			Direction.NORTH -> it
 			Direction.EAST -> OriginRelative(-it.z, it.y, it.x)
 			Direction.SOUTH -> OriginRelative(-it.x, it.y, -it.z)
