@@ -11,6 +11,7 @@ import net.stellarica.server.craft.starship.control.ShipControlHotbar
 import net.stellarica.server.craft.starship.subsystem.Subsystem
 import net.stellarica.server.craft.starship.subsystem.armor.ArmorSubsystem
 import net.stellarica.server.craft.starship.subsystem.shield.ShieldSubsystem
+import net.stellarica.server.craft.starship.subsystem.thruster.ThrusterSubsystem
 import net.stellarica.server.craft.starship.subsystem.weapon.WeaponSubsystem
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.asMiniMessage
@@ -26,12 +27,13 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 	Craft(origin, direction, world, owner), Listener {
 
 	val subsystems: Set<Subsystem>
-		get() = setOf(weapons, shields, armor)
+		get() = setOf(weapons, shields, armor, thrusters)
 
 
 	val weapons = WeaponSubsystem(this)
 	val shields = ShieldSubsystem(this)
 	val armor = ArmorSubsystem(this)
+	var thrusters = ThrusterSubsystem(this)
 
 	var velocity: Vec3i = Vec3i.ZERO
 
