@@ -82,7 +82,7 @@ object PipeHandler : Listener {
 
 		nodes[world] = nodes[world]!!.filter {
 			val loc = it.key.toLocation(world)
-			!loc.isChunkLoaded || loc.block.type == Material.COPPER_BLOCK
+			!loc.isChunkLoaded || loc.block.type == Material.CUT_COPPER
 		}.toMutableMap()
 
 		for ((pos, node) in nodes[world]!!.toMap()) {
@@ -127,7 +127,7 @@ object PipeHandler : Listener {
 				val next = pos.offset(rel.multiply(dist))
 				when (world.getBlockState(next.x, next.y, next.z).type) {
 					Material.LIGHTNING_ROD -> continue
-					Material.COPPER_BLOCK -> found.add(next)
+					Material.CUT_COPPER_BLOCK -> found.add(next)
 					else -> {}
 				}
 				break
