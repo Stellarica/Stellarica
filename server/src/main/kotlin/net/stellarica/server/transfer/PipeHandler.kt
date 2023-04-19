@@ -82,7 +82,7 @@ object PipeHandler : Listener {
 
 		nodes[world] = nodes[world]!!.filter {
 			val loc = it.key.toLocation(world)
-			!loc.isChunkLoaded || loc.block.type == Material.COPPER_BLOCK
+			!loc.isChunkLoaded || loc.block.type == Material.CUT_COPPER
 		}.toMutableMap()
 
 		for ((pos, node) in nodes[world]!!.toMap()) {
