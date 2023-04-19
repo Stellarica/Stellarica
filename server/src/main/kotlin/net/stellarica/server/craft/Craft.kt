@@ -229,7 +229,8 @@ open class Craft(
 		// finish up
 		moveContainedMultiblocks(data)
 		moveContainedPipeNetworks(data)
-		movePassengers(modifier, rotation)
+		movePassengers(data)
+
 		world = targetWorld
 		detectedBlocks = newDetectedBlocks
 		origin = modifier(origin.toVec3()).toBlockPos()
@@ -270,6 +271,45 @@ open class Craft(
 			)
 			MultiblockHandler[mb.chunk].remove(mb)
 			MultiblockHandler[data.targetWorld.getChunkAt(new.origin).bukkit].add(new)
+		}
+	}
+
+	@Suppress("UnstableApiUsage")
+	fun movePassengers(data: CraftMovementData) {
+		for (passenger in passengers) {
+			// TODO: FIX
+			// this is not a good solution because if there is any rotation, the player will not be translated by the offset
+			// The result is that any ship movement that attempts to rotate and move in the same action will break.
+			// For now there aren't any actions like that, but if there are in the future, this will need to be fixed.
+			//
+			// Rotating the whole ship around the adjusted origin will not work,
+			// as rotating the ship 4 times does not bring it back to the original position
+			//
+			// However, without this dumb fix players do not rotate to the proper relative location
+			val destination =
+				if (data.rotation != Rotation.NONE) rotateCoordinates(
+					passenger.location.toVec3(),
+					origin.toVec3().add(
+						Vec3(
+							0.5,
+							0.0,
+							0.5
+						)
+					), data.rotation
+				).toLocation(world.world)
+				else data.modifier(passenger.location.toVec3()).toLocation(world.world)
+
+
+			destination.world = data.targetWorld.world
+			destination.pitch = passenger.location.pitch
+			destination.yaw = (passenger.location.yaw + data.rotation.asDegrees).toFloat()
+
+			passenger.teleport(
+				destination,
+				PlayerTeleportEvent.TeleportCause.PLUGIN,
+				TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
+				*TeleportFlag.Relative.values()
+			)
 		}
 	}
 
@@ -352,46 +392,6 @@ open class Craft(
 
 		owner?.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
 		owner?.sendRichMessage("<gray>Craft mass: ${mass.roundToInt()}")
-	}
-
-	@Suppress("UnstableApiUsage")
-	fun movePassengers(offset: (Vec3) -> Vec3, rotation: Rotation = Rotation.NONE) {
-		for (passenger in passengers) {
-			// TODO: FIX
-			// this is not a good solution because if there is any rotation, the player will not be translated by the offset
-			// The result is that any ship movement that attempts to rotate and move in the same action will break.
-			// For now there aren't any actions like that, but if there are in the future, this will need to be fixed.
-			//
-			// Rotating the whole ship around the adjusted origin will not work,
-			// as rotating the ship 4 times does not bring it back to the original position
-			//
-			// However, without this dumb fix players do not rotate to the proper relative location
-			val destination =
-				if (rotation != Rotation.NONE) rotateCoordinates(
-					passenger.location.toVec3(),
-					origin.toVec3().add(
-						Vec3(
-							0.5,
-							0.0,
-							0.5
-						)
-					), rotation
-				).toLocation(world.world)
-				else offset(passenger.location.toVec3()).toLocation(world.world)
-
-
-			destination.world = passenger.world // todo: fix
-
-			destination.pitch = passenger.location.pitch
-			destination.yaw = (passenger.location.yaw + rotation.asDegrees).toFloat()
-
-			passenger.teleport(
-				destination,
-				PlayerTeleportEvent.TeleportCause.PLUGIN,
-				TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
-				*TeleportFlag.Relative.values()
-			)
-		}
 	}
 
 	fun messagePilot(message: String) {
