@@ -33,6 +33,7 @@ import org.bukkit.entity.Entity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.math.roundToInt
 import kotlin.system.measureTimeMillis
 
 /**
@@ -69,6 +70,8 @@ open class Craft(
 	 * @see contains
 	 */
 	var contents = mutableMapOf<RelativeColumn, Pair<Int, Int>>()
+
+	var mass = 0f
 
 
 	/**
@@ -144,6 +147,7 @@ open class Craft(
 		/** Callback called after the craft finishes moving */
 		callback: () -> Unit = {}
 	) {
+		val data = CraftMovementData(modifier, rotation, targetWorld)
 		// calculate new blocks locations
 		val targetsCHM = ConcurrentHashMap<BlockPos, BlockPos>()
 
@@ -222,40 +226,9 @@ open class Craft(
 		if (world == targetWorld) detectedBlocks.removeAll(newDetectedBlocks)
 		detectedBlocks.forEach { world.setBlockFast(it, Blocks.AIR.defaultBlockState()) }
 
-		// move multiblocks, and remove any that no longer exist (i.e. were destroyed)
-		val mbs = mutableSetOf<MultiblockInstance>()
-		multiblocks.removeIf { pos -> getMultiblock(pos)?.also { mbs.add(it) } == null }
-		for (mb in mbs) {
-			val new = MultiblockInstance(
-				mb.id,
-				modifier(mb.origin.toVec3()).toBlockPos(),
-				targetWorld.world,
-				mb.direction.rotate(rotation),
-				mb.type,
-				mb.data
-			)
-			MultiblockHandler[mb.chunk].remove(mb)
-			MultiblockHandler[targetWorld.getChunkAt(new.origin).bukkit].add(new)
-		}
-
-		// move pipes
-		// primarily filter by distance because contains is slower
-		val nodes = PipeHandler[world.world]
-		val newNodes = PipeHandler[targetWorld.world]
-		val nearbyPipeNodes = nodes.filter {
-			it.key.distSqr(origin) < 200 * 200 && detectedBlocks.contains(it.key)
-		}.values
-
-		nearbyPipeNodes.forEach { nodes.remove(it.pos) }
-
-		for (node in nearbyPipeNodes) {
-			val newPos = modifier(node.pos.toVec3()).toBlockPos()
-			node.pos = newPos
-			node.connections = node.connections.map { modifier(it.toVec3()).toBlockPos() }.toMutableSet()
-			newNodes[newPos] = node
-		}
-
 		// finish up
+		moveContainedMultiblocks(data)
+		moveContainedPipeNetworks(data)
 		movePassengers(modifier, rotation)
 		world = targetWorld
 		detectedBlocks = newDetectedBlocks
@@ -264,6 +237,41 @@ open class Craft(
 		callback()
 	}
 
+	private fun moveContainedPipeNetworks(data: CraftMovementData) {
+		// primarily filter by distance because contains is slower
+		val nodes = PipeHandler[world.world]
+		val newNodes = PipeHandler[data.targetWorld.world]
+		val nearbyPipeNodes = nodes.filter {
+			it.key.distSqr(origin) < 200 * 200 && detectedBlocks.contains(it.key)
+		}.values
+
+		nearbyPipeNodes.forEach { nodes.remove(it.pos) }
+
+		for (node in nearbyPipeNodes) {
+			val newPos = data.modifier(node.pos.toVec3()).toBlockPos()
+			node.pos = newPos
+			node.connections = node.connections.map { data.modifier(it.toVec3()).toBlockPos() }.toMutableSet()
+			newNodes[newPos] = node
+		}
+	}
+
+	private fun moveContainedMultiblocks(data: CraftMovementData) {
+		// move multiblocks, and remove any that no longer exist (i.e. were destroyed)
+		val mbs = mutableSetOf<MultiblockInstance>()
+		multiblocks.removeIf { pos -> getMultiblock(pos)?.also { mbs.add(it) } == null }
+		for (mb in mbs) {
+			val new = MultiblockInstance(
+				mb.id,
+				data.modifier(mb.origin.toVec3()).toBlockPos(),
+				data.targetWorld.world,
+				mb.direction.rotate(data.rotation),
+				mb.type,
+				mb.data
+			)
+			MultiblockHandler[mb.chunk].remove(mb)
+			MultiblockHandler[data.targetWorld.getChunkAt(new.origin).bukkit].add(new)
+		}
+	}
 
 	fun detect() {
 		var nextBlocksToCheck = detectedBlocks
@@ -282,15 +290,17 @@ open class Craft(
 			for (currentBlock in blocksToCheck) {
 
 				// todo: block tags for detection? this is bad
-				if (world.getBlockState(currentBlock).isAir) continue
+				val state = world.getBlockState(currentBlock)
+				if (state.isAir) continue
 
 				if (detectedBlocks.size > sizeLimit) {
 					owner?.sendRichMessage("<gold>Detection limit reached. (${sizeLimit} blocks)")
 					nextBlocksToCheck.clear()
 					detectedBlocks.clear()
+					mass = 0f
 					break
 				}
-
+				mass += state.bukkitMaterial.blastResistance
 				detectedBlocks.add(currentBlock)
 				chunks.add(world.getChunkAt(currentBlock).bukkit)
 
@@ -341,6 +351,7 @@ open class Craft(
 		)
 
 		owner?.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")
+		owner?.sendRichMessage("<gray>Craft mass: ${mass.roundToInt()}")
 	}
 
 	@Suppress("UnstableApiUsage")
@@ -392,6 +403,8 @@ open class Craft(
 	data class RelativeColumn(val x: Int, val z: Int) {
 		constructor(pos: OriginRelative) : this(pos.x, pos.z)
 	}
+
+	data class CraftMovementData(val modifier: (Vec3) -> Vec3, val rotation: Rotation, val targetWorld: ServerLevel)
 
 	override fun audiences() = passengers
 }
