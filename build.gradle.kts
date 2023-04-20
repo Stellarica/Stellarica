@@ -2,6 +2,7 @@ plugins {
 	java
 	kotlin("jvm")
 	id("io.gitlab.arturbosch.detekt")
+	id("fabric-loom") apply false
 }
 
 repositories {
