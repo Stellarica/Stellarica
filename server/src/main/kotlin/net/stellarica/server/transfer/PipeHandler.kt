@@ -127,7 +127,7 @@ object PipeHandler : Listener {
 				val next = pos.offset(rel.multiply(dist))
 				when (world.getBlockState(next.x, next.y, next.z).type) {
 					Material.LIGHTNING_ROD -> continue
-					Material.CUT_COPPER_BLOCK -> found.add(next)
+					Material.CUT_COPPER -> found.add(next)
 					else -> {}
 				}
 				break
