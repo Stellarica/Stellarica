@@ -23,6 +23,10 @@ class ThrusterSubsystem(ship: Starship): Subsystem(ship) {
 		}
 	}
 
+	override fun onShipTick() {
+		stepThrusterWarmup(ship.heading)
+	}
+
 	fun stepThrusterWarmup(targetDir: Vec3) {
 		for (thruster in thrusters.mapNotNull { ship.getMultiblock(it) }) {
 			val type = ThrusterType.values().first { it.multiblock == thruster.type}
@@ -31,9 +35,9 @@ class ThrusterSubsystem(ship: Starship): Subsystem(ship) {
 			val dir = thruster.direction.normal.toVec3().toVector()
 			val angleBetween = targetDir.toVector().angle(dir)
 
-			if (abs(angleBetween) <= Math.PI / 4) {
+			if (abs(angleBetween) < Math.PI / 4) {
 				// warming up
-				data.warmupPercentage += type.warmupSpeed
+				data.warmupPercentage = (data.warmupPercentage + type.warmupSpeed).coerceAtMost(100)
 			}
 			else {
 				// cooling down
@@ -42,7 +46,7 @@ class ThrusterSubsystem(ship: Starship): Subsystem(ship) {
 		}
 	}
 
-	private fun calculateTotalThrust(): Vec3 {
+	fun calculateTotalThrust(): Vec3 {
 		var thrust = Vec3.ZERO
 		for (thruster in thrusters.mapNotNull {ship.getMultiblock(it)}) {
 			val type = ThrusterType.values().first { it.multiblock == thruster.type}
@@ -65,7 +69,7 @@ class ThrusterSubsystem(ship: Starship): Subsystem(ship) {
 		if (angleBetween < Math.PI / 8.0) {
 			// no penalty
 			return dir.normalize().scale(originalThrust.length())
-		} else if(angleBetween < Math.PI / 6.0) {
+		} else if (angleBetween < Math.PI / 6.0) {
 			// half thrust
 			return dir.normalize().scale(originalThrust.length() / 1.5)
 		}

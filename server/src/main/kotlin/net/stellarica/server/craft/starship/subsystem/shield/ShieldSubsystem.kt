@@ -3,10 +3,13 @@ package net.stellarica.server.craft.starship.subsystem.shield
 import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.craft.starship.subsystem.Subsystem
+import net.stellarica.server.util.extension.asMiniMessage
+import net.stellarica.server.util.extension.sendRichActionBar
 import org.bukkit.Color
 import org.bukkit.Location
 import org.bukkit.Particle
 import org.bukkit.Particle.DustOptions
+import kotlin.math.roundToInt
 
 class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 	val multiblocks = mutableSetOf<OriginRelative>()
@@ -36,6 +39,13 @@ class ShieldSubsystem(ship: Starship) : Subsystem(ship) {
 			}
 		}
 		shieldHealth = maxShieldHealth
+	}
+
+	override fun onShipTick() {
+		val percent = shieldHealth /maxShieldHealth.toFloat().coerceAtLeast(1f)
+		val num = (percent * 40).roundToInt().coerceAtMost(40)
+
+		ship.pilot?.sendRichActionBar("<dark_gray>[<gray>" + "|".repeat(40 - num) + "<blue>|".repeat(num) + "<dark_gray>]")
 	}
 
 	fun damage(loc: Location, dam: Int) {

@@ -6,6 +6,7 @@ import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.util.extension.craft
 import net.stellarica.server.util.extension.hotbar
 import net.stellarica.server.util.extension.toBlockPos
+import net.stellarica.server.util.extension.toVec3
 import net.stellarica.server.util.extension.toVec3i
 import net.stellarica.server.util.gui.hotbar.HotbarMenu
 import net.stellarica.server.util.gui.namedItem
@@ -45,12 +46,8 @@ object ShipControlHotbar : HotbarMenu() {
 			0 -> ship.move(
 				player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(player.world).toBlockPos()
 			)
-
-			1 -> ship.velocity = ship.velocity.offset(
-				player.eyeLocation.direction.normalize().multiply(1.7f).toLocation(player.world).toVec3i()
-			)
-
-			2 -> ship.velocity = Vec3i.ZERO
+			1 -> ship.heading = player.eyeLocation.direction.normalize().toLocation(player.world).toVec3()
+			// 2 -> ship.velocity = Vec3i.ZERO
 			4 -> ship.rotate(Rotation.COUNTERCLOCKWISE_90)
 			5 -> ship.rotate(Rotation.CLOCKWISE_90)
 			6 -> {

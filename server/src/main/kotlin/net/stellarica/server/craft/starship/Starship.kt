@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.core.Vec3i
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.phys.Vec3
+import net.stellarica.common.util.toVec3i
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.StellaricaServer.Companion.plugin
 import net.stellarica.server.craft.Craft
@@ -15,6 +17,7 @@ import net.stellarica.server.craft.starship.subsystem.thruster.ThrusterSubsystem
 import net.stellarica.server.craft.starship.subsystem.weapon.WeaponSubsystem
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.asMiniMessage
+import net.stellarica.server.util.extension.div
 import net.stellarica.server.util.extension.toBlockPos
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -35,7 +38,7 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 	val armor = ArmorSubsystem(this)
 	var thrusters = ThrusterSubsystem(this)
 
-	var velocity: Vec3i = Vec3i.ZERO
+	var heading: Vec3 = Vec3.ZERO
 
 	var pilot: Player? = null
 		private set
@@ -79,13 +82,7 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 				this.cancel()
 				return@syncRepeat
 			}
-			// there's gotta be a better way to check this
-			if (velocity.x == 0 && velocity.y == 0 && velocity.z == 0) return@syncRepeat
-			move(velocity)
-			val percent = shields.shieldHealth / shields.maxShieldHealth.toFloat().coerceAtLeast(1f)
-			val num = (percent * 40).roundToInt().coerceAtMost(40)
-
-			pilot.sendActionBar(("<dark_gray>[<gray>" + "|".repeat(40 - num) + "<blue>|".repeat(num) + "<dark_gray>]").asMiniMessage)
+			tickCraft()
 		}
 
 		return true
@@ -110,6 +107,13 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 		passengers.clear()
 		pilotedCrafts.remove(this)
 		return true
+	}
+
+	private fun tickCraft() {
+		subsystems.forEach { it.onShipTick() }
+		val thrust = thrusters.calculateActualThrust(heading)
+		val move = thrust / mass.toDouble()
+		move(move.toVec3i())
 	}
 
 	@EventHandler

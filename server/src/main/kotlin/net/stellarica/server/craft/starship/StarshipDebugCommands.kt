@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import net.stellarica.common.util.OriginRelative
+import net.stellarica.server.multiblock.data.ThrusterMultiblockData
 import net.stellarica.server.util.extension.craft
 import net.stellarica.server.util.extension.toBlockPos
 import net.stellarica.server.util.extension.toLocation
@@ -20,17 +21,11 @@ import org.bukkit.entity.Player
 @CommandAlias("shipdebug")
 @CommandPermission("stellarica.debug.starship")
 class StarshipDebugCommands : BaseCommand() {
-	/**
-	 * Display the hitbox of the craft
-	 */
+
 	@Subcommand("contents")
 	@Description("View the ship's contants")
 	private fun onShowHitbox(sender: Player) {
-		val ship = sender.craft ?: run {
-			sender.sendRichMessage("<red>You are not piloting a starship!")
-			return
-		}
-
+		val ship = getShip(sender) ?: return
 		for ((col, extremes) in ship.contents) {
 			for (y in extremes.first..extremes.second) {
 				val pos = OriginRelative(col.x, y, col.z).getBlockPos(ship.origin, ship.direction)
@@ -72,19 +67,32 @@ class StarshipDebugCommands : BaseCommand() {
 		}
 	}
 
-	/**
-	 * Display the hitbox of the craft
-	 */
 	@Subcommand("contains")
 	@Description("Whether a block is 'inside' the ship")
 	private fun onCheckContains(sender: Player) {
-		val ship = sender.craft ?: run {
-			sender.sendRichMessage("<red>You are not piloting a starship!")
-			return
-		}
+		val ship = getShip(sender) ?: return
 		sender.sendRichMessage(ship.contains(sender.getTargetBlockExact(20)?.toBlockPos()).toString())
 	}
 
+	@Subcommand("thrusters")
+	private fun onThrusters(sender: Player) {
+		val ship = getShip(sender) ?: return
+		sender.sendRichMessage("""
+			Ship Heading: ${ship.heading}
+			Raw Ship Thrust: ${ship.thrusters.calculateTotalThrust()}
+			Actual Ship Thrust: ${ship.thrusters.calculateActualThrust(ship.heading)}
+			Ship Mass: ${ship.mass}
+			""".trimIndent()
+		)
+		for (thruster in ship.thrusters.thrusters.mapNotNull { ship.getMultiblock(it) }) {
+			sender.sendRichMessage("""
+				${thruster.type.displayName}
+				-	Facing: ${thruster.direction}
+				-	Warmup ${(thruster.data as ThrusterMultiblockData).warmupPercentage}
+				""".trimIndent()
+			)
+		}
+	}
 
 	private fun getShip(sender: Player): Starship? {
 		return ((sender.craft ?: run {

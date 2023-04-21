@@ -73,6 +73,9 @@ open class Craft(
 
 	var mass = 0f
 
+	var timeSpentMoving: Long = 0
+		private set
+
 
 	/**
 	 * @return Whether [block] is considered to be inside this craft
@@ -147,6 +150,7 @@ open class Craft(
 		/** Callback called after the craft finishes moving */
 		callback: () -> Unit = {}
 	) {
+		val start = System.currentTimeMillis()
 		val data = CraftMovementData(modifier, rotation, targetWorld)
 		// calculate new blocks locations
 		val targetsCHM = ConcurrentHashMap<BlockPos, BlockPos>()
@@ -235,6 +239,7 @@ open class Craft(
 		detectedBlocks = newDetectedBlocks
 		origin = modifier(origin.toVec3()).toBlockPos()
 		direction = direction.rotate(rotation)
+		timeSpentMoving = System.currentTimeMillis() - start
 		callback()
 	}
 
