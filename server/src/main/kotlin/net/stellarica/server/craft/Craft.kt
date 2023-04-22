@@ -24,6 +24,7 @@ import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.transfer.PipeHandler
+import net.stellarica.server.util.Tasks.sync
 import net.stellarica.server.util.extension.bukkit
 import net.stellarica.server.util.extension.sendRichMessage
 import net.stellarica.server.util.extension.toLocation
@@ -291,30 +292,32 @@ open class Craft(
 			// as rotating the ship 4 times does not bring it back to the original position
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
-			val destination =
-				if (data.rotation != Rotation.NONE) rotateCoordinates(
-					passenger.location.toVec3(),
-					origin.toVec3().add(
-						Vec3(
-							0.5,
-							0.0,
-							0.5
-						)
-					), data.rotation
-				).toLocation(world.world)
-				else data.modifier(passenger.location.toVec3()).toLocation(world.world)
+			sync() {
+				val destination =
+						if (data.rotation != Rotation.NONE) rotateCoordinates(
+								passenger.location.toVec3(),
+								origin.toVec3().add(
+										Vec3(
+												0.5,
+												0.0,
+												0.5
+										)
+								), data.rotation
+						).toLocation(world.world)
+						else data.modifier(passenger.location.toVec3()).toLocation(world.world)
 
 
-			destination.world = data.targetWorld.world
-			destination.pitch = passenger.location.pitch
-			destination.yaw = (passenger.location.yaw + data.rotation.asDegrees).toFloat()
+				destination.world = data.targetWorld.world
+				destination.pitch = passenger.location.pitch
+				destination.yaw = (passenger.location.yaw + data.rotation.asDegrees).toFloat()
 
-			passenger.teleport(
-				destination,
-				PlayerTeleportEvent.TeleportCause.PLUGIN,
-				TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
-				*TeleportFlag.Relative.values()
-			)
+				passenger.teleport(
+						destination,
+						PlayerTeleportEvent.TeleportCause.PLUGIN,
+						TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
+						*TeleportFlag.Relative.values()
+				)
+			}
 		}
 	}
 
