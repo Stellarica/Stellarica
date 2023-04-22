@@ -292,7 +292,7 @@ open class Craft(
 			// as rotating the ship 4 times does not bring it back to the original position
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
-			sync() {
+			sync {
 				val destination =
 						if (data.rotation != Rotation.NONE) rotateCoordinates(
 								passenger.location.toVec3(),
