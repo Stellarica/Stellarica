@@ -1,6 +1,7 @@
 package net.stellarica.server.material.type.item
 
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.world.item.Items
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.custom.item.CustomItems
@@ -34,7 +35,9 @@ interface ItemType {
 				NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
 				PersistentDataType.STRING,
 			)?.let { id -> ResourceLocation.tryParse(id)?.let { CustomItems.byId(it)?.let { CustomItemType(it) } } }
-				?: VanillaItemType((item as CraftItemStack).handle.item)
+			// no custom item, get the vanilla item
+			// handle can be null if the stack is empty
+			?: VanillaItemType((item as? CraftItemStack)?.handle?.item ?: Items.AIR)
 		}
 
 		fun of(item: net.minecraft.world.item.ItemStack): ItemType {
