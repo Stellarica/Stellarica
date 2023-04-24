@@ -8,16 +8,24 @@ plugins {
 repositories {
 	mavenCentral()
 }
+
 allprojects {
 	apply {
 		plugin("java")
 		plugin("kotlin")
+		plugin("io.gitlab.arturbosch.detekt")
 	}
 	repositories {
 		mavenCentral()
 		maven(uri("https://jitpack.io"))
 	}
+	tasks.getByName("check") {
+		this.setDependsOn(this.dependsOn.filterNot {
+			it is TaskProvider<*> && it.name.contains("detekt")
+		})
+	}
 }
+
 tasks {
 	build {
 		doLast {
@@ -31,19 +39,9 @@ tasks {
 			}
 		}
 	}
-	detekt {
-		config = files("config/detekt/detekt.yml")
-		buildUponDefaultConfig = true
-	}
+}
 
-	withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
-		reports {
-			// Only want .txt and .html
-			// who the heck even uses .sarif?
-			html.required.set(true)
-			txt.required.set(true)
-			xml.required.set(false)
-			sarif.required.set(false)
-		}
-	}
+detekt {
+	config = files("config/detekt/detekt.yml")
+	buildUponDefaultConfig = true
 }

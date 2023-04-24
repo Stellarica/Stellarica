@@ -92,7 +92,6 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 		messagePilot("<green>Unpiloting craft")
 		val pass = passengers.toMutableSet()
 		subsystems.forEach { it.onShipUnpiloted() }
-		// close the ship HUD. this is really dumb
 		// todo: fix
 		this.passengers = pass
 		this.passengers.clear()
