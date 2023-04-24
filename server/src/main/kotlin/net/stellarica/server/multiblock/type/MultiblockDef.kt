@@ -27,8 +27,16 @@ sealed class MultiblockDef {
 		return this match BlockType.of(block)
 	}
 
-	protected fun OriginRelative.match(vararg blocks: BlockType): Pair<OriginRelative, BlockMatcher> {
-		return this to MultiBlockMatcher(blocks.toSet())
+	protected infix fun OriginRelative.match(blocks: Collection<Any>): Pair<OriginRelative, BlockMatcher> {
+		// this is kind of dumb but I'm against spamming BlockType.of() in multiblock definitions
+		return this to MultiBlockMatcher(blocks.map { block ->
+			when (block) {
+				is BlockType -> block
+				is CustomBlock -> BlockType.of(block)
+				is Block -> BlockType.of(block)
+				else -> throw IllegalArgumentException()
+			}
+		}.toSet())
 	}
 
 	// could use a typealias, but then it would have to be public
