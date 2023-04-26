@@ -3,7 +3,6 @@ package net.stellarica.server.multiblock.type
 import net.minecraft.tags.BlockTags
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.multiblock.MultiblockType
 
 @Suppress("unused")

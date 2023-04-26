@@ -298,17 +298,17 @@ open class Craft(
 			// However, without this dumb fix players do not rotate to the proper relative location
 			sync {
 				val destination =
-						if (data.rotation != Rotation.NONE) rotateCoordinates(
-								passenger.location.toVec3(),
-								origin.toVec3().add(
-										Vec3(
-												0.5,
-												0.0,
-												0.5
-										)
-								), data.rotation
-						).toLocation(world.world)
-						else data.modifier(passenger.location.toVec3()).toLocation(world.world)
+					if (data.rotation != Rotation.NONE) rotateCoordinates(
+						passenger.location.toVec3(),
+						origin.toVec3().add(
+							Vec3(
+								0.5,
+								0.0,
+								0.5
+							)
+						), data.rotation
+					).toLocation(world.world)
+					else data.modifier(passenger.location.toVec3()).toLocation(world.world)
 
 
 				destination.world = data.targetWorld.world
@@ -316,10 +316,10 @@ open class Craft(
 				destination.yaw = (passenger.location.yaw + data.rotation.asDegrees).toFloat()
 
 				passenger.teleport(
-						destination,
-						PlayerTeleportEvent.TeleportCause.PLUGIN,
-						TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
-						*TeleportFlag.Relative.values()
+					destination,
+					PlayerTeleportEvent.TeleportCause.PLUGIN,
+					TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
+					*TeleportFlag.Relative.values()
 				)
 			}
 		}

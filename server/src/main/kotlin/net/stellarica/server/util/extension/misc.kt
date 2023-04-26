@@ -15,4 +15,5 @@ fun Audience.sendRichMessage(message: String) = this.sendMessage(message.asMiniM
 
 fun Audience.sendRichActionBar(message: String) = this.sendActionBar(message.asMiniMessage)
 
-fun Audience.sendRichTitle(message: String, part: TitlePart<Component>) = this.sendTitlePart(part, message.asMiniMessage)
+fun Audience.sendRichTitle(message: String, part: TitlePart<Component>) =
+	this.sendTitlePart(part, message.asMiniMessage)

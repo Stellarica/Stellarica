@@ -2,7 +2,6 @@ package net.stellarica.server.craft.starship
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.core.Vec3i
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.phys.Vec3
 import net.stellarica.common.util.toVec3i
@@ -16,7 +15,6 @@ import net.stellarica.server.craft.starship.subsystem.shield.ShieldSubsystem
 import net.stellarica.server.craft.starship.subsystem.thruster.ThrusterSubsystem
 import net.stellarica.server.craft.starship.subsystem.weapon.WeaponSubsystem
 import net.stellarica.server.util.Tasks
-import net.stellarica.server.util.extension.asMiniMessage
 import net.stellarica.server.util.extension.div
 import net.stellarica.server.util.extension.toBlockPos
 import org.bukkit.Bukkit

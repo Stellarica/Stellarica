@@ -6,13 +6,12 @@ import net.stellarica.common.util.toVec3
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.craft.starship.subsystem.Subsystem
 import net.stellarica.server.multiblock.data.ThrusterMultiblockData
-import net.stellarica.server.util.extension.div
 import net.stellarica.server.util.extension.plus
 import net.stellarica.server.util.extension.times
 import net.stellarica.server.util.extension.toVector
 import kotlin.math.abs
 
-class ThrusterSubsystem(ship: Starship): Subsystem(ship) {
+class ThrusterSubsystem(ship: Starship) : Subsystem(ship) {
 	val thrusters = mutableSetOf<OriginRelative>()
 	override fun onShipPiloted() {
 		thrusters.clear()
@@ -29,7 +28,7 @@ class ThrusterSubsystem(ship: Starship): Subsystem(ship) {
 
 	fun stepThrusterWarmup(targetDir: Vec3) {
 		for (thruster in thrusters.mapNotNull { ship.getMultiblock(it) }) {
-			val type = ThrusterType.values().first { it.multiblock == thruster.type}
+			val type = ThrusterType.values().first { it.multiblock == thruster.type }
 			val data = (thruster.data as ThrusterMultiblockData)
 
 			val dir = thruster.direction.normal.toVec3().toVector()
@@ -38,8 +37,7 @@ class ThrusterSubsystem(ship: Starship): Subsystem(ship) {
 			if (abs(angleBetween) < Math.PI / 4) {
 				// warming up
 				data.warmupPercentage = (data.warmupPercentage + type.warmupSpeed).coerceAtMost(100)
-			}
-			else {
+			} else {
 				// cooling down
 				data.warmupPercentage = (data.warmupPercentage - type.warmupSpeed).coerceAtLeast(0)
 			}
@@ -48,8 +46,8 @@ class ThrusterSubsystem(ship: Starship): Subsystem(ship) {
 
 	fun calculateTotalThrust(): Vec3 {
 		var thrust = Vec3.ZERO
-		for (thruster in thrusters.mapNotNull {ship.getMultiblock(it)}) {
-			val type = ThrusterType.values().first { it.multiblock == thruster.type}
+		for (thruster in thrusters.mapNotNull { ship.getMultiblock(it) }) {
+			val type = ThrusterType.values().first { it.multiblock == thruster.type }
 			val data = (thruster.data as ThrusterMultiblockData)
 			thrust += thruster.direction.normal.toVec3() * (type.maxThrust * data.warmupPercentage).toDouble()
 		}

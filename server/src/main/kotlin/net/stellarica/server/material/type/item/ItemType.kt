@@ -37,7 +37,7 @@ interface ItemType {
 			)?.let { id -> ResourceLocation.tryParse(id)?.let { CustomItems.byId(it)?.let { CustomItemType(it) } } }
 			// no custom item, get the vanilla item
 			// handle can be null if the stack is empty
-			?: VanillaItemType((item as? CraftItemStack)?.handle?.item ?: Items.AIR)
+				?: VanillaItemType((item as? CraftItemStack)?.handle?.item ?: Items.AIR)
 		}
 
 		fun of(item: net.minecraft.world.item.ItemStack): ItemType {

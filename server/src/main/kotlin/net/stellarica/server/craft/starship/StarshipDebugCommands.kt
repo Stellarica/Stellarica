@@ -77,7 +77,8 @@ class StarshipDebugCommands : BaseCommand() {
 	@Subcommand("thrusters")
 	private fun onThrusters(sender: Player) {
 		val ship = getShip(sender) ?: return
-		sender.sendRichMessage("""
+		sender.sendRichMessage(
+			"""
 			Ship Heading: ${ship.heading}
 			Raw Ship Thrust: ${ship.thrusters.calculateTotalThrust()}
 			Actual Ship Thrust: ${ship.thrusters.calculateActualThrust(ship.heading)}
@@ -85,7 +86,8 @@ class StarshipDebugCommands : BaseCommand() {
 			""".trimIndent()
 		)
 		for (thruster in ship.thrusters.thrusters.mapNotNull { ship.getMultiblock(it) }) {
-			sender.sendRichMessage("""
+			sender.sendRichMessage(
+				"""
 				${thruster.type.displayName}
 				-	Facing: ${thruster.direction}
 				-	Warmup ${(thruster.data as ThrusterMultiblockData).warmupPercentage}

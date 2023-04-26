@@ -14,9 +14,10 @@ class PipeDebugCommands : BaseCommand() {
 	@Subcommand("node")
 	fun onNode(sender: Player) {
 		PipeHandler[sender.world][sender.getTargetBlockExact(10)?.toBlockPos()]?.also {
-			sender.sendRichMessage("(${it.pos.x}, ${it.pos.y}, ${it.pos.z})\n" +
-					"F: ${it.content.joinToString(", ") { (it as FuelPacket).content.toString() }}\n" +
-					"C: ${it.connections.joinToString(", ") { "(${it.x}, ${it.y}, ${it.z})" }}"
+			sender.sendRichMessage(
+				"(${it.pos.x}, ${it.pos.y}, ${it.pos.z})\n" +
+						"F: ${it.content.joinToString(", ") { (it as FuelPacket).content.toString() }}\n" +
+						"C: ${it.connections.joinToString(", ") { "(${it.x}, ${it.y}, ${it.z})" }}"
 			)
 		}
 	}
@@ -30,7 +31,11 @@ class PipeDebugCommands : BaseCommand() {
 	fun onSum(sender: Player) {
 		var sum = 0
 		var count = 0
-		PipeHandler[sender.world].values.forEach { sum += it.content.sumOf { (it as? FuelPacket)?.content ?: 0 }; count++ }
+		PipeHandler[sender.world].values.forEach {
+			sum += it.content.sumOf {
+				(it as? FuelPacket)?.content ?: 0
+			}; count++
+		}
 		sender.sendRichMessage("$sum across $count nodes")
 	}
 }

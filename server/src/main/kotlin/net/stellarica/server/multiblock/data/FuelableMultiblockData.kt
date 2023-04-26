@@ -11,6 +11,7 @@ import kotlin.math.min
 class FuelableMultiblockData : MultiblockData, FuelContainer {
 	override var fuel: Int = 0
 	override var capacity = 0
+
 	companion object {
 		fun MultiblockInstance.transferFuelFrom(fuelPoint: OriginRelative, max: Int): Int {
 			val fuelPos = fuelPoint.getBlockPos(this.origin, this.direction)

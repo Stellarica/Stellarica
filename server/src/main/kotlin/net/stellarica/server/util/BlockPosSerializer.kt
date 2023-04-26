@@ -8,7 +8,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import net.minecraft.core.BlockPos
 
-object BlockPosSerializer: KSerializer<BlockPos> {
+object BlockPosSerializer : KSerializer<BlockPos> {
 	@OptIn(ExperimentalSerializationApi::class)
 	override val descriptor: SerialDescriptor = SerialDescriptor("BlockPos", IntArraySerializer().descriptor)
 
@@ -16,6 +16,7 @@ object BlockPosSerializer: KSerializer<BlockPos> {
 		val array = decoder.decodeSerializableValue(IntArraySerializer())
 		return BlockPos(array[0], array[1], array[2])
 	}
+
 	override fun serialize(encoder: Encoder, value: BlockPos) {
 		encoder.encodeSerializableValue(IntArraySerializer(), intArrayOf(value.x, value.y, value.z))
 	}
