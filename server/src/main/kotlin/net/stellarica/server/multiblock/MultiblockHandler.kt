@@ -62,6 +62,7 @@ object MultiblockHandler : Listener {
 		return possible.maxByOrNull { it.type.blocks.size }?.also {
 			val chunk = world.getChunkAt(origin.toLocation(world))
 			multiblocks.getOrPut(chunk) { mutableSetOf() }.add(it)
+			it.type.init(it)
 			chunk.vanilla.isUnsaved = true
 		}
 	}

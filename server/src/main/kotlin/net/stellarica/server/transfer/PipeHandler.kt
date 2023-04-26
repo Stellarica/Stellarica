@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.StellaricaServer.Companion.klogger
+import net.stellarica.server.util.BlockPosSerializer
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPos
 import net.stellarica.server.util.extension.toLocation
@@ -21,6 +22,7 @@ import org.bukkit.persistence.PersistentDataType
 
 object PipeHandler : Listener {
 	const val maxConnectionLength = 32
+	const val maxPacketCount = 4
 
 	private val nodes = mutableMapOf<World, MutableMap<BlockPos, Node>>()
 	operator fun get(world: World): MutableMap<BlockPos, Node> {
@@ -43,6 +45,7 @@ object PipeHandler : Listener {
 			val connections = node.connections.mapNotNull { nodes[world]!![it] }
 
 			for (other in connections) {
+				if (other.content.size >= maxPacketCount) continue
 				for (packet in node.content.toTypedArray()) {
 					if (packet.previousNode == other.pos) continue
 					packet.previousNode = node.pos
@@ -120,9 +123,8 @@ object PipeHandler : Listener {
 
 	@Serializable
 	private data class PersistentNodeData(
-		val x: Int,
-		val y: Int,
-		val z: Int,
+		@Serializable(with = BlockPosSerializer::class)
+		val p: BlockPos,
 		val c: MutableSet<Packet>
 	)
 
@@ -137,9 +139,9 @@ object PipeHandler : Listener {
 			PersistentDataType.STRING
 		)?.let { string ->
 			val data: Array<PersistentNodeData> = Json.decodeFromString(string)
+
 			for (n in data) {
-				val pos = BlockPos(n.x, n.y, n.z)
-				nodes[event.world]!![pos] = Node(pos, content = n.c)
+				nodes[event.world]!![n.p] = Node(n.p, content = n.c)
 			}
 		}
 	}
@@ -152,9 +154,7 @@ object PipeHandler : Listener {
 				PersistentDataType.STRING,
 				Json.encodeToString(nodes[world]!!.map {
 					PersistentNodeData(
-						it.key.x,
-						it.key.y,
-						it.key.z,
+						it.key,
 						it.value.content
 					)
 				})

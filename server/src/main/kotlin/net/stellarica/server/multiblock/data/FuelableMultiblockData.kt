@@ -12,9 +12,9 @@ class FuelableMultiblockData : MultiblockData, FuelContainer {
 	override var fuel: Int = 0
 	override var capacity = 0
 	companion object {
-		fun MultiblockInstance.transferFuelFrom(fuelPoint: OriginRelative, max: Int) {
+		fun MultiblockInstance.transferFuelFrom(fuelPoint: OriginRelative, max: Int): Int {
 			val fuelPos = fuelPoint.getBlockPos(this.origin, this.direction)
-			val node = PipeHandler[this.world][fuelPos] ?: return
+			val node = PipeHandler[this.world][fuelPos] ?: return 0
 			val data = (this.data as FuelContainer)
 
 			var transferred = 0
@@ -27,16 +27,20 @@ class FuelableMultiblockData : MultiblockData, FuelContainer {
 				data.fuel += c.content
 				transferred += c.content
 			}
+			return transferred
 		}
 
-		fun MultiblockInstance.transferFuelTo(fuelPoint: OriginRelative, max: Int) {
+		fun MultiblockInstance.transferFuelTo(fuelPoint: OriginRelative, max: Int): Int {
 			val fuelPos = fuelPoint.getBlockPos(this.origin, this.direction)
-			val node = PipeHandler[this.world][fuelPos] ?: return
+			val node = PipeHandler[this.world][fuelPos] ?: return 0
 			val data = (this.data as FuelContainer)
 
 			val amount = min(max, data.fuel)
+			if (amount == 0) return 0
+
 			data.fuel -= amount
 			node.content.add(FuelPacket(amount))
+			return amount
 		}
 	}
 }

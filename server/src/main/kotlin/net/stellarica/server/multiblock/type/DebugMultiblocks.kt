@@ -26,6 +26,10 @@ object DebugMultiblocks : MultiblockDef() {
 
 		val pipeContactPoint = OriginRelative(0, -1, 0)
 
+		override fun init(instance: MultiblockInstance) {
+			(instance.data as FuelableMultiblockData).capacity = 100
+		}
+
 		override fun tick(instance: MultiblockInstance) {
 			(instance.data as FuelableMultiblockData).fuel = instance.data.capacity
 			instance.transferFuelTo(pipeContactPoint, Int.MAX_VALUE)
@@ -46,6 +50,10 @@ object DebugMultiblocks : MultiblockDef() {
 		override val dataType = FuelableMultiblockData()
 
 		val pipeContactPoint = OriginRelative(0, -1, 0)
+
+		override fun init(instance: MultiblockInstance) {
+			(instance.data as FuelableMultiblockData).capacity = 100
+		}
 
 		override fun tick(instance: MultiblockInstance) {
 			(instance.data as FuelableMultiblockData).fuel = 0

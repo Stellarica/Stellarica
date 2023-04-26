@@ -62,4 +62,5 @@ abstract class MultiblockType {
 	}
 
 	open fun tick(instance: MultiblockInstance) {}
+	open fun init(instance: MultiblockInstance) {}
 }
