@@ -18,10 +18,10 @@ import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.entity.Player
 
 @Suppress("Unused")
-@CommandAlias("customitem|customblock")
+@CommandAlias("customitem|citem|ci")
 class CustomMaterialCommands : BaseCommand() {
 
-	@Subcommand("give")
+	@Subcommand("give|g")
 	@Description("Get a custom item")
 	@CommandPermission("stellarica.material.give.self")
 	@CommandCompletion("@customitems")
@@ -73,7 +73,7 @@ class CustomMaterialCommands : BaseCommand() {
 	}
 
 
-	@Subcommand("setpower")
+	@Subcommand("setpower|sp")
 	@Description("Set the power of the held item")
 	@CommandPermission("stellarica.material.debug")
 	fun onSetPower(sender: Player, power: Int) {
