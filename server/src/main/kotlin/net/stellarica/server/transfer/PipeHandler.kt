@@ -18,11 +18,9 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.world.WorldLoadEvent
 import org.bukkit.persistence.PersistentDataType
-import kotlin.math.min
 
 object PipeHandler : Listener {
-	const val maxConnectionLength = 16
-	const val nodeCapacity = 10
+	const val maxConnectionLength = 32
 
 	private val nodes = mutableMapOf<World, MutableMap<BlockPos, Node>>()
 	operator fun get(world: World): MutableMap<BlockPos, Node> {
@@ -40,40 +38,24 @@ object PipeHandler : Listener {
 
 	private fun tickPipes(world: World) {
 		for ((_, node) in nodes[world] ?: mutableMapOf()) {
+			if (node.content.isEmpty()) continue
+
 			val connections = node.connections.mapNotNull { nodes[world]!![it] }
 
-			// get demand from connected nodes
-			val demanding = connections.filter { it.content < node.content }
-			if (demanding.isEmpty()) continue
-
-			val sum = demanding.sumOf { it.content }
-			val average = sum / demanding.count()
-
-			// pain and suffering because it means that the order in which
-			// demanding nodes are iterated through can change how much fuel they get
-			// but it works well enough:tm:
-			var available = node.content - average
-
-			for (other in demanding) {
-				val transfer = min(
-					min(
-						node.content - other.content, // this node's deficit
-						other.capacity - other.content // the other's empty space
-					),
-					available
-				).coerceAtLeast(0)
-				available -= transfer
-				other.inputBuffer += transfer
-				node.outputBuffer += transfer
+			for (other in connections) {
+				for (packet in node.content.toTypedArray()) {
+					if (packet.previousNode == other.pos) continue
+					packet.previousNode = node.pos
+					other.inputBuffer.add(packet)
+					node.content.remove(packet)
+				}
 			}
 		}
 
 		// apply changes at once
 		for ((_, node) in nodes[world] ?: mutableMapOf()) {
-			node.content += node.inputBuffer
-			node.content -= node.outputBuffer
-			node.inputBuffer = 0
-			node.outputBuffer = 0
+			node.content.addAll(node.inputBuffer)
+			node.inputBuffer.clear()
 		}
 	}
 
@@ -106,7 +88,7 @@ object PipeHandler : Listener {
 		val pos = event.block.toBlockPos()
 		val world = event.block.world
 		// it will be automatically connected later
-		if (world.getBlockState(pos.x, pos.y, pos.z).type == Material.COPPER_BLOCK)
+		if (world.getBlockState(pos.x, pos.y, pos.z).type == Material.CUT_COPPER)
 			nodes.getOrPut(world) { mutableMapOf() }[pos] = Node(pos)
 	}
 
@@ -141,7 +123,7 @@ object PipeHandler : Listener {
 		val x: Int,
 		val y: Int,
 		val z: Int,
-		val c: Int
+		val c: MutableSet<Packet>
 	)
 
 	@EventHandler

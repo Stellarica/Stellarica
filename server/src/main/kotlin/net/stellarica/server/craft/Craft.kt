@@ -255,9 +255,13 @@ open class Craft(
 		nearbyPipeNodes.forEach { nodes.remove(it.pos) }
 
 		for (node in nearbyPipeNodes) {
+			// this is :omegacrong: and should be fixed
 			val newPos = data.modifier(node.pos.toVec3()).toBlockPos()
 			node.pos = newPos
 			node.connections = node.connections.map { data.modifier(it.toVec3()).toBlockPos() }.toMutableSet()
+			node.content.forEach {
+				it.previousNode = it.previousNode?.let { it1 -> data.modifier(it1.toVec3()).toBlockPos() }
+			}
 			newNodes[newPos] = node
 		}
 	}
