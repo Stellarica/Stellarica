@@ -6,18 +6,16 @@ import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.craft.starship.StarshipCommands
-import net.stellarica.server.craft.starship.StarshipDebugCommands
 import net.stellarica.server.material.custom.CustomMaterialCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.feature.blasters.BlasterListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.custom.item.CustomItems
-import net.stellarica.server.multiblock.MultiblockCommands
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.type.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
-import net.stellarica.server.transfer.PipeDebugCommands
 import net.stellarica.server.transfer.PipeHandler
+import net.stellarica.server.util.DebugCommands
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -88,10 +86,8 @@ class StellaricaServer : JavaPlugin() {
 		val commandManager = PaperCommandManager(this)
 		arrayOf(
 			StarshipCommands(),
-			StarshipDebugCommands(),
 			CustomMaterialCommands(),
-			MultiblockCommands(),
-			PipeDebugCommands()
+			DebugCommands()
 		).forEach { commandManager.registerCommand(it) }
 
 		commandManager.commandCompletions.registerCompletion(

@@ -17,16 +17,6 @@ permissions:
   stellarica.material.give.other:
     description: Lets users give custom items to others
     default: op
-  stellarica.material.debug:
-    description: Debug commands for custom items and blocks
-    default: op
-
-  stellarica.debug.starship:
-    description: Debug commands for starships
-    default: op
-  stellarica.debug.pipe:
-    description: Debug commands for pipes
-    default: op
-  stellarica.debug.material:
-    description: Debug commands for custom items and blocks
+  stellarica.debug:
+    description: Debug commands for various features
     default: op
