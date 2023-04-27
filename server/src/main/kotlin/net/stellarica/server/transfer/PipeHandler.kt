@@ -139,7 +139,6 @@ object PipeHandler : Listener {
 			PersistentDataType.STRING
 		)?.let { string ->
 			val data: Array<PersistentNodeData> = Json.decodeFromString(string)
-
 			for (n in data) {
 				nodes[event.world]!![n.p] = Node(n.p, content = n.c)
 			}
@@ -153,10 +152,7 @@ object PipeHandler : Listener {
 				StellaricaServer.namespacedKey("pipenetworks"),
 				PersistentDataType.STRING,
 				Json.encodeToString(nodes[world]!!.map {
-					PersistentNodeData(
-						it.key,
-						it.value.content
-					)
+					PersistentNodeData(it.key, it.value.content)
 				})
 			)
 		}

@@ -31,7 +31,7 @@ object DebugMultiblocks : MultiblockDef() {
 		}
 
 		override fun tick(instance: MultiblockInstance) {
-			(instance.data as FuelableMultiblockData).fuel = instance.data.capacity
+			(instance.data as FuelableMultiblockData).content = instance.data.capacity
 			instance.transferFuelTo(pipeContactPoint, Int.MAX_VALUE)
 		}
 	}
@@ -56,7 +56,7 @@ object DebugMultiblocks : MultiblockDef() {
 		}
 
 		override fun tick(instance: MultiblockInstance) {
-			(instance.data as FuelableMultiblockData).fuel = 0
+			(instance.data as FuelableMultiblockData).content = 0
 			instance.transferFuelFrom(pipeContactPoint, Int.MAX_VALUE)
 		}
 	}

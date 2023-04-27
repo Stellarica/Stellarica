@@ -9,7 +9,7 @@ import kotlin.math.min
 
 @Serializable
 class FuelableMultiblockData : MultiblockData, FuelContainer {
-	override var fuel: Int = 0
+	override var content: Int = 0
 	override var capacity = 0
 
 	companion object {
@@ -19,13 +19,13 @@ class FuelableMultiblockData : MultiblockData, FuelContainer {
 			val data = (this.data as FuelContainer)
 
 			var transferred = 0
-			while (node.content.isNotEmpty() && data.fuel < data.capacity && transferred < max) {
+			while (node.content.isNotEmpty() && data.content < data.capacity && transferred < max) {
 				// attempt to transfer in as much as possible
 				val c = node.content.first() as FuelPacket
-				if (data.fuel + c.content > data.capacity) continue
+				if (data.content + c.content > data.capacity) continue
 
 				node.content.remove(c)
-				data.fuel += c.content
+				data.content += c.content
 				transferred += c.content
 			}
 			return transferred
@@ -36,10 +36,10 @@ class FuelableMultiblockData : MultiblockData, FuelContainer {
 			val node = PipeHandler[this.world][fuelPos] ?: return 0
 			val data = (this.data as FuelContainer)
 
-			val amount = min(max, data.fuel)
+			val amount = min(max, data.content)
 			if (amount == 0) return 0
 
-			data.fuel -= amount
+			data.content -= amount
 			node.content.add(FuelPacket(amount))
 			return amount
 		}
