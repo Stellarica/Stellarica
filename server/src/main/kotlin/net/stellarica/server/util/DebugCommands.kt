@@ -141,13 +141,12 @@ class DebugCommands : BaseCommand() {
 		sender.sendRichMessage(dumpMultiblockInstance(mb))
 	}
 
-	private fun dumpMultiblockInstance(mb: MultiblockInstance): String =
-		"""
-			<white>Type: <click:run_command:/debug mb type ${mb.type.id.path}><aqua><u>${mb.type.displayName}</u></click>
-			<white>Origin:<gray> ${mb.origin.formatted}
-			<white>Direction:<gray> ${mb.direction}
-			<white>ID:<gray> ${mb.id}
-			<white>Data:<gray> ${Json.encodeToString(mb.data)}
+	private fun dumpMultiblockInstance(mb: MultiblockInstance): String = """
+		<white>Type: <click:run_command:/debug mb type ${mb.type.id.path}><aqua><u>${mb.type.displayName}</u></click>
+		<white>Origin:<gray> ${mb.origin.formatted}
+		<white>Direction:<gray> ${mb.direction}
+		<white>ID:<gray> ${mb.id}
+		<white>Data:<gray> ${Json.encodeToString(mb.data)}
 		""".trimIndent()
 
 
@@ -200,40 +199,34 @@ class DebugCommands : BaseCommand() {
 	@Subcommand("starship|ship thrusters")
 	private fun onShipThrusters(sender: Player) {
 		val ship = getShip(sender) ?: return
-		sender.sendRichMessage(
-			"""
-				<white>Ship Heading:<gray> ${ship.heading}
-				<white>Raw Ship Thrust:<gray> ${ship.thrusters.calculateTotalThrust()}
-				<white>Actual Ship Thrust:<gray> ${ship.thrusters.calculateActualThrust(ship.heading)}
-				<white>Ship Mass:<gray> ${ship.mass}
-			""".trimIndent()
-		)
+		sender.sendRichMessage("""
+			<white>Ship Heading:<gray> ${ship.heading}
+			<white>Raw Ship Thrust:<gray> ${ship.thrusters.calculateTotalThrust()}
+			<white>Actual Ship Thrust:<gray> ${ship.thrusters.calculateActualThrust(ship.heading)}
+			<white>Ship Mass:<gray> ${ship.mass}
+		""".trimIndent())
 		for (thruster in ship.thrusters.thrusters.mapNotNull { ship.getMultiblock(it) }) {
-			sender.sendRichMessage(
-				"""
-					<white><bold>${thruster.type.displayName}</bold>
-					-	<white>Facing:<gray> ${thruster.direction}
-					-	<white>Warmup:<gray> ${(thruster.data as ThrusterMultiblockData).warmupPercentage}
-				""".trimIndent()
-			)
+			sender.sendRichMessage("""
+				<white><bold>${thruster.type.displayName}</bold>
+				-	<white>Facing:<gray> ${thruster.direction}
+				-	<white>Warmup:<gray> ${(thruster.data as ThrusterMultiblockData).warmupPercentage}
+			""".trimIndent())
 		}
 	}
 
 	@Subcommand("starship|ship info")
 	private fun onShipInfo(sender: Player) {
 		val ship = getShip(sender) ?: return
-		sender.sendRichMessage(
-			"""
-				<white>Origin:<gray>${ship.origin}
-				<white>Direction:<gray>${ship.direction}
-				<white>Block Count:<gray> ${ship.detectedBlockCount}
-				<white>Time Spent Moving:<gray> ${ship.timeSpentMoving}ms
-				<white>Multiblocks (${ship.multiblocks.size}) 
-				-   ${ship.multiblocks.mapNotNull { ship.getMultiblock(it)?.let {inst ->
-					   "<click:run_command:/debug mb instance ${inst.origin.x} ${inst.origin.y} ${inst.origin.y}><u><aqua>${inst.type.displayName}<reset>"
-				} }.joinToString { "\n-   " }}
-			""".trimIndent()
-		)
+		sender.sendRichMessage("""
+			<white>Origin:<gray>${ship.origin}
+			<white>Direction:<gray>${ship.direction}
+			<white>Block Count:<gray> ${ship.detectedBlockCount}
+			<white>Time Spent Moving:<gray> ${ship.timeSpentMoving}ms
+			<white>Multiblocks (${ship.multiblocks.size}) 
+			-   ${ship.multiblocks.mapNotNull { ship.getMultiblock(it)?.let {inst ->
+				"<click:run_command:/debug mb instance ${inst.origin.x} ${inst.origin.y} ${inst.origin.y}><u><aqua>${inst.type.displayName}<reset>" 
+			} }.joinToString { "\n-   " }}
+		""".trimIndent())
 		onShipThrusters(sender)
 	}
 
@@ -246,23 +239,19 @@ class DebugCommands : BaseCommand() {
 			sender.sendRichMessage("<gold>This item is not a custom item!")
 			return
 		}
-		sender.sendRichMessage(
-			"""
-			<green>---- Custom Item ----
-			</green>
-			ID: ${custom.id}
-			Display Name: ${custom.name}<reset>
-			Custom Model Data: ${custom.modelData}
-			Base Material: ${custom.base}
+		sender.sendRichMessage("""
+			<white>ID:<gray> ${custom.id}
+			<white>Display Name:<gray> ${custom.name}<reset>
+			<white>Custom Model Data:<gray> ${custom.modelData}
+			<white>Base Material:<gray> ${custom.base}
 			${
 				if (item.isPowerable) {
-					"Power: ${item.power}/${custom.maxPower}\n "
+					"<white>Power: <gray>${item.power}/${custom.maxPower}\n "
 				} else {
 					" "
 				}
 			}
-			""".trimIndent()
-		)
+		""".trimIndent())
 	}
 
 	@Subcommand("material|mat setpower|sp")
