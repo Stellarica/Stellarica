@@ -8,6 +8,7 @@ import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import net.minecraft.core.BlockPos
 import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.craft.starship.Starship
@@ -17,6 +18,7 @@ import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.multiblock.MultiblockHandler
+import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.multiblock.data.ThrusterMultiblockData
 import net.stellarica.server.multiblock.matching.BlockTagMatcher
 import net.stellarica.server.multiblock.matching.MultiBlockMatcher
@@ -25,10 +27,13 @@ import net.stellarica.server.multiblock.type.Multiblocks
 import net.stellarica.server.transfer.FuelPacket
 import net.stellarica.server.transfer.PipeHandler
 import net.stellarica.server.util.extension.craft
+import net.stellarica.server.util.extension.formatted
 import net.stellarica.server.util.extension.toBlockPos
 import net.stellarica.server.util.extension.toLocation
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
+import org.bukkit.World
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -115,22 +120,36 @@ class DebugCommands : BaseCommand() {
 
 	@Subcommand("multiblock|mb instance")
 	@Description("Get multiblock instance information")
-	fun onMultiblockInstance(sender: Player) {
-		val block = sender.getTargetBlockExact(10)
-		val mb = MultiblockHandler[block!!.chunk].firstOrNull { it.contains(block.toBlockPos()) } ?: run {
+	private fun onMultiblockInstance(sender: Player) {
+		val pos = sender.getTargetBlockExact(10) ?: return
+		val mb = MultiblockHandler[pos.chunk].firstOrNull { it.contains(pos.toBlockPos()) } ?: run {
 			sender.sendRichMessage("<red>No multiblock found!")
 			return
 		}
-		sender.sendRichMessage(
-			"""
-			Type: ${mb.type.displayName}
-			Origin: ${mb.origin}
-			Direction: ${mb.direction}
-			ID: ${mb.id}
-			Data: ${Json.encodeToString(mb.data)}
-		""".trimIndent()
-		)
+		sender.sendRichMessage(dumpMultiblockInstance(mb))
 	}
+
+	@Subcommand("multiblock|mb instance")
+	@Description("Get multiblock instance information")
+	private fun onMultiblockInstance(sender: CommandSender, x: Int, y: Int, z: Int, world: World? = null) {
+		val w = if (world == null && sender is Player) sender.world else world ?: return
+		val pos = BlockPos(x, y, z)
+		val mb = MultiblockHandler[pos.toLocation(w).chunk].firstOrNull { it.contains(pos) } ?: run {
+			sender.sendRichMessage("<red>No multiblock found!")
+			return
+		}
+		sender.sendRichMessage(dumpMultiblockInstance(mb))
+	}
+
+	private fun dumpMultiblockInstance(mb: MultiblockInstance): String =
+		"""
+			<white>Type: <click:run_command:/debug mb type ${mb.type.id.path}><aqua><u>${mb.type.displayName}</u></click>
+			<white>Origin:<gray> ${mb.origin.formatted}
+			<white>Direction:<gray> ${mb.direction}
+			<white>ID:<gray> ${mb.id}
+			<white>Data:<gray> ${Json.encodeToString(mb.data)}
+		""".trimIndent()
+
 
 	@Subcommand("starship|ship contents")
 	@Description("View the ship's contants")
@@ -175,13 +194,7 @@ class DebugCommands : BaseCommand() {
 				Material.EMERALD_BLOCK.createBlockData()
 			)
 		}
-	}
-
-	@Subcommand("starship|ship contains")
-	@Description("Whether a block is 'inside' the ship")
-	private fun onShipCheckContains(sender: Player) {
-		val ship = getShip(sender) ?: return
-		sender.sendRichMessage(ship.contains(sender.getTargetBlockExact(20)?.toBlockPos()).toString())
+		sender.sendRichMessage("<green>Displaying ship contents")
 	}
 
 	@Subcommand("starship|ship thrusters")
@@ -189,22 +202,41 @@ class DebugCommands : BaseCommand() {
 		val ship = getShip(sender) ?: return
 		sender.sendRichMessage(
 			"""
-			Ship Heading: ${ship.heading}
-			Raw Ship Thrust: ${ship.thrusters.calculateTotalThrust()}
-			Actual Ship Thrust: ${ship.thrusters.calculateActualThrust(ship.heading)}
-			Ship Mass: ${ship.mass}
+				<white>Ship Heading:<gray> ${ship.heading}
+				<white>Raw Ship Thrust:<gray> ${ship.thrusters.calculateTotalThrust()}
+				<white>Actual Ship Thrust:<gray> ${ship.thrusters.calculateActualThrust(ship.heading)}
+				<white>Ship Mass:<gray> ${ship.mass}
 			""".trimIndent()
 		)
 		for (thruster in ship.thrusters.thrusters.mapNotNull { ship.getMultiblock(it) }) {
 			sender.sendRichMessage(
 				"""
-				${thruster.type.displayName}
-				-	Facing: ${thruster.direction}
-				-	Warmup ${(thruster.data as ThrusterMultiblockData).warmupPercentage}
+					<white><bold>${thruster.type.displayName}</bold>
+					-	<white>Facing:<gray> ${thruster.direction}
+					-	<white>Warmup:<gray> ${(thruster.data as ThrusterMultiblockData).warmupPercentage}
 				""".trimIndent()
 			)
 		}
 	}
+
+	@Subcommand("starship|ship info")
+	private fun onShipInfo(sender: Player) {
+		val ship = getShip(sender) ?: return
+		sender.sendRichMessage(
+			"""
+				<white>Origin:<gray>${ship.origin}
+				<white>Direction:<gray>${ship.direction}
+				<white>Block Count:<gray> ${ship.detectedBlockCount}
+				<white>Time Spent Moving:<gray> ${ship.timeSpentMoving}ms
+				<white>Multiblocks (${ship.multiblocks.size}) 
+				-   ${ship.multiblocks.mapNotNull { ship.getMultiblock(it)?.let {inst ->
+					   "<click:run_command:/debug mb instance ${inst.origin.x} ${inst.origin.y} ${inst.origin.y}><u><aqua>${inst.type.displayName}<reset>"
+				} }.joinToString { "\n-   " }}
+			""".trimIndent()
+		)
+		onShipThrusters(sender)
+	}
+
 
 	@Subcommand("material|mat get")
 	@Description("Check whether the held item is a custom item")
@@ -232,7 +264,6 @@ class DebugCommands : BaseCommand() {
 			""".trimIndent()
 		)
 	}
-
 
 	@Subcommand("material|mat setpower|sp")
 	@Description("Set the power of the held item")
