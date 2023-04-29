@@ -5,6 +5,7 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.title.TitlePart
 import net.minecraft.core.BlockPos
+import net.minecraft.world.phys.Vec3
 
 /**
  * This string as a Component, using MiniMessage formatting
@@ -21,3 +22,6 @@ fun Audience.sendRichTitle(message: String, part: TitlePart<Component>) =
 
 val BlockPos.formatted
 	get() = "<dark_gray>(<gray>${this.x}<dark_gray>, <gray>${this.y}<dark_gray>, <gray>${this.z}<dark_gray>)<reset>"
+
+val Vec3.formatted
+	get() = "<dark_gray>(<gray>%.3f<dark_gray>, <gray>%.3f<dark_gray>, <gray>%.3f<dark_gray>)<reset>".format(this.x, this.y, this.z)

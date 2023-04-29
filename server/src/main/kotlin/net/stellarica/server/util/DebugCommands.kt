@@ -200,16 +200,17 @@ class DebugCommands : BaseCommand() {
 	private fun onShipThrusters(sender: Player) {
 		val ship = getShip(sender) ?: return
 		sender.sendRichMessage("""
-			<white>Ship Heading:<gray> ${ship.heading}
-			<white>Raw Ship Thrust:<gray> ${ship.thrusters.calculateTotalThrust()}
-			<white>Actual Ship Thrust:<gray> ${ship.thrusters.calculateActualThrust(ship.heading)}
+			<white>Ship Heading:<gray> ${ship.heading.formatted}
+			<white>Raw Ship Thrust:<gray> ${ship.thrusters.calculateTotalThrust().formatted}
+			<white>Actual Ship Thrust:<gray> ${ship.thrusters.calculateActualThrust(ship.heading).formatted}
 			<white>Ship Mass:<gray> ${ship.mass}
+			<white>Thrusters:<gray> (${ship.thrusters.thrusters.size})
 		""".trimIndent())
 		for (thruster in ship.thrusters.thrusters.mapNotNull { ship.getMultiblock(it) }) {
 			sender.sendRichMessage("""
-				<white><bold>${thruster.type.displayName}</bold>
-				-	<white>Facing:<gray> ${thruster.direction}
-				-	<white>Warmup:<gray> ${(thruster.data as ThrusterMultiblockData).warmupPercentage}
+				  <gray>- <white>${thruster.type.displayName}
+				     <white>Facing:<gray> ${thruster.direction}
+				     <white>Warmup:<gray> ${(thruster.data as ThrusterMultiblockData).warmupPercentage}
 			""".trimIndent())
 		}
 	}
@@ -218,15 +219,19 @@ class DebugCommands : BaseCommand() {
 	private fun onShipInfo(sender: Player) {
 		val ship = getShip(sender) ?: return
 		sender.sendRichMessage("""
-			<white>Origin:<gray>${ship.origin}
-			<white>Direction:<gray>${ship.direction}
+			<white>Origin:<gray> ${ship.origin.formatted}
+			<white>Direction:<gray> ${ship.direction}
 			<white>Block Count:<gray> ${ship.detectedBlockCount}
 			<white>Time Spent Moving:<gray> ${ship.timeSpentMoving}ms
-			<white>Multiblocks (${ship.multiblocks.size}) 
-			-   ${ship.multiblocks.mapNotNull { ship.getMultiblock(it)?.let {inst ->
-				"<click:run_command:/debug mb instance ${inst.origin.x} ${inst.origin.y} ${inst.origin.y}><u><aqua>${inst.type.displayName}<reset>" 
-			} }.joinToString { "\n-   " }}
-		""".trimIndent())
+			""".trimIndent() + if (ship.multiblocks.isNotEmpty()) {
+				"\n<white>Multiblocks: <gray>(${ ship.multiblocks.size })" +
+					ship.multiblocks.mapNotNull { ship.getMultiblock(it) }.joinToString { inst ->
+						"\n<gray>- <click:run_command:/debug mb instance ${inst.origin.x} ${inst.origin.y} ${inst.origin.y} ${inst.world.name}><u><aqua>${inst.type.displayName}<reset>"
+					}
+			} else {
+				"\n<white>No Multiblocks Found"
+			}
+	)
 		onShipThrusters(sender)
 	}
 
@@ -244,14 +249,11 @@ class DebugCommands : BaseCommand() {
 			<white>Display Name:<gray> ${custom.name}<reset>
 			<white>Custom Model Data:<gray> ${custom.modelData}
 			<white>Base Material:<gray> ${custom.base}
-			${
+			""".trimIndent() +
 				if (item.isPowerable) {
-					"<white>Power: <gray>${item.power}/${custom.maxPower}\n "
-				} else {
-					" "
-				}
-			}
-		""".trimIndent())
+					"\n<white>Power: <gray>${item.power}/${custom.maxPower}\n "
+				} else ""
+		)
 	}
 
 	@Subcommand("material|mat setpower|sp")
