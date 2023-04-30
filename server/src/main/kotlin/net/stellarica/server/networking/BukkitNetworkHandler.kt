@@ -14,7 +14,27 @@ class BukkitNetworkHandler : PluginMessageListener {
 		}
 	}
 
-	private val listeners = mutableSetOf<Pair<Channel, (ByteArray, Player) -> Unit>>()
+	private val listeners = mutableMapOf<ServerboundPacketListener, Long>()
+
+	override fun onPluginMessageReceived(channelString: String, player: Player, message: ByteArray?) {
+		message ?: return
+
+		val channel = Channel.values().firstOrNull { it.bukkit == channelString } ?: klogger.warn {
+			"Received packet on unknown channel $channelString, discarding!"
+		}.also { return }
+
+		val current = System.currentTimeMillis()
+		listeners.keys.removeIf { it.timeout != null && listeners[it]!! + it.timeout <= current }
+
+		val toCall = listeners.keys.filter {
+			it.channel isNullOrEq channel &&
+					it.player isNullOrEq player
+		}.sortedBy { it.priority }
+
+		for (listener in toCall) {
+			if (listener.callback(listener, player, message)) break
+		}
+	}
 
 	fun broadcastPacket(channel: Channel, packet: ByteArray) {
 		for (player in plugin.moddedPlayers) {
@@ -26,15 +46,12 @@ class BukkitNetworkHandler : PluginMessageListener {
 		player.sendPluginMessage(plugin, channel.bukkit, packet)
 	}
 
-	fun registerListener(channel: Channel, listener: (ByteArray, Player) -> Unit) {
-		listeners.add(Pair(channel, listener))
+	fun register(listener: ServerboundPacketListener) {
+		listeners[listener] = System.currentTimeMillis()
 	}
 
-	override fun onPluginMessageReceived(channelString: String, player: Player, message: ByteArray?) {
-		val channel = Channel.values().firstOrNull { it.bukkit == channelString } ?: klogger.warn {
-			"Received packet on unknown channel $channelString"
-		}.also { return }
-
-		listeners.filter { it.first == channel }.forEach { it.second(message ?: byteArrayOf(), player) }
+	fun unregister(listener: ServerboundPacketListener) {
+		listeners.remove(listener)
 	}
+	private infix fun Any?.isNullOrEq(other: Any?) = this == null || this == other
 }

@@ -14,6 +14,7 @@ import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.type.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
+import net.stellarica.server.networking.ModdedPlayerHandler
 import net.stellarica.server.transfer.PipeHandler
 import net.stellarica.server.util.DebugCommands
 import org.bukkit.Bukkit.getPluginManager
@@ -79,6 +80,7 @@ class StellaricaServer : JavaPlugin() {
 			CustomItemHandler,
 			CustomBlockHandler,
 			PipeHandler,
+			ModdedPlayerHandler,
 			BlasterListener
 		).forEach { getPluginManager().registerEvents(it, this) }
 

@@ -3,7 +3,7 @@ package net.stellarica.common.networking
 import net.minecraft.resources.ResourceLocation
 
 enum class Channel {
-	HANDSHAKE;
+	LOGIN;
 
 	val fabric by lazy {
 		ResourceLocation("stellarica", name.lowercase())
