@@ -8,7 +8,7 @@ import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.StellaricaServer.Companion.klogger
-import net.stellarica.server.util.BlockPosSerializer
+import net.stellarica.common.util.serializer.BlockPosSerializer
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPos
 import net.stellarica.server.util.extension.toLocation

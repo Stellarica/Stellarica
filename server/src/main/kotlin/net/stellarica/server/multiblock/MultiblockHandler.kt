@@ -6,7 +6,8 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.stellarica.server.StellaricaServer
+import net.minecraft.resources.ResourceLocation
+import net.stellarica.common.util.serializer.ResourceLocationSerializer
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
 import net.stellarica.server.material.custom.item.CustomItems
@@ -71,7 +72,8 @@ object MultiblockHandler : Listener {
 	@Serializable
 	private data class PersistentMultiblockData(
 		val id: String,
-		val type: String,
+		@Serializable(with = ResourceLocationSerializer::class)
+		val type: ResourceLocation,
 		val oX: Int,
 		val oY: Int,
 		val oZ: Int,
@@ -82,7 +84,7 @@ object MultiblockHandler : Listener {
 		constructor(multiblock: MultiblockInstance) :
 				this(
 					multiblock.id.toString(),
-					multiblock.type.id.path,
+					multiblock.type.id,
 					multiblock.origin.x,
 					multiblock.origin.y,
 					multiblock.origin.z,
@@ -96,7 +98,7 @@ object MultiblockHandler : Listener {
 				BlockPos(oX, oY, oZ),
 				world,
 				direction,
-				Multiblocks.byId(StellaricaServer.identifier(type))!!,
+				Multiblocks.byId(type)!!,
 				data
 			)
 	}
@@ -105,7 +107,7 @@ object MultiblockHandler : Listener {
 		chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)
 			?.let { string ->
 				Json.decodeFromString<Set<PersistentMultiblockData>>(string)
-					.filter { it.type in Multiblocks.all.map { it.id.path } } // make sure it's a valid type still
+					.filter { it.type in Multiblocks.all.map { it.id } } // make sure it's a valid type still
 					.map { it.toInstance(chunk.world) }
 					.let { multiblocks.getOrPut(chunk) { mutableSetOf() }.addAll(it) }
 			}
