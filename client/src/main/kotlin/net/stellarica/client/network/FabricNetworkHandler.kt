@@ -5,7 +5,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.stellarica.common.networking.Channel
 
 class FabricNetworkHandler {
-	val listeners = mutableMapOf<ClientboundPacketListener, Long>()
+	private val listeners = mutableMapOf<ClientboundPacketListener, Long>()
 
 	fun sendPacket(channel: Channel, content: ByteArray) {
 		ClientPlayNetworking.send(channel.fabric, PacketByteBufs.create().also { it.writeByteArray(content) })
@@ -35,7 +35,7 @@ class FabricNetworkHandler {
 	init {
 		for (channel in Channel.values()) {
 			ClientPlayNetworking.registerGlobalReceiver(channel.fabric) { _, _, buf, _ ->
-				onPacketRecv(channel, buf.readByteArray())
+				onPacketRecv(channel, buf.accessByteBufWithCorrectSize())
 			}
 		}
 	}

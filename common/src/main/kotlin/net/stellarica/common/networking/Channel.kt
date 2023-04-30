@@ -3,7 +3,8 @@ package net.stellarica.common.networking
 import net.minecraft.resources.ResourceLocation
 
 enum class Channel {
-	LOGIN;
+	LOGIN,
+	ITEM_SYNC;
 
 	val fabric by lazy {
 		ResourceLocation("stellarica", name.lowercase())

@@ -1,5 +1,7 @@
 package net.stellarica.server.networking
 
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import net.stellarica.common.networking.Channel
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.plugin
@@ -44,6 +46,10 @@ class BukkitNetworkHandler : PluginMessageListener {
 
 	fun sendPacket(channel: Channel, player: Player, packet: ByteArray) {
 		player.sendPluginMessage(plugin, channel.bukkit, packet)
+	}
+
+	inline fun <reified T: Any>sendSerializableObject(channel: Channel, player: Player, obj: T) {
+		sendPacket(channel, player, Json.encodeToString(obj).toByteArray())
 	}
 
 	fun register(listener: ServerboundPacketListener) {
