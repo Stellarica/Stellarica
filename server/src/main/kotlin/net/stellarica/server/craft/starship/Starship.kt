@@ -2,8 +2,10 @@ package net.stellarica.server.craft.starship
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.core.Vec3i
 import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.phys.Vec3
+import net.stellarica.common.util.toVec3
 import net.stellarica.common.util.toVec3i
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
 import net.stellarica.server.StellaricaServer.Companion.plugin
@@ -34,7 +36,10 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 	val weapons = WeaponSubsystem(this)
 	val shields = ShieldSubsystem(this)
 	val armor = ArmorSubsystem(this)
-	var thrusters = ThrusterSubsystem(this)
+	val thrusters = ThrusterSubsystem(this)
+
+	var lastMove: Vec3i = Vec3i.ZERO
+		private set
 
 	var heading: Vec3 = Vec3.ZERO
 
@@ -109,8 +114,11 @@ class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner
 	private fun tickCraft() {
 		subsystems.forEach { it.onShipTick() }
 		val thrust = thrusters.calculateActualThrust(heading)
-		val move = thrust / mass.toDouble()
-		move(move.toVec3i())
+		var move = thrust / mass.toDouble()
+		// average with the last movement for "momentum"
+		move = move.add(lastMove.toVec3()) / 2.0
+		lastMove = move.toVec3i()
+		move(lastMove)
 	}
 
 	@EventHandler

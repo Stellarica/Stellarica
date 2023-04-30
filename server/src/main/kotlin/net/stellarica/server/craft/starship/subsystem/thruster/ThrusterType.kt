@@ -10,7 +10,7 @@ enum class ThrusterType(
 ) {
 	CHEMICAL_SMALL(
 		ThrusterMultiblocks.THRUSTER_CHEMICAL_SMALL,
-		800,
-		2
+		500,
+		5
 	)
 }
