@@ -1,13 +1,15 @@
 plugins {
 	id("fabric-loom")
 }
+
 version = property("mod_version")!!
 repositories {
 	maven(uri("https://repo.virtualclient.gg/artifactory/virtualclient-public/"))
 }
 
 dependencies {
-	implementation(project(":common", "namedElements"))
+	implementation(include(project(":common", "namedElements"))!!)
+
 	minecraft("com.mojang:minecraft:${property("minecraft_version")}")
 	mappings(loom.layered() {
 		officialMojangMappings()
@@ -19,7 +21,7 @@ dependencies {
 	modImplementation("net.fabricmc:fabric-language-kotlin:${property("fabric_kotlin_version")}")
 
 	modImplementation(include("gg.virtualclient:virtualgui:${property("elementa_version")}")!!)
-	implementation("io.github.microutils:kotlin-logging-jvm:${property("kt_log_version")}")
+	implementation(include("io.github.microutils:kotlin-logging-jvm:${property("kt_log_version")}")!!)
 }
 
 tasks {
