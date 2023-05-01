@@ -17,7 +17,6 @@ class ClientboundObjectListener<T : Any>(
 		private fun internal(listener: ClientboundPacketListener, data: ByteArray): Boolean {
 			@Suppress("UNCHECKED_CAST")
 			listener as ClientboundObjectListener<Any>
-			println("Data: " + data.decodeToString())
 			return listener.objectCallback(listener, Json.decodeFromString(listener.serializer, data.decodeToString())!!)
 		}
 	}

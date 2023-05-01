@@ -15,7 +15,7 @@ import net.stellarica.client.network.ClientboundObjectListener
 import net.stellarica.client.network.ClientboundPacketListener
 import net.stellarica.client.network.FabricNetworkHandler
 import net.stellarica.common.networking.Channel
-import net.stellarica.common.networking.CustomItemData
+import net.stellarica.common.networking.ClientCustomItemData
 import net.stellarica.common.networking.networkVersion
 
 
@@ -30,6 +30,8 @@ object StellaricaClient : ClientModInitializer {
 			//.icon()
 			.build()
 
+	val customItems = mutableSetOf<ClientCustomItemData>()
+
 	fun identifier(path: String) = ResourceLocation("stellarica", path)
 	override fun onInitializeClient() {
 		println("sain and puffering")
@@ -38,7 +40,7 @@ object StellaricaClient : ClientModInitializer {
 
 		@Suppress("UnstableApiUsage")
 		ItemGroupEvents.modifyEntriesEvent(itemGroup).register(ModifyEntries { content: FabricItemGroupEntries ->
-
+			content.acceptAll(customItems.map { it.itemStack() })
 		})
 
 		ClientboundPacketListener(channel = Channel.LOGIN) {
@@ -72,8 +74,9 @@ object StellaricaClient : ClientModInitializer {
 			false
 		}.register()
 
-		ClientboundObjectListener<List<CustomItemData>>(serializer<List<CustomItemData>>(), channel = Channel.ITEM_SYNC) {data ->
-			println("Received custom item data: $data")
+		ClientboundObjectListener<List<ClientCustomItemData>>(serializer<List<ClientCustomItemData>>(), channel = Channel.ITEM_SYNC) { data ->
+			customItems.clear()
+			customItems.addAll(data)
 			false
 		}.register()
 	}
