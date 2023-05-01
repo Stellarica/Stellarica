@@ -26,21 +26,6 @@ allprojects {
 	}
 }
 
-tasks {
-	build {
-		doLast {
-			copy {
-				from("client/build/libs/client-${project.property("mod_version")}.jar")
-				into("build/")
-			}
-			copy {
-				from("server/build/libs/server-${project.property("mod_version")}.jar")
-				into("build/")
-			}
-		}
-	}
-}
-
 detekt {
 	config = files("config/detekt/detekt.yml")
 	buildUponDefaultConfig = true

@@ -3,7 +3,7 @@
   "id": "stellarica",
   "version": "$version",
   "name": "Stellarica",
-  "description": "I am very good at names!",
+  "description": "Client-side QoL changes for Stellarica",
   "authors": [
     {
       "name": "trainb0y",
