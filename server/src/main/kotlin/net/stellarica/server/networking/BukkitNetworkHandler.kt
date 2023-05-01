@@ -48,7 +48,7 @@ class BukkitNetworkHandler : PluginMessageListener {
 		player.sendPluginMessage(plugin, channel.bukkit, packet)
 	}
 
-	inline fun <reified T: Any>sendSerializableObject(channel: Channel, player: Player, obj: T) {
+	inline fun <reified T : Any> sendSerializableObject(channel: Channel, player: Player, obj: T) {
 		sendPacket(channel, player, Json.encodeToString(obj).toByteArray())
 	}
 
@@ -59,5 +59,6 @@ class BukkitNetworkHandler : PluginMessageListener {
 	fun unregister(listener: ServerboundPacketListener) {
 		listeners.remove(listener)
 	}
+
 	private infix fun Any?.isNullOrEq(other: Any?) = this == null || this == other
 }

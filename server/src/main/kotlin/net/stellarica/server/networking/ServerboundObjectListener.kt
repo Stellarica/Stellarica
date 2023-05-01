@@ -18,7 +18,11 @@ class ServerboundObjectListener<T : Any>(
 		private fun internal(listener: ServerboundPacketListener, player: Player, data: ByteArray): Boolean {
 			@Suppress("UNCHECKED_CAST")
 			listener as ServerboundObjectListener<Any>
-			return listener.objectCallback(listener, player, Json.decodeFromString(listener.serializer, data.toString())!!)
+			return listener.objectCallback(
+				listener,
+				player,
+				Json.decodeFromString(listener.serializer, data.toString())!!
+			)
 		}
 	}
 }

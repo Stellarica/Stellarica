@@ -23,14 +23,18 @@ import net.stellarica.common.networking.networkVersion
 object StellaricaClient : ClientModInitializer {
 
 	lateinit var networkHandler: FabricNetworkHandler
+		private set
 
 	val klogger = KotlinLogging.logger("Stellarica")
 
 	val itemGroup = FabricItemGroup.builder(identifier("item_group"))
-			//.icon()
-			.build()
+		//.icon()
+		.build()
 
 	val customItems = mutableSetOf<ClientCustomItemData>()
+
+	var connectedToServer = false
+		private set
 
 	fun identifier(path: String) = ResourceLocation("stellarica", path)
 	override fun onInitializeClient() {
@@ -38,46 +42,60 @@ object StellaricaClient : ClientModInitializer {
 
 		networkHandler = FabricNetworkHandler()
 
-		@Suppress("UnstableApiUsage")
-		ItemGroupEvents.modifyEntriesEvent(itemGroup).register(ModifyEntries { content: FabricItemGroupEntries ->
-			content.acceptAll(customItems.map { it.itemStack() })
-		})
+		handleServerJoin()
+		handleCreativeMenu()
+	}
 
-		ClientboundPacketListener(channel = Channel.LOGIN) {
-			networkHandler.sendPacket(Channel.LOGIN, byteArrayOf(networkVersion))
+	private fun handleServerJoin() = ClientboundPacketListener(channel = Channel.LOGIN) {
+		networkHandler.sendPacket(Channel.LOGIN, byteArrayOf(networkVersion))
 
-			val serverVer = it.first()
-			if (networkVersion == serverVer) {
-				// success
-				Minecraft.getInstance().toasts.addToast(SystemToast(
+		val serverVer = it.first()
+		if (networkVersion == serverVer) {
+			// success
+			Minecraft.getInstance().toasts.addToast(
+				SystemToast(
 					SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
 					Component.literal("Stellarica"),
 					Component.literal("Connected to server!")
-				))
-			}
-			else if (networkVersion < serverVer) {
-				// too old, upgrade
-				Minecraft.getInstance().toasts.addToast(SystemToast(
+				)
+			)
+			connectedToServer = true
+		} else if (networkVersion < serverVer) {
+			// too old, upgrade
+			Minecraft.getInstance().toasts.addToast(
+				SystemToast(
 					SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
 					Component.literal("Stellarica"),
 					Component.literal("Outdated client mod version! Some features may not work as intended!")
-				))
-			} else {
-				// too new? downgrade??
-				Minecraft.getInstance().toasts.addToast(SystemToast(
+				)
+			)
+		} else {
+			// too new? downgrade??
+			Minecraft.getInstance().toasts.addToast(
+				SystemToast(
 					SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
 					Component.literal("Stellarica"),
 					Component.literal("Outdated server plugin version! Some features may not work as intended!")
-				))
-			}
-			klogger.info { "Connected to Stellarica Server! Server Version: $serverVer, Client Version: $networkVersion" }
-			false
-		}.register()
+				)
+			)
+		}
+		klogger.info { "Connected to Stellarica Server! Server Version: $serverVer, Client Version: $networkVersion" }
+		false
+	}.register()
 
-		ClientboundObjectListener<List<ClientCustomItemData>>(serializer<List<ClientCustomItemData>>(), channel = Channel.ITEM_SYNC) { data ->
+	private fun handleCreativeMenu() {
+		ClientboundObjectListener<List<ClientCustomItemData>>(
+			serializer<List<ClientCustomItemData>>(),
+			channel = Channel.ITEM_SYNC
+		) { data ->
 			customItems.clear()
 			customItems.addAll(data)
 			false
 		}.register()
+
+		@Suppress("UnstableApiUsage")
+		ItemGroupEvents.modifyEntriesEvent(itemGroup).register(ModifyEntries { content: FabricItemGroupEntries ->
+			content.acceptAll(customItems.map { it.itemStack() })
+		})
 	}
 }

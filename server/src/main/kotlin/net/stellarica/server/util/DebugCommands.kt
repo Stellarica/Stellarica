@@ -30,7 +30,6 @@ import net.stellarica.server.util.extension.craft
 import net.stellarica.server.util.extension.formatted
 import net.stellarica.server.util.extension.toBlockPos
 import net.stellarica.server.util.extension.toLocation
-import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.World
@@ -199,19 +198,23 @@ class DebugCommands : BaseCommand() {
 	@Subcommand("starship|ship thrusters")
 	private fun onShipThrusters(sender: Player) {
 		val ship = getShip(sender) ?: return
-		sender.sendRichMessage("""
+		sender.sendRichMessage(
+			"""
 			<white>Ship Heading:<gray> ${ship.heading.formatted}
 			<white>Raw Ship Thrust:<gray> ${ship.thrusters.calculateTotalThrust().formatted}
 			<white>Actual Ship Thrust:<gray> ${ship.thrusters.calculateActualThrust(ship.heading).formatted}
 			<white>Ship Mass:<gray> ${ship.mass}
 			<white>Thrusters:<gray> (${ship.thrusters.thrusters.size})
-		""".trimIndent())
+		""".trimIndent()
+		)
 		for (thruster in ship.thrusters.thrusters.mapNotNull { ship.getMultiblock(it) }) {
-			sender.sendRichMessage("""
+			sender.sendRichMessage(
+				"""
 				  <gray>- <white>${thruster.type.displayName}
 				     <white>Facing:<gray> ${thruster.direction}
 				     <white>Warmup:<gray> ${(thruster.data as ThrusterMultiblockData).warmupPercentage}
-			""".trimIndent())
+			""".trimIndent()
+			)
 		}
 	}
 
@@ -224,14 +227,14 @@ class DebugCommands : BaseCommand() {
 			<white>Block Count:<gray> ${ship.detectedBlockCount}
 			<white>Time Spent Moving:<gray> ${ship.timeSpentMoving}ms
 			""".trimIndent() + if (ship.multiblocks.isNotEmpty()) {
-				"\n<white>Multiblocks: <gray>(${ ship.multiblocks.size })" +
+			"\n<white>Multiblocks: <gray>(${ship.multiblocks.size})" +
 					ship.multiblocks.mapNotNull { ship.getMultiblock(it) }.joinToString { inst ->
 						"\n<gray>- <click:run_command:/debug mb instance ${inst.origin.x} ${inst.origin.y} ${inst.origin.y} ${inst.world.name}><u><aqua>${inst.type.displayName}<reset>"
 					}
-			} else {
-				"\n<white>No Multiblocks Found"
-			}
-	)
+		} else {
+			"\n<white>No Multiblocks Found"
+		}
+		)
 		onShipThrusters(sender)
 	}
 
@@ -244,15 +247,16 @@ class DebugCommands : BaseCommand() {
 			sender.sendRichMessage("<gold>This item is not a custom item!")
 			return
 		}
-		sender.sendRichMessage("""
+		sender.sendRichMessage(
+			"""
 			<white>ID:<gray> ${custom.id}
 			<white>Display Name:<gray> ${custom.name}<reset>
 			<white>Custom Model Data:<gray> ${custom.modelData}
 			<white>Base Material:<gray> ${custom.base}
 			""".trimIndent() +
-				if (item.isPowerable) {
-					"\n<white>Power: <gray>${item.power}/${custom.maxPower}\n "
-				} else ""
+					if (item.isPowerable) {
+						"\n<white>Power: <gray>${item.power}/${custom.maxPower}\n "
+					} else ""
 		)
 	}
 

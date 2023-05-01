@@ -24,4 +24,8 @@ val BlockPos.formatted
 	get() = "<dark_gray>(<gray>${this.x}<dark_gray>, <gray>${this.y}<dark_gray>, <gray>${this.z}<dark_gray>)<reset>"
 
 val Vec3.formatted
-	get() = "<dark_gray>(<gray>%.3f<dark_gray>, <gray>%.3f<dark_gray>, <gray>%.3f<dark_gray>)<reset>".format(this.x, this.y, this.z)
+	get() = "<dark_gray>(<gray>%.3f<dark_gray>, <gray>%.3f<dark_gray>, <gray>%.3f<dark_gray>)<reset>".format(
+		this.x,
+		this.y,
+		this.z
+	)

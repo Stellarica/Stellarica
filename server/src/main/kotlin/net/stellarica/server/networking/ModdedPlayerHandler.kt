@@ -1,6 +1,5 @@
 package net.stellarica.server.networking
 
-import io.papermc.paper.event.player.PlayerInventorySlotChangeEvent
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.networking.Channel
 import net.stellarica.common.networking.ClientCustomItemData
@@ -10,7 +9,6 @@ import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.util.Tasks
 import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack
-import org.bukkit.craftbukkit.v1_19_R3.persistence.CraftPersistentDataContainer
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -63,7 +61,7 @@ object ModdedPlayerHandler : Listener {
 	}
 
 	private fun handleModdedPlayerJoin(player: Player) {
-		klogger.info { "Handling modded player sync for ${player.name}"}
+		klogger.info { "Handling modded player sync for ${player.name}" }
 		val items = CustomItems.all().map { ClientCustomItemData(it.id, it.base.getId(), it.modelData) }
 		networkHandler.sendSerializableObject(Channel.ITEM_SYNC, player, items)
 	}
