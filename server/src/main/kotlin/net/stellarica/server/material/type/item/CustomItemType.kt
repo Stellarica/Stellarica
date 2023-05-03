@@ -1,6 +1,7 @@
 package net.stellarica.server.material.type.item
 
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
@@ -29,9 +30,10 @@ value class CustomItemType(val item: CustomItem) : ItemType {
 				PersistentDataType.STRING,
 				item.id.toString()
 			)
-			meta.displayName(item.name.asMiniMessage)
+			meta.displayName(item.name.asMiniMessage.decoration(TextDecoration.ITALIC, false))
+
 			val loreComponents = mutableListOf<Component>() // this can be code golfed
-			item.lore.forEach { loreComponents.add(it.asMiniMessage) }
+			item.lore.forEach { loreComponents.add(it.asMiniMessage.decoration(TextDecoration.ITALIC, false)) }
 			if (item.isPowerable) {
 				// extra lore slot for the power line
 				loreComponents.add("if you see this, it's a bug".asMiniMessage)

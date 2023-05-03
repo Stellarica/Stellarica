@@ -30,7 +30,7 @@ object CustomItems {
 
 	val TEST_BLASTER: CustomItem = CustomItem(
 		identifier("test_blaster"),
-		"<aqua>Blaster",
+		"<aqua>Blaster <i>(debug)</i>",
 		listOf("<dark_gray>pew pew"),
 		ItemType.of(Items.GOLDEN_SHOVEL),
 		2,
