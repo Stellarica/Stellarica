@@ -12,6 +12,7 @@ import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 @Suppress("Unused")
@@ -22,21 +23,25 @@ class CustomMaterialCommands : BaseCommand() {
 	@CommandPermission("stellarica.material.give.self")
 	@CommandCompletion("@customitems")
 	fun onGive(
-		sender: Player,
+		sender: CommandSender,
 		id: String,
 		@Default("1") count: Int,
-		@Optional target: Player = sender
+		@Optional target: Player?
 	) {
+		val t = target ?: sender as? Player ?: run {
+			sender.sendRichMessage("<red>No target specified!")
+			return
+		}
 		val item: CustomItem = (ItemType.of(StellaricaServer.identifier(id)) as? CustomItemType)?.item ?: run {
 			sender.sendRichMessage("<red>No custom item with the id '$id' found.")
 			return
 		}
-		if (target != sender && !target.hasPermission("stellarica.material.give.other")) {
+		if (t != sender && !sender.hasPermission("stellarica.material.give.other")) {
 			sender.sendRichMessage("<red>You do not have permission to give custom items to other players.")
 			return
 		}
-		target.inventory.addItem(ItemType.of(item).getBukkitItemStack(count))
-		sender.sendRichMessage("Gave <b>$count</b> of ${item.name}<reset> to ${target.name}.")
+		t.inventory.addItem(ItemType.of(item).getBukkitItemStack(count))
+		sender.sendRichMessage("Gave <b>$count</b> of ${item.name}<reset> to ${t.name}.")
 	}
 }
 
