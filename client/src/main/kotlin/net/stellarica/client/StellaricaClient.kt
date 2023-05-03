@@ -12,6 +12,8 @@ import net.minecraft.client.gui.components.toasts.SystemToast
 import net.minecraft.network.chat.Component
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.CreativeModeTab
+import net.minecraft.world.item.ItemStack
+import net.minecraft.world.item.Items
 import net.stellarica.client.network.ClientboundObjectListener
 import net.stellarica.client.network.ClientboundPacketListener
 import net.stellarica.client.network.FabricNetworkHandler
@@ -29,7 +31,9 @@ object StellaricaClient : ClientModInitializer {
 	val klogger = KotlinLogging.logger("Stellarica")
 
 	val itemGroup: CreativeModeTab = FabricItemGroup.builder(identifier("item_group"))
-		//.icon()
+		.icon { ItemStack(Items.FLINT).also {
+			it.orCreateTag.putInt("CustomModelData", 2)
+		}}
 		.title(Component.literal("Stellarica"))
 		.build()
 
