@@ -10,10 +10,9 @@ import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.util.serializer.ResourceLocationSerializer
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.namespacedKey
-import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.material.custom.item.type.DebugCustomItems
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.multiblock.data.MultiblockData
-import net.stellarica.server.multiblock.type.Multiblocks
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.sendRichActionBar
 import net.stellarica.server.util.extension.toBlockPos
@@ -125,7 +124,7 @@ object MultiblockHandler : Listener {
 	@EventHandler
 	fun onPlayerAttemptDetect(event: PlayerInteractEvent) {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
-		if (event.item?.let { ItemType.of(it) } != ItemType.of(CustomItems.DETECTOR)) return
+		if (event.item?.let { ItemType.of(it) } != ItemType.of(DebugCustomItems.DETECTOR)) return
 		multiblocks[event.clickedBlock!!.chunk]?.firstOrNull { it.origin == event.clickedBlock!!.toBlockPos() }?.let {
 			event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")
 			return

@@ -12,7 +12,7 @@ import net.stellarica.server.material.custom.feature.blasters.BlasterListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.multiblock.MultiblockHandler
-import net.stellarica.server.multiblock.type.Multiblocks
+import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
 import net.stellarica.server.transfer.PipeHandler
@@ -94,7 +94,7 @@ class StellaricaServer : JavaPlugin() {
 
 		commandManager.commandCompletions.registerCompletion(
 			"customitems"
-		) { CustomItems.all().map { it.id.path } }
+		) { CustomItems.all.map { it.id.path } }
 		commandManager.commandCompletions.registerCompletion(
 			"multiblocks"
 		) { Multiblocks.all.map { it.id.path } }

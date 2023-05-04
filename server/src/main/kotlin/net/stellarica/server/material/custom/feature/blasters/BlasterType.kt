@@ -1,7 +1,7 @@
 package net.stellarica.server.material.custom.feature.blasters
 
 import net.stellarica.server.material.custom.item.CustomItem
-import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.material.custom.item.type.DebugCustomItems
 import net.stellarica.server.projectile.LinearProjectile
 import net.stellarica.server.projectile.Projectile
 import org.bukkit.Color
@@ -16,7 +16,7 @@ enum class BlasterType(
 	val cooldown: Int
 ) {
 	TEST_BLASTER(
-		CustomItems.TEST_BLASTER,
+		DebugCustomItems.TEST_BLASTER,
 		LinearProjectile(
 			0f,
 			4.0,

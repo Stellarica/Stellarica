@@ -1,7 +1,7 @@
-package net.stellarica.server.multiblock.type
+package net.stellarica.server.multiblock
 
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.multiblock.MultiblockType
+import net.stellarica.server.multiblock.type.MultiblockDef
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.javaGetter
 

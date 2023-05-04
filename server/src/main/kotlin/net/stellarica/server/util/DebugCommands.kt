@@ -23,7 +23,7 @@ import net.stellarica.server.multiblock.data.ThrusterMultiblockData
 import net.stellarica.server.multiblock.matching.BlockTagMatcher
 import net.stellarica.server.multiblock.matching.MultiBlockMatcher
 import net.stellarica.server.multiblock.matching.SingleBlockMatcher
-import net.stellarica.server.multiblock.type.Multiblocks
+import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.transfer.FuelPacket
 import net.stellarica.server.transfer.PipeHandler
 import net.stellarica.server.util.extension.craft
