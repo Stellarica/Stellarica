@@ -12,3 +12,4 @@ Originally a fork of Astralchroma's Minecraft Starship Plugin.
 
 Uses some code from [Horizon's End](https://github.com/horizonsendmc/)'s OldIon codebase, as well as some code
 from [AP Dev Team's Movecraft](https://github.com/APDevTeam/Movecraft/) both licensed under GPL-3.
+ 
