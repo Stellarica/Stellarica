@@ -18,15 +18,15 @@ object ShipControlHotbar : HotbarMenu() {
 	override val toggleable = true
 
 	private val menuEntries = mutableListOf(
-		namedItem(Material.LIME_STAINED_GLASS_PANE, "<green>Precision Movement", null),
-		namedItem(Material.YELLOW_STAINED_GLASS_PANE, "<yellow>Accelerate", null),
-		namedItem(Material.RED_STAINED_GLASS_PANE, "<red>Stop Ship", null),
-		null,
-		namedItem(Material.BLUE_STAINED_GLASS_PANE, "<blue>Left", null), // these might be
-		namedItem(Material.BLUE_STAINED_GLASS_PANE, "<blue>Right", null),
-		namedItem(Material.FIRE_CHARGE, "<red>Fire Heavy", null),
-		namedItem(Material.FLINT_AND_STEEL, "<red>Fire Light", null),
-		namedItem(Material.RED_CONCRETE, "<red>Unpilot Ship", null)
+			namedItem(Material.LIME_STAINED_GLASS_PANE, "<green>Precision Movement", null),
+			namedItem(Material.YELLOW_STAINED_GLASS_PANE, "<yellow>Accelerate", null),
+			namedItem(Material.RED_STAINED_GLASS_PANE, "<red>Stop Ship", null),
+			null,
+			namedItem(Material.BLUE_STAINED_GLASS_PANE, "<blue>Left", null), // these might be
+			namedItem(Material.BLUE_STAINED_GLASS_PANE, "<blue>Right", null),
+			namedItem(Material.FIRE_CHARGE, "<red>Fire Heavy", null),
+			namedItem(Material.FLINT_AND_STEEL, "<red>Fire Light", null),
+			namedItem(Material.RED_CONCRETE, "<red>Unpilot Ship", null)
 	)
 
 	override fun onMenuOpened(player: Player) {
@@ -42,7 +42,7 @@ object ShipControlHotbar : HotbarMenu() {
 		}
 		when (index) {
 			0 -> ship.move(
-				player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(player.world).toBlockPos()
+					player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(player.world).toBlockPos()
 			)
 
 			1 -> ship.heading = player.eyeLocation.direction.normalize().toLocation(player.world).toVec3()

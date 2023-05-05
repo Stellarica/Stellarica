@@ -19,11 +19,11 @@ import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.MultiblockInstance
+import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.multiblock.data.ThrusterMultiblockData
 import net.stellarica.server.multiblock.matching.BlockTagMatcher
 import net.stellarica.server.multiblock.matching.MultiBlockMatcher
 import net.stellarica.server.multiblock.matching.SingleBlockMatcher
-import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.transfer.FuelPacket
 import net.stellarica.server.transfer.PipeHandler
 import net.stellarica.server.util.extension.craft
@@ -44,9 +44,9 @@ class DebugCommands : BaseCommand() {
 	fun onPipeNode(sender: Player) {
 		PipeHandler[sender.world][sender.getTargetBlockExact(10)?.toBlockPos()]?.also {
 			sender.sendRichMessage(
-				"(${it.pos.x}, ${it.pos.y}, ${it.pos.z})\n" +
-						"F: ${it.content.joinToString(", ") { (it as FuelPacket).content.toString() }}\n" +
-						"C: ${it.connections.joinToString(", ") { "(${it.x}, ${it.y}, ${it.z})" }}"
+					"(${it.pos.x}, ${it.pos.y}, ${it.pos.z})\n" +
+							"F: ${it.content.joinToString(", ") { (it as FuelPacket).content.toString() }}\n" +
+							"C: ${it.connections.joinToString(", ") { "(${it.x}, ${it.y}, ${it.z})" }}"
 			)
 		}
 	}
@@ -85,12 +85,12 @@ class DebugCommands : BaseCommand() {
 			"""
 			<dark_gray>${
 				"(<gray>${it.key.x}<dark_gray>,<gray> ${it.key.y}<dark_gray>,<gray> ${it.key.z}<dark_gray>)".padEnd(
-					61
+						61
 				)
 			} <gray><bold>></bold> <green><bold>${
 				when (it.value) {
 					is MultiBlockMatcher -> "MULTI  </bold><gray>>\n       - " + (it.value as MultiBlockMatcher).types.joinToString(
-						"\n       - "
+							"\n       - "
 					) {
 						"<gold>${
 							it.getId().toString().split(":").let { "<gray>${it.first()}:<gold>${it[1]}" }
@@ -99,7 +99,7 @@ class DebugCommands : BaseCommand() {
 
 					is SingleBlockMatcher -> "SINGLE </bold><gray>> <gold>${
 						(it.value as SingleBlockMatcher).block.getId().toString().split(":")
-							.let { "<gray>${it.first()}:<gold>${it[1]}" }
+								.let { "<gray>${it.first()}:<gold>${it[1]}" }
 					}"
 
 					is BlockTagMatcher -> "TAG    </bold><gray>> <aqua>" + (it.value as BlockTagMatcher).tag.location
@@ -157,6 +157,31 @@ class DebugCommands : BaseCommand() {
 			for (y in extremes.first..extremes.second) {
 				val pos = OriginRelative(col.x, y, col.z).getBlockPos(ship.origin, ship.direction)
 				sender.world.spawnParticle(
+						Particle.BLOCK_MARKER,
+						pos.toLocation(sender.world),
+						1,
+						0.0,
+						0.0,
+						0.0,
+						0.0,
+						Material.BARRIER.createBlockData()
+				)
+			}
+		}
+
+		sender.world.spawnParticle(
+				Particle.BLOCK_MARKER,
+				ship.origin.toLocation(sender.world),
+				1,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				Material.LAPIS_BLOCK.createBlockData()
+		)
+		for (multiblock in ship.multiblocks) {
+			val pos = multiblock.getBlockPos(ship.origin, ship.direction)
+			sender.world.spawnParticle(
 					Particle.BLOCK_MARKER,
 					pos.toLocation(sender.world),
 					1,
@@ -164,32 +189,7 @@ class DebugCommands : BaseCommand() {
 					0.0,
 					0.0,
 					0.0,
-					Material.BARRIER.createBlockData()
-				)
-			}
-		}
-
-		sender.world.spawnParticle(
-			Particle.BLOCK_MARKER,
-			ship.origin.toLocation(sender.world),
-			1,
-			0.0,
-			0.0,
-			0.0,
-			0.0,
-			Material.LAPIS_BLOCK.createBlockData()
-		)
-		for (multiblock in ship.multiblocks) {
-			val pos = multiblock.getBlockPos(ship.origin, ship.direction)
-			sender.world.spawnParticle(
-				Particle.BLOCK_MARKER,
-				pos.toLocation(sender.world),
-				1,
-				0.0,
-				0.0,
-				0.0,
-				0.0,
-				Material.EMERALD_BLOCK.createBlockData()
+					Material.EMERALD_BLOCK.createBlockData()
 			)
 		}
 		sender.sendRichMessage("<green>Displaying ship contents")
@@ -199,7 +199,7 @@ class DebugCommands : BaseCommand() {
 	private fun onShipThrusters(sender: Player) {
 		val ship = getShip(sender) ?: return
 		sender.sendRichMessage(
-			"""
+				"""
 			<white>Ship Heading:<gray> ${ship.heading.formatted}
 			<white>Raw Ship Thrust:<gray> ${ship.thrusters.calculateTotalThrust().formatted}
 			<white>Actual Ship Thrust:<gray> ${ship.thrusters.calculateActualThrust(ship.heading).formatted}
@@ -209,7 +209,7 @@ class DebugCommands : BaseCommand() {
 		)
 		for (thruster in ship.thrusters.thrusters.mapNotNull { ship.getMultiblock(it) }) {
 			sender.sendRichMessage(
-				"""
+					"""
 				  <gray>- <white>${thruster.type.displayName}
 				     <white>Facing:<gray> ${thruster.direction}
 				     <white>Warmup:<gray> ${(thruster.data as ThrusterMultiblockData).warmupPercentage}
@@ -248,15 +248,15 @@ class DebugCommands : BaseCommand() {
 			return
 		}
 		sender.sendRichMessage(
-			"""
+				"""
 			<white>ID:<gray> ${custom.id}
 			<white>Display Name:<gray> ${custom.name}<reset>
 			<white>Custom Model Data:<gray> ${custom.modelData}
 			<white>Base Material:<gray> ${custom.base}
 			""".trimIndent() +
-					if (item.isPowerable) {
-						"\n<white>Power: <gray>${item.power}/${custom.maxPower}\n "
-					} else ""
+						if (item.isPowerable) {
+							"\n<white>Power: <gray>${item.power}/${custom.maxPower}\n "
+						} else ""
 		)
 	}
 

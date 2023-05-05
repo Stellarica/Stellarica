@@ -12,9 +12,9 @@ import kotlin.math.sin
  * @see Vec3.rotateAround
  */
 fun rotateCoordinates(loc: Vec3, origin: Vec3, theta: Double): Vec3 = Vec3(
-	origin.x + (((loc.x - origin.x) * cos(theta)) - ((loc.z - origin.z) * sin(theta))),
-	loc.y,  // too many parentheses is better than too few
-	origin.z + (((loc.x - origin.x) * sin(theta)) + ((loc.z - origin.z) * cos(theta))),
+		origin.x + (((loc.x - origin.x) * cos(theta)) - ((loc.z - origin.z) * sin(theta))),
+		loc.y,  // too many parentheses is better than too few
+		origin.z + (((loc.x - origin.x) * sin(theta)) + ((loc.z - origin.z) * cos(theta))),
 )
 
 /**
@@ -22,7 +22,7 @@ fun rotateCoordinates(loc: Vec3, origin: Vec3, theta: Double): Vec3 = Vec3(
  * @see Vec3.rotateAround
  */
 fun rotateCoordinates(loc: Vec3, origin: Vec3, rotation: Rotation): Vec3 =
-	rotateCoordinates(loc, origin, rotation.asRadians)
+		rotateCoordinates(loc, origin, rotation.asRadians)
 
 
 val Rotation.asRadians: Double

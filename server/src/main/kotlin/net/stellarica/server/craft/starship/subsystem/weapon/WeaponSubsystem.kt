@@ -38,9 +38,9 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 			for (multiblock in multiblocks.map { ship.getMultiblock(it) }.filter { it?.type == type.multiblock }) {
 				// the direction the weapon is facing
 				val direction =
-					multiblock!!.getLocation(type.direction).immutable()
-						.subtract(multiblock.getLocation(type.mount))
-						.toVec3().normalize()
+						multiblock!!.getLocation(type.direction).immutable()
+								.subtract(multiblock.getLocation(type.mount))
+								.toVec3().normalize()
 
 				// if the angleBetween (in radians) is less than the type's cone, fire
 				if (abs(eye.angle(direction.toVector())) > type.cone + (PI / 4)) continue
@@ -52,7 +52,7 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 				val eyeYaw = atan2(eye.x, eye.z)
 
 				val pitch =
-					eyePitch // .coerceIn(dirPitch - type.cone, dirPitch + type.cone)  //this check had been seized by the balancing department
+						eyePitch // .coerceIn(dirPitch - type.cone, dirPitch + type.cone)  //this check had been seized by the balancing department
 				val yaw = if (eyeYaw - type.cone > -PI) {
 					eyeYaw.coerceIn(dirYaw - type.cone, dirYaw + type.cone)
 				} else { // fix for atan2 range not going beneath -PI, breaking coerceIn
@@ -60,16 +60,16 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 				}
 
 				val dir = Vector(
-					sin(yaw) * cos(pitch),
-					-sin(pitch),
-					cos(yaw) * cos(pitch)
+						sin(yaw) * cos(pitch),
+						-sin(pitch),
+						cos(yaw) * cos(pitch)
 				)
 
 				val adjDirYaw = dirYaw - (2 * PI)
 				if (eyeYaw != eyeYaw.coerceIn(
-						adjDirYaw - type.cone,
-						adjDirYaw + type.cone
-					) && direction.z < 0 && eye.z < 0 && eye.x < 0
+								adjDirYaw - type.cone,
+								adjDirYaw + type.cone
+						) && direction.z < 0 && eye.z < 0 && eye.x < 0
 				) {
 					// more fix for arctan range issues
 					// literal duct tape
@@ -78,9 +78,9 @@ class WeaponSubsystem(ship: Starship) : Subsystem(ship) {
 				//println("e: $eyeYaw, d: $adjDirYaw, c: ${type.cone} d-e${adjDirYaw - type.cone} d+e${adjDirYaw + type.cone}")
 
 				type.projectile.shoot(
-					ship,
-					multiblock.getLocation(type.mount).toLocation(ship.world.world).add(0.5, 0.5, 0.5).add(dir)
-						.also { it.direction = dir }
+						ship,
+						multiblock.getLocation(type.mount).toLocation(ship.world.world).add(0.5, 0.5, 0.5).add(dir)
+								.also { it.direction = dir }
 				)
 			}
 		}

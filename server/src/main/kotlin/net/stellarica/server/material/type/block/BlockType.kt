@@ -50,7 +50,7 @@ interface BlockType {
 
 		fun of(block: ResourceLocation): BlockType? {
 			return CustomBlocks.byId(block)?.let { CustomBlockType(it) }
-				?: org.bukkit.Material.getMaterial(block.path)?.let { of(it) }
+					?: org.bukkit.Material.getMaterial(block.path)?.let { of(it) }
 		}
 
 		fun of(block: org.bukkit.block.Block): BlockType {

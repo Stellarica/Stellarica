@@ -23,13 +23,13 @@ abstract class MultiblockType {
 		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
 			if (validate(facing, origin, world)) {
 				return MultiblockInstance(
-					UUID.randomUUID(),
-					origin,
-					world,
-					facing,
-					this,
-					@Suppress("DEPRECATION")
-					dataType::class.primaryConstructor!!.call() // this is in no way horribly scuffed :iea:
+						UUID.randomUUID(),
+						origin,
+						world,
+						facing,
+						this,
+						@Suppress("DEPRECATION")
+						dataType::class.primaryConstructor!!.call() // this is in no way horribly scuffed :iea:
 				)
 			}
 		}

@@ -97,12 +97,12 @@ object PipeHandler : Listener {
 
 	// turns out instantiating this every time getConnectionsFrom was called is slow, so here we are.
 	private val offsets = arrayOf(
-		Vec3i(0, 0, 1),
-		Vec3i(0, 0, -1),
-		Vec3i(0, 1, 0),
-		Vec3i(0, -1, 0),
-		Vec3i(1, 0, 0),
-		Vec3i(-1, 0, 0)
+			Vec3i(0, 0, 1),
+			Vec3i(0, 0, -1),
+			Vec3i(0, 1, 0),
+			Vec3i(0, -1, 0),
+			Vec3i(1, 0, 0),
+			Vec3i(-1, 0, 0)
 	)
 
 	private fun getConnectionsFrom(pos: BlockPos, world: World): MutableSet<BlockPos> {
@@ -123,9 +123,9 @@ object PipeHandler : Listener {
 
 	@Serializable
 	private data class PersistentNodeData(
-		@Serializable(with = BlockPosSerializer::class)
-		val p: BlockPos,
-		val c: MutableSet<Packet>
+			@Serializable(with = BlockPosSerializer::class)
+			val p: BlockPos,
+			val c: MutableSet<Packet>
 	)
 
 	@EventHandler
@@ -135,8 +135,8 @@ object PipeHandler : Listener {
 		}
 		nodes[event.world] = mutableMapOf()
 		event.world.persistentDataContainer.get(
-			StellaricaServer.namespacedKey("pipenetworks"),
-			PersistentDataType.STRING
+				StellaricaServer.namespacedKey("pipenetworks"),
+				PersistentDataType.STRING
 		)?.let { string ->
 			val data: Array<PersistentNodeData> = Json.decodeFromString(string)
 			for (n in data) {
@@ -149,11 +149,11 @@ object PipeHandler : Listener {
 		for (world in nodes.keys) {
 			if (nodes[world].isNullOrEmpty()) return
 			world.persistentDataContainer.set(
-				StellaricaServer.namespacedKey("pipenetworks"),
-				PersistentDataType.STRING,
-				Json.encodeToString(nodes[world]!!.map {
-					PersistentNodeData(it.key, it.value.content)
-				})
+					StellaricaServer.namespacedKey("pipenetworks"),
+					PersistentDataType.STRING,
+					Json.encodeToString(nodes[world]!!.map {
+						PersistentNodeData(it.key, it.value.content)
+					})
 			)
 		}
 	}

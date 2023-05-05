@@ -10,16 +10,16 @@ import org.bukkit.Note
  * Holds data for a custom block type
  */
 data class CustomBlock(
-	/** ID of the custom block */
-	val id: ResourceLocation,
-	/** The item used to place this block*/
-	val item: CustomItem?,
-	/**
-	 * The drops on block break.
-	 * If null this is assumed to be the same as [item]
-	 */
-	val drops: Map<ItemType, Int>? = null,
+		/** ID of the custom block */
+		val id: ResourceLocation,
+		/** The item used to place this block*/
+		val item: CustomItem?,
+		/**
+		 * The drops on block break.
+		 * If null this is assumed to be the same as [item]
+		 */
+		val drops: Map<ItemType, Int>? = null,
 
-	val note: Note,
-	val instrument: Instrument
+		val note: Note,
+		val instrument: Instrument
 )

@@ -70,54 +70,54 @@ object MultiblockHandler : Listener {
 	// can't use multiblockinstance as we don't want to serialize the world or the type
 	@Serializable
 	private data class PersistentMultiblockData(
-		val id: String,
-		@Serializable(with = ResourceLocationSerializer::class)
-		val type: ResourceLocation,
-		val oX: Int,
-		val oY: Int,
-		val oZ: Int,
-		val direction: Direction,
-		val data: MultiblockData
+			val id: String,
+			@Serializable(with = ResourceLocationSerializer::class)
+			val type: ResourceLocation,
+			val oX: Int,
+			val oY: Int,
+			val oZ: Int,
+			val direction: Direction,
+			val data: MultiblockData
 	) {
 
 		constructor(multiblock: MultiblockInstance) :
 				this(
-					multiblock.id.toString(),
-					multiblock.type.id,
-					multiblock.origin.x,
-					multiblock.origin.y,
-					multiblock.origin.z,
-					multiblock.direction,
-					multiblock.data
+						multiblock.id.toString(),
+						multiblock.type.id,
+						multiblock.origin.x,
+						multiblock.origin.y,
+						multiblock.origin.z,
+						multiblock.direction,
+						multiblock.data
 				)
 
 		fun toInstance(world: World) =
-			MultiblockInstance(
-				UUID.fromString(id),
-				BlockPos(oX, oY, oZ),
-				world,
-				direction,
-				Multiblocks.byId(type)!!,
-				data
-			)
+				MultiblockInstance(
+						UUID.fromString(id),
+						BlockPos(oX, oY, oZ),
+						world,
+						direction,
+						Multiblocks.byId(type)!!,
+						data
+				)
 	}
 
 	private fun loadFromChunk(chunk: Chunk) {
 		chunk.persistentDataContainer.get(namespacedKey("multiblocks"), PersistentDataType.STRING)
-			?.let { string ->
-				Json.decodeFromString<Set<PersistentMultiblockData>>(string)
-					.filter { it.type in Multiblocks.all.map { it.id } } // make sure it's a valid type still
-					.map { it.toInstance(chunk.world) }
-					.let { multiblocks.getOrPut(chunk) { mutableSetOf() }.addAll(it) }
-			}
+				?.let { string ->
+					Json.decodeFromString<Set<PersistentMultiblockData>>(string)
+							.filter { it.type in Multiblocks.all.map { it.id } } // make sure it's a valid type still
+							.map { it.toInstance(chunk.world) }
+							.let { multiblocks.getOrPut(chunk) { mutableSetOf() }.addAll(it) }
+				}
 	}
 
 	private fun saveToChunk(chunk: Chunk, force: Boolean = false) {
 		if (!force && multiblocks[chunk]?.isEmpty() != false) return
 		chunk.persistentDataContainer.set(
-			namespacedKey("multiblocks"),
-			PersistentDataType.STRING,
-			Json.encodeToString(multiblocks[chunk]!!.map { PersistentMultiblockData(it) })
+				namespacedKey("multiblocks"),
+				PersistentDataType.STRING,
+				Json.encodeToString(multiblocks[chunk]!!.map { PersistentMultiblockData(it) })
 		)
 	}
 

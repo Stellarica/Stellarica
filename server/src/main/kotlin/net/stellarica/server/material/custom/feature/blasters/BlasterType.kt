@@ -10,23 +10,23 @@ import org.bukkit.Sound
 
 @Suppress("unused")
 enum class BlasterType(
-	val item: CustomItem,
-	val projectile: Projectile<*>,
-	val powerCost: Int,
-	val cooldown: Int
+		val item: CustomItem,
+		val projectile: Projectile<*>,
+		val powerCost: Int,
+		val cooldown: Int
 ) {
 	TEST_BLASTER(
-		DebugCustomItems.TEST_BLASTER,
-		LinearProjectile(
-			0f,
-			4.0,
-			Particle.REDSTONE,
-			Sound.BLOCK_BAMBOO_HIT,
-			10,
-			2.0,
-			Particle.DustOptions(Color.LIME, 0.5f)
-		),
-		3,
-		10
+			DebugCustomItems.TEST_BLASTER,
+			LinearProjectile(
+					0f,
+					4.0,
+					Particle.REDSTONE,
+					Sound.BLOCK_BAMBOO_HIT,
+					10,
+					2.0,
+					Particle.DustOptions(Color.LIME, 0.5f)
+			),
+			3,
+			10
 	)
 }

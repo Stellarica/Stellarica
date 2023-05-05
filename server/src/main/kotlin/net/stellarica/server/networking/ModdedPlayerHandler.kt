@@ -22,12 +22,14 @@ object ModdedPlayerHandler : Listener {
 	val networkHandler = BukkitNetworkHandler()
 	val moddedPlayers = mutableSetOf<Player>()
 
-	private val creativeItems = CustomItems.all.map { ClientCustomItemData(
-		it.id,
-		it.base.getId(),
-		it.modelData,
-		it.name.toJsonText
-	)}
+	private val creativeItems = CustomItems.all.map {
+		ClientCustomItemData(
+				it.id,
+				it.base.getId(),
+				it.modelData,
+				it.name.toJsonText
+		)
+	}
 
 	@EventHandler
 	fun onPlayerJoin(event: PlayerJoinEvent) {

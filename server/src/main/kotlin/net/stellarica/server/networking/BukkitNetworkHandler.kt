@@ -11,6 +11,7 @@ import org.bukkit.plugin.messaging.PluginMessageListener
 class BukkitNetworkHandler : PluginMessageListener {
 
 	private val listeners = mutableMapOf<ServerboundPacketListener, Long>()
+
 	init {
 		for (channel in Channel.values()) {
 			plugin.server.messenger.registerIncomingPluginChannel(plugin, channel.bukkit, this)

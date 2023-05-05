@@ -15,12 +15,12 @@ class StarshipInterfaceScreen(player: Player, private val craft: Starship) : Scr
 	init {
 		createScreen(player, InventoryType.HOPPER, "Starship Interface")
 		setAll(
-			0 to namedItem(Material.MINECART, "Detect Starship", null),
-			1 to if (!player.isPilotingCraft) {
-				namedItem(Material.COMPASS, "Pilot Starship")
-			} else {
-				namedItem(Material.COMPASS, "Unpilot Starship")
-			}
+				0 to namedItem(Material.MINECART, "Detect Starship", null),
+				1 to if (!player.isPilotingCraft) {
+					namedItem(Material.COMPASS, "Pilot Starship")
+				} else {
+					namedItem(Material.COMPASS, "Unpilot Starship")
+				}
 		)
 	}
 

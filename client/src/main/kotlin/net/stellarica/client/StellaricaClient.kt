@@ -31,11 +31,13 @@ object StellaricaClient : ClientModInitializer {
 	val klogger = KotlinLogging.logger("Stellarica")
 
 	val itemGroup: CreativeModeTab = FabricItemGroup.builder(identifier("item_group"))
-		.icon { ItemStack(Items.FLINT).also {
-			it.orCreateTag.putInt("CustomModelData", 2)
-		}}
-		.title(Component.literal("Stellarica"))
-		.build()
+			.icon {
+				ItemStack(Items.FLINT).also {
+					it.orCreateTag.putInt("CustomModelData", 2)
+				}
+			}
+			.title(Component.literal("Stellarica"))
+			.build()
 
 	val customItems = mutableSetOf<ClientCustomItemData>()
 
@@ -59,30 +61,30 @@ object StellaricaClient : ClientModInitializer {
 		if (networkVersion == serverVer) {
 			// success
 			Minecraft.getInstance().toasts.addToast(
-				SystemToast(
-					SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
-					Component.literal("Stellarica"),
-					Component.literal("Connected to server!")
-				)
+					SystemToast(
+							SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
+							Component.literal("Stellarica"),
+							Component.literal("Connected to server!")
+					)
 			)
 			connectedToServer = true
 		} else if (networkVersion < serverVer) {
 			// too old, upgrade
 			Minecraft.getInstance().toasts.addToast(
-				SystemToast(
-					SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
-					Component.literal("Stellarica"),
-					Component.literal("Outdated client mod version! Some features may not work as intended!")
-				)
+					SystemToast(
+							SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
+							Component.literal("Stellarica"),
+							Component.literal("Outdated client mod version! Some features may not work as intended!")
+					)
 			)
 		} else {
 			// too new? downgrade??
 			Minecraft.getInstance().toasts.addToast(
-				SystemToast(
-					SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
-					Component.literal("Stellarica"),
-					Component.literal("Outdated server plugin version! Some features may not work as intended!")
-				)
+					SystemToast(
+							SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
+							Component.literal("Stellarica"),
+							Component.literal("Outdated server plugin version! Some features may not work as intended!")
+					)
 			)
 		}
 		klogger.info { "Connected to Stellarica Server! Server Version: $serverVer, Client Version: $networkVersion" }
@@ -91,8 +93,8 @@ object StellaricaClient : ClientModInitializer {
 
 	private fun handleCreativeMenu() {
 		ClientboundObjectListener<List<ClientCustomItemData>>(
-			serializer<List<ClientCustomItemData>>(),
-			channel = Channel.ITEM_SYNC
+				serializer<List<ClientCustomItemData>>(),
+				channel = Channel.ITEM_SYNC
 		) { data ->
 			customItems.clear()
 			customItems.addAll(data)

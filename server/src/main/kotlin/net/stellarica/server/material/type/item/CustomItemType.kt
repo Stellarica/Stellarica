@@ -26,9 +26,9 @@ value class CustomItemType(val item: CustomItem) : ItemType {
 		val stack = org.bukkit.inventory.ItemStack(item.base.getBukkitItem(), count)
 		stack.editMeta { meta ->
 			meta.persistentDataContainer.set(
-				NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
-				PersistentDataType.STRING,
-				item.id.toString()
+					NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
+					PersistentDataType.STRING,
+					item.id.toString()
 			)
 			meta.displayName(item.name.asMiniMessage.decoration(TextDecoration.ITALIC, false))
 

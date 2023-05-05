@@ -68,7 +68,7 @@ class ThrusterSubsystem(ship: Starship) : Subsystem(ship) {
 			// no penalty
 			return dir.normalize().scale(originalThrust.length())
 		} else if (angleBetween < Math.PI / 6.0) {
-			// half thrust
+			// <roblox oof noise>
 			return dir.normalize().scale(originalThrust.length() / 1.5)
 		}
 
@@ -76,4 +76,3 @@ class ThrusterSubsystem(ship: Starship) : Subsystem(ship) {
 		return originalThrust
 	}
 }
-

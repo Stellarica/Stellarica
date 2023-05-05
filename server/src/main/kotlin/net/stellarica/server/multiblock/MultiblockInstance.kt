@@ -10,12 +10,12 @@ import org.bukkit.World
 import java.util.UUID
 
 data class MultiblockInstance(
-	val id: UUID,
-	val origin: BlockPos,
-	val world: World,
-	val direction: Direction,
-	val type: MultiblockType,
-	val data: MultiblockData
+		val id: UUID,
+		val origin: BlockPos,
+		val world: World,
+		val direction: Direction,
+		val type: MultiblockType,
+		val data: MultiblockData
 ) {
 
 	val chunk: Chunk

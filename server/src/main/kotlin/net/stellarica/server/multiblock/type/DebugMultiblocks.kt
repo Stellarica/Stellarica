@@ -15,11 +15,11 @@ object DebugMultiblocks : MultiblockDef() {
 		override val displayName = "Fuel Source (debug)"
 		override val id = StellaricaServer.identifier("debug_fuel_source")
 		override val blocks = mapOf(
-			pos(0, 0, 0) match Blocks.BARREL,
-			pos(1, 0, 0) match Blocks.IRON_BLOCK,
-			pos(-1, 0, 0) match Blocks.IRON_BLOCK,
-			pos(0, 0, 1) match Blocks.IRON_BLOCK,
-			pos(0, 0, -1) match Blocks.IRON_BLOCK,
+				pos(0, 0, 0) match Blocks.BARREL,
+				pos(1, 0, 0) match Blocks.IRON_BLOCK,
+				pos(-1, 0, 0) match Blocks.IRON_BLOCK,
+				pos(0, 0, 1) match Blocks.IRON_BLOCK,
+				pos(0, 0, -1) match Blocks.IRON_BLOCK,
 		)
 
 		override val dataType = FuelableMultiblockData()
@@ -40,11 +40,11 @@ object DebugMultiblocks : MultiblockDef() {
 		override val displayName = "Fuel Void (debug)"
 		override val id = StellaricaServer.identifier("debug_fuel_void")
 		override val blocks = mapOf(
-			pos(0, 0, 0) match Blocks.BARREL,
-			pos(1, 0, 0) match Blocks.GOLD_BLOCK,
-			pos(-1, 0, 0) match Blocks.GOLD_BLOCK,
-			pos(0, 0, 1) match Blocks.GOLD_BLOCK,
-			pos(0, 0, -1) match Blocks.GOLD_BLOCK,
+				pos(0, 0, 0) match Blocks.BARREL,
+				pos(1, 0, 0) match Blocks.GOLD_BLOCK,
+				pos(-1, 0, 0) match Blocks.GOLD_BLOCK,
+				pos(0, 0, 1) match Blocks.GOLD_BLOCK,
+				pos(0, 0, -1) match Blocks.GOLD_BLOCK,
 		)
 
 		override val dataType = FuelableMultiblockData()

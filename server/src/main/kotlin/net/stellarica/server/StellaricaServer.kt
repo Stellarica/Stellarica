@@ -8,6 +8,7 @@ import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.craft.starship.StarshipCommands
 import net.stellarica.server.material.custom.CustomMaterialCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
+import net.stellarica.server.material.custom.block.CustomBlocks
 import net.stellarica.server.material.custom.feature.blasters.BlasterListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.custom.item.CustomItems
@@ -75,28 +76,31 @@ class StellaricaServer : JavaPlugin() {
 
 		// Register listeners here
 		arrayOf(
-			InterfaceListener(),
-			MultiblockHandler,
-			CustomItemHandler,
-			CustomBlockHandler,
-			PipeHandler,
-			ModdedPlayerHandler,
-			BlasterListener
+				InterfaceListener(),
+				MultiblockHandler,
+				CustomItemHandler,
+				CustomBlockHandler,
+				PipeHandler,
+				ModdedPlayerHandler,
+				BlasterListener
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		// Register commands here
 		val commandManager = PaperCommandManager(this)
 		arrayOf(
-			StarshipCommands(),
-			CustomMaterialCommands(),
-			DebugCommands()
+				StarshipCommands(),
+				CustomMaterialCommands(),
+				DebugCommands()
 		).forEach { commandManager.registerCommand(it) }
 
 		commandManager.commandCompletions.registerCompletion(
-			"customitems"
+				"customitems"
 		) { CustomItems.all.map { it.id.path } }
 		commandManager.commandCompletions.registerCompletion(
-			"multiblocks"
+				"customblocks"
+		) { CustomBlocks.all.map { it.id.path } }
+		commandManager.commandCompletions.registerCompletion(
+				"multiblocks"
 		) { Multiblocks.all.map { it.id.path } }
 	}
 

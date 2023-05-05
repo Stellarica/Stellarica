@@ -23,10 +23,10 @@ class CustomMaterialCommands : BaseCommand() {
 	@CommandPermission("stellarica.material.give.self")
 	@CommandCompletion("@customitems")
 	fun onGive(
-		sender: CommandSender,
-		id: String,
-		@Default("1") count: Int,
-		@Optional target: Player?
+			sender: CommandSender,
+			id: String,
+			@Default("1") count: Int,
+			@Optional target: Player?
 	) {
 		val t = target ?: sender as? Player ?: run {
 			sender.sendRichMessage("<red>No target specified!")

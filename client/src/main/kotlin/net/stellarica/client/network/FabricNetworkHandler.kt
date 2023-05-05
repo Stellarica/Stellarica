@@ -8,6 +8,7 @@ import net.stellarica.common.networking.Channel
 
 class FabricNetworkHandler {
 	private val listeners = mutableMapOf<ClientboundPacketListener, Long>()
+
 	init {
 		for (channel in Channel.values()) {
 			ClientPlayNetworking.registerGlobalReceiver(channel.fabric) { _, _, buf, _ ->
@@ -15,6 +16,7 @@ class FabricNetworkHandler {
 			}
 		}
 	}
+
 	private fun onPacketRecv(channel: Channel, message: ByteArray) {
 		val current = System.currentTimeMillis()
 		listeners.keys.removeIf { it.timeout != null && listeners[it]!! + it.timeout <= current }

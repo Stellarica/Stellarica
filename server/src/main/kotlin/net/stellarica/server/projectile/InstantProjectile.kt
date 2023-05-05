@@ -10,15 +10,15 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.util.RayTraceResult
 
 open class InstantProjectile(
-	private val explosionPower: Float,
-	private val entityDamage: Double,
+		private val explosionPower: Float,
+		private val entityDamage: Double,
 
-	private val particle: Particle,
-	private val sound: Sound,
+		private val particle: Particle,
+		private val sound: Sound,
 
-	private val range: Int,
+		private val range: Int,
 
-	private val redstoneParticleData: Particle.DustOptions? = null
+		private val redstoneParticleData: Particle.DustOptions? = null
 ) : Projectile<InstantProjectile.InstantProjectileData> {
 
 	data class InstantProjectileData(val shooter: Any, var hasShot: Boolean = false)

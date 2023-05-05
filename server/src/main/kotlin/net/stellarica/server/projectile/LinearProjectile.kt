@@ -10,18 +10,18 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.util.RayTraceResult
 
 open class LinearProjectile(
-	private val explosionPower: Float,
-	private val entityDamage: Double,
+		private val explosionPower: Float,
+		private val entityDamage: Double,
 
-	private val particle: Particle,
-	private val sound: Sound,
+		private val particle: Particle,
+		private val sound: Sound,
 
-	override val time: Int,
-	private val speed: Double,
+		override val time: Int,
+		private val speed: Double,
 
-	private val redstoneParticleData: Particle.DustOptions? = null
+		private val redstoneParticleData: Particle.DustOptions? = null
 ) :
-	Projectile<LinearProjectile.LinearProjectileData> {
+		Projectile<LinearProjectile.LinearProjectileData> {
 
 	override val density = 5
 

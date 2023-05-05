@@ -27,7 +27,7 @@ import org.bukkit.event.block.BlockExplodeEvent
 import kotlin.math.roundToInt
 
 class Starship(origin: BlockPos, direction: Direction, world: ServerLevel, owner: Player? = null) :
-	Craft(origin, direction, world, owner), Listener {
+		Craft(origin, direction, world, owner), Listener {
 
 	val subsystems: Set<Subsystem>
 		get() = setOf(weapons, shields, armor, thrusters)

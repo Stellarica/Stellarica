@@ -41,14 +41,14 @@ import kotlin.system.measureTimeMillis
  * Base class for all Crafts; sets of moving blocks
  */
 open class Craft(
-	/**
-	 * The point from which detection starts, and
-	 * the craft rotates around
-	 */
-	var origin: BlockPos,
-	var direction: Direction,
-	var world: ServerLevel,
-	var owner: Player? = null
+		/**
+		 * The point from which detection starts, and
+		 * the craft rotates around
+		 */
+		var origin: BlockPos,
+		var direction: Direction,
+		var world: ServerLevel,
+		var owner: Player? = null
 ) : ForwardingAudience {
 
 	companion object {
@@ -85,9 +85,9 @@ open class Craft(
 		block ?: return false
 		if (detectedBlocks.contains(block)) return true
 		val rel = OriginRelative.getOriginRelative(
-			block,
-			origin,
-			direction
+				block,
+				origin,
+				direction
 		)
 		val extremes = contents[RelativeColumn(rel)] ?: return false
 		return extremes.first <= rel.y && extremes.second >= rel.y
@@ -142,14 +142,14 @@ open class Craft(
 	}
 
 	private fun change(
-		/** The transformation to apply to each block in the craft */
-		modifier: (Vec3) -> Vec3,
-		/** The world to move to */
-		targetWorld: ServerLevel,
-		/** The amount to rotate each directional block by */
-		rotation: Rotation = Rotation.NONE,
-		/** Callback called after the craft finishes moving */
-		callback: () -> Unit = {}
+			/** The transformation to apply to each block in the craft */
+			modifier: (Vec3) -> Vec3,
+			/** The world to move to */
+			targetWorld: ServerLevel,
+			/** The amount to rotate each directional block by */
+			rotation: Rotation = Rotation.NONE,
+			/** Callback called after the craft finishes moving */
+			callback: () -> Unit = {}
 	) {
 		val start = System.currentTimeMillis()
 		val data = CraftMovementData(modifier, rotation, targetWorld)
@@ -272,12 +272,12 @@ open class Craft(
 		multiblocks.removeIf { pos -> getMultiblock(pos)?.also { mbs.add(it) } == null }
 		for (mb in mbs) {
 			val new = MultiblockInstance(
-				mb.id,
-				data.modifier(mb.origin.toVec3()).toBlockPos(),
-				data.targetWorld.world,
-				mb.direction.rotate(data.rotation),
-				mb.type,
-				mb.data
+					mb.id,
+					data.modifier(mb.origin.toVec3()).toBlockPos(),
+					data.targetWorld.world,
+					mb.direction.rotate(data.rotation),
+					mb.type,
+					mb.data
 			)
 			MultiblockHandler[mb.chunk].remove(mb)
 			MultiblockHandler[data.targetWorld.getChunkAt(new.origin).bukkit].add(new)
@@ -298,17 +298,17 @@ open class Craft(
 			// However, without this dumb fix players do not rotate to the proper relative location
 			sync {
 				val destination =
-					if (data.rotation != Rotation.NONE) rotateCoordinates(
-						passenger.location.toVec3(),
-						origin.toVec3().add(
-							Vec3(
-								0.5,
-								0.0,
-								0.5
-							)
-						), data.rotation
-					).toLocation(world.world)
-					else data.modifier(passenger.location.toVec3()).toLocation(world.world)
+						if (data.rotation != Rotation.NONE) rotateCoordinates(
+								passenger.location.toVec3(),
+								origin.toVec3().add(
+										Vec3(
+												0.5,
+												0.0,
+												0.5
+										)
+								), data.rotation
+						).toLocation(world.world)
+						else data.modifier(passenger.location.toVec3()).toLocation(world.world)
 
 
 				destination.world = data.targetWorld.world
@@ -316,10 +316,10 @@ open class Craft(
 				destination.yaw = (passenger.location.yaw + data.rotation.asDegrees).toFloat()
 
 				passenger.teleport(
-					destination,
-					PlayerTeleportEvent.TeleportCause.PLUGIN,
-					TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
-					*TeleportFlag.Relative.values()
+						destination,
+						PlayerTeleportEvent.TeleportCause.PLUGIN,
+						TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY, // this might cause issues...
+						*TeleportFlag.Relative.values()
 				)
 			}
 		}
@@ -382,24 +382,24 @@ open class Craft(
 		val elapsed = System.currentTimeMillis() - startTime
 		owner?.sendRichMessage("<green>Craft detected! (${detectedBlocks.size} blocks)")
 		owner?.sendRichMessage(
-			"<gray>Detected ${detectedBlocks.size} blocks in ${elapsed}ms. " +
-					"(${detectedBlocks.size / elapsed.coerceAtLeast(1)} blocks/ms)"
+				"<gray>Detected ${detectedBlocks.size} blocks in ${elapsed}ms. " +
+						"(${detectedBlocks.size / elapsed.coerceAtLeast(1)} blocks/ms)"
 		)
 		owner?.sendRichMessage(
-			"<gray>Calculated Contents in ${
-				measureTimeMillis {
-					calculateContents()
-				}
-			}ms.")
+				"<gray>Calculated Contents in ${
+					measureTimeMillis {
+						calculateContents()
+					}
+				}ms.")
 
 		// Detect all multiblocks
 		multiblocks.clear()
 		// this is probably slow
 		multiblocks.addAll(chunks
-			.map { MultiblockHandler[it] }
-			.flatten()
-			.filter { detectedBlocks.contains(it.origin) }
-			.map { OriginRelative.getOriginRelative(it.origin, origin, direction) }
+				.map { MultiblockHandler[it] }
+				.flatten()
+				.filter { detectedBlocks.contains(it.origin) }
+				.map { OriginRelative.getOriginRelative(it.origin, origin, direction) }
 		)
 
 		owner?.sendRichMessage("<gray>Detected ${multiblocks.size} multiblocks")

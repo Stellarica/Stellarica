@@ -10,19 +10,19 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.util.RayTraceResult
 
 open class AcceleratingProjectile(
-	private val explosionPower: Float,
-	private val entityDamage: Double,
+		private val explosionPower: Float,
+		private val entityDamage: Double,
 
-	private val particle: Particle,
-	private val sound: Sound,
+		private val particle: Particle,
+		private val sound: Sound,
 
-	override val time: Int,
-	private val initialSpeed: Double,
-	private val acceleration: Double,
+		override val time: Int,
+		private val initialSpeed: Double,
+		private val acceleration: Double,
 
-	private val redstoneParticleData: Particle.DustOptions? = null
+		private val redstoneParticleData: Particle.DustOptions? = null
 ) :
-	Projectile<AcceleratingProjectile.AcceleratingProjectileData> {
+		Projectile<AcceleratingProjectile.AcceleratingProjectileData> {
 
 	override val density = 5
 

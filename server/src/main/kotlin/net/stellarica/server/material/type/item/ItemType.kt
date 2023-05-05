@@ -32,12 +32,12 @@ interface ItemType {
 
 		fun of(item: org.bukkit.inventory.ItemStack): ItemType {
 			return item.itemMeta?.persistentDataContainer?.get(
-				NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
-				PersistentDataType.STRING,
+					NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
+					PersistentDataType.STRING,
 			)?.let { id -> ResourceLocation.tryParse(id)?.let { CustomItems.byId(it)?.let { CustomItemType(it) } } }
 			// no custom item, get the vanilla item
 			// handle can be null if the stack is empty
-				?: VanillaItemType((item as? CraftItemStack)?.handle?.item ?: Items.AIR)
+					?: VanillaItemType((item as? CraftItemStack)?.handle?.item ?: Items.AIR)
 		}
 
 		fun of(item: net.minecraft.world.item.ItemStack): ItemType {
@@ -50,7 +50,7 @@ interface ItemType {
 
 		fun of(item: ResourceLocation): ItemType? {
 			return CustomItems.byId(item)?.let { CustomItemType(it) }
-				?: org.bukkit.Material.getMaterial(item.path)?.let { of(it) }
+					?: org.bukkit.Material.getMaterial(item.path)?.let { of(it) }
 		}
 	}
 }

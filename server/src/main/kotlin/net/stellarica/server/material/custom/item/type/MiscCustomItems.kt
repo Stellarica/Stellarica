@@ -7,18 +7,18 @@ import net.stellarica.server.material.type.item.ItemType
 
 object MiscCustomItems : CustomItemDef {
 	val WIRE: CustomItem = CustomItem(
-		identifier("wire"),
-		"Wire",
-		listOf(),
-		ItemType.of(Items.FLINT),
-		1
+			identifier("wire"),
+			"Wire",
+			listOf(),
+			ItemType.of(Items.FLINT),
+			1
 	)
 
 	val PROCESSOR: CustomItem = CustomItem(
-		identifier("processor"),
-		"Processor",
-		listOf(),
-		ItemType.of(Items.FLINT),
-		2
+			identifier("processor"),
+			"Processor",
+			listOf(),
+			ItemType.of(Items.FLINT),
+			2
 	)
 }

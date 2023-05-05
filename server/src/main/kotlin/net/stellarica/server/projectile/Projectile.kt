@@ -41,11 +41,11 @@ interface Projectile<T> {
 	 * Handles projectile raycasts
 	 */
 	fun cast(
-		/**
-		 * The location and direction to shoot from
-		 */
-		origin: Location,
-		data: T
+			/**
+			 * The location and direction to shoot from
+			 */
+			origin: Location,
+			data: T
 	) {
 		/** the current position */
 		val position = origin.clone()
@@ -58,13 +58,13 @@ interface Projectile<T> {
 		Tasks.syncRepeat(0, 1) {
 			// ray trace as far as it moves this tick (step blocks)
 			val hit = position.world.rayTrace(
-				position,
-				origin.direction,
-				dist,
-				FluidCollisionMode.NEVER,
-				true,
-				0.1,
-				null
+					position,
+					origin.direction,
+					dist,
+					FluidCollisionMode.NEVER,
+					true,
+					0.1,
+					null
 			)
 
 			// if it hit something, call the appropriate function
@@ -75,14 +75,14 @@ interface Projectile<T> {
 				// TODO: check all ships, not just pilotable ones (need to hit npc ships)
 				// TODO: use a better filter than distancequared
 				pilotedCrafts.filter { it.world == position.world }
-					.filter { it.origin.distSqr(position.toVec3i()) < 1000 }.forEach {
-						if (it.contains(hitLoc.toBlockPos())) {
-							if (onHitCraft(data, hitLoc, it)) {
-								this.cancel()
-								return@syncRepeat
+						.filter { it.origin.distSqr(position.toVec3i()) < 1000 }.forEach {
+							if (it.contains(hitLoc.toBlockPos())) {
+								if (onHitCraft(data, hitLoc, it)) {
+									this.cancel()
+									return@syncRepeat
+								}
 							}
 						}
-					}
 
 				if (onHitBlockOrEntity(data, hit)) {
 					this.cancel()
