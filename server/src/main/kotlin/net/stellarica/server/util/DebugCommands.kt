@@ -35,6 +35,7 @@ import org.bukkit.Particle
 import org.bukkit.World
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.graalvm.polyglot.Context
 
 @Suppress("Unused")
 @CommandAlias("debug|db")
@@ -282,6 +283,12 @@ class DebugCommands : BaseCommand() {
 	fun onMaterialGetBlock(sender: Player) {
 		val block = sender.getTargetBlockExact(10)
 		sender.sendRichMessage("<green>Block: ${BlockType.of(block!!)}")
+	}
+
+	@Subcommand("script eval")
+	fun onScriptEval(sender: CommandSender, code: String) {
+		val ctx = Context.create("python")
+		sender.sendRichMessage(ctx.eval("python", code).toString())
 	}
 
 	private fun getShip(sender: Player): Starship? {
