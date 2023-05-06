@@ -8,7 +8,7 @@ import org.bukkit.enchantments.Enchantment
 /**
  * Holds data for a custom item
  */
-data class CustomItem(
+class CustomItem(
 		/** The ID of the item. */
 		val id: ResourceLocation,
 

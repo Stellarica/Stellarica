@@ -7,9 +7,11 @@ import net.stellarica.common.networking.ClientCustomItemData
 import net.stellarica.common.networking.networkVersion
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.asMiniMessage
+import org.bukkit.GameMode
 import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -29,6 +31,19 @@ object ModdedPlayerHandler : Listener {
 				it.modelData,
 				it.name.toJsonText
 		)
+	}
+
+	init {
+		ServerboundPacketListener(networkHandler, Channel.ITEM_SYNC) { player, _ ->
+			if (player.gameMode == GameMode.CREATIVE) {
+				val target = player.getTargetBlockExact(10) ?: return@ServerboundPacketListener false
+				val type = BlockType.of(target).getItem()
+				if (type?.isCustom == true) {
+					player.inventory.setItemInMainHand(type.getBukkitItemStack(1))
+				}
+			}
+			return@ServerboundPacketListener false
+		}.register()
 	}
 
 	@EventHandler

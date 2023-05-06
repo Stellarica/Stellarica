@@ -9,7 +9,7 @@ import org.bukkit.Note
 /**
  * Holds data for a custom block type
  */
-data class CustomBlock(
+class CustomBlock(
 		/** ID of the custom block */
 		val id: ResourceLocation,
 		/** The item used to place this block*/
