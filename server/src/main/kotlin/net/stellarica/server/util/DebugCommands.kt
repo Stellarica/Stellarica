@@ -14,6 +14,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.minecraft.core.BlockPos
 import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.StellaricaServer
+import net.stellarica.server.StellaricaServer.Companion.scriptingEnabled
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.material.custom.item.isPowerable
 import net.stellarica.server.material.custom.item.power
@@ -291,12 +292,16 @@ class DebugCommands : BaseCommand() {
 
 	@Subcommand("script eval")
 	fun onScriptEval(sender: Player) {
+		if (!scriptingEnabled) {
+			sender.sendRichMessage("<red>Scripting has been disabled! Check the log for details")
+			return
+		}
 		val item = (sender.inventory.itemInMainHand as? CraftItemStack)?.handle ?: return
 		val json = item.orCreateTag.getList("pages", 8).getString(0)
 		val text = LegacyComponentSerializer.legacyAmpersand().serialize(GsonComponentSerializer.gson().deserialize(json))
 		val ctx = Context.newBuilder("python")
 			.allowExperimentalOptions(true)
-			.option("sandbox.MaxCPUTime", "5000ms")
+			.option("sandbox.MaxCPUTime", "20000ms")
 			.option("sandbox.MaxCPUTimeCheckInterval", "5ms")
 			.option("sandbox.MaxHeapMemory", "100MB")
 			.option("sandbox.MaxStatements", "100")

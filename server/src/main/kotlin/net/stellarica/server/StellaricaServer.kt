@@ -22,6 +22,7 @@ import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
+import org.graalvm.polyglot.Context
 import java.util.logging.Logger
 
 /**
@@ -51,6 +52,9 @@ class StellaricaServer : JavaPlugin() {
 
 		fun identifier(path: String) = ResourceLocation("stellarica", path)
 		fun namespacedKey(path: String) = NamespacedKey(plugin, path)
+		
+		var scriptingEnabled = true
+			private set
 	}
 
 	val moddedPlayers = mutableSetOf<Player>()
@@ -61,14 +65,8 @@ class StellaricaServer : JavaPlugin() {
 	lateinit var networkHandler: BukkitNetworkHandler
 
 	override fun onEnable() {
-		if (this.server.name != "Nebula") klogger.error {
-			"""
-			Stellarica requires the Nebula server software, but seems to be running on ${this.server.name}!
-			You can find Nebula at https://github.com/Stellarica/Nebula
-				
-			The plugin will attempt to load anyway, but many features will be broken!
-			""".trimIndent()
-		}
+		checkNebula()
+		checkGraalVM()
 
 		plugin = this
 
@@ -106,5 +104,38 @@ class StellaricaServer : JavaPlugin() {
 
 	override fun onDisable() {
 		PipeHandler.savePipes()
+	}
+	
+	private fun checkNebula() {
+		if (this.server.name != "Nebula") klogger.error {
+			"""
+			Stellarica requires the Nebula server software, but seems to be running on ${this.server.name}!
+			You can find Nebula at https://github.com/Stellarica/Nebula
+				
+			The plugin will attempt to load anyway, but many features will be broken!
+			""".trimIndent()
+		}
+	}
+	
+	private fun checkGraalVM() {
+		try {
+			val ctx = Context.create("python")
+			ctx.eval("python", "print('hello world')")
+			klogger.info { "GraalVM Polyglot Nonsense:tm: Works!" }
+		} catch (e: java.lang.IllegalStateException) {
+			klogger.error {
+				"""
+				GraalVM Polyglot stuff:tm: was not found!
+				Scripting related features will be disabled.
+				
+				Use GraalVM Enterprise to get rid of this error.
+				https://www.graalvm.org/downloads/
+				
+				If you are using GraalVM, ensure Python is installed
+				https://www.graalvm.org/latest/reference-manual/python/
+				""".trimIndent()
+			}
+			scriptingEnabled = false
+		}
 	}
 }
