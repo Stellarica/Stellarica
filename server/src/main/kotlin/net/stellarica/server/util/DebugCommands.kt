@@ -30,6 +30,7 @@ import net.stellarica.server.multiblock.matching.MultiBlockMatcher
 import net.stellarica.server.multiblock.matching.SingleBlockMatcher
 import net.stellarica.server.transfer.FuelPacket
 import net.stellarica.server.transfer.PipeHandler
+import net.stellarica.server.util.extension.asMiniMessage
 import net.stellarica.server.util.extension.craft
 import net.stellarica.server.util.extension.formatted
 import net.stellarica.server.util.extension.toBlockPos
@@ -41,6 +42,15 @@ import org.bukkit.command.CommandSender
 import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.graalvm.polyglot.Context
+import org.graalvm.polyglot.PolyglotException
+import java.io.BufferedOutputStream
+import java.io.ObjectOutputStream
+import java.io.PrintStream
+import java.io.PrintWriter
+import java.io.StringWriter
+import java.io.Writer
+import java.util.logging.Handler
+import java.util.logging.LogRecord
 
 @Suppress("Unused")
 @CommandAlias("debug|db")
@@ -301,13 +311,31 @@ class DebugCommands : BaseCommand() {
 		val text = LegacyComponentSerializer.legacyAmpersand().serialize(GsonComponentSerializer.gson().deserialize(json))
 		val ctx = Context.newBuilder("python")
 			.allowExperimentalOptions(true)
-			.option("sandbox.MaxCPUTime", "20000ms")
+			.option("sandbox.MaxCPUTime", "2000ms")
 			.option("sandbox.MaxCPUTimeCheckInterval", "5ms")
 			.option("sandbox.MaxHeapMemory", "100MB")
-			.option("sandbox.MaxStatements", "100")
+			.option("sandbox.MaxStatements", "500")
 			.option("sandbox.MaxStatementsIncludeInternal", "false")
 			.build()
-		sender.sendRichMessage(ctx.eval("python", text).toString())
+		try {
+			ctx.eval("python", text)
+		}
+		catch (e: PolyglotException) {
+			if (e.isResourceExhausted) {
+				sender.sendRichMessage("<red><b>Script exceeded resource limits!")
+			} else if (e.isHostException) {
+				sender.sendRichMessage("<red><b>Internal error executing script!")
+			} else {
+				sender.sendRichMessage("<red><b>Script error!")
+			}
+			sender.sendRichMessage(
+				"""
+				<red>${e.localizedMessage}
+				<red>Line: ${e.sourceLocation?.startLine}, Col: ${e.sourceLocation?.startColumn}
+				<red>Near: <gray>${e.sourceLocation?.characters}
+				""".trimIndent()
+			)
+		}
 	}
 
 	private fun getShip(sender: Player): Starship? {
