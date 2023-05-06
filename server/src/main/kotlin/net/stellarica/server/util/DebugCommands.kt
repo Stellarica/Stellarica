@@ -6,8 +6,11 @@ import co.aikar.commands.annotation.CommandCompletion
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
+import com.comphenix.protocol.wrappers.nbt.NbtCompound
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer
 import net.minecraft.core.BlockPos
 import net.stellarica.common.util.OriginRelative
 import net.stellarica.server.StellaricaServer
@@ -34,6 +37,7 @@ import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.World
 import org.bukkit.command.CommandSender
+import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.graalvm.polyglot.Context
 
@@ -286,9 +290,19 @@ class DebugCommands : BaseCommand() {
 	}
 
 	@Subcommand("script eval")
-	fun onScriptEval(sender: CommandSender, code: String) {
-		val ctx = Context.create("python")
-		sender.sendRichMessage(ctx.eval("python", code).toString())
+	fun onScriptEval(sender: Player) {
+		val item = (sender.inventory.itemInMainHand as? CraftItemStack)?.handle ?: return
+		val json = item.orCreateTag.getList("pages", 8).getString(0)
+		val text = LegacyComponentSerializer.legacyAmpersand().serialize(GsonComponentSerializer.gson().deserialize(json))
+		val ctx = Context.newBuilder("python")
+			.allowExperimentalOptions(true)
+			.option("sandbox.MaxCPUTime", "5000ms")
+			.option("sandbox.MaxCPUTimeCheckInterval", "5ms")
+			.option("sandbox.MaxHeapMemory", "100MB")
+			.option("sandbox.MaxStatements", "100")
+			.option("sandbox.MaxStatementsIncludeInternal", "false")
+			.build()
+		sender.sendRichMessage(ctx.eval("python", text).toString())
 	}
 
 	private fun getShip(sender: Player): Starship? {
