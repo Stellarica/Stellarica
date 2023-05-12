@@ -59,7 +59,7 @@ object MiscCustomBlocks : CustomBlockDef {
 	val URANIUM_ORE: CustomBlock = CustomBlock(
 		identifier("uranium_ore"),
 		BlockCustomItems.URANIUM_ORE,
-		note = Note.natural(1, Note.Tone.A),
+		note = Note.natural(0, Note.Tone.A),
 		instrument = Instrument.PIANO
 	)
 }

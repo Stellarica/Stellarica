@@ -5,6 +5,7 @@ import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.type.item.ItemType
 
+@Suppress("Unused")
 object MiscCustomItems : CustomItemDef {
 	val WIRE: CustomItem = CustomItem(
 			identifier("wire"),
@@ -20,5 +21,29 @@ object MiscCustomItems : CustomItemDef {
 			listOf(),
 			ItemType.of(Items.FLINT),
 			2
+	)
+
+	val URANIUM_RAW: CustomItem = CustomItem(
+		identifier("uranium_raw"),
+		"Raw Uranium",
+		listOf(),
+		ItemType.of(Items.FLINT),
+		8
+	)
+
+	val URANIUM_INGOT: CustomItem = CustomItem(
+		identifier("uranium_ingot"),
+		"Uranium Ingot",
+		listOf(),
+		ItemType.of(Items.FLINT),
+		9
+	)
+
+	val ADAMANTITE_INGOT: CustomItem = CustomItem(
+		identifier("adamantite_ingot"),
+		"Adamantite Ingot",
+		listOf(),
+		ItemType.of(Items.FLINT),
+		10
 	)
 }
