@@ -7,4 +7,6 @@ class PlayerPersistentStorage(private val player: Player): PersistentDataContain
 	override fun getPersistentDataContainer(): PersistentDataContainer {
 		return player.persistentDataContainer
 	}
+
+	override fun isValid(): Boolean = player.isOnline
 }

@@ -7,4 +7,6 @@ class ChunkPersistentStorage(private val chunk: Chunk) : PersistentDataContainer
 	override fun getPersistentDataContainer(): PersistentDataContainer {
 		return chunk.persistentDataContainer
 	}
+
+	override fun isValid(): Boolean = chunk.isLoaded
 }
