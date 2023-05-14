@@ -29,14 +29,7 @@ object MultiblockHandler : Listener {
 
 	private val namespacedKey = identifier("multiblocks")
 
-	// Had issues serializing a set/list/array directly, and I'm too lazy to do it properly
-	// todo: remove duct tape
-	@Serializable
-	class ExtremeDuctTape(val mbs: Set<MultiblockInstance>)
-
 	init {
-		PersistentDataContainerStorage.registerType(namespacedKey, ExtremeDuctTape::class)
-
 		Tasks.syncRepeat(5, 20) {
 			for ((_, mbSet) in multiblocks) {
 				val invalid = mutableSetOf<MultiblockInstance>()
@@ -70,14 +63,13 @@ object MultiblockHandler : Listener {
 	}
 
 	private fun loadFromChunk(chunk: Chunk) {
-		@Suppress("UNCHECKED_CAST")
-		(ChunkPersistentStorage(chunk)[namespacedKey] as? ExtremeDuctTape)?.let {
-			multiblocks.getOrPut(chunk) { mutableSetOf() }.addAll(it.mbs)
+		ChunkPersistentStorage(chunk).get<Set<MultiblockInstance>>(namespacedKey)?.let {
+			multiblocks.getOrPut(chunk) { mutableSetOf() }.addAll(it)
 		}
 	}
 
 	private fun saveToChunk(chunk: Chunk) {
-		ChunkPersistentStorage(chunk)[namespacedKey] = ExtremeDuctTape(multiblocks[chunk] ?: mutableSetOf())
+		ChunkPersistentStorage(chunk).set(namespacedKey, multiblocks[chunk] ?: mutableSetOf())
 	}
 
 	@EventHandler

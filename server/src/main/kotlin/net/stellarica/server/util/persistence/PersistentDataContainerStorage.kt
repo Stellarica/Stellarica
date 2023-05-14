@@ -1,53 +1,32 @@
 package net.stellarica.server.util.persistence
 
-import kotlinx.serialization.serializer
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.nbt.getCompoundTag
 import net.stellarica.nbt.serialization.Nbt
 import net.stellarica.nbt.serialization.decodeFromNbtElement
 import net.stellarica.nbt.serialization.encodeToNbtElement
 import net.stellarica.nbt.setCompoundTag
-import net.stellarica.server.StellaricaServer.Companion.klogger
 import org.bukkit.persistence.PersistentDataContainer
-import kotlin.reflect.KClass
 
-abstract class PersistentDataContainerStorage : PersistentStorage {
+abstract class PersistentDataContainerStorage {
 
-	companion object {
-		private val types = mutableMapOf<ResourceLocation, KClass<*>>()
-
-		fun registerType(key: ResourceLocation, value: KClass<*>) {
-			try {
-				serializer(value.java)
-			} catch (e: Exception) {
-				klogger.error { "Type $value is not serializable, and can't be registered for persistent storage!" }
-				throw e
-			}
-			types[key] = value
-		}
-	}
-	override fun register(key: ResourceLocation, value: KClass<*>) = registerType(key, value)
-
-	override fun get(key: ResourceLocation): Any? {
+	inline operator fun <reified T> get(key: ResourceLocation): T? {
 		if (!isValid()) throw IllegalStateException("Persistent storage is not valid!")
-		val type = types[key] ?: throw IllegalArgumentException("No type registered for $key")
 		val data = getPersistentDataContainer().getCompoundTag()
 
-		return Nbt.decodeFromNbtElement(serializer(type.java), data.getCompound(key.toString()))
+		return Nbt.decodeFromNbtElement(data.get(key.toString())!!)
 	}
 
-	override fun set(key: ResourceLocation, value: Any) {
+	 inline fun <reified T> set(key: ResourceLocation, value: T) {
 		if (!isValid()) throw IllegalStateException("Persistent storage is not valid!")
-		val type = types[key] ?: throw IllegalArgumentException("No type registered for $key")
-		if (!type.isInstance(value)) throw IllegalArgumentException("Value $value is not of type $type")
 		val data = getPersistentDataContainer().getCompoundTag()
 
-		data.put(key.toString(), Nbt.encodeToNbtElement(serializer(type.java), value))
+		data.put(key.toString(), Nbt.encodeToNbtElement(value))
 
 		getPersistentDataContainer().setCompoundTag(data)
 	}
 
-	protected abstract fun getPersistentDataContainer(): PersistentDataContainer
-	protected abstract fun isValid(): Boolean
+	abstract fun getPersistentDataContainer(): PersistentDataContainer
+	abstract fun isValid(): Boolean
 }
 
