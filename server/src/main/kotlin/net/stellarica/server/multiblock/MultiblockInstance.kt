@@ -1,5 +1,6 @@
 package net.stellarica.server.multiblock
 
+import kotlinx.serialization.Serializable
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.stellarica.common.util.OriginRelative
@@ -9,7 +10,8 @@ import org.bukkit.Chunk
 import org.bukkit.World
 import java.util.UUID
 
-data class MultiblockInstance(
+@Serializable(MultiblockSerializer::class)
+class MultiblockInstance(
 		val id: UUID,
 		val origin: BlockPos,
 		val world: World,

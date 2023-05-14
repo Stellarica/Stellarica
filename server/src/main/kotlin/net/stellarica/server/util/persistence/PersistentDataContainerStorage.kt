@@ -13,16 +13,20 @@ import kotlin.reflect.KClass
 
 abstract class PersistentDataContainerStorage : PersistentStorage {
 
-	val types = mutableMapOf<ResourceLocation, KClass<*>>()
-	override fun register(key: ResourceLocation, value: KClass<*>) {
-		try {
-			serializer(value.java)
-		} catch (e: Exception) {
-			klogger.error { "Type $value is not serializable, and can't be registered for persistent storage!" }
-			throw e
+	companion object {
+		private val types = mutableMapOf<ResourceLocation, KClass<*>>()
+
+		fun registerType(key: ResourceLocation, value: KClass<*>) {
+			try {
+				serializer(value.java)
+			} catch (e: Exception) {
+				klogger.error { "Type $value is not serializable, and can't be registered for persistent storage!" }
+				throw e
+			}
+			types[key] = value
 		}
-		types[key] = value
 	}
+	override fun register(key: ResourceLocation, value: KClass<*>) = registerType(key, value)
 
 	override fun get(key: ResourceLocation): Any? {
 		if (!isValid()) throw IllegalStateException("Persistent storage is not valid!")
