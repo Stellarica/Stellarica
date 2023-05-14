@@ -2,8 +2,9 @@ package net.stellarica.server.craft.starship
 
 import net.minecraft.core.Direction
 import net.stellarica.server.craft.starship.control.StarshipInterfaceScreen
+import net.stellarica.server.material.custom.block.type.MiscCustomBlocks
+import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.util.extension.toBlockPos
-import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_19_R3.CraftWorld
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -22,7 +23,7 @@ class InterfaceListener : Listener {
 	@EventHandler
 	fun onPlayerInteractEvent(event: PlayerInteractEvent) {
 		if (event.hand == EquipmentSlot.HAND && event.action == Action.RIGHT_CLICK_BLOCK && !event.player.isSneaking) {
-			if (event.clickedBlock!!.type == Material.JUKEBOX) {
+			if (BlockType.of(event.clickedBlock!!) == BlockType.of(MiscCustomBlocks.COMPUTER_CORE)) {
 				if (!event.player.hasPermission("stellarica.starship")) return
 				StarshipInterfaceScreen(
 						event.player,
