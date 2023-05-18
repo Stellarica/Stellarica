@@ -41,4 +41,25 @@ object MiscCustomBlocks : CustomBlockDef {
 			note = Note.natural(1, Note.Tone.E),
 			instrument = Instrument.PIANO
 	)
+
+	val ADAMANTITE_ORE: CustomBlock = CustomBlock(
+		identifier("adamantite_ore"),
+		BlockCustomItems.ADAMANTITE_ORE,
+		note = Note.natural(1, Note.Tone.F),
+		instrument = Instrument.PIANO
+	)
+
+	val URANIUM_RAW_BLOCK: CustomBlock = CustomBlock(
+		identifier("uranium_raw_block"),
+		BlockCustomItems.URANIUM_RAW_BLOCK,
+		note = Note.natural(1, Note.Tone.G),
+		instrument = Instrument.PIANO
+	)
+
+	val URANIUM_ORE: CustomBlock = CustomBlock(
+		identifier("uranium_ore"),
+		BlockCustomItems.URANIUM_ORE,
+		note = Note.natural(0, Note.Tone.A),
+		instrument = Instrument.PIANO
+	)
 }

@@ -30,6 +30,8 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kx_ser_version")}")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:${property("kotlin_version")}")
 
+	implementation("net.stellarica:nbt:${property("nbt_version")}")
+
 	implementation("org.graalvm.sdk:graal-sdk:${property("graal_version")}")
 }
 

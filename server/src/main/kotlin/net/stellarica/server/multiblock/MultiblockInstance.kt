@@ -1,23 +1,34 @@
 package net.stellarica.server.multiblock
 
+import kotlinx.serialization.Serializable
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.stellarica.common.util.OriginRelative
+import net.stellarica.common.util.serializer.BlockPosSerializer
+import net.stellarica.common.util.serializer.DirectionSerializer
+import net.stellarica.common.util.serializer.UUIDSerializer
 import net.stellarica.server.multiblock.data.MultiblockData
+import net.stellarica.server.multiblock.type.MultiblockTypeSerializer
 import net.stellarica.server.util.extension.toLocation
+import net.stellarica.server.util.serializer.BukkitWorldSerializer
 import org.bukkit.Chunk
 import org.bukkit.World
 import java.util.UUID
 
-data class MultiblockInstance(
+@Serializable
+class MultiblockInstance(
+		@Serializable(with = UUIDSerializer::class)
 		val id: UUID,
+		@Serializable(with = BlockPosSerializer::class)
 		val origin: BlockPos,
+		@Serializable(with = BukkitWorldSerializer::class)
 		val world: World,
+		@Serializable(with = DirectionSerializer::class)
 		val direction: Direction,
+		@Serializable(with = MultiblockTypeSerializer::class)
 		val type: MultiblockType,
 		val data: MultiblockData
 ) {
-
 	val chunk: Chunk
 		get() = world.getChunkAt(origin.toLocation(world))
 

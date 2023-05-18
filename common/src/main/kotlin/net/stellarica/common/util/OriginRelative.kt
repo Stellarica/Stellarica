@@ -35,6 +35,7 @@ data class OriginRelative(
 	companion object {
 		// this would be better as a constructor
 		fun getOriginRelative(loc: BlockPos, origin: BlockPos, direction: Direction): OriginRelative {
+			// todo: don't use rotateCoordinates, use a when statement like getBlockPos
 			return rotateCoordinates(loc.toVec3(), origin.toVec3(), direction.getRotFromNorth().asRadians)
 					.subtract(origin.toVec3())
 					.toVec3i()
@@ -42,11 +43,13 @@ data class OriginRelative(
 		}
 
 		fun getBlockPos(loc: OriginRelative, origin: BlockPos, direction: Direction): BlockPos {
-			return rotateCoordinates(
-					loc.let { Vec3i(it.x, it.y, it.z).toVec3().add(origin.toVec3()) },
-					origin.toVec3(),
-					direction.getRotFromNorth().asRadians
-			).toBlockPos()
+			return when (direction) {
+				Direction.NORTH -> BlockPos(loc.x, loc.y, loc.z)
+				Direction.EAST -> BlockPos(-loc.z, loc.y, loc.x)
+				Direction.SOUTH -> BlockPos(-loc.x, loc.y, -loc.z)
+				Direction.WEST -> BlockPos(loc.z, loc.y, -loc.x)
+				else -> throw IllegalArgumentException()
+			}.offset(origin)
 		}
 	}
 }

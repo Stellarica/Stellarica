@@ -2,8 +2,10 @@ package net.stellarica.server.util.extension
 
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
+import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.phys.Vec3
 import org.bukkit.Location
+import org.bukkit.NamespacedKey
 import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.util.Vector
@@ -22,3 +24,7 @@ fun Block.toBlockPos() = BlockPos(x, y, z)
 fun Vec3.toLocation(world: World?) = Location(world, x, y, z)
 
 fun Vec3.toVector() = Vector(x, y, z)
+
+fun ResourceLocation.toNamespacedKey() = NamespacedKey(namespace, path)
+
+fun NamespacedKey.toResourceLocation() = ResourceLocation(namespace, key)

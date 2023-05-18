@@ -40,20 +40,8 @@ abstract class MultiblockType {
 	 * Whether the collection of blocks at [origin] in [world] matches this multiblocks type
 	 */
 	fun validate(facing: Direction, origin: BlockPos, world: World): Boolean {
-		fun rotationFunction(it: OriginRelative) = when (facing) {
-			// todo: OriginRelative.getBlockPos exists, but isn't this performant
-			// should probably make that use something similar to this
-			Direction.NORTH -> it
-			Direction.EAST -> OriginRelative(-it.z, it.y, it.x)
-			Direction.SOUTH -> OriginRelative(-it.x, it.y, -it.z)
-			Direction.WEST -> OriginRelative(it.z, it.y, -it.x)
-
-			else -> throw IllegalArgumentException("Invalid multiblocks facing direction: $facing")
-		}
-
 		blocks.forEach {
-			val rotatedLocation = rotationFunction(it.key)
-			val relativeLocation = origin.offset(rotatedLocation.x, rotatedLocation.y, rotatedLocation.z)
+			val relativeLocation = it.key.getBlockPos(origin, facing)
 			if (!it.value.matches(BlockType.of(world.getBlockState(relativeLocation.toLocation(world))))) {
 				return false
 			} // A blocks we were expecting is missing, so break the function.

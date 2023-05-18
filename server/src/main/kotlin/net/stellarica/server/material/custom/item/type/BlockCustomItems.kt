@@ -56,4 +56,34 @@ object BlockCustomItems : CustomItemDef {
 			null,
 			MiscCustomBlocks.STEEL_FRAME
 	)
+
+	val URANIUM_ORE: CustomItem = CustomItem(
+			identifier("uranium_ore"),
+			"Uranium Ore",
+			listOf(),
+			ItemType.of(Items.NOTE_BLOCK),
+			7,
+			null,
+			MiscCustomBlocks.URANIUM_ORE
+	)
+
+	val URANIUM_RAW_BLOCK: CustomItem = CustomItem(
+			identifier("uranium_raw_block"),
+			"Raw Uranium Block",
+			listOf(),
+			ItemType.of(Items.NOTE_BLOCK),
+			8,
+			null,
+			MiscCustomBlocks.URANIUM_RAW_BLOCK
+	)
+
+	val ADAMANTITE_ORE: CustomItem = CustomItem(
+			identifier("adamantite_ore"),
+			"Adamantite Ore",
+			listOf(),
+			ItemType.of(Items.NOTE_BLOCK),
+			9,
+			null,
+			MiscCustomBlocks.ADAMANTITE_ORE
+	)
 }
