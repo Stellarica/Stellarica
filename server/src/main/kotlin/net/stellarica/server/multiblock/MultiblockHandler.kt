@@ -63,7 +63,7 @@ object MultiblockHandler : Listener {
 	}
 
 	private fun loadFromChunk(chunk: Chunk) {
-		ChunkPersistentStorage(chunk).get<Set<MultiblockInstance>>(namespacedKey)?.let {
+		ChunkPersistentStorage(chunk).get<MutableSet<MultiblockInstance>>(namespacedKey)?.let {
 			multiblocks.getOrPut(chunk) { mutableSetOf() }.addAll(it)
 		}
 	}
