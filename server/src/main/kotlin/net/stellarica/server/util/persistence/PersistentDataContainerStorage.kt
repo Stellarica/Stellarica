@@ -16,11 +16,12 @@ abstract class PersistentDataContainerStorage {
 		return data.get(key.toString())?.let { Nbt.decodeFromNbtElement(it) }
 	}
 
-	 inline fun <reified T> set(key: ResourceLocation, value: T) {
-		if (!isValid()) throw IllegalStateException("Persistent storage is not valid!")
-		val data = getPersistentDataContainer().getCompoundTag()
-		data.put(key.toString(), Nbt.encodeToNbtElement(value))
-		getPersistentDataContainer().setCompoundTag(data)
+	 inline operator fun <reified T> set(key: ResourceLocation, value: T) {
+		 if (!isValid()) throw IllegalStateException("Persistent storage is not valid!")
+		 val pdc = getPersistentDataContainer()
+		 val data = pdc.getCompoundTag()
+		 data.put(key.toString(), Nbt.encodeToNbtElement(value))
+		 pdc.setCompoundTag(data)
 	}
 
 	abstract fun getPersistentDataContainer(): PersistentDataContainer

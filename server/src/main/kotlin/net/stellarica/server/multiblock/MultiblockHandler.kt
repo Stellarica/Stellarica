@@ -2,6 +2,7 @@ package net.stellarica.server.multiblock
 
 import kotlinx.serialization.Serializable
 import net.minecraft.core.BlockPos
+import net.stellarica.nbt.getCompoundTag
 import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.material.custom.item.type.DebugCustomItems
@@ -13,12 +14,15 @@ import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.extension.vanilla
 import net.stellarica.server.util.persistence.ChunkPersistentStorage
 import net.stellarica.server.util.persistence.PersistentDataContainerStorage
+import net.stellarica.server.util.persistence.PlayerPersistentStorage
 import org.bukkit.Chunk
 import org.bukkit.World
+import org.bukkit.craftbukkit.v1_19_R3.persistence.CraftPersistentDataContainer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 
@@ -104,5 +108,25 @@ object MultiblockHandler : Listener {
 	fun onChunkUnload(event: ChunkUnloadEvent) {
 		saveToChunk(event.chunk)
 		multiblocks.remove(event.chunk)
+	}
+
+	@EventHandler
+	fun onPlayerJoinDebugRemoveThisPleaseLmao(event: PlayerJoinEvent) {
+		val id = identifier("debugging")
+		val storage = PlayerPersistentStorage(event.player)
+		val pdc = storage.getPersistentDataContainer()
+		println((pdc as CraftPersistentDataContainer).raw)
+		println("    " + pdc.getCompoundTag())
+		try {
+			val data: MutableList<Int> = storage[id] ?: mutableListOf()
+			println("got $data")
+			data.add((data.lastOrNull() ?: -1) + 1)
+			println("now $data")
+			storage[id] = data
+		}
+		finally {
+			println((pdc as CraftPersistentDataContainer).raw)
+			println("    " + pdc.getCompoundTag())
+		}
 	}
 }
