@@ -46,4 +46,13 @@ object MiscCustomItems : CustomItemDef {
 		ItemType.of(Items.FLINT),
 		10
 	)
+
+	val JETPACK: CustomItem = CustomItem(
+		identifier("jetpack"),
+		"Jetpack",
+		listOf("haha go brrr"),
+		ItemType.of(Items.LEATHER_CHESTPLATE),
+		1,
+		maxPower = 1000
+	)
 }

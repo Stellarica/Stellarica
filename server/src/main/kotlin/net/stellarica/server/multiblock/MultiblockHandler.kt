@@ -112,15 +112,19 @@ object MultiblockHandler : Listener {
 
 	@EventHandler
 	fun onPlayerJoinDebugRemoveThisPleaseLmao(event: PlayerJoinEvent) {
+
+		@Serializable
+		data class DumbWrapper(val listThing: MutableList<Int> = mutableListOf())
+
 		val id = identifier("debugging")
 		val storage = PlayerPersistentStorage(event.player)
 		val pdc = storage.getPersistentDataContainer()
 		println((pdc as CraftPersistentDataContainer).raw)
 		println("    " + pdc.getCompoundTag())
 		try {
-			val data: MutableList<Int> = storage[id] ?: mutableListOf()
+			val data: DumbWrapper = storage[id] ?: DumbWrapper()
 			println("got $data")
-			data.add((data.lastOrNull() ?: -1) + 1)
+			data.listThing.add((data.listThing.lastOrNull() ?: -1) + 1)
 			println("now $data")
 			storage[id] = data
 		}

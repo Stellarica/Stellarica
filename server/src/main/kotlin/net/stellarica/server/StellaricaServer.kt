@@ -10,6 +10,7 @@ import net.stellarica.server.material.custom.CustomMaterialCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.block.CustomBlocks
 import net.stellarica.server.material.custom.feature.blasters.BlasterListener
+import net.stellarica.server.material.custom.feature.jetpack.JetpackListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.multiblock.MultiblockHandler
@@ -76,13 +77,14 @@ class StellaricaServer : JavaPlugin() {
 
 		// Register listeners here
 		arrayOf(
-				InterfaceListener(),
-				MultiblockHandler,
-				CustomItemHandler,
-				CustomBlockHandler,
-				PipeHandler,
-				ModdedPlayerHandler,
-				BlasterListener
+			InterfaceListener(),
+			MultiblockHandler,
+			CustomItemHandler,
+			CustomBlockHandler,
+			PipeHandler,
+			ModdedPlayerHandler,
+			BlasterListener,
+			JetpackListener
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		// Register commands here
