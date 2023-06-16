@@ -3,9 +3,6 @@ plugins {
 }
 
 version = property("mod_version")!!
-repositories {
-	maven(uri("https://repo.virtualclient.gg/artifactory/virtualclient-public/"))
-}
 
 dependencies {
 	implementation(include(project(":common", "namedElements"))!!)
@@ -20,7 +17,6 @@ dependencies {
 	modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_api_version")}")
 	modImplementation("net.fabricmc:fabric-language-kotlin:${property("fabric_kotlin_version")}")
 
-	modImplementation(include("gg.virtualclient:virtualgui:${property("elementa_version")}")!!)
 	implementation(include("io.github.microutils:kotlin-logging-jvm:${property("kt_log_version")}")!!)
 }
 
