@@ -4,10 +4,10 @@ import net.minecraft.world.entity.item.ItemEntity
 import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.material.type.block.CustomBlockType
 import net.stellarica.server.material.type.item.ItemType
-import org.bukkit.craftbukkit.v1_19_R3.CraftServer
-import org.bukkit.craftbukkit.v1_19_R3.CraftWorld
-import org.bukkit.craftbukkit.v1_19_R3.entity.CraftItem
-import org.bukkit.craftbukkit.v1_19_R3.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R1.CraftServer
+import org.bukkit.craftbukkit.v1_20_R1.CraftWorld
+import org.bukkit.craftbukkit.v1_20_R1.entity.CraftItem
+import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener

@@ -2,7 +2,7 @@ package net.stellarica.server.util.extension
 
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.chunk.LevelChunk
-import org.bukkit.craftbukkit.v1_19_R3.CraftChunk
+import org.bukkit.craftbukkit.v1_20_R1.CraftChunk
 
 val org.bukkit.Chunk.vanilla: LevelChunk
 	// cursed :solution: because CraftChunk.handle seems to have mysteriously vanished...

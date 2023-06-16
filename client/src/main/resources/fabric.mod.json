@@ -32,11 +32,10 @@
     "stellarica.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.10",
-    "fabric-language-kotlin": ">=1.9.1+kotlin.1.8.10"
+    "fabricloader": "0.14.*",
+    "fabric-language-kotlin": ">=1.9.5+kotlin.1.8.22"
   },
   "recommends": {
-    "modmenu": ">=5.0.0",
-    "minecraft": ">=1.19.4"
+    "minecraft": "1.20.1"
   }
 }
