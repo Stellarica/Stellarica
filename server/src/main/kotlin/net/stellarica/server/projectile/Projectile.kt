@@ -84,7 +84,7 @@ interface Projectile<T> {
 							}
 						}
 
-				if (onHitBlockOrEntity(data, hit)) {
+				if (!onHitBlockOrEntity(data, hit)) {
 					this.cancel()
 					return@syncRepeat
 				}
