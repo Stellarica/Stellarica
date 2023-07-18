@@ -23,7 +23,6 @@ import net.stellarica.common.util.toVec3
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.MultiblockInstance
-import net.stellarica.server.transfer.PipeHandler
 import net.stellarica.server.util.Tasks.sync
 import net.stellarica.server.util.extension.bukkit
 import net.stellarica.server.util.extension.sendRichMessage
@@ -233,7 +232,6 @@ open class Craft(
 
 		// finish up
 		moveContainedMultiblocks(data)
-		moveContainedPipeNetworks(data)
 		movePassengers(data)
 
 		world = targetWorld
@@ -242,28 +240,6 @@ open class Craft(
 		direction = direction.rotate(rotation)
 		timeSpentMoving = System.currentTimeMillis() - start
 		callback()
-	}
-
-	private fun moveContainedPipeNetworks(data: CraftMovementData) {
-		// primarily filter by distance because contains is slower
-		val nodes = PipeHandler[world.world]
-		val newNodes = PipeHandler[data.targetWorld.world]
-		val nearbyPipeNodes = nodes.filter {
-			it.key.distSqr(origin) < 200 * 200 && detectedBlocks.contains(it.key)
-		}.values
-
-		nearbyPipeNodes.forEach { nodes.remove(it.pos) }
-
-		for (node in nearbyPipeNodes) {
-			// this is :omegacrong: and should be fixed
-			val newPos = data.modifier(node.pos.toVec3()).toBlockPos()
-			node.pos = newPos
-			node.connections = node.connections.map { data.modifier(it.toVec3()).toBlockPos() }.toMutableSet()
-			node.content.forEach {
-				it.previousNode = it.previousNode?.let { it1 -> data.modifier(it1.toVec3()).toBlockPos() }
-			}
-			newNodes[newPos] = node
-		}
 	}
 
 	private fun moveContainedMultiblocks(data: CraftMovementData) {

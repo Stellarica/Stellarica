@@ -17,7 +17,6 @@ import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
-import net.stellarica.server.transfer.PipeHandler
 import net.stellarica.server.util.DebugCommands
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.NamespacedKey
@@ -81,7 +80,6 @@ class StellaricaServer : JavaPlugin() {
 			MultiblockHandler,
 			CustomItemHandler,
 			CustomBlockHandler,
-			PipeHandler,
 			ModdedPlayerHandler,
 			BlasterListener,
 			JetpackListener
@@ -104,9 +102,5 @@ class StellaricaServer : JavaPlugin() {
 		commandManager.commandCompletions.registerCompletion(
 				"multiblocks"
 		) { Multiblocks.all.map { it.id.path } }
-	}
-
-	override fun onDisable() {
-		PipeHandler.savePipes()
 	}
 }

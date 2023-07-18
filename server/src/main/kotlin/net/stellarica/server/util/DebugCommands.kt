@@ -24,8 +24,6 @@ import net.stellarica.server.multiblock.data.ThrusterMultiblockData
 import net.stellarica.server.multiblock.matching.BlockTagMatcher
 import net.stellarica.server.multiblock.matching.MultiBlockMatcher
 import net.stellarica.server.multiblock.matching.SingleBlockMatcher
-import net.stellarica.server.transfer.FuelPacket
-import net.stellarica.server.transfer.PipeHandler
 import net.stellarica.server.util.extension.craft
 import net.stellarica.server.util.extension.formatted
 import net.stellarica.server.util.extension.toBlockPos
@@ -40,34 +38,6 @@ import org.bukkit.entity.Player
 @CommandAlias("debug|db")
 @CommandPermission("stellarica.debug")
 class DebugCommands : BaseCommand() {
-	@Subcommand("pipe node")
-	fun onPipeNode(sender: Player) {
-		PipeHandler[sender.world][sender.getTargetBlockExact(10)?.toBlockPos()]?.also {
-			sender.sendRichMessage(
-					"(${it.pos.x}, ${it.pos.y}, ${it.pos.z})\n" +
-							"F: ${it.content.joinToString(", ") { (it as FuelPacket).content.toString() }}\n" +
-							"C: ${it.connections.joinToString(", ") { "(${it.x}, ${it.y}, ${it.z})" }}"
-			)
-		}
-	}
-
-	@Subcommand("pipe addFuel")
-	fun onPipeAddFuel(sender: Player, fuel: Int) {
-		PipeHandler[sender.world][sender.getTargetBlockExact(10)?.toBlockPos()]!!.content.add(FuelPacket(fuel))
-	}
-
-	@Subcommand("pipe sum")
-	fun onPipeSum(sender: Player) {
-		var sum = 0
-		var count = 0
-		PipeHandler[sender.world].values.forEach {
-			sum += it.content.sumOf {
-				(it as? FuelPacket)?.content ?: 0
-			}; count++
-		}
-		sender.sendRichMessage("$sum across $count nodes")
-	}
-
 	@Subcommand("multiblock|mb type")
 	@Description("Get information about a multiblock type")
 	@CommandCompletion("@multiblocks")
