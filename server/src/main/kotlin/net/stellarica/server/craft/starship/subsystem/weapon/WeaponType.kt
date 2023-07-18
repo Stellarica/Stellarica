@@ -6,7 +6,6 @@ import net.stellarica.server.multiblock.type.WeaponMultiblocks
 import net.stellarica.server.projectile.AcceleratingProjectile
 import net.stellarica.server.projectile.InstantProjectile
 import net.stellarica.server.projectile.LinearProjectile
-import net.stellarica.server.projectile.NovanProjectileIdkWhatToCallIt
 import net.stellarica.server.projectile.Projectile
 import org.bukkit.Color
 import org.bukkit.Particle
@@ -52,22 +51,6 @@ enum class WeaponType(
 			OriginRelative(7, 0, 0),
 			1,
 			WeaponMultiblocks.PLASMA_CANNON
-	),
-	BATTLE_CANNON(
-			NovanProjectileIdkWhatToCallIt(
-					4f,
-					2f,
-					8.0,
-					Particle.CAMPFIRE_COSY_SMOKE,
-					Sound.ENTITY_GENERIC_EXPLODE,
-					80,
-					3.0
-			),
-			OriginRelative(9, 0, 0),
-			PI / 6,
-			OriginRelative(7, 0, 0),
-			1,
-			WeaponMultiblocks.BATTLE_CANNON
 	),
 	PULSE_LASER(
 			InstantProjectile(
