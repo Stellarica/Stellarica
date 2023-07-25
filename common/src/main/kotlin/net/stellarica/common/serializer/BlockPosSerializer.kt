@@ -1,4 +1,4 @@
-package net.stellarica.common.util.serializer
+package net.stellarica.common.serializer
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer

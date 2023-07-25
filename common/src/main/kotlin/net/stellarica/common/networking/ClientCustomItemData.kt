@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component
 import net.minecraft.network.chat.Style
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.ItemStack
-import net.stellarica.common.util.serializer.ResourceLocationSerializer
+import net.stellarica.common.serializer.ResourceLocationSerializer
 
 @Serializable
 data class ClientCustomItemData(
