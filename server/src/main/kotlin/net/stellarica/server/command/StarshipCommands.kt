@@ -1,4 +1,4 @@
-package net.stellarica.server.craft.starship
+package net.stellarica.server.command
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias
@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.server.StellaricaServer.Companion.pilotedCrafts
+import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.util.extension.craft
 import org.bukkit.entity.Player
 
