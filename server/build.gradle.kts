@@ -29,8 +29,6 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${property("kotlin_coroutines_version")}")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kx_ser_version")}")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:${property("kotlin_version")}")
-
-	implementation("net.stellarica:nbt:${property("nbt_version")}")
 }
 
 val version = property("mod_version")!!
