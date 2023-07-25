@@ -3,6 +3,7 @@ package net.stellarica.common.util
 import net.minecraft.core.Direction
 import net.minecraft.world.level.block.Rotation
 import net.minecraft.world.phys.Vec3
+import net.stellarica.common.coordinate.BlockPosition
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -12,18 +13,16 @@ import kotlin.math.sin
  * @see Vec3.rotateAround
  */
 fun rotateCoordinates(loc: Vec3, origin: Vec3, theta: Double): Vec3 = Vec3(
-		origin.x + (((loc.x - origin.x) * cos(theta)) - ((loc.z - origin.z) * sin(theta))),
-		loc.y,  // too many parentheses is better than too few
-		origin.z + (((loc.x - origin.x) * sin(theta)) + ((loc.z - origin.z) * cos(theta))),
+	origin.x + (((loc.x - origin.x) * cos(theta)) - ((loc.z - origin.z) * sin(theta))),
+	loc.y,  // too many parentheses is better than too few
+	origin.z + (((loc.x - origin.x) * sin(theta)) + ((loc.z - origin.z) * cos(theta))),
 )
 
-/**
- * Rotate [loc] [rotation] around [origin]
- * @see Vec3.rotateAround
- */
 fun rotateCoordinates(loc: Vec3, origin: Vec3, rotation: Rotation): Vec3 =
-		rotateCoordinates(loc, origin, rotation.asRadians)
+	rotateCoordinates(loc, origin, rotation.asRadians)
 
+fun rotateBlockPosition(pos: BlockPosition, origin: BlockPosition, rotation: Rotation): BlockPosition =
+	rotateCoordinates(pos.toVec3(), origin.toVec3(), rotation).toBlockPosition()
 
 val Rotation.asRadians: Double
 	get() = when (this) {
