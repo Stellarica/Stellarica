@@ -12,9 +12,8 @@ import net.stellarica.server.util.extension.sendRichActionBar
 import net.stellarica.server.util.extension.toBlockPos
 import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.extension.vanilla
-import net.stellarica.server.util.persistence.ChunkPersistentStorage
-import net.stellarica.server.util.persistence.PersistentDataContainerStorage
-import net.stellarica.server.util.persistence.PlayerPersistentStorage
+import net.stellarica.server.persistence.ChunkPersistentStorage
+import net.stellarica.server.persistence.PlayerPersistentStorage
 import org.bukkit.Chunk
 import org.bukkit.World
 import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataContainer

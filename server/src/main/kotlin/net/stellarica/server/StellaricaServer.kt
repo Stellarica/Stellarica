@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.command.StarshipCommands
-import net.stellarica.server.material.custom.CustomMaterialCommands
+import net.stellarica.server.command.CustomMaterialCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.block.CustomBlocks
 import net.stellarica.server.material.custom.feature.blasters.BlasterListener

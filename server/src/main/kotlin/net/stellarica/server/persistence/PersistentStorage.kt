@@ -1,4 +1,4 @@
-package net.stellarica.server.util.persistence
+package net.stellarica.server.persistence
 
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.nbt.getCompoundTag
@@ -8,7 +8,7 @@ import net.stellarica.nbt.serialization.encodeToNbtElement
 import net.stellarica.nbt.setCompoundTag
 import org.bukkit.persistence.PersistentDataContainer
 
-abstract class PersistentDataContainerStorage {
+abstract class PersistentStorage {
 
 	inline operator fun <reified T> get(key: ResourceLocation): T? {
 		if (!isValid()) throw IllegalStateException("Persistent storage is not valid!")
