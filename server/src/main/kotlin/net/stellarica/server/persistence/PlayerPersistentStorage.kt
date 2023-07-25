@@ -1,4 +1,4 @@
-package net.stellarica.server.util.persistence
+package net.stellarica.server.persistence
 
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataContainer

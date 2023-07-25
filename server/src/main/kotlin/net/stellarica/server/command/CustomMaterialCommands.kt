@@ -1,4 +1,4 @@
-package net.stellarica.server.material.custom
+package net.stellarica.server.command
 
 import co.aikar.commands.BaseCommand
 import co.aikar.commands.annotation.CommandAlias

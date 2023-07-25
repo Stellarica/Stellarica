@@ -1,16 +1,16 @@
-package net.stellarica.common.util
+package net.stellarica.common.coord
 
 import kotlinx.serialization.Serializable
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
-import net.minecraft.core.Vec3i
+import net.stellarica.common.util.*
 
 
 /**
  * Coordinates relative to the origin of something
  */
 @Serializable
-data class OriginRelative(
+data class RelativePosition(
 		/**
 		 * The x component
 		 */
@@ -26,23 +26,23 @@ data class OriginRelative(
 ) {
 
 	fun getBlockPos(origin: BlockPos, direction: Direction): BlockPos {
-		return Companion.getBlockPos(this, origin, direction)
+		return getBlockPos(this, origin, direction)
 	}
 
-	operator fun plus(other: OriginRelative) = OriginRelative(x + other.x, y + other.y, z + other.z)
-	operator fun times(dist: Int) = OriginRelative(x * dist, y * dist, z * dist)
+	operator fun plus(other: RelativePosition) = RelativePosition(x + other.x, y + other.y, z + other.z)
+	operator fun times(dist: Int) = RelativePosition(x * dist, y * dist, z * dist)
 
 	companion object {
 		// this would be better as a constructor
-		fun getOriginRelative(loc: BlockPos, origin: BlockPos, direction: Direction): OriginRelative {
+		fun getOriginRelative(loc: BlockPos, origin: BlockPos, direction: Direction): RelativePosition {
 			// todo: don't use rotateCoordinates, use a when statement like getBlockPos
 			return rotateCoordinates(loc.toVec3(), origin.toVec3(), direction.getRotFromNorth().asRadians)
 					.subtract(origin.toVec3())
 					.toVec3i()
-					.let { OriginRelative(it.x, it.y, it.z) }
+					.let { RelativePosition(it.x, it.y, it.z) }
 		}
 
-		fun getBlockPos(loc: OriginRelative, origin: BlockPos, direction: Direction): BlockPos {
+		fun getBlockPos(loc: RelativePosition, origin: BlockPos, direction: Direction): BlockPos {
 			return when (direction) {
 				Direction.NORTH -> BlockPos(loc.x, loc.y, loc.z)
 				Direction.EAST -> BlockPos(-loc.z, loc.y, loc.x)

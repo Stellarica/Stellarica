@@ -3,18 +3,11 @@ package net.stellarica.server
 import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.craft.starship.InterfaceListener
-import net.stellarica.server.craft.starship.Starship
-import net.stellarica.server.command.StarshipCommands
-import net.stellarica.server.material.custom.CustomMaterialCommands
+import net.stellarica.server.command.CustomMaterialCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.block.CustomBlocks
-import net.stellarica.server.material.custom.feature.blasters.BlasterListener
-import net.stellarica.server.material.custom.feature.jetpack.JetpackListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.material.custom.item.CustomItems
-import net.stellarica.server.multiblock.MultiblockHandler
-import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
 import net.stellarica.server.command.DebugCommands
@@ -37,11 +30,6 @@ class StellaricaServer : JavaPlugin() {
 		 */
 		lateinit var plugin: StellaricaServer
 			private set
-
-		/**
-		 * The currently piloted [Starship]s
-		 */
-		var pilotedCrafts = mutableSetOf<Starship>()
 
 		/**
 		 * kotlin-logging logger for Stellarica
@@ -76,19 +64,14 @@ class StellaricaServer : JavaPlugin() {
 
 		// Register listeners here
 		arrayOf(
-			InterfaceListener(),
-			MultiblockHandler,
 			CustomItemHandler,
 			CustomBlockHandler,
 			ModdedPlayerHandler,
-			BlasterListener,
-			JetpackListener
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		// Register commands here
 		val commandManager = PaperCommandManager(this)
 		arrayOf(
-				StarshipCommands(),
 				CustomMaterialCommands(),
 				DebugCommands()
 		).forEach { commandManager.registerCommand(it) }
@@ -99,8 +82,5 @@ class StellaricaServer : JavaPlugin() {
 		commandManager.commandCompletions.registerCompletion(
 				"customblocks"
 		) { CustomBlocks.all.map { it.id.path } }
-		commandManager.commandCompletions.registerCompletion(
-				"multiblocks"
-		) { Multiblocks.all.map { it.id.path } }
 	}
 }

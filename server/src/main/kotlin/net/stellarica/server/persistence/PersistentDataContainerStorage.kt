@@ -1,4 +1,4 @@
-package net.stellarica.server.util.persistence
+package net.stellarica.server.persistence
 
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.nbt.getCompoundTag

@@ -20,9 +20,6 @@ fun Audience.sendRichActionBar(message: String) = this.sendActionBar(message.asM
 fun Audience.sendRichTitle(message: String, part: TitlePart<Component>) =
 		this.sendTitlePart(part, message.asMiniMessage)
 
-val BlockPos.formatted
-	get() = "<dark_gray>(<gray>${this.x}<dark_gray>, <gray>${this.y}<dark_gray>, <gray>${this.z}<dark_gray>)<reset>"
-
 val Vec3.formatted
 	get() = "<dark_gray>(<gray>%.3f<dark_gray>, <gray>%.3f<dark_gray>, <gray>%.3f<dark_gray>)<reset>".format(
 			this.x,
