@@ -15,4 +15,6 @@ interface BlockContainer {
     fun getRelativePos(pos: BlockPosition): RelativeBlockPosition {
         return pos.getAsRelative(origin, orientation)
     }
+
+    fun contains(block: BlockPosition): Boolean
 }

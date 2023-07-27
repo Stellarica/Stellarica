@@ -1,13 +1,11 @@
 package net.stellarica.server.multiblock
 
 import kotlinx.serialization.Serializable
-import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.common.serializer.DirectionSerializer
 import net.stellarica.common.serializer.UUIDSerializer
 import net.stellarica.server.craft.BlockContainer
-import net.stellarica.server.multiblock.data.MultiblockData
 import net.stellarica.server.multiblock.type.MultiblockTypeSerializer
 import net.stellarica.server.serializer.BukkitWorldSerializer
 import org.bukkit.World
@@ -15,27 +13,23 @@ import java.util.UUID
 
 @Serializable
 class MultiblockInstance(
-		@Serializable(with = UUIDSerializer::class)
-		val id: UUID,
-		val origin: BlockPosition,
-		@Serializable(with = BukkitWorldSerializer::class)
-		val world: World,
-		@Serializable(with = DirectionSerializer::class)
-		val direction: Direction,
-		@Serializable(with = MultiblockTypeSerializer::class)
-		val type: MultiblockType,
-		val data: MultiblockData
+	@Serializable(with = UUIDSerializer::class)
+	val id: UUID,
+	override val origin: BlockPosition,
+	@Serializable(with = BukkitWorldSerializer::class)
+	val world: World,
+	@Serializable(with = DirectionSerializer::class)
+	override val orientation: Direction,
+	@Serializable(with = MultiblockTypeSerializer::class)
+	val type: MultiblockType,
 ): BlockContainer {
 
-	fun validate() = type.validate(direction, origin, world)
+	fun validate() = type.validatePattern(orientation, origin, world)
 
-	/**
-	 * @return whether this contains a blocks at [loc].
-	 * Does not take into account world
-	 */
-	fun contains(loc: BlockPos): Boolean {
+
+	override fun contains(loc: BlockPosition): Boolean {
 		for (pos in type.blocks.keys) {
-			if (pos == getOriginRelative(loc)) return true
+			if (pos == this.getRelativePos(loc)) return true
 		}
 		return false
 	}

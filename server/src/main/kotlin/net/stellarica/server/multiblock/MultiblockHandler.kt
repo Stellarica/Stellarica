@@ -1,15 +1,11 @@
 package net.stellarica.server.multiblock
 
-import kotlinx.serialization.Serializable
-import net.minecraft.core.BlockPos
-import net.stellarica.nbt.getCompoundTag
+import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.StellaricaServer.Companion.identifier
-import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.material.custom.item.type.DebugCustomItems
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.sendRichActionBar
-import net.stellarica.server.util.extension.toBlockPos
 import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.extension.vanilla
 import org.bukkit.Chunk
@@ -44,10 +40,10 @@ object MultiblockHandler : Listener {
 		}
 	}
 
-	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
+	fun detect(origin: BlockPosition, world: World): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()
 		for (type in Multiblocks.all) {
-			val instance = type.detect(origin, world)
+			val instance = type.detectMultiblock(origin, world)
 			if (instance != null) {
 				possible.add(instance)
 			}
@@ -78,15 +74,7 @@ object MultiblockHandler : Listener {
 
 	@EventHandler
 	fun onChunkLoad(event: ChunkLoadEvent) {
-		try {
-			loadFromChunk(event.chunk)
-		} catch (e: Exception) {
-			klogger.error { "Failed to load multiblocks from chunk at ${event.chunk.x}, ${event.chunk.z}" }
-			e.printStackTrace()
-			klogger.error { "Clearing multiblock data for the chunk" }
-			multiblocks[event.chunk] = mutableSetOf()
-			saveToChunk(event.chunk)
-		}
+
 	}
 
 	@EventHandler

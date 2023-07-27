@@ -1,35 +1,29 @@
 package net.stellarica.server.multiblock
 
-import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.common.util.OriginRelative
+import net.stellarica.common.coordinate.BlockPosition
+import net.stellarica.common.coordinate.RelativeBlockPosition
 import net.stellarica.server.material.type.block.BlockType
-import net.stellarica.server.multiblock.data.EmptyMultiblockData
-import net.stellarica.server.multiblock.data.MultiblockData
 import net.stellarica.server.multiblock.matching.BlockMatcher
 import net.stellarica.server.util.extension.toLocation
 import org.bukkit.World
 import java.util.UUID
-import kotlin.reflect.full.primaryConstructor
 
 abstract class MultiblockType {
 	abstract val displayName: String
 	abstract val id: ResourceLocation
-	abstract val blocks: Map<OriginRelative, BlockMatcher>
-	open val dataType: MultiblockData = EmptyMultiblockData()
+	abstract val blocks: Map<RelativeBlockPosition, BlockMatcher>
 
-	fun detect(origin: BlockPos, world: World): MultiblockInstance? {
+	fun detectMultiblock(origin: BlockPosition, world: World): MultiblockInstance? {
 		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
-			if (validate(facing, origin, world)) {
+			if (validatePattern(facing, origin, world)) {
 				return MultiblockInstance(
 						UUID.randomUUID(),
 						origin,
 						world,
 						facing,
 						this,
-						@Suppress("DEPRECATION")
-						dataType::class.primaryConstructor!!.call() // this is in no way horribly scuffed :iea:
 				)
 			}
 		}
@@ -39,7 +33,7 @@ abstract class MultiblockType {
 	/**
 	 * Whether the collection of blocks at [origin] in [world] matches this multiblocks type
 	 */
-	fun validate(facing: Direction, origin: BlockPos, world: World): Boolean {
+	fun validatePattern(facing: Direction, origin: BlockPosition, world: World): Boolean {
 		blocks.forEach {
 			val relativeLocation = it.key.getBlockPos(origin, facing)
 			if (!it.value.matches(BlockType.of(world.getBlockState(relativeLocation.toLocation(world))))) {
@@ -48,7 +42,4 @@ abstract class MultiblockType {
 		}
 		return true // Valid multiblocks of this type there
 	}
-
-	open fun tick(instance: MultiblockInstance) {}
-	open fun init(instance: MultiblockInstance) {}
 }

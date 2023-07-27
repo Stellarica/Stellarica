@@ -39,7 +39,7 @@ import kotlin.system.measureTimeMillis
 /**
  * Base class for all Crafts; sets of moving blocks
  */
-open class Craft(
+open class OldCraft(
 		/**
 		 * The point from which detection starts, and
 		 * the craft rotates around
