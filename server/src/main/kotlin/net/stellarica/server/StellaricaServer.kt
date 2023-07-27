@@ -81,7 +81,6 @@ class StellaricaServer : JavaPlugin() {
 			CustomItemHandler,
 			CustomBlockHandler,
 			ModdedPlayerHandler,
-			BlasterListener,
 			JetpackListener
 		).forEach { getPluginManager().registerEvents(it, this) }
 

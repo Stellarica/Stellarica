@@ -12,16 +12,12 @@ import net.stellarica.server.util.extension.sendRichActionBar
 import net.stellarica.server.util.extension.toBlockPos
 import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.extension.vanilla
-import net.stellarica.server.persistence.ChunkPersistentStorage
-import net.stellarica.server.persistence.PlayerPersistentStorage
 import org.bukkit.Chunk
 import org.bukkit.World
-import org.bukkit.craftbukkit.v1_20_R1.persistence.CraftPersistentDataContainer
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
 
@@ -65,16 +61,6 @@ object MultiblockHandler : Listener {
 		}
 	}
 
-	private fun loadFromChunk(chunk: Chunk) {
-		ChunkPersistentStorage(chunk).get<MutableSet<MultiblockInstance>>(namespacedKey)?.let {
-			multiblocks.getOrPut(chunk) { mutableSetOf() }.addAll(it)
-		}
-	}
-
-	private fun saveToChunk(chunk: Chunk) {
-		ChunkPersistentStorage(chunk).set(namespacedKey, multiblocks[chunk] ?: mutableSetOf())
-	}
-
 	@EventHandler
 	fun onPlayerAttemptDetect(event: PlayerInteractEvent) {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
@@ -107,29 +93,5 @@ object MultiblockHandler : Listener {
 	fun onChunkUnload(event: ChunkUnloadEvent) {
 		saveToChunk(event.chunk)
 		multiblocks.remove(event.chunk)
-	}
-
-	@EventHandler
-	fun onPlayerJoinDebugRemoveThisPleaseLmao(event: PlayerJoinEvent) {
-
-		@Serializable
-		data class DumbWrapper(val listThing: MutableList<Int> = mutableListOf())
-
-		val id = identifier("debugging")
-		val storage = PlayerPersistentStorage(event.player)
-		val pdc = storage.getPersistentDataContainer()
-		println((pdc as CraftPersistentDataContainer).raw)
-		println("    " + pdc.getCompoundTag())
-		try {
-			val data: DumbWrapper = storage[id] ?: DumbWrapper()
-			println("got $data")
-			data.listThing.add((data.listThing.lastOrNull() ?: -1) + 1)
-			println("now $data")
-			storage[id] = data
-		}
-		finally {
-			println((pdc as CraftPersistentDataContainer).raw)
-			println("    " + pdc.getCompoundTag())
-		}
 	}
 }
