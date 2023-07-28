@@ -3,15 +3,15 @@ package net.stellarica.server
 import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.command.CustomMaterialCommands
+import net.stellarica.server.command.DebugCommands
+import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.feature.jetpack.JetpackListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
-import net.stellarica.server.command.DebugCommands
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Player
@@ -76,8 +76,8 @@ class StellaricaServer : JavaPlugin() {
 		// Register commands here
 		val commandManager = PaperCommandManager(this)
 		arrayOf(
-				CustomMaterialCommands(),
-				DebugCommands()
+			CustomMaterialCommands(),
+			DebugCommands()
 		).forEach { commandManager.registerCommand(it) }
 	}
 }

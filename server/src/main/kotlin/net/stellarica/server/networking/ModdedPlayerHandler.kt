@@ -26,10 +26,10 @@ object ModdedPlayerHandler : Listener {
 
 	private val creativeItems = CustomItems.all.map {
 		ClientCustomItemData(
-				it.id,
-				it.base.getId(),
-				it.modelData,
-				it.name.toJsonText
+			it.id,
+			it.base.getId(),
+			it.modelData,
+			it.name.toJsonText
 		)
 	}
 

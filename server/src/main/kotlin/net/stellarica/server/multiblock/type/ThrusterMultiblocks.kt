@@ -10,10 +10,10 @@ object ThrusterMultiblocks : MultiblockDef() {
 		override val displayName = "Small Chemical Thruster"
 		override val id = StellaricaServer.identifier("thruster_chemical_small")
 		override val blocks = mapOf(
-				pos(0, 0, 0) match Blocks.IRON_BLOCK,
-				pos(0, 0, 1) match Blocks.CUT_COPPER,
-				pos(0, 0, 2) match Blocks.IRON_BLOCK,
-				pos(0, 0, 3) match Blocks.OCHRE_FROGLIGHT
+			pos(0, 0, 0) match Blocks.IRON_BLOCK,
+			pos(0, 0, 1) match Blocks.CUT_COPPER,
+			pos(0, 0, 2) match Blocks.IRON_BLOCK,
+			pos(0, 0, 3) match Blocks.OCHRE_FROGLIGHT
 		)
 	}
 }

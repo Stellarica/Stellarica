@@ -10,7 +10,7 @@ import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.multiblock.MultiblockType
 import net.stellarica.server.multiblock.Multiblocks
 
-object MultiblockTypeSerializer: KSerializer<MultiblockType> {
+object MultiblockTypeSerializer : KSerializer<MultiblockType> {
 	override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("type", PrimitiveKind.STRING)
 
 	override fun deserialize(decoder: Decoder): MultiblockType {

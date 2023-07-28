@@ -1,6 +1,5 @@
 package net.stellarica.server.material.custom.feature.jetpack
 
-import net.kyori.adventure.sound.Sound
 import net.stellarica.server.material.custom.item.power
 import net.stellarica.server.material.custom.item.type.MiscCustomItems
 import net.stellarica.server.material.type.item.ItemType
@@ -12,7 +11,7 @@ import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.inventory.ItemStack
 
-object JetpackListener: Listener {
+object JetpackListener : Listener {
 	private const val powerPerTick = 5
 	private val type = ItemType.of(MiscCustomItems.JETPACK)
 

@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack
 /**
  * The player's current hotbar
  */
-var Player.hotbar: MutableList<ItemStack?>
+var Player.hotbar: List<ItemStack?>
 	get() = MutableList(9) { index -> this.inventory.getItem(index) }
 	set(value) {
 		for (i in 0..8) this.inventory.setItem(i, value[i])

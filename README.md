@@ -11,4 +11,5 @@ Overall it's a ~~somewhat~~ very cursed mess of WIP code.
 
 Originally a fork of Astralchroma's Minecraft Starship Plugin, but this now actually does stuff:tm:
 
-Uses some code (bukkit scheduler wrapper) from [Horizon's End](https://github.com/horizonsendmc/)'s OldIon codebase, though it has been mostly rewritten. 
+Uses some code (bukkit scheduler wrapper) from [Horizon's End](https://github.com/horizonsendmc/)'s OldIon codebase,
+though it has been mostly rewritten. 

@@ -36,16 +36,16 @@ object CustomBlockHandler : Listener {
 
 		drops?.forEach {
 			val entity = ItemEntity(
-					(loc.world as CraftWorld).handle,
-					loc.x, loc.y, loc.z,
-					CraftItemStack.asNMSCopy(it.key.getBukkitItemStack(it.value))
+				(loc.world as CraftWorld).handle,
+				loc.x, loc.y, loc.z,
+				CraftItemStack.asNMSCopy(it.key.getBukkitItemStack(it.value))
 			)
 
 			event.items.add(
-					CraftItem(
-							event.player.server as CraftServer,
-							entity
-					)
+				CraftItem(
+					event.player.server as CraftServer,
+					entity
+				)
 			)
 		}
 	}

@@ -22,7 +22,7 @@ class MultiblockInstance(
 	override val orientation: Direction,
 	@Serializable(with = MultiblockTypeSerializer::class)
 	val type: MultiblockType,
-): BlockContainer {
+) : BlockContainer {
 
 	fun validate() = type.validatePattern(orientation, origin, world)
 

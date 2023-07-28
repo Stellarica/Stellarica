@@ -10,12 +10,12 @@ import net.stellarica.common.serializer.ResourceLocationSerializer
 
 @Serializable
 data class ClientCustomItemData(
-		@Serializable(with = ResourceLocationSerializer::class)
-		val id: ResourceLocation,
-		@Serializable(with = ResourceLocationSerializer::class)
-		val base: ResourceLocation,
-		val customModelData: Int,
-		val displayName: String // json format
+	@Serializable(with = ResourceLocationSerializer::class)
+	val id: ResourceLocation,
+	@Serializable(with = ResourceLocationSerializer::class)
+	val base: ResourceLocation,
+	val customModelData: Int,
+	val displayName: String // json format
 ) {
 	fun itemStack(): ItemStack {
 		val stack = ItemStack(BuiltInRegistries.ITEM.get(base))

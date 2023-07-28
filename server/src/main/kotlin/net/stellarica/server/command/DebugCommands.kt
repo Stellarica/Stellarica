@@ -5,17 +5,12 @@ import co.aikar.commands.annotation.CommandAlias
 import co.aikar.commands.annotation.CommandPermission
 import co.aikar.commands.annotation.Description
 import co.aikar.commands.annotation.Subcommand
-import net.minecraft.core.BlockPos
 import net.stellarica.server.material.custom.item.isPowerable
 import net.stellarica.server.material.custom.item.power
 import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.material.type.item.CustomItemType
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.multiblock.MultiblockHandler
-import net.stellarica.server.util.extension.craft
-import net.stellarica.server.util.extension.toBlockPosition
-import net.stellarica.server.util.extension.toLocation
-import org.bukkit.World
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
@@ -39,15 +34,15 @@ class DebugCommands : BaseCommand() {
 			return
 		}
 		sender.sendRichMessage(
-				"""
+			"""
 			<white>ID:<gray> ${custom.id}
 			<white>Display Name:<gray> ${custom.name}<reset>
 			<white>Custom Model Data:<gray> ${custom.modelData}
 			<white>Base Material:<gray> ${custom.base}
 			""".trimIndent() +
-						if (item.isPowerable) {
-							"\n<white>Power: <gray>${item.power}/${custom.maxPower}\n "
-						} else ""
+					if (item.isPowerable) {
+						"\n<white>Power: <gray>${item.power}/${custom.maxPower}\n "
+					} else ""
 		)
 	}
 
