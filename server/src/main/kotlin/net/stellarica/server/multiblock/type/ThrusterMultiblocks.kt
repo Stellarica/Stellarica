@@ -3,7 +3,6 @@ package net.stellarica.server.multiblock.type
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.multiblock.MultiblockType
-import net.stellarica.server.multiblock.data.ThrusterMultiblockData
 
 @Suppress("unused")
 object ThrusterMultiblocks : MultiblockDef() {
@@ -16,6 +15,5 @@ object ThrusterMultiblocks : MultiblockDef() {
 				pos(0, 0, 2) match Blocks.IRON_BLOCK,
 				pos(0, 0, 3) match Blocks.OCHRE_FROGLIGHT
 		)
-		override val dataType = ThrusterMultiblockData()
 	}
 }

@@ -26,11 +26,7 @@ class MultiblockInstance(
 
 	fun validate() = type.validatePattern(orientation, origin, world)
 
-
-	override fun contains(loc: BlockPosition): Boolean {
-		for (pos in type.blocks.keys) {
-			if (pos == this.getRelativePos(loc)) return true
-		}
-		return false
+	override fun contains(block: BlockPosition): Boolean {
+		return type.blocks.keys.contains(getRelativePos(block))
 	}
 }

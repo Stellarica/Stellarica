@@ -4,17 +4,11 @@ import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.craft.starship.InterfaceListener
-import net.stellarica.server.craft.starship.Starship
-import net.stellarica.server.command.StarshipCommands
 import net.stellarica.server.command.CustomMaterialCommands
 import net.stellarica.server.material.custom.block.CustomBlockHandler
-import net.stellarica.server.material.custom.block.CustomBlocks
-import net.stellarica.server.material.custom.feature.blasters.BlasterListener
 import net.stellarica.server.material.custom.feature.jetpack.JetpackListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
-import net.stellarica.server.material.custom.item.CustomItems
 import net.stellarica.server.multiblock.MultiblockHandler
-import net.stellarica.server.multiblock.Multiblocks
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
 import net.stellarica.server.command.DebugCommands
@@ -39,11 +33,6 @@ class StellaricaServer : JavaPlugin() {
 			private set
 
 		/**
-		 * The currently piloted [Starship]s
-		 */
-		var pilotedCrafts = mutableSetOf<Starship>()
-
-		/**
 		 * kotlin-logging logger for Stellarica
 		 * @see getLogger
 		 */
@@ -58,7 +47,7 @@ class StellaricaServer : JavaPlugin() {
 	@Deprecated("Use kotlin-logging instead", ReplaceWith("klogger"))
 	override fun getLogger(): Logger = super.getLogger()
 
-	lateinit var networkHandler: BukkitNetworkHandler
+	private lateinit var networkHandler: BukkitNetworkHandler
 
 	override fun onEnable() {
 		if (this.server.name != "Nebula") klogger.error {
@@ -87,19 +76,8 @@ class StellaricaServer : JavaPlugin() {
 		// Register commands here
 		val commandManager = PaperCommandManager(this)
 		arrayOf(
-				StarshipCommands(),
 				CustomMaterialCommands(),
 				DebugCommands()
 		).forEach { commandManager.registerCommand(it) }
-
-		commandManager.commandCompletions.registerCompletion(
-				"customitems"
-		) { CustomItems.all.map { it.id.path } }
-		commandManager.commandCompletions.registerCompletion(
-				"customblocks"
-		) { CustomBlocks.all.map { it.id.path } }
-		commandManager.commandCompletions.registerCompletion(
-				"multiblocks"
-		) { Multiblocks.all.map { it.id.path } }
 	}
 }

@@ -1,11 +1,7 @@
 package net.stellarica.server.craft.starship.control
 
-import net.minecraft.world.level.block.Rotation
-import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.util.extension.craft
 import net.stellarica.server.util.extension.hotbar
-import net.stellarica.server.util.extension.toBlockPos
-import net.stellarica.server.util.extension.toVec3
 import net.stellarica.server.util.gui.hotbar.HotbarMenu
 import net.stellarica.server.util.gui.namedItem
 import org.bukkit.Material
@@ -41,25 +37,7 @@ object ShipControlHotbar : HotbarMenu() {
 			return
 		}
 		when (index) {
-			0 -> ship.move(
-					player.eyeLocation.direction.normalize().multiply(1.5f).toLocation(player.world).toBlockPos()
-			)
 
-			1 -> ship.heading = player.eyeLocation.direction.normalize().toLocation(player.world).toVec3()
-			// 2 -> ship.velocity = Vec3i.ZERO
-			4 -> ship.rotate(Rotation.COUNTERCLOCKWISE_90)
-			5 -> ship.rotate(Rotation.CLOCKWISE_90)
-			6 -> {
-				ship.weapons.fireHeavy()
-				player.setCooldown(Material.FIRE_CHARGE, 60)
-			}
-
-			7 -> {
-				ship.weapons.fireLight()
-				player.setCooldown(Material.FLINT_AND_STEEL, 20)
-			}
-
-			8 -> ship.deactivateCraft()
 		}
 	}
 }
