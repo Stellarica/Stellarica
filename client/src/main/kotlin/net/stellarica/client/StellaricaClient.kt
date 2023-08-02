@@ -9,7 +9,11 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents.ModifyEntries
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.components.toasts.SystemToast
+import net.minecraft.core.Registry
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.core.registries.Registries
 import net.minecraft.network.chat.Component
+import net.minecraft.resources.ResourceKey
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
@@ -30,14 +34,7 @@ object StellaricaClient : ClientModInitializer {
 
 	val klogger = KotlinLogging.logger("Stellarica")
 
-	val itemGroup: CreativeModeTab = FabricItemGroup.builder(identifier("item_group"))
-		.icon {
-			ItemStack(Items.FLINT).also {
-				it.orCreateTag.putInt("CustomModelData", 2)
-			}
-		}
-		.title(Component.literal("Stellarica"))
-		.build()
+	private val itemGroup: ResourceKey<CreativeModeTab> = ResourceKey.create(Registries.CREATIVE_MODE_TAB, identifier("item_group"))
 
 	val customItems = mutableSetOf<ClientCustomItemData>()
 
@@ -49,6 +46,17 @@ object StellaricaClient : ClientModInitializer {
 		println("sain and puffering")
 
 		networkHandler = FabricNetworkHandler()
+
+
+		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, itemGroup, FabricItemGroup.builder()
+			.icon {
+				ItemStack(Items.FLINT).also {
+					it.orCreateTag.putInt("CustomModelData", 2)
+				}
+			}
+			.title(Component.literal("Stellarica"))
+			.build()
+		)
 
 		handleServerJoin()
 		handleCreativeMenu()
