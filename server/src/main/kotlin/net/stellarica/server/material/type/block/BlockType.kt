@@ -1,8 +1,8 @@
 package net.stellarica.server.material.type.block
 
 import net.minecraft.resources.ResourceLocation
+import net.stellarica.server.CustomBlocks
 import net.stellarica.server.material.custom.block.CustomBlock
-import net.stellarica.server.material.custom.block.CustomBlocks
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.block.data.type.NoteBlock
 import org.bukkit.craftbukkit.v1_20_R1.block.data.CraftBlockData
@@ -13,7 +13,6 @@ interface BlockType {
 	fun getBukkitBlock(): org.bukkit.Material
 	fun getVanillaBlock(): net.minecraft.world.level.block.Block
 	fun getId(): ResourceLocation
-	fun getStringId(): String = getId().path
 	fun getItem(): ItemType?
 
 	val isCustom: Boolean
@@ -31,7 +30,7 @@ interface BlockType {
 		fun of(block: org.bukkit.block.data.BlockData): BlockType {
 			if (block !is NoteBlock) return of(block.material)
 
-			return CustomBlocks.all.firstOrNull {
+			return CustomBlocks.firstOrNull {
 				it.note == block.note && it.instrument == block.instrument
 			}?.let { CustomBlockType(it) } ?: of(block.material)
 		}
@@ -49,7 +48,7 @@ interface BlockType {
 		}
 
 		fun of(block: ResourceLocation): BlockType? {
-			return CustomBlocks.byId(block)?.let { CustomBlockType(it) }
+			return CustomBlocks[block]?.let { CustomBlockType(it) }
 				?: org.bukkit.Material.getMaterial(block.path)?.let { of(it) }
 		}
 

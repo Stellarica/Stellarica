@@ -4,7 +4,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
 import net.minecraft.world.level.block.Blocks
 import net.stellarica.server.material.custom.block.CustomBlock
-import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.CustomItems
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.Material
 import org.bukkit.block.data.BlockData
@@ -38,6 +38,6 @@ value class CustomBlockType(val block: CustomBlock) : BlockType {
 
 	override fun getItem(): ItemType? {
 		// duct tape for block.item randomly becoming null? todo: figure out why the heck this happens
-		return block.item?.let { ItemType.of(it) } ?: CustomItems.byId(block.id)?.let { ItemType.of(it) }
+		return block.item?.let { ItemType.of(it) } ?: CustomItems[block.id]?.let { ItemType.of(it) }
 	}
 }

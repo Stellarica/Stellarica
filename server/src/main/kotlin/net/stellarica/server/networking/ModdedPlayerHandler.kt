@@ -6,7 +6,7 @@ import net.stellarica.common.networking.Channel
 import net.stellarica.common.networking.ClientCustomItemData
 import net.stellarica.common.networking.networkVersion
 import net.stellarica.server.StellaricaServer.Companion.klogger
-import net.stellarica.server.material.custom.item.CustomItems
+import net.stellarica.server.CustomItems
 import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.util.Tasks
@@ -24,7 +24,7 @@ object ModdedPlayerHandler : Listener {
 	val networkHandler = BukkitNetworkHandler()
 	val moddedPlayers = mutableSetOf<Player>()
 
-	private val creativeItems = CustomItems.all.map {
+	private val creativeItems = CustomItems.map {
 		ClientCustomItemData(
 			it.id,
 			it.base.getId(),
@@ -81,7 +81,7 @@ object ModdedPlayerHandler : Listener {
 		val id = CraftItemStack.asNMSCopy(event.cursor).orCreateTag.getString("client_custom_item")
 		if (id.isNullOrEmpty()) return
 
-		val type = ItemType.of(CustomItems.byId(ResourceLocation.tryParse(id)!!)!!)
+		val type = ItemType.of(CustomItems[ResourceLocation.tryParse(id)!!]!!)
 		event.cursor = type.getBukkitItemStack(event.cursor.amount)
 	}
 

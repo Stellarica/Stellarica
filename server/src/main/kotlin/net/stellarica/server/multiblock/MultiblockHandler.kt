@@ -1,6 +1,7 @@
 package net.stellarica.server.multiblock
 
 import net.stellarica.common.coordinate.BlockPosition
+import net.stellarica.server.Multiblocks
 import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.material.custom.item.type.DebugCustomItems
 import net.stellarica.server.material.type.item.ItemType
@@ -43,7 +44,7 @@ object MultiblockHandler : Listener {
 
 	fun detect(origin: BlockPosition, world: World): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()
-		for (type in Multiblocks.all) {
+		for (type in Multiblocks) {
 			val instance = type.detectMultiblock(origin, world)
 			if (instance != null) {
 				possible.add(instance)

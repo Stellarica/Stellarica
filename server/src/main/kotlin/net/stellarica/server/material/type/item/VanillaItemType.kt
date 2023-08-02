@@ -17,7 +17,7 @@ value class VanillaItemType(val item: Item) : ItemType {
 	}
 
 	override fun getBukkitItem(): Material {
-		return Material.getMaterial(getStringId().uppercase())!!
+		return Material.getMaterial(getId().path.uppercase())!!
 	}
 
 	override fun getVanillaItem(): Item {
