@@ -1,6 +1,5 @@
 package net.stellarica.server.util.extension
 
-import net.minecraft.core.BlockPos
 import net.minecraft.core.Vec3i
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.phys.Vec3

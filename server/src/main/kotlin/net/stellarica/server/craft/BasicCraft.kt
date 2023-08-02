@@ -156,5 +156,9 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		return targetsCHM
 	}
 
-	class PartialMoveData(val targets: Map<BlockPosition, BlockPosition>, val original: Map<BlockPosition, BlockState>, val entities: Map<BlockPosition, BlockEntity>)
+	class PartialMoveData(
+		val targets: Map<BlockPosition, BlockPosition>,
+		val original: Map<BlockPosition, BlockState>,
+		val entities: Map<BlockPosition, BlockEntity>
+	)
 }

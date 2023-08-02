@@ -6,6 +6,7 @@ import net.stellarica.server.material.custom.item.type.DebugCustomItems
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.sendRichActionBar
+import net.stellarica.server.util.extension.toBlockPosition
 import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.extension.vanilla
 import org.bukkit.Chunk
@@ -32,7 +33,7 @@ object MultiblockHandler : Listener {
 					if (!multiblock.validate()) {
 						invalid.add(multiblock)
 					} else {
-						multiblock.type.tick(multiblock)
+						//multiblock.type.tick(multiblock)
 					}
 				}
 				mbSet.removeAll(invalid)
@@ -52,7 +53,6 @@ object MultiblockHandler : Listener {
 		return possible.maxByOrNull { it.type.blocks.size }?.also {
 			val chunk = world.getChunkAt(origin.toLocation(world))
 			multiblocks.getOrPut(chunk) { mutableSetOf() }.add(it)
-			it.type.init(it)
 			chunk.vanilla.isUnsaved = true
 		}
 	}
@@ -61,11 +61,12 @@ object MultiblockHandler : Listener {
 	fun onPlayerAttemptDetect(event: PlayerInteractEvent) {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
 		if (event.item?.let { ItemType.of(it) } != ItemType.of(DebugCustomItems.DETECTOR)) return
-		multiblocks[event.clickedBlock!!.chunk]?.firstOrNull { it.origin == event.clickedBlock!!.toBlockPos() }?.let {
-			event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")
-			return
-		}
-		detect(event.clickedBlock!!.toBlockPos(), event.player.world)?.let {
+		multiblocks[event.clickedBlock!!.chunk]?.firstOrNull { it.origin == event.clickedBlock!!.toBlockPosition() }
+			?.let {
+				event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")
+				return
+			}
+		detect(event.clickedBlock!!.toBlockPosition(), event.player.world)?.let {
 			event.player.sendRichActionBar("<green>Detected ${it.type.displayName}")
 			return
 		}
@@ -79,7 +80,7 @@ object MultiblockHandler : Listener {
 
 	@EventHandler
 	fun onChunkUnload(event: ChunkUnloadEvent) {
-		saveToChunk(event.chunk)
+		// saveToChunk(event.chunk)
 		multiblocks.remove(event.chunk)
 	}
 }

@@ -8,7 +8,7 @@ import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.multiblock.matching.BlockMatcher
 import net.stellarica.server.util.extension.toLocation
 import org.bukkit.World
-import java.util.*
+import java.util.UUID
 
 abstract class MultiblockType {
 	abstract val displayName: String

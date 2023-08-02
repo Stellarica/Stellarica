@@ -32,8 +32,8 @@ object ShipControlHotbar : HotbarMenu() {
 		if ((player.hotbar[index]?.type?.let { player.getCooldown(it) } ?: 0) >= 1) return;
 
 		//val ship = player.craft as? Starship ?: run {
-			player.sendRichMessage("<red>You are not piloting a starship, yet the ship menu is open! This is a bug!")
-			return
+		player.sendRichMessage("<red>You are not piloting a starship, yet the ship menu is open! This is a bug!")
+		return
 		//}
 		when (index) {
 

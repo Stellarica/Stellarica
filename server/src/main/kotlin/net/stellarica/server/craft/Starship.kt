@@ -1,7 +1,6 @@
 package net.stellarica.server.craft
 
 import io.papermc.paper.entity.TeleportFlag
-import net.kyori.adventure.audience.Audience
 import net.minecraft.world.level.block.Rotation
 import net.minecraft.world.phys.Vec3
 import net.stellarica.common.coordinate.BlockPosition
@@ -19,22 +18,18 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
 
-class Starship: BasicCraft(), Rideable, CraftContainer, Pilotable {
+class Starship : BasicCraft(), Rideable, CraftContainer, Pilotable {
 
 	override var pilot: Player? = null
 		private set
-	override val passengers: MutableList<LivingEntity> = mutableListOf()
+	override val passengers: MutableSet<LivingEntity> = mutableSetOf()
 
 	override fun addPassenger(passenger: LivingEntity) {
-		TODO("Not yet implemented")
+		passengers.add(passenger)
 	}
 
 	override fun removePassenger(passenger: LivingEntity) {
-		TODO("Not yet implemented")
-	}
-
-	override fun audiences(): MutableIterable<Audience> {
-		return passengers.toMutableList()
+		passengers.remove(passenger)
 	}
 
 	override fun pilot(pilot: Player) {
@@ -76,29 +71,29 @@ class Starship: BasicCraft(), Rideable, CraftContainer, Pilotable {
 			// as rotating the ship 4 times does not bring it back to the original position
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
-				val destination =
-					if (data.rotation != Rotation.NONE) rotateCoordinates(
-						passenger.location.toVec3(),
-						origin.toVec3().add(Vec3(0.5, 0.0, 0.5)), data.rotation
-					)
-					else {
-						val o = passenger.location.toVec3().minus(passenger.location.toBlockLocation().toVec3())
-						(data.offset(passenger.location.toBlockPosition()).toVec3() + o)
-					}.toLocation(world.world)
-
-
-				destination.world = data.world.world
-				destination.pitch = passenger.location.pitch
-				destination.yaw = (passenger.location.yaw + data.rotation.asDegrees).toFloat()
-
-				@Suppress("UnstableApiUsage")
-				passenger.teleport(
-					destination,
-					PlayerTeleportEvent.TeleportCause.PLUGIN,
-					TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY,
-					*TeleportFlag.Relative.entries.toTypedArray()
+			val destination =
+				if (data.rotation != Rotation.NONE) rotateCoordinates(
+					passenger.location.toVec3(),
+					origin.toVec3().add(Vec3(0.5, 0.0, 0.5)), data.rotation
 				)
-			}
+				else {
+					val o = passenger.location.toVec3().minus(passenger.location.toBlockLocation().toVec3())
+					(data.offset(passenger.location.toBlockPosition()).toVec3() + o)
+				}.toLocation(world.world)
+
+
+			destination.world = data.world.world
+			destination.pitch = passenger.location.pitch
+			destination.yaw = (passenger.location.yaw + data.rotation.asDegrees).toFloat()
+
+			@Suppress("UnstableApiUsage")
+			passenger.teleport(
+				destination,
+				PlayerTeleportEvent.TeleportCause.PLUGIN,
+				TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY,
+				*TeleportFlag.Relative.entries.toTypedArray()
+			)
+		}
 	}
 
 	fun detect() {
@@ -112,7 +107,6 @@ class Starship: BasicCraft(), Rideable, CraftContainer, Pilotable {
 
 			for (currentBlock in blocksToCheck) {
 
-				// todo: block tags for detection? this is bad
 				val state = world.getBlockState(currentBlock.toBlockPos())
 				if (state.isAir) continue
 
