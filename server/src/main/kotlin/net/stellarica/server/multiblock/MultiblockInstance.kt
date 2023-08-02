@@ -15,11 +15,11 @@ import java.util.UUID
 class MultiblockInstance(
 	@Serializable(with = UUIDSerializer::class)
 	val id: UUID,
-	override val origin: BlockPosition,
+	override var origin: BlockPosition,
 	@Serializable(with = BukkitWorldSerializer::class)
 	val world: World,
 	@Serializable(with = DirectionSerializer::class)
-	override val orientation: Direction,
+	override var orientation: Direction,
 	@Serializable(with = MultiblockTypeSerializer::class)
 	val type: MultiblockType,
 ) : BlockContainer {

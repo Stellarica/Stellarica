@@ -9,7 +9,7 @@ data class HotbarState(
 	/**
 	 * The player's original hotbar
 	 */
-	var originalHotbar: MutableList<ItemStack?>,
+	var originalHotbar: List<ItemStack?>,
 	/**
 	 * The hotbar of the HotbarMenu
 	 */

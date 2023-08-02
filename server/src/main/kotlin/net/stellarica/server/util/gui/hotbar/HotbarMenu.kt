@@ -107,7 +107,7 @@ abstract class HotbarMenu : Listener {
 		Tasks.syncDelay(1) {
 			if (status.isMenuOpen) {
 				// set the hotbar back to the original, store the menu hotbar
-				status.menuHotbar = event.player.hotbar
+				status.menuHotbar = event.player.hotbar.toMutableList()
 				event.player.hotbar = status.originalHotbar
 			} else {
 				// set the hotbar to the menu, store the original

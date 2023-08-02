@@ -1,6 +1,5 @@
 package net.stellarica.server.craft.starship.control
 
-import net.stellarica.server.util.extension.craft
 import net.stellarica.server.util.extension.hotbar
 import net.stellarica.server.util.gui.hotbar.HotbarMenu
 import net.stellarica.server.util.gui.namedItem
@@ -32,10 +31,10 @@ object ShipControlHotbar : HotbarMenu() {
 	override fun onButtonClicked(index: Int, player: Player) {
 		if ((player.hotbar[index]?.type?.let { player.getCooldown(it) } ?: 0) >= 1) return;
 
-		val ship = player.craft as? Starship ?: run {
+		//val ship = player.craft as? Starship ?: run {
 			player.sendRichMessage("<red>You are not piloting a starship, yet the ship menu is open! This is a bug!")
 			return
-		}
+		//}
 		when (index) {
 
 		}

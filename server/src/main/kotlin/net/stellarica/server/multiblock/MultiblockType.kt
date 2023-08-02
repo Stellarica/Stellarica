@@ -34,9 +34,9 @@ abstract class MultiblockType {
 	 * Whether the collection of blocks at [origin] in [world] matches this multiblocks type
 	 */
 	fun validatePattern(facing: Direction, origin: BlockPosition, world: World): Boolean {
-		blocks.forEach {
-			val relativeLocation = it.key.getBlockPos(origin, facing)
-			if (!it.value.matches(BlockType.of(world.getBlockState(relativeLocation.toLocation(world))))) {
+		blocks.forEach { (relPos, matcher) ->
+			val globalPos = relPos.getGlobalPosition(origin, facing)
+			if (!matcher.matches(BlockType.of(world.getBlockState(globalPos.toLocation(world))))) {
 				return false
 			} // A blocks we were expecting is missing, so break the function.
 		}

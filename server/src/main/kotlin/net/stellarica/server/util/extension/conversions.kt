@@ -15,7 +15,7 @@ fun Location.toVec3() = Vec3(x, y, z)
 
 fun Location.toVec3i() = Vec3i(x.toInt(), y.toInt(), z.toInt())
 
-fun BlockPos.toLocation(world: World?) = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
+fun BlockPosition.toLocation(world: World?) = Location(world, x.toDouble(), y.toDouble(), z.toDouble())
 
 fun Block.toBlockPosition() = BlockPosition(x, y, z)
 
