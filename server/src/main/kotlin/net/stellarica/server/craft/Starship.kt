@@ -43,6 +43,18 @@ class Starship: BasicCraft(), Rideable, CraftContainer, Pilotable {
 		return super.contains(block) || TODO() // check subcrafts
 	}
 
+	override fun transform(transformation: CraftTransformation): Boolean {
+		// todo: add subcrafts to detected blocks
+		if (!super.transform(transformation)) return false // and handle
+		// todo: remove subcrafts from detected blocks
+		movePassengers(transformation)
+		return true
+	}
+
+	private fun movePassengers(transformation: CraftTransformation) {
+
+	}
+
 	fun detect() {
 		TODO()
 	}

@@ -5,6 +5,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.minecraft.core.Direction
 import net.minecraft.server.level.ServerLevel
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
 import net.stellarica.common.coordinate.BlockPosition
@@ -80,13 +81,17 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		return true
 	}
 
-	override fun transform(transformation: CraftTransformation) {
-		this.transformationCache.clear()
-
+	override fun transform(transformation: CraftTransformation): Boolean {
 		if (!checkTransformation(transformation)) {
-			return
+			return false
 		}
+		moveBlocks(transformation)
+		moveMultiblocks(transformation)
+		this.transformationCache.clear()
+		return true
+	}
 
+	protected fun moveBlocks(transformation: CraftTransformation) {
 		val data = this.transformationCache[transformation]!! // if this is null, something went horribly wrong
 
 		// iterating over twice isn't great, maybe there's a way to condense it?
@@ -121,7 +126,7 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 
 		// set air where we were
 		if (world == transformation.world) detectedBlocks.removeAll(newDetectedBlocks)
-		detectedBlocks.forEach { world.setBlockFast(it, Blocks.AIR.defaultBlockState()) }
+		detectedBlocks.forEach { world.setBlockFast(it.toBlockPos(), Blocks.AIR.defaultBlockState()) }
 
 
 		this.world = transformation.world
@@ -129,6 +134,10 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		origin = transformation.offset(origin)
 		this.orientation = this.orientation.rotate(transformation.rotation)
 		this.transformationCache.clear()
+	}
+
+	protected fun moveMultiblocks(transformation: CraftTransformation) {
+		// todo
 	}
 
 	private fun calcNewCoords(transformation: CraftTransformation): Map<BlockPosition, BlockPosition> {
