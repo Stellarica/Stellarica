@@ -19,7 +19,6 @@ class CustomBlock(
 	 * If null this is assumed to be the same as [item]
 	 */
 	val drops: Map<ItemType, Int>? = null,
-
 	val note: Note,
 	val instrument: Instrument
 )
