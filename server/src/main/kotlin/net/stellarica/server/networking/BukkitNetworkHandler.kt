@@ -3,17 +3,18 @@ package net.stellarica.server.networking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import net.stellarica.common.networking.Channel
+import net.stellarica.common.networking.NetworkHandler
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.StellaricaServer.Companion.plugin
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
 
-class BukkitNetworkHandler : PluginMessageListener {
+class BukkitNetworkHandler : PluginMessageListener, NetworkHandler<ServerboundPacketListener> {
 
-	private val listeners = mutableMapOf<ServerboundPacketListener, Long>()
+	override val listeners = mutableMapOf<ServerboundPacketListener, Long>()
 
 	init {
-		for (channel in Channel.values()) {
+		for (channel in Channel.entries) {
 			plugin.server.messenger.registerIncomingPluginChannel(plugin, channel.bukkit, this)
 			plugin.server.messenger.registerOutgoingPluginChannel(plugin, channel.bukkit)
 		}
@@ -59,18 +60,6 @@ class BukkitNetworkHandler : PluginMessageListener {
 	/** Send [obj] (an object serializable with kotlinx.serialization) on [channel] to [player] */
 	inline fun <reified T : Any> sendSerializableObject(channel: Channel, player: Player, obj: T) {
 		sendPacket(channel, player, Json.encodeToString(obj).toByteArray())
-	}
-
-	/**
-	 * Register [listener]
-	 * If the listener has a timeout, it will expire that many milliseconds after this is called
-	 */
-	fun register(listener: ServerboundPacketListener) {
-		listeners[listener] = System.currentTimeMillis()
-	}
-
-	fun unregister(listener: ServerboundPacketListener) {
-		listeners.remove(listener)
 	}
 
 	private infix fun Any?.isNullOrEq(other: Any?) = this == null || this == other

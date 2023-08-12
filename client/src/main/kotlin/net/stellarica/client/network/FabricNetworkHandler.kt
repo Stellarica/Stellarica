@@ -5,9 +5,10 @@ import kotlinx.serialization.json.Json
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.stellarica.common.networking.Channel
+import net.stellarica.common.networking.NetworkHandler
 
-class FabricNetworkHandler {
-	private val listeners = mutableMapOf<ClientboundPacketListener, Long>()
+class FabricNetworkHandler: NetworkHandler<ClientboundPacketListener> {
+	override val listeners = mutableMapOf<ClientboundPacketListener, Long>()
 
 	init {
 		for (channel in Channel.values()) {
@@ -37,17 +38,5 @@ class FabricNetworkHandler {
 	/** Send [obj] (an object serializable with kotlinx.serialization) on [channel] to the server */
 	inline fun <reified T : Any> sendSerializableObject(channel: Channel, obj: T) {
 		sendPacket(channel, Json.encodeToString(obj).toByteArray())
-	}
-
-	/**
-	 * Register [listener]
-	 * If the listener has a timeout, it will expire that many milliseconds after this is called
-	 */
-	fun register(listener: ClientboundPacketListener) {
-		listeners[listener] = System.currentTimeMillis()
-	}
-
-	fun unregister(listener: ClientboundPacketListener) {
-		listeners.remove(listener)
 	}
 }
