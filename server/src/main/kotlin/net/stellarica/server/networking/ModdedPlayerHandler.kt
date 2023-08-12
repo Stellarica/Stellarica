@@ -34,7 +34,7 @@ object ModdedPlayerHandler : Listener {
 	}
 
 	init {
-		ServerboundPacketListener(networkHandler, Channel.ITEM_SYNC) { player, _ ->
+		ServerboundPacketListener(channel = Channel.ITEM_SYNC) { player, _ ->
 			if (player.gameMode == GameMode.CREATIVE) {
 				val target = player.getTargetBlockExact(10) ?: return@ServerboundPacketListener false
 				val type = BlockType.of(target).getItem()

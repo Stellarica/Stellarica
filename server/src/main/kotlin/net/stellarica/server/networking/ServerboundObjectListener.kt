@@ -3,8 +3,11 @@ package net.stellarica.server.networking
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.json.Json
 import net.stellarica.common.networking.Channel
+import net.stellarica.common.networking.NetworkHandler
+import net.stellarica.common.networking.PacketListener
 import org.bukkit.entity.Player
 
+@Suppress("UNCHECKED_CAST")
 class ServerboundObjectListener<T : Any>(
 	val serializer: KSerializer<*>,
 	handler: BukkitNetworkHandler = ModdedPlayerHandler.networkHandler,
@@ -13,7 +16,7 @@ class ServerboundObjectListener<T : Any>(
 	timeout: Long? = null,
 	priority: Int = 0,
 	val objectCallback: ServerboundObjectListener<T>.(Player, T) -> Boolean
-) : ServerboundPacketListener(handler, channel, player, timeout, priority, ::internal) {
+) : ServerboundPacketListener(handler as NetworkHandler<PacketListener>, channel, player, timeout, priority, ::internal) {
 	companion object {
 		private fun internal(listener: ServerboundPacketListener, player: Player, data: ByteArray): Boolean {
 			@Suppress("UNCHECKED_CAST")
