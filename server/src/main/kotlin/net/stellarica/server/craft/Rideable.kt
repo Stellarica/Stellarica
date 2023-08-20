@@ -4,7 +4,7 @@ import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.audience.ForwardingAudience
 import org.bukkit.entity.LivingEntity
 
-interface Rideable : ForwardingAudience, Craft {
+interface Rideable : ForwardingAudience {
 	val passengers: Set<LivingEntity>
 	fun addPassenger(passenger: LivingEntity)
 
