@@ -79,5 +79,15 @@ class StellaricaServer : JavaPlugin() {
 			CustomMaterialCommands(),
 			DebugCommands()
 		).forEach { commandManager.registerCommand(it) }
+
+		commandManager.commandCompletions.registerCompletion(
+			"customitems"
+		) { CustomItems.map { it.id.path } }
+		commandManager.commandCompletions.registerCompletion(
+			"customblocks"
+		) { CustomBlocks.map { it.id.path } }
+		commandManager.commandCompletions.registerCompletion(
+			"multiblocks"
+		) { Multiblocks.map { it.id.path } }
 	}
 }
