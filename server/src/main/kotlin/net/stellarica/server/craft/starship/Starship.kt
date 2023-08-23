@@ -1,8 +1,14 @@
-package net.stellarica.server.craft
+package net.stellarica.server.craft.starship
 
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.common.util.toBlockPos
 import net.stellarica.server.ConfigurableValues
+import net.stellarica.server.craft.BasicCraft
+import net.stellarica.server.craft.CraftContainer
+import net.stellarica.server.craft.CraftTransformation
+import net.stellarica.server.craft.Pilotable
+import net.stellarica.server.craft.SimpleCraftContainer
+import net.stellarica.server.craft.SimplePilotable
 
 class Starship : BasicCraft(), Pilotable by SimplePilotable(), CraftContainer by SimpleCraftContainer() {
 	override fun contains(block: BlockPosition): Boolean {

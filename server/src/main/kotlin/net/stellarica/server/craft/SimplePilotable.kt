@@ -29,10 +29,13 @@ class SimplePilotable : Pilotable {
 		private set
 
 	override fun pilot(pilot: Player) {
-		this.pilot = pilot
+		if (CraftPilotEvent.callCancellable(Pair(this, pilot))) {
+			this.pilot = pilot
+		}
 	}
 
 	override fun unpilot() {
+		CraftUnpilotEvent.call(this)
 		this.pilot = null
 	}
 
