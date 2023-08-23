@@ -2,6 +2,7 @@ package net.stellarica.server.event
 
 open class Event<D> {
 	val listeners = mutableListOf<Listener<D, Event<D>>>()
+
 	fun call(event: D) {
 		listeners.sortedBy { it.priority }.forEach {
 			if ((this is CancellableEvent) && cancelled) {
@@ -14,6 +15,17 @@ open class Event<D> {
 
 	fun listen(listener: Listener<D, Event<D>>) {
 		listeners.add(listener)
+	}
+
+	fun listen(l: Event<D>.(D)->Unit, priority: Priority = Priority.NORMAL) {
+		listen(object: Listener<D, Event<D>> {
+			override val priority: Priority
+				get() = priority
+
+			override fun onEvent(event: Event<D>, eventData: D) {
+				event.l(eventData)
+			}
+		})
 	}
 
 	val isCancellable: Boolean
@@ -32,23 +44,18 @@ interface Listener<D, in E: Event<D>> {
 }
 
 enum class Priority {
-	LOWEST,
-	LOW,
-	NORMAL,
+	HIGHEST,
 	HIGH,
-	HIGHEST
+	NORMAL,
+	LOW,
+	LOWEST
 }
 
 
 val testEvent = object: Event<String>() {}
 
 fun listen() {
-	testEvent.listen(object: Listener<String, Event<String>> {
-		override val priority: Priority
-			get() = Priority.NORMAL
+	testEvent.listen({
 
-		override fun onEvent(event: Event<String>, eventData: String) {
-			println(eventData)
-		}
 	})
 }
