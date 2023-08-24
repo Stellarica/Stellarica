@@ -39,10 +39,7 @@ class StellaricaServer : JavaPlugin() {
 		val klogger = KotlinLogging.logger("Stellarica")
 
 		fun identifier(path: String) = ResourceLocation("stellarica", path)
-		fun namespacedKey(path: String) = NamespacedKey(plugin, path)
 	}
-
-	val moddedPlayers = mutableSetOf<Player>()
 
 	@Deprecated("Use kotlin-logging instead", ReplaceWith("klogger"))
 	override fun getLogger(): Logger = super.getLogger()

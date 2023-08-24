@@ -12,7 +12,7 @@ object DirectionSerializer : KSerializer<Direction> {
 	override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("Dir", PrimitiveKind.BYTE)
 
 	override fun deserialize(decoder: Decoder): Direction {
-		return Direction.values()[decoder.decodeByte().toInt()]
+		return Direction.entries[decoder.decodeByte().toInt()]
 	}
 
 	override fun serialize(encoder: Encoder, value: Direction) {

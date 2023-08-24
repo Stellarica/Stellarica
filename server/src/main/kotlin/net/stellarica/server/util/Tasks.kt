@@ -11,6 +11,7 @@ import org.bukkit.scheduler.BukkitTask
  *
  * Heavily modified version of Tasks.kt from the IonCore/StarLegacy codebase, under MIT as noted in readme
  */
+@Suppress("Unused")
 object Tasks {
 	/** Run [block] as an asynchronous bukkit task */
 	fun async(block: () -> Unit): BukkitTask = Bukkit.getScheduler().runTaskAsynchronously(plugin, block)

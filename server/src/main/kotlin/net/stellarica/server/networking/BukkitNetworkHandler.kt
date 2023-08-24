@@ -42,7 +42,7 @@ class BukkitNetworkHandler : PluginMessageListener, NetworkHandler<ServerboundPa
 
 	/** Broadcast [content] on [channel] to all connected modded players */
 	fun broadcastPacket(channel: Channel, packet: ByteArray) {
-		for (player in plugin.moddedPlayers) {
+		for (player in ModdedPlayerHandler.moddedPlayers) {
 			sendPacket(channel, player, packet)
 		}
 	}

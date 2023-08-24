@@ -10,7 +10,6 @@ import kotlin.math.sin
 /**
  * Rotate [loc] around [origin] by [theta] radians.
  * Note, [theta] positive = clockwise, negative = counter clockwise
- * @see Vec3.rotateAround
  */
 fun rotateCoordinates(loc: Vec3, origin: Vec3, theta: Double): Vec3 = Vec3(
 	origin.x + (((loc.x - origin.x) * cos(theta)) - ((loc.z - origin.z) * sin(theta))),
@@ -35,7 +34,7 @@ val Rotation.asRadians: Double
 val Rotation.asDegrees: Double
 	get() = Math.toDegrees(asRadians) // :iea:
 
-fun Direction.rotate(rot: Rotation) = when (rot) {
+fun Direction.rotate(rot: Rotation): Direction = when (rot) {
 	Rotation.NONE -> this
 	Rotation.CLOCKWISE_90 -> this.clockWise
 	Rotation.CLOCKWISE_180 -> this.opposite
