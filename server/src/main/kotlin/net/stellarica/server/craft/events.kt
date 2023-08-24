@@ -6,3 +6,9 @@ import org.bukkit.entity.Player
 
 object CraftPilotEvent: CancellableEvent<Pair<Pilotable, Player>>()
 object CraftUnpilotEvent: Event<Pilotable>()
+
+fun n() {
+	CraftPilotEvent.listen({  ->
+
+	})
+}
