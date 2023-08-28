@@ -1,6 +1,6 @@
 package net.stellarica.server.event
 
-interface Listener<D,  E: Event<D>> {
+interface Listener<D, E : Event<D>> {
 	val event: E
 
 	val priority: Priority
