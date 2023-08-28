@@ -5,7 +5,7 @@ import net.stellarica.server.StellaricaServer
 import net.stellarica.server.multiblock.MultiblockType
 
 @Suppress("unused")
-object ThrusterMultiblocks : MultiblockDef() {
+data object ThrusterMultiblocks : MultiblockDef() {
 	val THRUSTER_CHEMICAL_SMALL = object : MultiblockType() {
 		override val displayName = "Small Chemical Thruster"
 		override val id = StellaricaServer.identifier("thruster_chemical_small")

@@ -6,7 +6,7 @@ import net.stellarica.server.material.custom.block.type.MiscCustomBlocks
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.type.item.ItemType
 
-object BlockCustomItems : CustomItemDef {
+data object BlockCustomItems : CustomItemDef {
 	val ADAMANTITE_BLOCK: CustomItem = CustomItem(
 		identifier("adamantite_block"),
 		"Block of Adamantite",

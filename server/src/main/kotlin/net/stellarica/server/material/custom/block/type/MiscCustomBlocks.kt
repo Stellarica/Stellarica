@@ -6,7 +6,7 @@ import net.stellarica.server.material.custom.item.type.BlockCustomItems
 import org.bukkit.Instrument
 import org.bukkit.Note
 
-object MiscCustomBlocks : CustomBlockDef {
+data object MiscCustomBlocks : CustomBlockDef {
 	val ADAMANTITE_BLOCK: CustomBlock = CustomBlock(
 		identifier("adamantite_block"),
 		BlockCustomItems.ADAMANTITE_BLOCK,

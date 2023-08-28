@@ -5,7 +5,7 @@ import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.type.item.ItemType
 
-object DebugCustomItems : CustomItemDef {
+data object DebugCustomItems : CustomItemDef {
 	val DETECTOR: CustomItem = CustomItem(
 		identifier("detector"),
 		"Detector",

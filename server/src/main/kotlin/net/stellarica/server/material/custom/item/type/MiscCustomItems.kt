@@ -6,7 +6,7 @@ import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.type.item.ItemType
 
 @Suppress("Unused")
-object MiscCustomItems : CustomItemDef {
+data object MiscCustomItems : CustomItemDef {
 	val WIRE: CustomItem = CustomItem(
 		identifier("wire"),
 		"Wire",

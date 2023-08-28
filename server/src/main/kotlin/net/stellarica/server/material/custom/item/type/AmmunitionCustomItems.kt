@@ -6,7 +6,7 @@ import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.type.item.ItemType
 
 @Suppress("Unused")
-object AmmunitionCustomItems : CustomItemDef {
+data object AmmunitionCustomItems : CustomItemDef {
 	val AUTO_DRUM: CustomItem = CustomItem(
 		identifier("auto_drum"),
 		"Auto Drum",
