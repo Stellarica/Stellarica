@@ -17,6 +17,7 @@ allprojects {
 	}
 	repositories {
 		mavenCentral()
+		mavenLocal()
 		maven(uri("https://jitpack.io"))
 	}
 	tasks.getByName("check") {
