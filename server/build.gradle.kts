@@ -16,12 +16,20 @@ repositories {
 
 dependencies {
 	implementation(project(":common", "namedElements"))
+
 	paperweightDevelopmentBundle("net.stellarica.nebula:dev-bundle:${property("minecraft_version")}-R0.1-SNAPSHOT")
 	compileOnly("net.stellarica.nebula:nebula-api:${property("minecraft_version")}-R0.1-SNAPSHOT")
 
 	implementation("io.github.microutils:kotlin-logging-jvm:${property("kt_log_version")}")
 
-	implementation("co.aikar:acf-paper:${property("acf_version")}")
+	listOf(
+		"cloud-core",
+		"cloud-paper",
+		"cloud-kotlin-extensions",
+		"cloud-kotlin-coroutines",
+		"cloud-kotlin-coroutines-annotations",
+		"cloud-annotations"
+	).forEach { implementation("cloud.commandframework:$it:${property("cloud_version")}") }
 
 	implementation("com.mineinabyss:protocolburrito:${property("protocolburrito_version")}") // Designed to be installed separately but uh.. :cringe:
 	compileOnly("com.comphenix.protocol:ProtocolLib:${property("protocollib_version")}")
