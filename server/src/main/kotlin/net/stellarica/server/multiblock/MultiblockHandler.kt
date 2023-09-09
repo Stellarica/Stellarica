@@ -6,7 +6,7 @@ import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.material.custom.item.type.DebugCustomItems
 import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.util.Tasks
-import net.stellarica.server.util.extension.sendRichActionBar
+import net.stellarica.server.util.sendRichActionBar
 import net.stellarica.server.util.extension.toBlockPosition
 import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.extension.vanilla

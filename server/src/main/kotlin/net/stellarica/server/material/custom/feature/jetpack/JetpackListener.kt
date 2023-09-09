@@ -3,7 +3,7 @@ package net.stellarica.server.material.custom.feature.jetpack
 import net.stellarica.server.material.custom.item.power
 import net.stellarica.server.material.custom.item.type.MiscCustomItems
 import net.stellarica.server.material.type.item.ItemType
-import net.stellarica.server.util.extension.sendRichActionBar
+import net.stellarica.server.util.sendRichActionBar
 import org.bukkit.Particle
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler

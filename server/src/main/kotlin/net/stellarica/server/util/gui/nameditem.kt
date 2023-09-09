@@ -1,6 +1,6 @@
 package net.stellarica.server.util.gui
 
-import net.stellarica.server.util.extension.asMiniMessage
+import net.stellarica.server.util.asMiniMessage
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
 

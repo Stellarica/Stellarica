@@ -9,7 +9,7 @@ import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.material.custom.item.power
 import net.stellarica.server.material.type.block.BlockType
-import net.stellarica.server.util.extension.asMiniMessage
+import net.stellarica.server.util.asMiniMessage
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack
