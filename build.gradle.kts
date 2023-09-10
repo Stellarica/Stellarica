@@ -18,7 +18,7 @@ allprojects {
 	repositories {
 		mavenCentral()
 		mavenLocal()
-		maven(uri("https://jitpack.io"))
+		maven("https://jitpack.io")
 	}
 	tasks.getByName("check") {
 		this.setDependsOn(this.dependsOn.filterNot {

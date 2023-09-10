@@ -13,7 +13,3 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kx_ser_version")}")
 	compileOnly("io.github.microutils:kotlin-logging-jvm:${property("kt_log_version")}")
 }
-
-loom {
-	splitEnvironmentSourceSets()
-}

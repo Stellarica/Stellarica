@@ -10,7 +10,6 @@ repositories {
 	maven("https://repo.aikar.co/content/groups/aikar/") // acf-paper
 	maven("https://repo.dmulloy2.net/repository/public/") // ProtocolLib
 	maven("https://repo.stellarica.net/snapshots")
-	maven("https://repo.papermc.io/repository/maven-public/")
 	mavenCentral()
 }
 
