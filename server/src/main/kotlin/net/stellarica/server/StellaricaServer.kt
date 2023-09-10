@@ -1,10 +1,7 @@
 package net.stellarica.server
 
-import co.aikar.commands.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.command.CustomMaterialCommands
-import net.stellarica.server.command.DebugCommands
 import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.feature.jetpack.JetpackListener
@@ -13,8 +10,6 @@ import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
 import org.bukkit.Bukkit.getPluginManager
-import org.bukkit.NamespacedKey
-import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
 

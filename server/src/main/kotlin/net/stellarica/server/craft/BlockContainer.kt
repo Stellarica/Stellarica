@@ -5,8 +5,8 @@ import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.common.coordinate.RelativeBlockPosition
 
 interface BlockContainer {
-	var origin: BlockPosition
-	var orientation: Direction
+	val origin: BlockPosition
+	val orientation: Direction
 
 	fun getGlobalPos(pos: RelativeBlockPosition): BlockPosition {
 		return pos.getGlobalPosition(origin, orientation)
