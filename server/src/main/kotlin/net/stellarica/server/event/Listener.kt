@@ -5,7 +5,7 @@ interface Listener<D, E : Event<D>> {
 
 	val priority: Priority
 
-	fun onEvent(event: E, eventData: D)
+	fun onEvent(event: E, data: D)
 
 	fun unregister() {
 		@Suppress("UNCHECKED_CAST") // puffer // todo: dejankify

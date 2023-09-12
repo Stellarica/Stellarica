@@ -3,14 +3,14 @@ package net.stellarica.server.event
 open class Event<D> {
 	private val listeners = mutableListOf<Listener<D, Event<D>>>()
 
-	open fun call(event: D) {
+	open fun call(data: D) {
 		if (this is CancellableEvent) cancelled = false
 
 		listeners.sortedBy { it.priority }.forEach {
 			if ((this is CancellableEvent) && cancelled) {
 				return
 			}
-			it.onEvent(this, event)
+			it.onEvent(this, data)
 		}
 	}
 
@@ -19,13 +19,14 @@ open class Event<D> {
 	}
 
 	fun listen(l: Listener<D, Event<D>>.(D) -> Unit, priority: Priority = Priority.NORMAL) {
+		// this is so incredibly cursed
 		listen(object : Listener<D, Event<D>> {
 			override val event = this@Event
 			override val priority: Priority
 				get() = priority
 
-			override fun onEvent(event: Event<D>, eventData: D) {
-				this.l(eventData)
+			override fun onEvent(event: Event<D>, data: D) {
+				this.l(data)
 			}
 		})
 	}
