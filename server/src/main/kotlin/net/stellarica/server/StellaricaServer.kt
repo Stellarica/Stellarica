@@ -16,9 +16,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
 
-/**
- * Base plugin class for Stellarica
- */
 class StellaricaServer : JavaPlugin() {
 	companion object {
 		/**
@@ -67,11 +64,5 @@ class StellaricaServer : JavaPlugin() {
 			ModdedPlayerHandler,
 			JetpackListener
 		).forEach { getPluginManager().registerEvents(it, this) }
-
-		listen<PlayerInteractEvent>({ event ->
-			println(event.player.displayName + ": " + event.action + " ")
-			println(event.handlers.registeredListeners.first { it == this }.priority)
-		}, BukkitPriority.HIGHEST)
-
 	}
 }
