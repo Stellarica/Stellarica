@@ -3,8 +3,6 @@ package net.stellarica.server
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.craft.starship.InterfaceListener
-import net.stellarica.server.event.BukkitPriority
-import net.stellarica.server.event.listen
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.feature.jetpack.JetpackListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
@@ -12,7 +10,6 @@ import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
 import org.bukkit.Bukkit.getPluginManager
-import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
 

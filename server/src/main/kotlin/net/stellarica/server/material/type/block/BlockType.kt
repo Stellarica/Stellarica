@@ -5,7 +5,7 @@ import net.stellarica.server.CustomBlocks
 import net.stellarica.server.material.custom.block.CustomBlock
 import net.stellarica.server.material.type.item.ItemType
 import org.bukkit.block.data.type.NoteBlock
-import org.bukkit.craftbukkit.v1_20_R1.block.data.CraftBlockData
+import org.bukkit.craftbukkit.v1_20_R2.block.data.CraftBlockData
 
 interface BlockType {
 	fun getBukkitBlockData(): org.bukkit.block.data.BlockData

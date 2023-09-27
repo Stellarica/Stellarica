@@ -12,7 +12,7 @@ import net.stellarica.server.material.type.item.ItemType
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.asMiniMessage
 import org.bukkit.GameMode
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

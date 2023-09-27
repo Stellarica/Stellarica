@@ -13,7 +13,7 @@ class FabricNetworkHandler: NetworkHandler<ClientboundPacketListener> {
 	init {
 		for (channel in Channel.values()) {
 			ClientPlayNetworking.registerGlobalReceiver(channel.fabric) { _, _, buf, _ ->
-				onPacketRecv(channel, buf.accessByteBufWithCorrectSize())
+				onPacketRecv(channel, buf.array())
 			}
 		}
 	}

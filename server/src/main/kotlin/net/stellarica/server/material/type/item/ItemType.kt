@@ -7,7 +7,7 @@ import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.CustomItems
 import net.stellarica.server.material.type.block.BlockType
 import org.bukkit.NamespacedKey
-import org.bukkit.craftbukkit.v1_20_R1.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
 import org.bukkit.persistence.PersistentDataType
 
 interface ItemType {
