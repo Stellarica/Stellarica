@@ -70,7 +70,7 @@ object StellaricaClient : ClientModInitializer {
 			// success
 			Minecraft.getInstance().toasts.addToast(
 				SystemToast(
-					SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
+					SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
 					Component.literal("Stellarica"),
 					Component.literal("Connected to server!")
 				)
@@ -80,7 +80,7 @@ object StellaricaClient : ClientModInitializer {
 			// too old, upgrade
 			Minecraft.getInstance().toasts.addToast(
 				SystemToast(
-					SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
+					SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
 					Component.literal("Stellarica"),
 					Component.literal("Outdated client mod version! Some features may not work as intended!")
 				)
@@ -89,7 +89,7 @@ object StellaricaClient : ClientModInitializer {
 			// too new? downgrade??
 			Minecraft.getInstance().toasts.addToast(
 				SystemToast(
-					SystemToast.SystemToastIds.PERIODIC_NOTIFICATION,
+					SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
 					Component.literal("Stellarica"),
 					Component.literal("Outdated server plugin version! Some features may not work as intended!")
 				)

@@ -12,7 +12,7 @@ import net.stellarica.server.material.type.block.BlockType
 import net.stellarica.server.util.asMiniMessage
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
-import org.bukkit.craftbukkit.v1_20_R2.inventory.CraftItemStack
+import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack
 import org.bukkit.persistence.PersistentDataType
 
 @JvmInline

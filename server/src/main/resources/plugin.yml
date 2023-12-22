@@ -2,7 +2,7 @@ main: net.stellarica.server.StellaricaServer
 name: Stellarica
 version: '${version}'
 description: The primary plugin for the Stellarica minecraft server.
-api-version: 1.19
+api-version: 1.20
 load: STARTUP
 authors: [ "trainb0y", "Astralchroma", "HyperSoop", "Longy", "NovaManGood2110", "DoctorXeno" ]
 website: https://github.com/Stellarica/Stellarica
