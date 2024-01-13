@@ -6,7 +6,6 @@ import cloud.commandframework.meta.SimpleCommandMeta
 import cloud.commandframework.paper.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
-import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.craft.starship.Temporary
 import net.stellarica.server.material.block.CustomBlockHandler
 import net.stellarica.server.material.item.CustomItemHandler
@@ -76,7 +75,6 @@ class StellaricaServer : JavaPlugin() {
 
 		// Register listeners here
 		arrayOf(
-			InterfaceListener(),
 			MultiblockHandler,
 			CustomItemHandler,
 			CustomBlockHandler,

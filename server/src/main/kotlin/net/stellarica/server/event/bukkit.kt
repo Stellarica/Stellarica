@@ -1,15 +1,14 @@
 package net.stellarica.server.event
 
 import net.stellarica.server.StellaricaServer.Companion.plugin
-import org.bukkit.event.EventPriority
 
 typealias BukkitEvent = org.bukkit.event.Event
 typealias BukkitListener = org.bukkit.event.Listener
-typealias BukkitPriority = EventPriority
+typealias BukkitPriority = org.bukkit.event.EventPriority
 
 inline fun <reified T : BukkitEvent> listen(
 	noinline block: BukkitListener.(T) -> Unit,
-	priority: EventPriority = EventPriority.NORMAL,
+	priority: BukkitPriority = BukkitPriority.NORMAL,
 	ignoreCancelled: Boolean = false
 ) {
 	plugin.server.pluginManager.registerEvent(
