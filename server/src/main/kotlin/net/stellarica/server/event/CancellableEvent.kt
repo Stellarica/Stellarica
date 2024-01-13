@@ -9,5 +9,5 @@ open class CancellableEvent<EventData> : Event<EventData>() {
 	}
 
 	@Deprecated("This event is cancellable, use callCancellable instead", ReplaceWith("callCancellable(event)"))
-	override fun call(data: EventData) = super.call(data)
+	override operator fun invoke(data: EventData) = super.invoke(data)
 }

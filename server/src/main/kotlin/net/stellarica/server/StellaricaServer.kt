@@ -1,8 +1,13 @@
 package net.stellarica.server
 
+import cloud.commandframework.annotations.AnnotationParser
+import cloud.commandframework.execution.AsynchronousCommandExecutionCoordinator
+import cloud.commandframework.meta.SimpleCommandMeta
+import cloud.commandframework.paper.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.craft.starship.InterfaceListener
+import net.stellarica.server.craft.starship.Temporary
 import net.stellarica.server.material.custom.block.CustomBlockHandler
 import net.stellarica.server.material.custom.feature.jetpack.JetpackListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
@@ -10,6 +15,7 @@ import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
 import org.bukkit.Bukkit.getPluginManager
+import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
 
@@ -51,6 +57,23 @@ class StellaricaServer : JavaPlugin() {
 		plugin = this
 
 		networkHandler = BukkitNetworkHandler()
+
+		val commandManager = PaperCommandManager(
+				this,
+				AsynchronousCommandExecutionCoordinator.builder<CommandSender>().build(),
+				{ it },
+				{ it }
+		).also {
+			it.registerAsynchronousCompletions()
+		}
+
+		val parser = AnnotationParser(
+				commandManager, CommandSender::class.java
+		) { SimpleCommandMeta.empty() }
+
+		parser.parse(Temporary)
+
+
 
 		// Register listeners here
 		arrayOf(

@@ -3,7 +3,7 @@ package net.stellarica.server.event
 open class Event<D> {
 	private val listeners = mutableListOf<Listener<D, Event<D>>>()
 
-	operator fun invoke(data: D) {
+	open operator fun invoke(data: D) {
 		if (this is CancellableEvent) cancelled = false
 
 		listeners.sortedBy { it.priority }.forEach {
