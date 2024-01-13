@@ -138,6 +138,6 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 	}
 
 	override fun subcraftsContain(block: BlockPosition): Boolean {
-
+		TODO()
 	}
 }

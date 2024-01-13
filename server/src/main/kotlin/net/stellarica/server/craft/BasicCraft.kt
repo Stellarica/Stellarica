@@ -12,6 +12,7 @@ import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.common.coordinate.RelativeBlockPosition
 import net.stellarica.common.util.rotate
 import net.stellarica.common.util.toBlockPos
+import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.multiblock.MultiblockInstance
 import java.util.concurrent.ConcurrentHashMap
 
@@ -26,7 +27,6 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 	// (hashset iter time is :agony:)
 	protected var detectedBlocks = mutableListOf<BlockPosition>()
 	protected val multiblocks = mutableSetOf<RelativeBlockPosition>()
-	protected val transformationCache = mutableMapOf<CraftTransformation, PartialMoveData>()
 
 	override val blockCount: Int
 		get() = detectedBlocks.size
@@ -47,7 +47,7 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		return multiblocks.remove(this.getRelativePos(multiblock.origin))
 	}
 
-	override fun checkTransformation(transformation: CraftTransformation): Boolean {
+	fun checkTransformation(transformation: CraftTransformation): CraftCheckResult {
 		val targets = calcNewCoords(transformation)
 		// We need to get the original blockstates before we start setting blocks
 		// otherwise, if we just try to get the state as we set the blocks, the state might have already been set.
@@ -64,45 +64,43 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		// check for collisions
 		// if the world we're moving to isn't the world we're coming from, the whole map of original states we got is useless
 		val sameWorld = world == transformation.world
-		targets.values.forEach { target ->
-			val state = transformation.world.getBlockState(target.toBlockPos())
+		for (target in targets.values) {
+			val targetBlockPos = target.toBlockPos() // pain
+			val state = transformation.world.getBlockState(targetBlockPos)
 
 			if (!state.isAir && !(sameWorld && detectedBlocks.contains(target))) {
-				return false
+				return CraftCheckResult(true, null)
 			}
 
 			// also use this time to get the original state of these blocks
-			if (state.hasBlockEntity()) entities[target] = transformation.world.getBlockEntity(target.toBlockPos())!!
+			if (state.hasBlockEntity()) entities[target] = transformation.world.getBlockEntity(targetBlockPos)!!
 
 			original[target] = state
 		}
-		this.transformationCache[transformation] = PartialMoveData(targets, original, entities)
-
-		return true
+		return CraftCheckResult(false, PartialMoveData(targets, original, entities))
 	}
 
 	override fun transform(transformation: CraftTransformation): Boolean {
-		if (!checkTransformation(transformation)) {
+		val res = checkTransformation(transformation)
+		if (res.collision) {
 			return false
 		}
-		moveBlocks(transformation)
+		moveBlocks(transformation, res.data!!)
 		moveMultiblocks(transformation)
-		this.transformationCache.clear()
 		return true
 	}
 
-	protected fun moveBlocks(transformation: CraftTransformation) {
-		val data = this.transformationCache[transformation]!! // if this is null, something went horribly wrong
+	protected fun moveBlocks(transformation: CraftTransformation, data: PartialMoveData) {
 
 		// iterating over twice isn't great, maybe there's a way to condense it?
 		val newDetectedBlocks = mutableListOf<BlockPosition>()
-		data.targets.forEach { (current, target) ->
+		for ((current, target) in data.targets) {
 			val currentPos = current.toBlockPos()
 			val targetPos = target.toBlockPos()
 			val currentBlock = data.original.getOrElse(current) { world.getBlockState(currentPos) }
 
 			// set the blocks
-			transformation.world.setBlockFast(target.toBlockPos(), currentBlock.rotate(transformation.rotation))
+			transformation.world.setBlockFast(targetPos, currentBlock.rotate(transformation.rotation))
 			newDetectedBlocks.add(target)
 
 			// move any entities
@@ -122,7 +120,7 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 
 		// if this ever happens it's a really good sign something died lol
 		if (newDetectedBlocks.size != detectedBlocks.size)
-			println("Lost ${detectedBlocks.size - newDetectedBlocks.size} blocks while moving! This is a bug!")
+			klogger.error { "Lost ${detectedBlocks.size - newDetectedBlocks.size} blocks while moving! This is a bug!" }
 
 		// set air where we were
 		if (world == transformation.world) detectedBlocks.removeAll(newDetectedBlocks)
@@ -133,7 +131,6 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		detectedBlocks = newDetectedBlocks
 		origin = transformation.offset(origin)
 		this.orientation = this.orientation.rotate(transformation.rotation)
-		this.transformationCache.clear()
 	}
 
 	protected fun moveMultiblocks(transformation: CraftTransformation) {
@@ -145,7 +142,7 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		val targetsCHM = ConcurrentHashMap<BlockPosition, BlockPosition>()
 
 		runBlocking {
-			for (section in detectedBlocks.chunked(detectedBlocks.size / 8 + 256)) {
+			for (section in detectedBlocks.chunked(detectedBlocks.size / 8)) {
 				// chunk into sections to process parallel
 				launch(Dispatchers.Default) {
 					val new = section.zip(section.map { current -> transformation.offset(current) })
@@ -157,8 +154,13 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 	}
 
 	class PartialMoveData(
-		val targets: Map<BlockPosition, BlockPosition>,
-		val original: Map<BlockPosition, BlockState>,
-		val entities: Map<BlockPosition, BlockEntity>
+			val targets: Map<BlockPosition, BlockPosition>,
+			val original: Map<BlockPosition, BlockState>,
+			val entities: Map<BlockPosition, BlockEntity>
+	)
+
+	class CraftCheckResult(
+			val collision: Boolean,
+			val data: PartialMoveData?
 	)
 }
