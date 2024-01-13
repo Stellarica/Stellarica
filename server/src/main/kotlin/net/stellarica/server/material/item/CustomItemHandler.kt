@@ -1,7 +1,7 @@
-package net.stellarica.server.material.custom.item
+package net.stellarica.server.material.item
 
-import net.stellarica.server.material.type.item.CustomItemType
-import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.material.item.type.CustomItemType
+import net.stellarica.server.material.item.type.ItemType
 import net.stellarica.server.util.Tasks
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener

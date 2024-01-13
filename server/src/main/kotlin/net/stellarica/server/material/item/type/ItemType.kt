@@ -1,13 +1,14 @@
-package net.stellarica.server.material.type.item
+package net.stellarica.server.material.item.type
 
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Items
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.material.custom.item.CustomItem
 import net.stellarica.server.CustomItems
-import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.block.type.BlockType
+import net.stellarica.server.material.item.CustomItem
 import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 
 interface ItemType {
@@ -44,7 +45,7 @@ interface ItemType {
 		}
 
 		fun of(item: org.bukkit.Material): VanillaItemType {
-			return VanillaItemType((org.bukkit.inventory.ItemStack(item) as CraftItemStack).handle.item)
+			return VanillaItemType((ItemStack(item) as CraftItemStack).handle.item)
 		}
 
 		fun of(item: ResourceLocation): ItemType? {

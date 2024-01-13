@@ -1,9 +1,9 @@
-package net.stellarica.server.material.custom.block
+package net.stellarica.server.material.block
 
 import net.minecraft.world.entity.item.ItemEntity
-import net.stellarica.server.material.type.block.BlockType
-import net.stellarica.server.material.type.block.CustomBlockType
-import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.material.block.type.BlockType
+import net.stellarica.server.material.block.type.CustomBlockType
+import net.stellarica.server.material.item.type.ItemType
 import org.bukkit.craftbukkit.v1_20_R3.CraftServer
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld
 import org.bukkit.craftbukkit.v1_20_R3.entity.CraftItem

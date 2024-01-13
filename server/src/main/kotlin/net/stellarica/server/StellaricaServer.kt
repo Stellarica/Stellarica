@@ -8,8 +8,8 @@ import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.craft.starship.Temporary
-import net.stellarica.server.material.custom.block.CustomBlockHandler
-import net.stellarica.server.material.custom.item.CustomItemHandler
+import net.stellarica.server.material.block.CustomBlockHandler
+import net.stellarica.server.material.item.CustomItemHandler
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler

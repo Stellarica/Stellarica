@@ -7,8 +7,8 @@ import net.stellarica.common.networking.ClientCustomItemData
 import net.stellarica.common.networking.networkVersion
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.CustomItems
-import net.stellarica.server.material.type.block.BlockType
-import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.material.block.type.BlockType
+import net.stellarica.server.material.item.type.ItemType
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.asMiniMessage
 import org.bukkit.GameMode

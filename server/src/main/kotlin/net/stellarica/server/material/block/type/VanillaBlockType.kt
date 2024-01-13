@@ -1,8 +1,8 @@
-package net.stellarica.server.material.type.block
+package net.stellarica.server.material.block.type
 
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.level.block.Block
-import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.material.item.type.ItemType
 import org.bukkit.Material
 import org.bukkit.block.data.BlockData
 

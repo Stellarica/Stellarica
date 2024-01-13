@@ -1,9 +1,9 @@
-package net.stellarica.server.material.custom.item.type
+package net.stellarica.server.material.item.custom
 
 import net.minecraft.world.item.Items
 import net.stellarica.server.StellaricaServer.Companion.identifier
-import net.stellarica.server.material.custom.item.CustomItem
-import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.material.item.CustomItem
+import net.stellarica.server.material.item.type.ItemType
 
 data object DebugCustomItems : CustomItemDef {
 	val DETECTOR: CustomItem = CustomItem(

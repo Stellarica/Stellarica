@@ -4,7 +4,7 @@ import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.common.coordinate.RelativeBlockPosition
-import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.block.type.BlockType
 import net.stellarica.server.multiblock.matching.BlockMatcher
 import net.stellarica.server.util.extension.toLocation
 import org.bukkit.World

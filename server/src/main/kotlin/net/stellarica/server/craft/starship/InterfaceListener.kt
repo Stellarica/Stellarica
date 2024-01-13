@@ -1,7 +1,7 @@
 package net.stellarica.server.craft.starship
 
-import net.stellarica.server.material.custom.block.type.MiscCustomBlocks
-import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.block.custom.MiscCustomBlocks
+import net.stellarica.server.material.block.type.BlockType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action

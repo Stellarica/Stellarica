@@ -1,8 +1,8 @@
-package net.stellarica.server.material.custom.block.type
+package net.stellarica.server.material.block.custom
 
 import net.stellarica.server.StellaricaServer.Companion.identifier
-import net.stellarica.server.material.custom.block.CustomBlock
-import net.stellarica.server.material.custom.item.type.BlockCustomItems
+import net.stellarica.server.material.block.CustomBlock
+import net.stellarica.server.material.item.custom.BlockCustomItems
 import org.bukkit.Instrument
 import org.bukkit.Note
 

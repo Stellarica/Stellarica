@@ -3,8 +3,8 @@ package net.stellarica.server.multiblock.type
 import net.minecraft.tags.TagKey
 import net.minecraft.world.level.block.Block
 import net.stellarica.common.coordinate.RelativeBlockPosition
-import net.stellarica.server.material.custom.block.CustomBlock
-import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.block.CustomBlock
+import net.stellarica.server.material.block.type.BlockType
 import net.stellarica.server.multiblock.matching.BlockMatcher
 import net.stellarica.server.multiblock.matching.BlockTagMatcher
 import net.stellarica.server.multiblock.matching.MultiBlockMatcher

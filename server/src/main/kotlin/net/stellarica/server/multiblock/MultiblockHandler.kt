@@ -3,8 +3,8 @@ package net.stellarica.server.multiblock
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.Multiblocks
 import net.stellarica.server.StellaricaServer.Companion.identifier
-import net.stellarica.server.material.custom.item.type.DebugCustomItems
-import net.stellarica.server.material.type.item.ItemType
+import net.stellarica.server.material.item.custom.DebugCustomItems
+import net.stellarica.server.material.item.type.ItemType
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.sendRichActionBar
 import net.stellarica.server.util.extension.toBlockPosition

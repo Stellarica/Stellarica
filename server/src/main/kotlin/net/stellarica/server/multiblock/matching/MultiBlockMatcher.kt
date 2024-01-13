@@ -1,6 +1,6 @@
 package net.stellarica.server.multiblock.matching
 
-import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.block.type.BlockType
 
 @JvmInline
 value class MultiBlockMatcher(private val types: Set<BlockType>) : BlockMatcher {

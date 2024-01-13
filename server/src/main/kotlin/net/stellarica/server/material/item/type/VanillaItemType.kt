@@ -1,9 +1,9 @@
-package net.stellarica.server.material.type.item
+package net.stellarica.server.material.item.type
 
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.BlockItem
 import net.minecraft.world.item.Item
-import net.stellarica.server.material.type.block.BlockType
+import net.stellarica.server.material.block.type.BlockType
 import org.bukkit.Material
 
 @JvmInline
