@@ -9,7 +9,6 @@ import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.craft.starship.InterfaceListener
 import net.stellarica.server.craft.starship.Temporary
 import net.stellarica.server.material.custom.block.CustomBlockHandler
-import net.stellarica.server.material.custom.feature.jetpack.JetpackListener
 import net.stellarica.server.material.custom.item.CustomItemHandler
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
@@ -82,7 +81,6 @@ class StellaricaServer : JavaPlugin() {
 			CustomItemHandler,
 			CustomBlockHandler,
 			ModdedPlayerHandler,
-			JetpackListener
 		).forEach { getPluginManager().registerEvents(it, this) }
 	}
 }
