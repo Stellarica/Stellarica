@@ -1,6 +1,8 @@
 package net.stellarica.server.craft.starship
 
 import io.papermc.paper.entity.TeleportFlag
+import net.minecraft.core.Direction
+import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Rotation
 import net.minecraft.world.phys.Vec3
 import net.stellarica.common.coordinate.BlockPosition
@@ -28,6 +30,12 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 
 	override var pilot: Player? = null
 		private set
+
+	fun setup(origin: BlockPosition, world: ServerLevel, orientation: Direction = Direction.NORTH) {
+		this.origin = origin
+		this.world = world
+		this.orientation = orientation
+	}
 
 	override fun pilot(pilot: Player) {
 		this.pilot = pilot
@@ -86,7 +94,7 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 
 	fun detect() {
 		var nextBlocksToCheck = mutableSetOf(origin)
-		detectedBlocks = mutableListOf()
+		detectedBlocks = mutableSetOf()
 		val checkedBlocks = nextBlocksToCheck.toMutableSet() // set for .contains performance
 
 		while (nextBlocksToCheck.size > 0) {

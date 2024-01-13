@@ -23,9 +23,11 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 	final override lateinit var world: ServerLevel
 		protected set
 
-	// warning this is a list and not a set, make sure it doesn't contain duplicates
-	// (hashset iter time is :agony:)
-	protected var detectedBlocks = mutableListOf<BlockPosition>()
+	// You might think a list would be better, but we do so many .contains() checks
+	// that an ArrayList is orders of magnitude slower. LinkedHashSet doesn't have
+	// that bad of iteration time anyway.
+	protected var detectedBlocks = mutableSetOf<BlockPosition>()
+
 	protected val multiblocks = mutableSetOf<RelativeBlockPosition>()
 
 	override val blockCount: Int
@@ -93,7 +95,7 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 	protected fun moveBlocks(transformation: CraftTransformation, data: PartialMoveData) {
 
 		// iterating over twice isn't great, maybe there's a way to condense it?
-		val newDetectedBlocks = mutableListOf<BlockPosition>()
+		val newDetectedBlocks = mutableSetOf<BlockPosition>()
 		for ((current, target) in data.targets) {
 			val currentPos = current.toBlockPos()
 			val targetPos = target.toBlockPos()
