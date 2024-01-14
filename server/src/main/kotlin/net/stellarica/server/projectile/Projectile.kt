@@ -10,6 +10,7 @@ import org.joml.Vector3d
 
 class Projectile(val control: Control, val display: Display) {
 	lateinit var world: ServerLevel
+		private set
 	lateinit var position: Vector3d
 		private set
 	lateinit var direction: Vector3d
