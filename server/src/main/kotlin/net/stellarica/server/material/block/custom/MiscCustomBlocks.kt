@@ -8,9 +8,9 @@ import org.bukkit.Note
 
 data object MiscCustomBlocks : CustomBlockDef {
 	val COMPUTER_CORE: CustomBlock = CustomBlock(
-		identifier("computer_core"),
-		BlockCustomItems.COMPUTER_CORE,
-		note = Note.natural(1, Note.Tone.B),
-		instrument = Instrument.PIANO
+			identifier("computer_core"),
+			BlockCustomItems.COMPUTER_CORE,
+			note = Note.natural(1, Note.Tone.B),
+			instrument = Instrument.PIANO
 	)
 }

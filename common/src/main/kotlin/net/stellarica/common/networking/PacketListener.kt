@@ -5,6 +5,7 @@ interface PacketListener {
 	fun unregister() {
 		handler.unregister(this)
 	}
+
 	fun register() {
 		handler.register(this)
 	}

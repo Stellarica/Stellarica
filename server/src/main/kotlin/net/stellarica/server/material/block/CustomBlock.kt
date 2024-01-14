@@ -11,14 +11,14 @@ import org.bukkit.Note
  */
 class CustomBlock(
 		/** ID of the custom block */
-	val id: ResourceLocation,
+		val id: ResourceLocation,
 		/** The item used to place this block*/
-	val item: CustomItem?,
+		val item: CustomItem?,
 		/**
-	 * The drops on block break.
-	 * If null this is assumed to be the same as [item]
-	 */
-	val drops: Map<ItemType, Int>? = null,
+		 * The drops on block break.
+		 * If null this is assumed to be the same as [item]
+		 */
+		val drops: Map<ItemType, Int>? = null,
 		val note: Note,
 		val instrument: Instrument
 )

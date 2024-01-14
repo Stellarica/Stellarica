@@ -8,12 +8,12 @@ import net.stellarica.server.material.item.type.ItemType
 
 data object BlockCustomItems : CustomItemDef {
 	val COMPUTER_CORE: CustomItem = CustomItem(
-		identifier("computer_core"),
-		"Computer Core",
-		listOf(),
-		ItemType.of(Items.NOTE_BLOCK),
-		3,
-		null,
-		MiscCustomBlocks.COMPUTER_CORE
+			identifier("computer_core"),
+			"Computer Core",
+			listOf(),
+			ItemType.of(Items.NOTE_BLOCK),
+			3,
+			null,
+			MiscCustomBlocks.COMPUTER_CORE
 	)
 }

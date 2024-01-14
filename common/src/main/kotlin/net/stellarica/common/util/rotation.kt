@@ -12,16 +12,16 @@ import kotlin.math.sin
  * Note, [theta] positive = clockwise, negative = counter clockwise
  */
 fun rotateCoordinates(loc: Vec3, origin: Vec3, theta: Double): Vec3 = Vec3(
-	origin.x + (((loc.x - origin.x) * cos(theta)) - ((loc.z - origin.z) * sin(theta))),
-	loc.y,  // too many parentheses is better than too few
-	origin.z + (((loc.x - origin.x) * sin(theta)) + ((loc.z - origin.z) * cos(theta))),
+		origin.x + (((loc.x - origin.x) * cos(theta)) - ((loc.z - origin.z) * sin(theta))),
+		loc.y,  // too many parentheses is better than too few
+		origin.z + (((loc.x - origin.x) * sin(theta)) + ((loc.z - origin.z) * cos(theta))),
 )
 
 fun rotateCoordinates(loc: Vec3, origin: Vec3, rotation: Rotation): Vec3 =
-	rotateCoordinates(loc, origin, rotation.asRadians)
+		rotateCoordinates(loc, origin, rotation.asRadians)
 
 fun rotateBlockPosition(pos: BlockPosition, origin: BlockPosition, rotation: Rotation): BlockPosition =
-	rotateCoordinates(pos.toVec3(), origin.toVec3(), rotation).toBlockPosition()
+		rotateCoordinates(pos.toVec3(), origin.toVec3(), rotation).toBlockPosition()
 
 val Rotation.asRadians: Double
 	get() = when (this) {

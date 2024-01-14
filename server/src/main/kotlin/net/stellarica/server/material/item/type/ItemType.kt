@@ -2,8 +2,8 @@ package net.stellarica.server.material.item.type
 
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Items
-import net.stellarica.server.StellaricaServer
 import net.stellarica.server.CustomItems
+import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.block.type.BlockType
 import net.stellarica.server.material.item.CustomItem
 import org.bukkit.NamespacedKey
@@ -32,12 +32,12 @@ interface ItemType {
 
 		fun of(item: org.bukkit.inventory.ItemStack): ItemType {
 			return item.itemMeta?.persistentDataContainer?.get(
-				NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
-				PersistentDataType.STRING,
+					NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
+					PersistentDataType.STRING,
 			)?.let { id -> ResourceLocation.tryParse(id)?.let { CustomItems[it]?.let { CustomItemType(it) } } }
 			// no custom item, get the vanilla item
 			// handle can be null if the stack is empty
-				?: VanillaItemType((item as? CraftItemStack)?.handle?.item ?: Items.AIR)
+					?: VanillaItemType((item as? CraftItemStack)?.handle?.item ?: Items.AIR)
 		}
 
 		fun of(item: net.minecraft.world.item.ItemStack): ItemType {
@@ -50,7 +50,7 @@ interface ItemType {
 
 		fun of(item: ResourceLocation): ItemType? {
 			return CustomItems[item]?.let { CustomItemType(it) }
-				?: org.bukkit.Material.getMaterial(item.path)?.let { of(it) }
+					?: org.bukkit.Material.getMaterial(item.path)?.let { of(it) }
 		}
 	}
 }

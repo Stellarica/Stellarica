@@ -5,8 +5,8 @@ import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.networking.Channel
 import net.stellarica.common.networking.ClientCustomItemData
 import net.stellarica.common.networking.networkVersion
-import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.CustomItems
+import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.material.block.type.BlockType
 import net.stellarica.server.material.item.type.ItemType
 import net.stellarica.server.util.Tasks
@@ -26,10 +26,10 @@ object ModdedPlayerHandler : Listener {
 
 	private val creativeItems = CustomItems.map {
 		ClientCustomItemData(
-			it.id,
-			it.base.getId(),
-			it.modelData,
-			it.name.toJsonText
+				it.id,
+				it.base.getId(),
+				it.modelData,
+				it.name.toJsonText
 		)
 	}
 

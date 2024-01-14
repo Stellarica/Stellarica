@@ -2,14 +2,13 @@ package net.stellarica.server.multiblock
 
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.Multiblocks
-import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.material.item.custom.DebugCustomItems
 import net.stellarica.server.material.item.type.ItemType
 import net.stellarica.server.util.Tasks
-import net.stellarica.server.util.sendRichActionBar
 import net.stellarica.server.util.extension.toBlockPosition
 import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.extension.vanilla
+import net.stellarica.server.util.sendRichActionBar
 import org.bukkit.Chunk
 import org.bukkit.World
 import org.bukkit.event.EventHandler
@@ -22,9 +21,8 @@ import org.bukkit.event.world.ChunkUnloadEvent
 object MultiblockHandler : Listener {
 	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
 
-	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() }
+	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() } // todo: dont getorput
 
-	private val namespacedKey = identifier("multiblocks")
 
 	init {
 		Tasks.syncRepeat(5, 20) {
@@ -63,10 +61,10 @@ object MultiblockHandler : Listener {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
 		if (event.item?.let { ItemType.of(it) } != ItemType.of(DebugCustomItems.DETECTOR)) return
 		multiblocks[event.clickedBlock!!.chunk]?.firstOrNull { it.origin == event.clickedBlock!!.toBlockPosition() }
-			?.let {
-				event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")
-				return
-			}
+				?.let {
+					event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")
+					return
+				}
 		detect(event.clickedBlock!!.toBlockPosition(), event.player.world)?.let {
 			event.player.sendRichActionBar("<green>Detected ${it.type.displayName}")
 			return

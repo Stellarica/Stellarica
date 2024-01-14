@@ -1,6 +1,6 @@
 package net.stellarica.common.networking
 
-interface NetworkHandler<L: PacketListener> {
+interface NetworkHandler<L : PacketListener> {
 	val listeners: MutableMap<L, Long>
 
 	/**

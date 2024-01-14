@@ -5,7 +5,7 @@ import net.minecraft.world.level.block.Rotation
 import net.stellarica.common.coordinate.BlockPosition
 
 data class CraftTransformation(
-	val offset: (BlockPosition) -> BlockPosition,
-	val rotation: Rotation,
-	val world: ServerLevel
+		val offset: (BlockPosition) -> BlockPosition,
+		val rotation: Rotation,
+		val world: ServerLevel
 )

@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 public abstract class MinecraftMixin {
-    @Inject(method = "pickBlock", at = @At("RETURN"))
-    private void onPickBlock(CallbackInfo ci) {
-        StellaricaClient.INSTANCE.getNetworkHandler().sendPacket(Channel.ITEM_SYNC, new byte[0]);
-    }
+	@Inject(method = "pickBlock", at = @At("RETURN"))
+	private void onPickBlock(CallbackInfo ci) {
+		StellaricaClient.INSTANCE.getNetworkHandler().sendPacket(Channel.ITEM_SYNC, new byte[0]);
+	}
 }

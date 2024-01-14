@@ -72,13 +72,12 @@ class StellaricaServer : JavaPlugin() {
 		parser.parse(Temporary)
 
 
-
 		// Register listeners here
 		arrayOf(
-			MultiblockHandler,
-			CustomItemHandler,
-			CustomBlockHandler,
-			ModdedPlayerHandler,
+				MultiblockHandler,
+				CustomItemHandler,
+				CustomBlockHandler,
+				ModdedPlayerHandler,
 		).forEach { getPluginManager().registerEvents(it, this) }
 	}
 }

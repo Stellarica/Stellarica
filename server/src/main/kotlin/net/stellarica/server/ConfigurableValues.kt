@@ -2,5 +2,5 @@ package net.stellarica.server
 
 object ConfigurableValues {
 	@Suppress("ConstPropertyName")
-	const val maxShipBlockCount = 50000
+	const val maxShipBlockCount = 5_000_000
 }

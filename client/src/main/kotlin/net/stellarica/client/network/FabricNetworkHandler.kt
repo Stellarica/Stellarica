@@ -7,7 +7,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.stellarica.common.networking.Channel
 import net.stellarica.common.networking.NetworkHandler
 
-class FabricNetworkHandler: NetworkHandler<ClientboundPacketListener> {
+class FabricNetworkHandler : NetworkHandler<ClientboundPacketListener> {
 	override val listeners = mutableMapOf<ClientboundPacketListener, Long>()
 
 	init {
