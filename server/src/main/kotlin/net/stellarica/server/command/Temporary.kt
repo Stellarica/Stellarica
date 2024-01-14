@@ -1,10 +1,11 @@
-package net.stellarica.server.craft.starship
+package net.stellarica.server.command
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandMethod
 import net.minecraft.world.level.block.Rotation
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.craft.CraftTransformation
+import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPosition
 import org.bukkit.craftbukkit.v1_20_R3.CraftWorld
