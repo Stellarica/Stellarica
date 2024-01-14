@@ -7,6 +7,7 @@ import cloud.commandframework.paper.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.server.command.CustomItemCommand
+import net.stellarica.server.command.MultiblockCommand
 import net.stellarica.server.command.Temporary
 import net.stellarica.server.material.block.CustomBlockHandler
 import net.stellarica.server.material.item.CustomItemHandler
@@ -71,9 +72,11 @@ class StellaricaServer : JavaPlugin() {
 				commandManager, CommandSender::class.java
 		) { SimpleCommandMeta.empty() }
 
-		parser.parse(Temporary)
-		parser.parse(CustomItemCommand)
-
+		arrayOf(
+				Temporary,
+				CustomItemCommand,
+				MultiblockCommand
+		).forEach { parser.parse(it) }
 
 		// Register listeners here
 		arrayOf(
