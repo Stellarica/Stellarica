@@ -1,12 +1,19 @@
 package net.stellarica.server.multiblock
 
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.decodeFromByteArray
+import kotlinx.serialization.encodeToByteArray
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.Multiblocks
+import net.stellarica.server.StellaricaServer.Companion.identifier
+import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.material.item.custom.DebugCustomItems
 import net.stellarica.server.material.item.type.ItemType
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPosition
 import net.stellarica.server.util.extension.toLocation
+import net.stellarica.server.util.extension.toNamespacedKey
 import net.stellarica.server.util.extension.vanilla
 import net.stellarica.server.util.sendRichActionBar
 import org.bukkit.Chunk
@@ -17,11 +24,15 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkUnloadEvent
+import org.bukkit.persistence.PersistentDataType
 
 object MultiblockHandler : Listener {
 	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
 
-	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) { mutableSetOf() } // todo: dont getorput
+	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) {
+		klogger.warn { "bug! aaaaa!" }
+		mutableSetOf()
+	} // todo: dont getorput
 
 
 	init {
@@ -72,14 +83,37 @@ object MultiblockHandler : Listener {
 		event.player.sendRichActionBar("<red>No multiblock detected")
 	}
 
+	private val pdcKey = identifier("multiblocks").toNamespacedKey()
+
+	@OptIn(ExperimentalSerializationApi::class, ExperimentalStdlibApi::class)
 	@EventHandler
 	fun onChunkLoad(event: ChunkLoadEvent) {
+		val bytes = event.chunk.persistentDataContainer.get(pdcKey, PersistentDataType.BYTE_ARRAY) ?: return
+		if (bytes.size <= 2) return // cursed hack, look into this!
 
+		val pos = "(${event.chunk.x}, ${event.chunk.z})"
+		try {
+			if (multiblocks.containsKey(event.chunk))
+				klogger.warn { "Chunk $pos already has multiblocks, which will be overwritten!" }
+
+			multiblocks[event.chunk] = Cbor.decodeFromByteArray<MutableSet<MultiblockInstance>>(bytes);
+		}
+		catch (e: Exception) {
+			e.printStackTrace()
+			klogger.error { "Could not load multiblocks in chunk $pos" }
+			multiblocks[event.chunk] = mutableSetOf()
+		}
 	}
 
+	@OptIn(ExperimentalSerializationApi::class)
 	@EventHandler
 	fun onChunkUnload(event: ChunkUnloadEvent) {
-		// saveToChunk(event.chunk)
-		multiblocks.remove(event.chunk)
+		val mb = multiblocks.remove(event.chunk) ?: mutableSetOf()
+		try {
+			event.chunk.persistentDataContainer.set(pdcKey, PersistentDataType.BYTE_ARRAY, Cbor.encodeToByteArray(mb))
+		} catch (e: Exception) {
+			e.printStackTrace()
+			klogger.error { "Could not save multiblocks to chunk (${event.chunk.x}, ${event.chunk.z})" }
+		}
 	}
 }

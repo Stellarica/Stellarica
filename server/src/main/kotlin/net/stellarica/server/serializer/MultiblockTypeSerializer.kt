@@ -1,4 +1,4 @@
-package net.stellarica.server.multiblock.type
+package net.stellarica.server.serializer
 
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.PrimitiveKind
