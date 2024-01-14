@@ -11,5 +11,6 @@ dependencies {
 	})
 
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kx_ser_version")}")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:${property("kx_ser_version")}")
 	compileOnly("io.github.microutils:kotlin-logging-jvm:${property("kt_log_version")}")
 }

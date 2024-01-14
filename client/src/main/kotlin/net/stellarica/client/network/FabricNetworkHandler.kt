@@ -1,17 +1,19 @@
 package net.stellarica.client.network
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.encodeToByteArray
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.stellarica.common.networking.Channel
 import net.stellarica.common.networking.NetworkHandler
 
+@OptIn(ExperimentalSerializationApi::class)
 class FabricNetworkHandler : NetworkHandler<ClientboundPacketListener> {
 	override val listeners = mutableMapOf<ClientboundPacketListener, Long>()
 
 	init {
-		for (channel in Channel.values()) {
+		for (channel in Channel.entries) {
 			ClientPlayNetworking.registerGlobalReceiver(channel.fabric) { _, _, buf, _ ->
 				onPacketRecv(channel, buf.array())
 			}
@@ -37,6 +39,6 @@ class FabricNetworkHandler : NetworkHandler<ClientboundPacketListener> {
 
 	/** Send [obj] (an object serializable with kotlinx.serialization) on [channel] to the server */
 	inline fun <reified T : Any> sendSerializableObject(channel: Channel, obj: T) {
-		sendPacket(channel, Json.encodeToString(obj).toByteArray())
+		sendPacket(channel, Cbor.encodeToByteArray(obj))
 	}
 }

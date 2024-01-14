@@ -36,6 +36,7 @@ dependencies {
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${property("kotlin_coroutines_version")}")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${property("kx_ser_version")}")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:${property("kx_ser_version")}")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:${property("kotlin_version")}")
 }
 

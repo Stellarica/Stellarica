@@ -1,7 +1,8 @@
 package net.stellarica.client.network
 
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.cbor.Cbor
 import net.stellarica.client.StellaricaClient
 import net.stellarica.common.networking.Channel
 import net.stellarica.common.networking.NetworkHandler
@@ -17,12 +18,13 @@ class ClientboundObjectListener<T : Any>(
 		val objectCallback: ClientboundObjectListener<T>.(T) -> Boolean
 ) : ClientboundPacketListener(handler as NetworkHandler<PacketListener>, channel, timeout, priority, ::internal) {
 	companion object {
+		@OptIn(ExperimentalSerializationApi::class)
 		private fun internal(listener: ClientboundPacketListener, data: ByteArray): Boolean {
 			@Suppress("UNCHECKED_CAST")
 			listener as ClientboundObjectListener<Any>
 			return listener.objectCallback(
 					listener,
-					Json.decodeFromString(listener.serializer, data.decodeToString())!!
+					Cbor.decodeFromByteArray(listener.serializer, data)!!
 			)
 		}
 	}

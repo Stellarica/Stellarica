@@ -1,7 +1,8 @@
 package net.stellarica.server.networking
 
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.encodeToByteArray
 import net.stellarica.common.networking.Channel
 import net.stellarica.common.networking.NetworkHandler
 import net.stellarica.server.StellaricaServer.Companion.klogger
@@ -9,6 +10,7 @@ import net.stellarica.server.StellaricaServer.Companion.plugin
 import org.bukkit.entity.Player
 import org.bukkit.plugin.messaging.PluginMessageListener
 
+@OptIn(ExperimentalSerializationApi::class)
 class BukkitNetworkHandler : PluginMessageListener, NetworkHandler<ServerboundPacketListener> {
 
 	override val listeners = mutableMapOf<ServerboundPacketListener, Long>()
@@ -23,7 +25,7 @@ class BukkitNetworkHandler : PluginMessageListener, NetworkHandler<ServerboundPa
 	override fun onPluginMessageReceived(channelString: String, player: Player, message: ByteArray?) {
 		message ?: return
 
-		val channel = Channel.values().firstOrNull { it.bukkit == channelString } ?: klogger.warn {
+		val channel = Channel.entries.firstOrNull { it.bukkit == channelString } ?: klogger.warn {
 			"Received packet on unknown channel $channelString, discarding!"
 		}.also { return }
 
@@ -49,7 +51,7 @@ class BukkitNetworkHandler : PluginMessageListener, NetworkHandler<ServerboundPa
 
 	/** Broadcast [obj] (an object serializable with kotlinx.serialization) on [channel] to all connected modded players */
 	inline fun <reified T : Any> broadcastSerializableObject(channel: Channel, obj: T) {
-		broadcastPacket(channel, Json.encodeToString(obj).toByteArray())
+		broadcastPacket(channel, Cbor.encodeToByteArray(obj))
 	}
 
 	/** Send [content] on [channel] to [player] */
@@ -59,7 +61,7 @@ class BukkitNetworkHandler : PluginMessageListener, NetworkHandler<ServerboundPa
 
 	/** Send [obj] (an object serializable with kotlinx.serialization) on [channel] to [player] */
 	inline fun <reified T : Any> sendSerializableObject(channel: Channel, player: Player, obj: T) {
-		sendPacket(channel, player, Json.encodeToString(obj).toByteArray())
+		sendPacket(channel, player, Cbor.encodeToByteArray(obj))
 	}
 
 	private infix fun Any?.isNullOrEq(other: Any?) = this == null || this == other
