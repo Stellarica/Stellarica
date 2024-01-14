@@ -1,6 +1,5 @@
 package net.stellarica.server.projectile
 
-import kotlinx.coroutines.delay
 import net.minecraft.server.level.ServerLevel
 import net.stellarica.server.util.Tasks
 import org.bukkit.FluidCollisionMode
@@ -14,6 +13,8 @@ class Projectile(val control: Control, val display: Display) {
 	lateinit var position: Vector3d
 		private set
 	lateinit var direction: Vector3d
+		private set
+	lateinit var origin: Vector3d
 		private set
 
 	var ticksAlive = 0
@@ -29,8 +30,9 @@ class Projectile(val control: Control, val display: Display) {
 	fun launch(world: ServerLevel, position: Vector3d, direction: Vector3d) {
 		if (ticksAlive != 0) throw IllegalStateException("Projectile already launched")
 		this.world = world
-		this.position = position
-		this.direction = direction
+		this.position = Vector3d(position)
+		this.origin = Vector3d(position)
+		this.direction = Vector3d(direction)
 
 		Tasks.syncRepeat(1, 1) {
 			update(this)
@@ -41,7 +43,7 @@ class Projectile(val control: Control, val display: Display) {
 		val data = control.update(this@Projectile)
 
 		if (!data.isAlive) {
-			r.cancel()
+			die(r)
 			return
 		}
 
@@ -58,7 +60,7 @@ class Projectile(val control: Control, val display: Display) {
 			)
 			if (res != null && (res.hitBlock != null || res.hitEntity != null)) {
 				if (!control.collision(this@Projectile, res)) {
-					r.cancel()
+					die(r)
 					return
 				}
 			}
@@ -69,5 +71,10 @@ class Projectile(val control: Control, val display: Display) {
 
 		display.update(this@Projectile)
 		ticksAlive++
+	}
+
+	private fun die(r: BukkitRunnable) {
+		display.onDeath(this)
+		r.cancel()
 	}
 }
