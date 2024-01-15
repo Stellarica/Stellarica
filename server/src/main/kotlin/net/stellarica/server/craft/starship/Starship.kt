@@ -15,6 +15,7 @@ import net.stellarica.server.craft.Craft
 import net.stellarica.server.craft.CraftContainer
 import net.stellarica.server.craft.CraftTransformation
 import net.stellarica.server.craft.Pilotable
+import net.stellarica.server.craft.Subcraft
 import net.stellarica.server.util.wrapper.ServerWorld
 import net.stellarica.server.util.extension.minus
 import net.stellarica.server.util.extension.plus
@@ -28,12 +29,14 @@ import org.bukkit.event.player.PlayerTeleportEvent
 class Starship : BasicCraft(), Pilotable, CraftContainer {
 
 	override val passengers = mutableSetOf<LivingEntity>()
-	override fun addPassenger(passenger: LivingEntity) {
+	override val subcrafts = mutableSetOf<Subcraft>()
 
+	override fun addPassenger(passenger: LivingEntity) {
+		passengers.add(passenger)
 	}
 
 	override fun removePassenger(passenger: LivingEntity) {
-
+		passengers.remove(passenger)
 	}
 
 	override var pilot: Player? = null
@@ -145,15 +148,18 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 		}
 	}
 
-	override fun addSubCraft(craft: Craft) {
-
+	override fun addSubCraft(craft: Subcraft) {
+		subcrafts.add(craft)
 	}
 
-	override fun removeSubCraft(craft: Craft) {
-
+	override fun removeSubCraft(craft: Subcraft) {
+		subcrafts.remove(craft)
 	}
 
 	override fun subcraftsContain(block: BlockPosition): Boolean {
-		TODO()
+		for (craft in subcrafts) {
+			if (craft.contains(block)) return true
+		}
+		return false
 	}
 }
