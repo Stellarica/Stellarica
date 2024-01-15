@@ -13,14 +13,17 @@ import net.stellarica.common.coordinate.RelativeBlockPosition
 import net.stellarica.common.util.rotate
 import net.stellarica.common.util.toBlockPos
 import net.stellarica.server.StellaricaServer.Companion.klogger
+import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.MultiblockInstance
+import net.stellarica.server.util.ServerWorld
+import net.stellarica.server.util.extension.bukkit
 import java.util.concurrent.ConcurrentHashMap
 
 abstract class BasicCraft : Craft, MultiblockContainer {
 
 	final override lateinit var origin: BlockPosition
 	final override lateinit var orientation: Direction
-	final override lateinit var world: ServerLevel
+	final override lateinit var world: ServerWorld
 		protected set
 
 	// You might think a list would be better, but we do so many .contains() checks
@@ -68,14 +71,14 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		val sameWorld = world == transformation.world
 		for (target in targets.values) {
 			val targetBlockPos = target.toBlockPos() // pain
-			val state = transformation.world.getBlockState(targetBlockPos)
+			val state = transformation.world.vanilla.getBlockState(targetBlockPos)
 
 			if (!state.isAir && !(sameWorld && detectedBlocks.contains(target))) {
 				return CraftCheckResult(true, null)
 			}
 
 			// also use this time to get the original state of these blocks
-			if (state.hasBlockEntity()) entities[target] = transformation.world.getBlockEntity(targetBlockPos)!!
+			if (state.hasBlockEntity()) entities[target] = transformation.world.vanilla.getBlockEntity(targetBlockPos)!!
 
 			original[target] = state
 		}
@@ -99,24 +102,24 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		for ((current, target) in data.targets) {
 			val currentPos = current.toBlockPos()
 			val targetPos = target.toBlockPos()
-			val currentBlock = data.original.getOrElse(current) { world.getBlockState(currentPos) }
+			val currentBlock = data.original.getOrElse(current) { world.vanilla.getBlockState(currentPos) }
 
 			// set the blocks
-			transformation.world.setBlockFast(targetPos, currentBlock.rotate(transformation.rotation))
+			transformation.world.vanilla.setBlockFast(targetPos, currentBlock.rotate(transformation.rotation))
 			newDetectedBlocks.add(target)
 
 			// move any entities
 			if (data.entities.contains(current) || currentBlock.hasBlockEntity()) {
-				val entity = data.entities.getOrElse(current) { world.getBlockEntity(currentPos)!! }
+				val entity = data.entities.getOrElse(current) { world.vanilla.getBlockEntity(currentPos)!! }
 
-				world.getChunk(currentPos).removeBlockEntity(currentPos)
+				world.vanilla.getChunk(currentPos).removeBlockEntity(currentPos)
 
 				entity.blockPos = targetPos
-				entity.level = transformation.world
+				entity.level = transformation.world.vanilla
 				entity.setChanged()
 
 
-				transformation.world.getChunk(targetPos).setBlockEntity(entity)
+				transformation.world.vanilla.getChunk(targetPos).setBlockEntity(entity)
 			}
 		}
 
@@ -126,7 +129,7 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 
 		// set air where we were
 		if (world == transformation.world) detectedBlocks.removeAll(newDetectedBlocks)
-		detectedBlocks.forEach { world.setBlockFast(it.toBlockPos(), Blocks.AIR.defaultBlockState()) }
+		detectedBlocks.forEach { world.vanilla.setBlockFast(it.toBlockPos(), Blocks.AIR.defaultBlockState()) }
 
 
 		this.world = transformation.world
@@ -136,7 +139,10 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 	}
 
 	protected fun moveMultiblocks(transformation: CraftTransformation) {
-		// todo
+		for (multiblockPos in multiblocks) {
+			val instance = getMultiblockAt(multiblockPos)!!
+			// todo
+		}
 	}
 
 	private fun calcNewCoords(transformation: CraftTransformation): Map<BlockPosition, BlockPosition> {

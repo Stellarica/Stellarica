@@ -7,8 +7,8 @@ import net.stellarica.common.serializer.DirectionSerializer
 import net.stellarica.common.serializer.UUIDSerializer
 import net.stellarica.server.craft.BlockContainer
 import net.stellarica.server.serializer.MultiblockTypeSerializer
-import net.stellarica.server.serializer.BukkitWorldSerializer
-import org.bukkit.World
+import net.stellarica.server.serializer.WorldSerializer
+import net.stellarica.server.util.ServerWorld
 import java.util.UUID
 
 @Serializable
@@ -16,8 +16,8 @@ class MultiblockInstance(
 		@Serializable(with = UUIDSerializer::class)
 		val id: UUID,
 		override var origin: BlockPosition,
-		@Serializable(with = BukkitWorldSerializer::class)
-		val world: World,
+		@Serializable(with = WorldSerializer::class)
+		val world: ServerWorld,
 		@Serializable(with = DirectionSerializer::class)
 		override var orientation: Direction,
 		@Serializable(with = MultiblockTypeSerializer::class)

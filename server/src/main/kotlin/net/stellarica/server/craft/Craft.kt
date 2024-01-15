@@ -1,9 +1,9 @@
 package net.stellarica.server.craft
 
-import net.minecraft.server.level.ServerLevel
+import net.stellarica.server.util.ServerWorld
 
 interface Craft : BlockContainer {
 	val blockCount: Int
-	val world: ServerLevel
+	val world: ServerWorld
 	fun transform(transformation: CraftTransformation): Boolean
 }

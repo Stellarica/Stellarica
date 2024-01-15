@@ -10,6 +10,7 @@ import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.material.item.custom.DebugCustomItems
 import net.stellarica.server.material.item.type.ItemType
+import net.stellarica.server.util.ServerWorld
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPosition
 import net.stellarica.server.util.extension.toLocation
@@ -27,31 +28,32 @@ import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.persistence.PersistentDataType
 
 object MultiblockHandler : Listener {
-	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
-
-	operator fun get(chunk: Chunk) = multiblocks.getOrPut(chunk) {
-		klogger.warn { "bug! aaaaa!" }
-		mutableSetOf()
-	} // todo: dont getorput
-
+	private val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
 
 	init {
 		Tasks.syncRepeat(5, 20) {
-			for ((_, mbSet) in multiblocks) {
-				val invalid = mutableSetOf<MultiblockInstance>()
-				for (multiblock in mbSet) {
-					if (!multiblock.validate()) {
-						invalid.add(multiblock)
-					} else {
-						//multiblock.type.tick(multiblock)
-					}
-				}
-				mbSet.removeAll(invalid)
-			}
+			invalidateMultiblocks()
 		}
 	}
 
-	fun detect(origin: BlockPosition, world: World): MultiblockInstance? {
+	private fun invalidateMultiblocks() {
+		for ((_, mbSet) in multiblocks) {
+			val invalid = mutableSetOf<MultiblockInstance>()
+			for (multiblock in mbSet) {
+				if (!multiblock.validate()) {
+					invalid.add(multiblock)
+				}
+			}
+			mbSet.removeAll(invalid)
+		}
+	}
+
+	fun getMultiblockAt(pos: BlockPosition, world: ServerWorld): MultiblockInstance? {
+		TODO()
+	}
+
+
+	private fun detect(origin: BlockPosition, world: ServerWorld): MultiblockInstance? {
 		val possible = mutableListOf<MultiblockInstance>()
 		for (type in Multiblocks) {
 			val instance = type.detectMultiblock(origin, world)
@@ -61,7 +63,7 @@ object MultiblockHandler : Listener {
 		}
 		// return the largest possible, in case there are multiple
 		return possible.maxByOrNull { it.type.blocks.size }?.also {
-			val chunk = world.getChunkAt(origin.toLocation(world))
+			val chunk = world.bukkit.getChunkAt(origin.toLocation(world))
 			multiblocks.getOrPut(chunk) { mutableSetOf() }.add(it)
 			chunk.vanilla.isUnsaved = true
 		}
@@ -76,7 +78,7 @@ object MultiblockHandler : Listener {
 					event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")
 					return
 				}
-		detect(event.clickedBlock!!.toBlockPosition(), event.player.world)?.let {
+		detect(event.clickedBlock!!.toBlockPosition(), ServerWorld(event.player.world))?.let {
 			event.player.sendRichActionBar("<green>Detected ${it.type.displayName}")
 			return
 		}
@@ -85,7 +87,7 @@ object MultiblockHandler : Listener {
 
 	private val pdcKey = identifier("multiblocks").toNamespacedKey()
 
-	@OptIn(ExperimentalSerializationApi::class, ExperimentalStdlibApi::class)
+	@OptIn(ExperimentalSerializationApi::class)
 	@EventHandler
 	fun onChunkLoad(event: ChunkLoadEvent) {
 		val bytes = event.chunk.persistentDataContainer.get(pdcKey, PersistentDataType.BYTE_ARRAY) ?: return

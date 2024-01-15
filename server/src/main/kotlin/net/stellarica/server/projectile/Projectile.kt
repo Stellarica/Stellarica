@@ -1,6 +1,6 @@
 package net.stellarica.server.projectile
 
-import net.minecraft.server.level.ServerLevel
+import net.stellarica.server.util.ServerWorld
 import net.stellarica.server.util.Tasks
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Location
@@ -9,7 +9,7 @@ import org.bukkit.util.Vector
 import org.joml.Vector3d
 
 class Projectile(val control: Control, val display: Display) {
-	lateinit var world: ServerLevel
+	lateinit var world: ServerWorld
 		private set
 	lateinit var position: Vector3d
 		private set
@@ -28,7 +28,7 @@ class Projectile(val control: Control, val display: Display) {
 			val isAlive: Boolean
 	)
 
-	fun launch(world: ServerLevel, position: Vector3d, direction: Vector3d) {
+	fun launch(world: ServerWorld, position: Vector3d, direction: Vector3d) {
 		if (ticksAlive != 0) throw IllegalStateException("Projectile already launched")
 		this.world = world
 		this.position = Vector3d(position)
@@ -50,8 +50,8 @@ class Projectile(val control: Control, val display: Display) {
 
 		if (data.doRaycast) {
 			val dist = data.delta.length()
-			val res = world.world.rayTrace(
-					Location(world.world, position.x, position.y, position.z),
+			val res = world.bukkit.rayTrace(
+					Location(world.bukkit, position.x, position.y, position.z),
 					data.delta.let { Vector(it.x, it.y, it.z) }.normalize(),
 					dist,
 					FluidCollisionMode.NEVER,

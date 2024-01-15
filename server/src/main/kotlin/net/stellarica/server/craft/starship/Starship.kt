@@ -2,7 +2,6 @@ package net.stellarica.server.craft.starship
 
 import io.papermc.paper.entity.TeleportFlag
 import net.minecraft.core.Direction
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Rotation
 import net.minecraft.world.phys.Vec3
 import net.stellarica.common.coordinate.BlockPosition
@@ -16,6 +15,7 @@ import net.stellarica.server.craft.Craft
 import net.stellarica.server.craft.CraftContainer
 import net.stellarica.server.craft.CraftTransformation
 import net.stellarica.server.craft.Pilotable
+import net.stellarica.server.util.ServerWorld
 import net.stellarica.server.util.extension.minus
 import net.stellarica.server.util.extension.plus
 import net.stellarica.server.util.extension.toBlockPosition
@@ -39,7 +39,7 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 	override var pilot: Player? = null
 		private set
 
-	fun setup(origin: BlockPosition, world: ServerLevel, orientation: Direction = Direction.NORTH) {
+	fun setup(origin: BlockPosition, world: ServerWorld, orientation: Direction = Direction.NORTH) {
 		this.origin = origin
 		this.world = world
 		this.orientation = orientation
@@ -72,10 +72,10 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 					else {
 						val o = passenger.location.toVec3().minus(passenger.location.toBlockLocation().toVec3())
 						(data.offset(passenger.location.toBlockPosition()).toVec3() + o)
-					}.toLocation(craft.world.world)
+					}.toLocation(craft.world)
 
 
-			destination.world = data.world.world
+			destination.world = data.world.bukkit
 			destination.pitch = passenger.location.pitch
 			destination.yaw = (passenger.location.yaw + data.rotation.asDegrees).toFloat()
 
@@ -111,7 +111,7 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 
 			for (currentBlock in blocksToCheck) {
 
-				val state = world.getBlockState(currentBlock.toBlockPos())
+				val state = world.vanilla.getBlockState(currentBlock.toBlockPos())
 				if (state.isAir) continue
 
 				if (detectedBlocks.size > ConfigurableValues.maxShipBlockCount) {
