@@ -21,27 +21,27 @@ object Tasks {
 	 * Delay [delay] ticks before starting.
 	 */
 	fun asyncDelay(delay: Long, block: BukkitRunnable.() -> Unit): BukkitTask =
-			Run { this.block() }.runTaskLaterAsynchronously(plugin, delay)
+		Run { this.block() }.runTaskLaterAsynchronously(plugin, delay)
 
 	/**
 	 * Run [block] as an asynchronous bukkit task, repeating every [interval] ticks.
 	 * Delay [delay] ticks before starting.
 	 */
 	fun asyncRepeat(delay: Long, interval: Long, block: BukkitRunnable.() -> Unit): BukkitTask =
-			Run { this.block() }.runTaskTimerAsynchronously(plugin, delay, interval)
+		Run { this.block() }.runTaskTimerAsynchronously(plugin, delay, interval)
 
 	/** Run [block] as a bukkit task on the next server tick */
 	inline fun sync(crossinline block: BukkitRunnable.() -> Unit): BukkitTask =
-			Run { this.block() }.runTask(plugin)
+		Run { this.block() }.runTask(plugin)
 
 	/** Run [block] as a bukkit task in [delay] ticks. */
 	inline fun syncDelay(delay: Long, crossinline block: BukkitRunnable.() -> Unit): BukkitTask =
-			Run { this.block() }.runTaskLater(plugin, delay)
+		Run { this.block() }.runTaskLater(plugin, delay)
 
 
 	/** Run [block] as a bukkit task in [delay] ticks, repeating every [interval] ticks. */
 	inline fun syncRepeat(delay: Long, interval: Long, crossinline block: BukkitRunnable.() -> Unit): BukkitTask =
-			Run { this.block() }.runTaskTimer(plugin, delay, interval)
+		Run { this.block() }.runTaskTimer(plugin, delay, interval)
 
 	// this is kinda jank, but it's the best thing I could come up with
 	// to allow the blocks to have the runnable context receiver.

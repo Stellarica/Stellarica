@@ -8,7 +8,6 @@ import net.stellarica.server.material.block.type.BlockType
 import net.stellarica.server.multiblock.matching.BlockMatcher
 import net.stellarica.server.util.ServerWorld
 import net.stellarica.server.util.extension.toLocation
-import org.bukkit.World
 import java.util.UUID
 
 abstract class MultiblockType {
@@ -20,11 +19,11 @@ abstract class MultiblockType {
 		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
 			if (validatePattern(facing, origin, world)) {
 				return MultiblockInstance(
-						UUID.randomUUID(),
-						origin,
-						world,
-						facing,
-						this,
+					UUID.randomUUID(),
+					origin,
+					world,
+					facing,
+					this,
 				)
 			}
 		}

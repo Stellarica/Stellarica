@@ -34,7 +34,7 @@ class BukkitNetworkHandler : PluginMessageListener, NetworkHandler<ServerboundPa
 
 		val toCall = listeners.keys.filter {
 			it.channel isNullOrEq channel &&
-					it.player isNullOrEq player
+				it.player isNullOrEq player
 		}.sortedBy { it.priority }
 
 		for (listener in toCall) {

@@ -5,7 +5,7 @@ import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.util.ServerWorld
 
 data class CraftTransformation(
-		val offset: (BlockPosition) -> BlockPosition,
-		val rotation: Rotation,
-		val world: ServerWorld
+	val offset: (BlockPosition) -> BlockPosition,
+	val rotation: Rotation,
+	val world: ServerWorld
 )

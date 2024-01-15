@@ -18,7 +18,6 @@ import net.stellarica.server.util.extension.toNamespacedKey
 import net.stellarica.server.util.extension.vanilla
 import net.stellarica.server.util.sendRichActionBar
 import org.bukkit.Chunk
-import org.bukkit.World
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -28,7 +27,7 @@ import org.bukkit.event.world.ChunkUnloadEvent
 import org.bukkit.persistence.PersistentDataType
 
 object MultiblockHandler : Listener {
-	private val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
+	internal val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
 
 	init {
 		Tasks.syncRepeat(5, 20) {
@@ -74,10 +73,10 @@ object MultiblockHandler : Listener {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
 		if (event.item?.let { ItemType.of(it) } != ItemType.of(DebugCustomItems.DETECTOR)) return
 		multiblocks[event.clickedBlock!!.chunk]?.firstOrNull { it.origin == event.clickedBlock!!.toBlockPosition() }
-				?.let {
-					event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")
-					return
-				}
+			?.let {
+				event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")
+				return
+			}
 		detect(event.clickedBlock!!.toBlockPosition(), ServerWorld(event.player.world))?.let {
 			event.player.sendRichActionBar("<green>Detected ${it.type.displayName}")
 			return
@@ -99,8 +98,7 @@ object MultiblockHandler : Listener {
 				klogger.warn { "Chunk $pos already has multiblocks, which will be overwritten!" }
 
 			multiblocks[event.chunk] = Cbor.decodeFromByteArray<MutableSet<MultiblockInstance>>(bytes);
-		}
-		catch (e: Exception) {
+		} catch (e: Exception) {
 			e.printStackTrace()
 			klogger.error { "Could not load multiblocks in chunk $pos" }
 			multiblocks[event.chunk] = mutableSetOf()

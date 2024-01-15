@@ -23,12 +23,12 @@ dependencies {
 	implementation("io.github.microutils:kotlin-logging-jvm:${property("kt_log_version")}")
 
 	listOf(
-			"cloud-core",
-			"cloud-paper",
-			"cloud-kotlin-extensions",
-			"cloud-kotlin-coroutines",
-			"cloud-kotlin-coroutines-annotations",
-			"cloud-annotations"
+		"cloud-core",
+		"cloud-paper",
+		"cloud-kotlin-extensions",
+		"cloud-kotlin-coroutines",
+		"cloud-kotlin-coroutines-annotations",
+		"cloud-annotations"
 	).forEach { implementation("cloud.commandframework:$it:${property("cloud_version")}") }
 
 	implementation("com.mineinabyss:protocolburrito:${property("protocolburrito_version")}") // Designed to be installed separately but uh.. :cringe:

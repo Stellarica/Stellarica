@@ -22,10 +22,10 @@ class Projectile(val control: Control, val display: Display) {
 		private set
 
 	data class ProjectileUpdate(
-			val delta: Vector3d,
-			val direction: Vector3d,
-			val doRaycast: Boolean,
-			val isAlive: Boolean
+		val delta: Vector3d,
+		val direction: Vector3d,
+		val doRaycast: Boolean,
+		val isAlive: Boolean
 	)
 
 	fun launch(world: ServerWorld, position: Vector3d, direction: Vector3d) {
@@ -51,13 +51,13 @@ class Projectile(val control: Control, val display: Display) {
 		if (data.doRaycast) {
 			val dist = data.delta.length()
 			val res = world.bukkit.rayTrace(
-					Location(world.bukkit, position.x, position.y, position.z),
-					data.delta.let { Vector(it.x, it.y, it.z) }.normalize(),
-					dist,
-					FluidCollisionMode.NEVER,
-					true,
-					0.1,
-					{ true }
+				Location(world.bukkit, position.x, position.y, position.z),
+				data.delta.let { Vector(it.x, it.y, it.z) }.normalize(),
+				dist,
+				FluidCollisionMode.NEVER,
+				true,
+				0.1,
+				{ true }
 			)
 			if (res != null && (res.hitBlock != null || res.hitEntity != null)) {
 				if (!control.collision(this@Projectile, res)) {

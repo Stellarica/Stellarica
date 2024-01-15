@@ -9,9 +9,9 @@ import net.minecraft.core.Direction
  */
 @Serializable
 data class RelativeBlockPosition(
-		val x: Int,
-		val y: Int,
-		val z: Int
+	val x: Int,
+	val y: Int,
+	val z: Int
 ) {
 	fun getGlobalPosition(origin: BlockPosition, direction: Direction): BlockPosition {
 		return when (direction) {

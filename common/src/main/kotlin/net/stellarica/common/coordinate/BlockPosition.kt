@@ -7,14 +7,14 @@ import net.stellarica.common.util.rotateBlockPosition
 
 @Serializable
 data class BlockPosition(
-		val x: Int,
-		val y: Int,
-		val z: Int
+	val x: Int,
+	val y: Int,
+	val z: Int
 ) {
 	fun getAsRelative(origin: BlockPosition, direction: Direction): RelativeBlockPosition {
 		// todo: don't use rotateCoordinates, use a when statement like getBlockPos
 		return (rotateBlockPosition(this, origin, direction.getRotFromNorth()) - origin)
-				.let { RelativeBlockPosition(it.x, it.y, it.z) }
+			.let { RelativeBlockPosition(it.x, it.y, it.z) }
 	}
 
 	operator fun minus(other: BlockPosition) = BlockPosition(x - other.x, y - other.y, z - other.z)

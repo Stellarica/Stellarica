@@ -9,7 +9,6 @@ import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.util.ServerWorld
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPosition
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld
 import org.bukkit.entity.Player
 import kotlin.system.measureTimeMillis
 
@@ -22,8 +21,8 @@ object Temporary {
 		val ship = ships.getOrPut(sender) {
 			Starship().also {
 				it.setup(
-						sender.getTargetBlockExact(16)!!.location.toBlockPosition(),
-						ServerWorld(sender.world)
+					sender.getTargetBlockExact(16)!!.location.toBlockPosition(),
+					ServerWorld(sender.world)
 				)
 			}
 		}

@@ -4,7 +4,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.minecraft.core.Direction
-import net.minecraft.server.level.ServerLevel
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.entity.BlockEntity
 import net.minecraft.world.level.block.state.BlockState
@@ -13,10 +12,8 @@ import net.stellarica.common.coordinate.RelativeBlockPosition
 import net.stellarica.common.util.rotate
 import net.stellarica.common.util.toBlockPos
 import net.stellarica.server.StellaricaServer.Companion.klogger
-import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.util.ServerWorld
-import net.stellarica.server.util.extension.bukkit
 import java.util.concurrent.ConcurrentHashMap
 
 abstract class BasicCraft : Craft, MultiblockContainer {
@@ -162,13 +159,13 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 	}
 
 	class PartialMoveData(
-			val targets: Map<BlockPosition, BlockPosition>,
-			val original: Map<BlockPosition, BlockState>,
-			val entities: Map<BlockPosition, BlockEntity>
+		val targets: Map<BlockPosition, BlockPosition>,
+		val original: Map<BlockPosition, BlockState>,
+		val entities: Map<BlockPosition, BlockEntity>
 	)
 
 	class CraftCheckResult(
-			val collision: Boolean,
-			val data: PartialMoveData?
+		val collision: Boolean,
+		val data: PartialMoveData?
 	)
 }

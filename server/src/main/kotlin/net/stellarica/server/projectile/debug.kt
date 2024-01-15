@@ -4,19 +4,18 @@ import net.stellarica.server.event.listen
 import net.stellarica.server.util.ServerWorld
 import org.bukkit.Material
 import org.bukkit.Particle
-import org.bukkit.craftbukkit.v1_20_R3.CraftWorld
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.util.RayTraceResult
 import org.joml.Vector3d
 
-class DebugControl(val speed: Double, val life: Int): Control {
+class DebugControl(val speed: Double, val life: Int) : Control {
 	override fun update(p: Projectile): Projectile.ProjectileUpdate {
 		return Projectile.ProjectileUpdate(
-				Vector3d(p.direction).normalize().mul(speed),
-				p.direction,
-				true,
-				p.ticksAlive < life
+			Vector3d(p.direction).normalize().mul(speed),
+			p.direction,
+			true,
+			p.ticksAlive < life
 		)
 	}
 
@@ -27,7 +26,7 @@ class DebugControl(val speed: Double, val life: Int): Control {
 	}
 }
 
-class DebugDisplay(): Display {
+class DebugDisplay() : Display {
 	override fun update(p: Projectile) {
 		p.world.bukkit.spawnParticle(Particle.SOUL_FIRE_FLAME, p.position.x, p.position.y, p.position.z, 1, 0.0, 0.0, 0.0, 0.0)
 	}

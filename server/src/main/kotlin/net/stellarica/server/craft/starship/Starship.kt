@@ -65,14 +65,14 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 			//
 			// However, without this dumb fix players do not rotate to the proper relative location
 			val destination =
-					if (data.rotation != Rotation.NONE) rotateCoordinates(
-							passenger.location.toVec3(),
-							craft.origin.toVec3().add(Vec3(0.5, 0.0, 0.5)), data.rotation
-					)
-					else {
-						val o = passenger.location.toVec3().minus(passenger.location.toBlockLocation().toVec3())
-						(data.offset(passenger.location.toBlockPosition()).toVec3() + o)
-					}.toLocation(craft.world)
+				if (data.rotation != Rotation.NONE) rotateCoordinates(
+					passenger.location.toVec3(),
+					craft.origin.toVec3().add(Vec3(0.5, 0.0, 0.5)), data.rotation
+				)
+				else {
+					val o = passenger.location.toVec3().minus(passenger.location.toBlockLocation().toVec3())
+					(data.offset(passenger.location.toBlockPosition()).toVec3() + o)
+				}.toLocation(craft.world)
 
 
 			destination.world = data.world.bukkit
@@ -80,10 +80,10 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 			destination.yaw = (passenger.location.yaw + data.rotation.asDegrees).toFloat()
 
 			passenger.teleport(
-					destination,
-					PlayerTeleportEvent.TeleportCause.PLUGIN,
-					TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY,
-					*TeleportFlag.Relative.entries.toTypedArray()
+				destination,
+				PlayerTeleportEvent.TeleportCause.PLUGIN,
+				TeleportFlag.EntityState.RETAIN_OPEN_INVENTORY,
+				*TeleportFlag.Relative.entries.toTypedArray()
 			)
 		}
 	}

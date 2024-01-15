@@ -6,7 +6,6 @@ import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.util.ServerWorld
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
-import org.bukkit.World
 import org.bukkit.block.Block
 
 fun Location.toVec3() = Vec3(x, y, z)

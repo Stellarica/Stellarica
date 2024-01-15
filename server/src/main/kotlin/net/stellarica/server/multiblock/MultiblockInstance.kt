@@ -13,15 +13,15 @@ import java.util.UUID
 
 @Serializable
 class MultiblockInstance(
-		@Serializable(with = UUIDSerializer::class)
-		val id: UUID,
-		override var origin: BlockPosition,
-		@Serializable(with = WorldSerializer::class)
-		val world: ServerWorld,
-		@Serializable(with = DirectionSerializer::class)
-		override var orientation: Direction,
-		@Serializable(with = MultiblockTypeSerializer::class)
-		val type: MultiblockType,
+	@Serializable(with = UUIDSerializer::class)
+	val id: UUID,
+	override var origin: BlockPosition,
+	@Serializable(with = WorldSerializer::class)
+	val world: ServerWorld,
+	@Serializable(with = DirectionSerializer::class)
+	override var orientation: Direction,
+	@Serializable(with = MultiblockTypeSerializer::class)
+	val type: MultiblockType,
 ) : BlockContainer {
 
 	fun validate() = type.validatePattern(orientation, origin, world)

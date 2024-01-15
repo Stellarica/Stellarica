@@ -12,6 +12,7 @@ class ServerWorld {
 	constructor(world: ServerLevel) {
 		vanilla = world
 	}
+
 	constructor(world: World) {
 		vanilla = (world as CraftWorld).handle
 	}

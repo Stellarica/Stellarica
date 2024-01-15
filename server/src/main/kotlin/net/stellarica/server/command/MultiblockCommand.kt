@@ -1,6 +1,5 @@
 package net.stellarica.server.command
 
-import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandMethod
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json

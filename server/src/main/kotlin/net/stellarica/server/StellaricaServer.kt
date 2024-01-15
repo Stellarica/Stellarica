@@ -60,30 +60,30 @@ class StellaricaServer : JavaPlugin() {
 		networkHandler = BukkitNetworkHandler()
 
 		val commandManager = PaperCommandManager(
-				this,
-				AsynchronousCommandExecutionCoordinator.builder<CommandSender>().build(),
-				{ it },
-				{ it }
+			this,
+			AsynchronousCommandExecutionCoordinator.builder<CommandSender>().build(),
+			{ it },
+			{ it }
 		).also {
 			it.registerAsynchronousCompletions()
 		}
 
 		val parser = AnnotationParser(
-				commandManager, CommandSender::class.java
+			commandManager, CommandSender::class.java
 		) { SimpleCommandMeta.empty() }
 
 		arrayOf(
-				Temporary,
-				CustomItemCommand,
-				MultiblockCommand
+			Temporary,
+			CustomItemCommand,
+			MultiblockCommand
 		).forEach { parser.parse(it) }
 
 		// Register listeners here
 		arrayOf(
-				MultiblockHandler,
-				CustomItemHandler,
-				CustomBlockHandler,
-				ModdedPlayerHandler,
+			MultiblockHandler,
+			CustomItemHandler,
+			CustomBlockHandler,
+			ModdedPlayerHandler,
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		aaaa()

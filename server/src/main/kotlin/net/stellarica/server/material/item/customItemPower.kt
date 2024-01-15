@@ -35,8 +35,8 @@ var ItemStack.power: Int?
 	get() {
 		if (!this.isPowerable) return null
 		return this.itemMeta.persistentDataContainer.get(
-				NamespacedKey(plugin, "item-power"),
-				PersistentDataType.INTEGER
+			NamespacedKey(plugin, "item-power"),
+			PersistentDataType.INTEGER
 		) ?: 0
 	}
 	set(value) {
@@ -52,9 +52,9 @@ var ItemStack.power: Int?
 
 		this.editMeta {
 			it.persistentDataContainer.set(
-					NamespacedKey(plugin, "item-power"),
-					PersistentDataType.INTEGER,
-					newPower
+				NamespacedKey(plugin, "item-power"),
+				PersistentDataType.INTEGER,
+				newPower
 			)
 			// In order to update the durability bar we need to set it to *not* be unbreakable
 			it.isUnbreakable = false
