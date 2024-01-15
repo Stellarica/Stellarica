@@ -4,31 +4,13 @@ import net.minecraft.core.Direction
 import net.minecraft.resources.ResourceLocation
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.common.coordinate.RelativeBlockPosition
-import net.stellarica.server.material.block.type.BlockType
 import net.stellarica.server.multiblock.matching.BlockMatcher
-import net.stellarica.server.util.ServerWorld
-import net.stellarica.server.util.extension.toLocation
-import java.util.UUID
+import net.stellarica.server.util.wrapper.ServerWorld
 
 abstract class MultiblockType {
 	abstract val displayName: String
 	abstract val id: ResourceLocation
 	abstract val blocks: Map<RelativeBlockPosition, BlockMatcher>
-
-	fun detectMultiblock(origin: BlockPosition, world: ServerWorld): MultiblockInstance? {
-		for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
-			if (validatePattern(facing, origin, world)) {
-				return MultiblockInstance(
-					UUID.randomUUID(),
-					origin,
-					world,
-					facing,
-					this,
-				)
-			}
-		}
-		return null
-	}
 
 	/**
 	 * Whether the collection of blocks at [origin] in [world] matches this multiblocks type
@@ -36,7 +18,7 @@ abstract class MultiblockType {
 	fun validatePattern(facing: Direction, origin: BlockPosition, world: ServerWorld): Boolean {
 		blocks.forEach { (relPos, matcher) ->
 			val globalPos = relPos.getGlobalPosition(origin, facing)
-			if (!matcher.matches(BlockType.of(world.bukkit.getBlockState(globalPos.toLocation(world))))) {
+			if (!matcher.matches(world.getBlockTypeAt(globalPos))) {
 				return false
 			} // A blocks we were expecting is missing, so break the function.
 		}

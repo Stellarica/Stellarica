@@ -3,7 +3,7 @@ package net.stellarica.server.util.extension
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.phys.Vec3
 import net.stellarica.common.coordinate.BlockPosition
-import net.stellarica.server.util.ServerWorld
+import net.stellarica.server.util.wrapper.ServerWorld
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.block.Block

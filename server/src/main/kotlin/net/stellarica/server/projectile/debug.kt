@@ -1,7 +1,7 @@
 package net.stellarica.server.projectile
 
 import net.stellarica.server.event.listen
-import net.stellarica.server.util.ServerWorld
+import net.stellarica.server.util.wrapper.ServerWorld
 import org.bukkit.Material
 import org.bukkit.Particle
 import org.bukkit.event.block.Action

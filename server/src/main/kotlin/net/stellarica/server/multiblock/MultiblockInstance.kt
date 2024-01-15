@@ -8,7 +8,7 @@ import net.stellarica.common.serializer.UUIDSerializer
 import net.stellarica.server.craft.BlockContainer
 import net.stellarica.server.serializer.MultiblockTypeSerializer
 import net.stellarica.server.serializer.WorldSerializer
-import net.stellarica.server.util.ServerWorld
+import net.stellarica.server.util.wrapper.ServerWorld
 import java.util.UUID
 
 @Serializable
@@ -23,7 +23,6 @@ class MultiblockInstance(
 	@Serializable(with = MultiblockTypeSerializer::class)
 	val type: MultiblockType,
 ) : BlockContainer {
-
 	fun validate() = type.validatePattern(orientation, origin, world)
 
 	override fun contains(block: BlockPosition): Boolean {

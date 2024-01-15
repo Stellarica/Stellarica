@@ -8,7 +8,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import net.stellarica.common.serializer.ResourceLocationSerializer
 import net.stellarica.server.StellaricaServer.Companion.plugin
-import net.stellarica.server.util.ServerWorld
+import net.stellarica.server.util.wrapper.ServerWorld
 import net.stellarica.server.util.extension.toNamespacedKey
 import net.stellarica.server.util.extension.toResourceLocation
 

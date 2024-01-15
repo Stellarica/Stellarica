@@ -1,6 +1,6 @@
 package net.stellarica.server.projectile
 
-import net.stellarica.server.util.ServerWorld
+import net.stellarica.server.util.wrapper.ServerWorld
 import net.stellarica.server.util.Tasks
 import org.bukkit.FluidCollisionMode
 import org.bukkit.Location

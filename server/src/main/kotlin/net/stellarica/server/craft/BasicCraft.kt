@@ -13,7 +13,7 @@ import net.stellarica.common.util.rotate
 import net.stellarica.common.util.toBlockPos
 import net.stellarica.server.StellaricaServer.Companion.klogger
 import net.stellarica.server.multiblock.MultiblockInstance
-import net.stellarica.server.util.ServerWorld
+import net.stellarica.server.util.wrapper.ServerWorld
 import java.util.concurrent.ConcurrentHashMap
 
 abstract class BasicCraft : Craft, MultiblockContainer {

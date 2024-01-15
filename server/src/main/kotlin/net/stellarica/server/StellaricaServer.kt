@@ -6,6 +6,7 @@ import cloud.commandframework.meta.SimpleCommandMeta
 import cloud.commandframework.paper.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
+import net.minecraft.server.level.ServerLevel
 import net.stellarica.server.command.CustomItemCommand
 import net.stellarica.server.command.MultiblockCommand
 import net.stellarica.server.command.Temporary
@@ -15,6 +16,8 @@ import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
 import net.stellarica.server.projectile.aaaa
+import net.stellarica.server.util.wrapper.ServerWorld
+import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
@@ -80,10 +83,10 @@ class StellaricaServer : JavaPlugin() {
 
 		// Register listeners here
 		arrayOf(
-			MultiblockHandler,
 			CustomItemHandler,
 			CustomBlockHandler,
 			ModdedPlayerHandler,
+			MultiblockHandler
 		).forEach { getPluginManager().registerEvents(it, this) }
 
 		aaaa()

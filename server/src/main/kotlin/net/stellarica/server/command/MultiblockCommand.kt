@@ -12,6 +12,6 @@ object MultiblockCommand {
 
 	@CommandMethod("multiblock dump")
 	fun dump(sender: CommandSender) {
-		sender.sendRichMessage("\n" + json.encodeToString(MultiblockHandler.multiblocks.map { "(${it.key.x}, ${it.key.z})" to it.value }))
+		sender.sendRichMessage("\n" + json.encodeToString(MultiblockHandler.getAllLoaded()))
 	}
 }

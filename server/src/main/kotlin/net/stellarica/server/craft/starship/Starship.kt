@@ -15,7 +15,7 @@ import net.stellarica.server.craft.Craft
 import net.stellarica.server.craft.CraftContainer
 import net.stellarica.server.craft.CraftTransformation
 import net.stellarica.server.craft.Pilotable
-import net.stellarica.server.util.ServerWorld
+import net.stellarica.server.util.wrapper.ServerWorld
 import net.stellarica.server.util.extension.minus
 import net.stellarica.server.util.extension.plus
 import net.stellarica.server.util.extension.toBlockPosition
