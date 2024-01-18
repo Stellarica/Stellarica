@@ -16,7 +16,7 @@ object CustomItemHandler : Listener {
 	 * @see [onAnvilEnchant]
 	 */
 	@EventHandler
-	fun onTableEnchant(event: PrepareItemEnchantEvent) {
+	private fun onTableEnchant(event: PrepareItemEnchantEvent) {
 		val item = ItemType.of(event.item) as? CustomItemType ?: return
 		for (i in 0..2) {
 			val offer = event.offers[i] ?: continue
@@ -29,7 +29,7 @@ object CustomItemHandler : Listener {
 	 * @see [onTableEnchant]
 	 */
 	@EventHandler
-	fun onAnvilEnchant(event: PrepareAnvilEvent) {
+	private fun onAnvilEnchant(event: PrepareAnvilEvent) {
 		val item = event.result?.let { ItemType.of(it) } as? CustomItemType ?: return
 		for (enchant in event.result!!.enchantments.keys) {
 			if (enchant !in (item.item.allowedEnchants ?: mutableSetOf())) event.result = null
@@ -38,14 +38,14 @@ object CustomItemHandler : Listener {
 	}
 
 	@EventHandler
-	fun onCustomItemPlace(event: BlockPlaceEvent) {
+	private fun onCustomItemPlace(event: BlockPlaceEvent) {
 		// prevent custom items with a vanilla type that's a block from being placed
 		val item = ItemType.of(event.itemInHand) as? CustomItemType ?: return
 		if (item.getBlock() == null) event.isCancelled = true
 	}
 
 	@EventHandler
-	fun onPowerableItemBreak(event: PlayerItemBreakEvent) {
+	private fun onPowerableItemBreak(event: PlayerItemBreakEvent) {
 		if (!event.brokenItem.isPowerable) return
 		// https://bukkit.org/threads/playeritembreakevent-cancelling.282678/
 		event.brokenItem.amount += 1 // If there's a custom item dupe it's probably because of this

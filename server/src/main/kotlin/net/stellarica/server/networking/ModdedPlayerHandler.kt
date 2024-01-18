@@ -47,9 +47,8 @@ object ModdedPlayerHandler : Listener {
 	}
 
 	@EventHandler
-	fun onPlayerJoin(event: PlayerJoinEvent) {
+	private fun onPlayerJoin(event: PlayerJoinEvent) {
 		Tasks.syncDelay(20) {
-			println("${event.player.name} joined, sending packet")
 			networkHandler.sendPacket(Channel.LOGIN, event.player, byteArrayOf(networkVersion, 0.toByte()))
 
 			ServerboundPacketListener(channel = Channel.LOGIN, timeout = 2000, player = event.player) { _, content ->
@@ -64,12 +63,12 @@ object ModdedPlayerHandler : Listener {
 	}
 
 	@EventHandler
-	fun onPlayerLeave(event: PlayerQuitEvent) {
+	private fun onPlayerLeave(event: PlayerQuitEvent) {
 		moddedPlayers.remove(event.player)
 	}
 
 	@EventHandler
-	fun onCreativeInventoryClick(event: InventoryCreativeEvent) {
+	private fun onCreativeInventoryClick(event: InventoryCreativeEvent) {
 		if (event.whoClicked !in moddedPlayers) return
 
 		// See https://wiki.vg/Protocol#Set_Creative_Mode_Slot

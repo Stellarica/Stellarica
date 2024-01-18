@@ -29,13 +29,15 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 	// that bad of iteration time anyway.
 	protected var detectedBlocks = mutableSetOf<BlockPosition>()
 
+	// Don't want to store the MultiblockInstances directly, as they might undetect,
+	// and keeping all of that in sync might be a nightmare.
 	protected val multiblocks = mutableSetOf<RelativeBlockPosition>()
 
 	override val blockCount: Int
 		get() = detectedBlocks.size
 
 	override fun contains(block: BlockPosition): Boolean {
-		return detectedBlocks.contains(block) // slow! (because list)
+		return detectedBlocks.contains(block)
 	}
 
 	override fun getMultiblockAt(pos: RelativeBlockPosition): MultiblockInstance? {

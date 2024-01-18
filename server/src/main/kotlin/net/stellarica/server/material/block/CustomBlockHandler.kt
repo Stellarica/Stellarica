@@ -16,7 +16,7 @@ import org.bukkit.event.block.BlockPlaceEvent
 
 object CustomBlockHandler : Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
-	fun onCustomBlockPlace(event: BlockPlaceEvent) {
+	private fun onCustomBlockPlace(event: BlockPlaceEvent) {
 		val type = ItemType.of(event.itemInHand)
 		if (!type.isCustom || type.getBlock() == null) return
 
@@ -24,7 +24,7 @@ object CustomBlockHandler : Listener {
 	}
 
 	@EventHandler
-	fun onBlockDropItem(event: BlockDropItemEvent) {
+	private fun onBlockDropItem(event: BlockDropItemEvent) {
 		val type = BlockType.of(event.blockState)
 		if (!type.isCustom) return
 
