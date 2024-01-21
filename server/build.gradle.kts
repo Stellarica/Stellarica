@@ -31,7 +31,6 @@ dependencies {
 		"cloud-annotations"
 	).forEach { implementation("cloud.commandframework:$it:${property("cloud_version")}") }
 
-	implementation("com.mineinabyss:protocolburrito:${property("protocolburrito_version")}") // Designed to be installed separately but uh.. :cringe:
 	compileOnly("com.comphenix.protocol:ProtocolLib:${property("protocollib_version")}")
 
 	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${property("kotlin_coroutines_version")}")
