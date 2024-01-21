@@ -39,7 +39,9 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:${property("kx_ser_version")}")
 	implementation("org.jetbrains.kotlin:kotlin-reflect:${property("kotlin_version")}")
 
-	implementation("org.graalvm:graal-sdk:${property("graal_sdk_version")}")
+	runtimeOnly("org.graalvm.polyglot:polyglot:${property("graal_sdk_version")}")
+	runtimeOnly("org.graalvm.polyglot:python:${property("graal_sdk_version")}")
+	implementation("org.graalvm.sdk:graal-sdk:${property("graal_sdk_version")}")
 }
 
 val version = property("mod_version")!!
