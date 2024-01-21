@@ -34,11 +34,3 @@ class DebugDisplay() : Display {
 	override fun onDeath(p: Projectile) {
 	}
 }
-
-fun aaaa() {
-	listen<PlayerInteractEvent>({ event ->
-		if (event.player.inventory.itemInMainHand.type != Material.BONE || (event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK)) return@listen
-		val p = Projectile(DebugControl(0.8, 40), DebugDisplay())
-		p.launch(ServerWorld(event.player.world), Vector3d(event.player.location.x, event.player.location.y, event.player.location.z), Vector3d(event.player.location.direction.x, event.player.location.direction.y, event.player.location.direction.z))
-	})
-}

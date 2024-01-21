@@ -6,7 +6,6 @@ import cloud.commandframework.meta.SimpleCommandMeta
 import cloud.commandframework.paper.PaperCommandManager
 import mu.KotlinLogging
 import net.minecraft.resources.ResourceLocation
-import net.minecraft.server.level.ServerLevel
 import net.stellarica.server.command.CustomItemCommand
 import net.stellarica.server.command.MultiblockCommand
 import net.stellarica.server.command.Temporary
@@ -15,9 +14,6 @@ import net.stellarica.server.material.item.CustomItemHandler
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
-import net.stellarica.server.projectile.aaaa
-import net.stellarica.server.util.wrapper.ServerWorld
-import org.bukkit.Bukkit
 import org.bukkit.Bukkit.getPluginManager
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
@@ -48,17 +44,15 @@ class StellaricaServer : JavaPlugin() {
 
 	private lateinit var networkHandler: BukkitNetworkHandler
 
-	override fun onEnable() {
-		if (this.server.name != "Nebula") klogger.error {
-			"""
-			Stellarica requires the Nebula server software, but seems to be running on ${this.server.name}!
-			You can find Nebula at https://github.com/Stellarica/Nebula
-				
-			The plugin will attempt to load anyway, but many features will be broken!
-			""".trimIndent()
-		}
+	var scriptingEnabled = false
+		private set
 
+	override fun onEnable() {
+		val start = System.currentTimeMillis()
 		plugin = this
+
+		checkNebula()
+		checkGraalVM()
 
 		networkHandler = BukkitNetworkHandler()
 
@@ -89,6 +83,38 @@ class StellaricaServer : JavaPlugin() {
 			MultiblockHandler
 		).forEach { getPluginManager().registerEvents(it, this) }
 
-		aaaa()
+		klogger.info { "Plugin startup took ${System.currentTimeMillis() - start}ms" }
+	}
+
+
+	private fun checkNebula() {
+		if (this.server.name != "Nebula") klogger.error {
+			"""
+			Stellarica requires the Nebula server software, but seems to be running on ${this.server.name}!
+			You can find Nebula at https://github.com/Stellarica/Nebula
+				
+			The plugin will attempt to load anyway, but many features will be broken!
+			""".trimIndent()
+		} else {
+			klogger.info { "Nebula in use!" }
+		}
+	}
+
+	private fun checkGraalVM() {
+		val vendor = System.getProperty("java.vendor.version")
+		klogger.info { "Running on $vendor" }
+		if (!vendor.contains("Graal")) {
+			klogger.warn {
+				"""
+				Stellarica requires GraalVM for in-game scripting, but seems to be running on ${System.getProperty("java.vm.name")}!
+				You can find GraalVM at https://www.graalvm.org/
+				
+				Most things should still work, but scripting will be disabled!
+				""".trimIndent()
+			}
+			scriptingEnabled = false
+		} else {
+			scriptingEnabled = true
+		}
 	}
 }
