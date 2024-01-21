@@ -7,16 +7,3 @@ load: STARTUP
 authors: [ "trainb0y", "Astralchroma", "HyperSoop", "Longy", "NovaManGood2110", "DoctorXeno" ]
 website: https://github.com/Stellarica/Stellarica
 prefix: Stellarica
-permissions:
-    stellarica.starship:
-        description: Lets users use starships
-        default: op
-    stellarica.material.give.self:
-        description: Lets users give custom items to themselves
-        default: op
-    stellarica.material.give.other:
-        description: Lets users give custom items to others
-        default: op
-    stellarica.debug:
-        description: Debug commands for various features
-        default: op
