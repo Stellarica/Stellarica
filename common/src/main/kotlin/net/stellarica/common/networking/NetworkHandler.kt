@@ -3,6 +3,10 @@ package net.stellarica.common.networking
 interface NetworkHandler<L : PacketListener> {
 	val listeners: MutableMap<L, Long>
 
+	operator fun plusAssign(listener: L) = register(listener)
+	operator fun minusAssign(listener: L) = unregister(listener)
+
+
 	/**
 	 * Register [listener]
 	 * If the listener has a timeout, it will expire that many milliseconds after this is called

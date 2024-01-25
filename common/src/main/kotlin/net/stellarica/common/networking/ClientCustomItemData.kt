@@ -15,13 +15,13 @@ data class ClientCustomItemData(
 	@Serializable(with = ResourceLocationSerializer::class)
 	val base: ResourceLocation,
 	val customModelData: Int,
-	val displayName: String // json format
+	val displayNameJson: String
 ) {
 	fun itemStack(): ItemStack {
 		val stack = ItemStack(BuiltInRegistries.ITEM.get(base))
 		stack.orCreateTag.putString("client_custom_item", id.toString())
 		stack.orCreateTag.putInt("CustomModelData", customModelData)
-		stack.hoverName = Component.Serializer.fromJson(displayName)!!.withStyle(Style.EMPTY.withItalic(false))
+		stack.hoverName = Component.Serializer.fromJson(displayNameJson)!!.withStyle(Style.EMPTY.withItalic(false))
 		return stack
 	}
 }

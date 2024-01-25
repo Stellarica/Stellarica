@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.CreativeModeTab
 import net.minecraft.world.item.ItemStack
 import net.minecraft.world.item.Items
+import net.stellarica.client.feature.Inventory
 import net.stellarica.client.network.ClientboundObjectListener
 import net.stellarica.client.network.ClientboundPacketListener
 import net.stellarica.client.network.FabricNetworkHandler
@@ -34,40 +35,35 @@ object StellaricaClient : ClientModInitializer {
 
 	val klogger = KotlinLogging.logger("Stellarica")
 
-	private val itemGroup: ResourceKey<CreativeModeTab> = ResourceKey.create(Registries.CREATIVE_MODE_TAB, identifier("item_group"))
-
-	val customItems = mutableSetOf<ClientCustomItemData>()
-
 	var connectedToServer = false
 		private set
 
 	fun identifier(path: String) = ResourceLocation("stellarica", path)
 	override fun onInitializeClient() {
-		println("sain and puffering")
+		klogger.info("sain and puffering")
 
 		networkHandler = FabricNetworkHandler()
 
-
-		Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, itemGroup, FabricItemGroup.builder()
-			.icon {
-				ItemStack(Items.FLINT).also {
-					it.orCreateTag.putInt("CustomModelData", 2)
-				}
-			}
-			.title(Component.literal("Stellarica"))
-			.build()
-		)
-
 		handleServerJoin()
-		handleCreativeMenu()
+		Inventory.setup()
 	}
 
 	private fun handleServerJoin() = ClientboundPacketListener(channel = Channel.LOGIN) {
 		networkHandler.sendPacket(Channel.LOGIN, byteArrayOf(networkVersion))
 
-		val serverVer = it.first()
-		if (networkVersion == serverVer) {
-			// success
+		val serverVersion = it.first()
+		if (networkVersion == serverVersion) {
+			connectedToServer = true
+		}
+
+		sendLoginToast(serverVersion)
+
+		klogger.info { "Connected to Stellarica Server! Server Version: $serverVersion, Client Version: $networkVersion" }
+		false
+	}.register()
+
+	private fun sendLoginToast(serverVersion: Byte) {
+		if (networkVersion == serverVersion) {
 			Minecraft.getInstance().toasts.addToast(
 				SystemToast(
 					SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
@@ -75,9 +71,7 @@ object StellaricaClient : ClientModInitializer {
 					Component.literal("Connected to server!")
 				)
 			)
-			connectedToServer = true
-		} else if (networkVersion < serverVer) {
-			// too old, upgrade
+		} else if (networkVersion < serverVersion) {
 			Minecraft.getInstance().toasts.addToast(
 				SystemToast(
 					SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
@@ -86,7 +80,6 @@ object StellaricaClient : ClientModInitializer {
 				)
 			)
 		} else {
-			// too new? downgrade??
 			Minecraft.getInstance().toasts.addToast(
 				SystemToast(
 					SystemToast.SystemToastId.PERIODIC_NOTIFICATION,
@@ -95,23 +88,5 @@ object StellaricaClient : ClientModInitializer {
 				)
 			)
 		}
-		klogger.info { "Connected to Stellarica Server! Server Version: $serverVer, Client Version: $networkVersion" }
-		false
-	}.register()
-
-	private fun handleCreativeMenu() {
-		ClientboundObjectListener<List<ClientCustomItemData>>(
-			serializer<List<ClientCustomItemData>>(),
-			channel = Channel.ITEM_SYNC
-		) { data ->
-			customItems.clear()
-			customItems.addAll(data)
-			false
-		}.register()
-
-		@Suppress("UnstableApiUsage")
-		ItemGroupEvents.modifyEntriesEvent(itemGroup).register(ModifyEntries { content: FabricItemGroupEntries ->
-			content.acceptAll(customItems.map { it.itemStack() })
-		})
 	}
 }
