@@ -14,7 +14,7 @@ import net.stellarica.server.craft.BasicCraft
 import net.stellarica.server.craft.Craft
 import net.stellarica.server.craft.CraftContainer
 import net.stellarica.server.craft.CraftTransformation
-import net.stellarica.server.craft.Pilotable
+import net.stellarica.server.craft.Rideable
 import net.stellarica.server.craft.Subcraft
 import net.stellarica.server.util.wrapper.ServerWorld
 import net.stellarica.server.util.extension.minus
@@ -26,7 +26,7 @@ import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
 
-class Starship : BasicCraft(), Pilotable, CraftContainer {
+class Starship : BasicCraft(), CraftContainer, Rideable {
 
 	override val passengers = mutableSetOf<LivingEntity>()
 	override val subcrafts = mutableSetOf<Subcraft>()
@@ -39,7 +39,7 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 		passengers.remove(passenger)
 	}
 
-	override var pilot: Player? = null
+	var pilot: Player? = null
 		private set
 
 	fun setup(origin: BlockPosition, world: ServerWorld, orientation: Direction = Direction.NORTH) {
@@ -48,15 +48,15 @@ class Starship : BasicCraft(), Pilotable, CraftContainer {
 		this.orientation = orientation
 	}
 
-	override fun pilot(pilot: Player) {
+	fun pilot(pilot: Player) {
 		this.pilot = pilot
 	}
 
-	override fun unpilot() {
+	fun unpilot() {
 		this.pilot = null
 	}
 
-	override fun movePassengers(craft: Craft, data: CraftTransformation) {
+	private fun movePassengers(craft: Craft, data: CraftTransformation) {
 		for (passenger in passengers) {
 			// TODO: FIX
 			// this is not a good solution because if there is any rotation, the player will not be translated by the offset
