@@ -5,6 +5,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.javaGetter
 
+// todo: this whole class needs to go, it's *nasty*
+// but hey it works for now
 class Jank<T>(private val cl: KClass<*>, private val idg: T.() -> ResourceLocation) :
 	Collection<T> by cl.sealedSubclasses.map({ def: KClass<out Any> ->
 		def.memberProperties.mapNotNull { prop ->
