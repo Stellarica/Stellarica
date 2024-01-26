@@ -28,7 +28,7 @@ sealed class MultiblockDef {
 	}
 
 	protected infix fun RelativeBlockPosition.match(blocks: Collection<Any>): Pair<RelativeBlockPosition, BlockMatcher> {
-		// this is kind of dumb but I'm against spamming BlockType.of() in multiblock definitions
+		// this is kind of dumb, but I'm against spamming BlockType.of() in multiblock definitions
 		return this to MultiBlockMatcher(blocks.map { block ->
 			when (block) {
 				is BlockType -> block

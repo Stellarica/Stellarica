@@ -10,13 +10,13 @@ import net.stellarica.server.Multiblocks
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.item.custom.DebugCustomItems
 import net.stellarica.server.material.item.type.ItemType
-import net.stellarica.server.util.wrapper.ServerWorld
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPosition
 import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.extension.toNamespacedKey
 import net.stellarica.server.util.extension.vanilla
 import net.stellarica.server.util.sendRichActionBar
+import net.stellarica.server.util.wrapper.ServerWorld
 import org.bukkit.Chunk
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -32,11 +32,11 @@ object MultiblockHandler : Listener {
 
 	init {
 		Tasks.syncRepeat(5, 20) {
-			invalidateMultiblocks()
+			removeInvalidMultiblocks()
 		}
 	}
 
-	private fun invalidateMultiblocks() {
+	private fun removeInvalidMultiblocks() {
 
 		for ((_, mbSet) in multiblocks) {
 			val invalid = mutableSetOf<MultiblockInstance>()
@@ -102,13 +102,15 @@ object MultiblockHandler : Listener {
 		for (type in Multiblocks) {
 			for (facing in setOf(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST)) {
 				if (type.validatePattern(facing, origin, world)) {
-					possible.add(MultiblockInstance(
-						UUID.randomUUID(),
-						origin,
-						world,
-						facing,
-						type,
-					))
+					possible.add(
+						MultiblockInstance(
+							UUID.randomUUID(),
+							origin,
+							world,
+							facing,
+							type,
+						)
+					)
 				}
 			}
 		}

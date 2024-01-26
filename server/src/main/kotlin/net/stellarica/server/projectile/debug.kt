@@ -28,7 +28,17 @@ class DebugControl(val speed: Double, val life: Int) : Control {
 
 class DebugDisplay() : Display {
 	override fun update(p: Projectile) {
-		p.world.bukkit.spawnParticle(Particle.SOUL_FIRE_FLAME, p.position.x, p.position.y, p.position.z, 1, 0.0, 0.0, 0.0, 0.0)
+		p.world.bukkit.spawnParticle(
+			Particle.SOUL_FIRE_FLAME,
+			p.position.x,
+			p.position.y,
+			p.position.z,
+			1,
+			0.0,
+			0.0,
+			0.0,
+			0.0
+		)
 	}
 
 	override fun onDeath(p: Projectile) {
@@ -37,8 +47,25 @@ class DebugDisplay() : Display {
 
 fun aaaa() {
 	listen<PlayerInteractEvent>({ event ->
-		if (event.player.inventory.itemInMainHand.type != Material.BONE || (event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK)) return@listen
+		if ( // todo: this whole thing is just for testing, remove it asap
+			// or at least use a real custom item
+			event.player.inventory.itemInMainHand.type != Material.BONE ||
+			(event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK)
+			) return@listen
+
 		val p = Projectile(DebugControl(0.8, 40), DebugDisplay())
-		p.launch(ServerWorld(event.player.world), Vector3d(event.player.location.x, event.player.location.y, event.player.location.z), Vector3d(event.player.location.direction.x, event.player.location.direction.y, event.player.location.direction.z))
+		p.launch(
+			ServerWorld(event.player.world),
+			Vector3d(
+				event.player.location.x,
+				event.player.location.y,
+				event.player.location.z
+			),
+			Vector3d(
+				event.player.location.direction.x,
+				event.player.location.direction.y,
+				event.player.location.direction.z
+			)
+		)
 	})
 }

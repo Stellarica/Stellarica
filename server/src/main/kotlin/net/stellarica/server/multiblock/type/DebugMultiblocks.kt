@@ -14,7 +14,7 @@ data object DebugMultiblocks : MultiblockDef() {
 			pos(0, 0, 0) match Blocks.DIAMOND_BLOCK,
 			pos(1, 0, 0) match BlockTags.IMPERMEABLE,
 			pos(-1, 0, 0) match BlockTags.IMPERMEABLE,
-			pos(0, 0, 1) match setOf(Blocks.IRON_BLOCK, Blocks.GOLD_BLOCK),
+			pos(0, 0, 1) match listOf(Blocks.IRON_BLOCK, Blocks.GOLD_BLOCK),
 			pos(0, 0, -1) match BlockTags.IMPERMEABLE
 		)
 	}

@@ -17,6 +17,8 @@ data class ClientCustomItemData(
 	val customModelData: Int,
 	val displayNameJson: String
 ) {
+	// I really don't like that this is a completely separate class from CustomItem
+	// todo: why aren't we just serializing and sending the normal server-side custom item data?
 	fun itemStack(): ItemStack {
 		val stack = ItemStack(BuiltInRegistries.ITEM.get(base))
 		stack.orCreateTag.putString("client_custom_item", id.toString())

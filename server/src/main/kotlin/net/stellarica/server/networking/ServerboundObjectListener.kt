@@ -17,8 +17,17 @@ class ServerboundObjectListener<T : Any>(
 	timeout: Long? = null,
 	priority: Int = 0,
 	val objectCallback: ServerboundObjectListener<T>.(Player, T) -> Boolean
-) : ServerboundPacketListener(handler as NetworkHandler<PacketListener>, channel, player, timeout, priority, ::internal) {
+) : ServerboundPacketListener(
+	handler as NetworkHandler<PacketListener>,
+	channel,
+	player,
+	timeout,
+	priority,
+	::internal
+) {
 	companion object {
+		// todo: cursed, come up with a better solution
+		// it does work though, so not super high priority
 		@OptIn(ExperimentalSerializationApi::class)
 		private fun internal(listener: ServerboundPacketListener, player: Player, data: ByteArray): Boolean {
 			@Suppress("UNCHECKED_CAST")

@@ -25,21 +25,20 @@ class BukkitNetworkHandler : PluginMessageListener, NetworkHandler<ServerboundPa
 	override fun onPluginMessageReceived(channelString: String, player: Player, message: ByteArray?) {
 		message ?: return
 
-		val channel = Channel.entries.firstOrNull { it.bukkit == channelString } ?: klogger.warn {
-			"Received packet on unknown channel $channelString, discarding!"
-		}.also { return }
-
-		val current = System.currentTimeMillis()
-		listeners.keys.removeIf { it.timeout != null && listeners[it]!! + it.timeout <= current }
-
-		val toCall = listeners.keys.filter {
-			it.channel isNullOrEq channel &&
-				it.player isNullOrEq player
-		}.sortedBy { it.priority }
-
-		for (listener in toCall) {
-			if (listener.callback(listener, player, message)) break
+		val channel = Channel.entries.firstOrNull { it.bukkit == channelString } ?: run {
+			klogger.warn { "Received packet on unknown channel $channelString, discarding!" }
+			return
 		}
+
+
+		listeners.keys
+			.also { keys ->
+				val current = System.currentTimeMillis()
+				keys.removeIf { it.timeout != null && listeners[it]!! + it.timeout <= current }
+			}
+			.filter { (it.channel ?: channel) == channel && (it.player ?: player) == player }
+			.sortedBy { it.priority }
+			.forEach { if (it.callback(it, player, message)) return }
 	}
 
 	/** Broadcast [content] on [channel] to all connected modded players */
@@ -49,20 +48,18 @@ class BukkitNetworkHandler : PluginMessageListener, NetworkHandler<ServerboundPa
 		}
 	}
 
-	/** Broadcast [obj] (an object serializable with kotlinx.serialization) on [channel] to all connected modded players */
+	/** Broadcasts [obj] (an object serializable with kotlinx.serialization) on [channel] to all connected modded players */
 	inline fun <reified T : Any> broadcastSerializableObject(channel: Channel, obj: T) {
 		broadcastPacket(channel, Cbor.encodeToByteArray(obj))
 	}
 
-	/** Send [content] on [channel] to [player] */
+	/** Sends [content] on [channel] to [player] */
 	fun sendPacket(channel: Channel, player: Player, packet: ByteArray) {
 		player.sendPluginMessage(plugin, channel.bukkit, packet)
 	}
 
-	/** Send [obj] (an object serializable with kotlinx.serialization) on [channel] to [player] */
+	/** Sends [obj] (an object serializable with kotlinx.serialization) on [channel] to [player] */
 	inline fun <reified T : Any> sendSerializableObject(channel: Channel, player: Player, obj: T) {
 		sendPacket(channel, player, Cbor.encodeToByteArray(obj))
 	}
-
-	private infix fun Any?.isNullOrEq(other: Any?) = this == null || this == other
 }

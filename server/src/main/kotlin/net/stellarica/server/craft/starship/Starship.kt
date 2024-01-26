@@ -16,12 +16,12 @@ import net.stellarica.server.craft.CraftContainer
 import net.stellarica.server.craft.CraftTransformation
 import net.stellarica.server.craft.Rideable
 import net.stellarica.server.craft.Subcraft
-import net.stellarica.server.util.wrapper.ServerWorld
 import net.stellarica.server.util.extension.minus
 import net.stellarica.server.util.extension.plus
 import net.stellarica.server.util.extension.toBlockPosition
 import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.extension.toVec3
+import net.stellarica.server.util.wrapper.ServerWorld
 import org.bukkit.entity.LivingEntity
 import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerTeleportEvent
@@ -46,14 +46,6 @@ class Starship : BasicCraft(), CraftContainer, Rideable {
 		this.origin = origin
 		this.world = world
 		this.orientation = orientation
-	}
-
-	fun pilot(pilot: Player) {
-		this.pilot = pilot
-	}
-
-	fun unpilot() {
-		this.pilot = null
 	}
 
 	private fun movePassengers(craft: Craft, data: CraftTransformation) {
@@ -108,7 +100,8 @@ class Starship : BasicCraft(), CraftContainer, Rideable {
 		detectedBlocks = mutableSetOf()
 		val checkedBlocks = nextBlocksToCheck.toMutableSet() // set for .contains performance
 
-		while (nextBlocksToCheck.size > 0) {
+		while (nextBlocksToCheck.isNotEmpty()) {
+
 			val blocksToCheck = nextBlocksToCheck
 			nextBlocksToCheck = mutableSetOf()
 
@@ -118,29 +111,23 @@ class Starship : BasicCraft(), CraftContainer, Rideable {
 				if (state.isAir) continue
 
 				if (detectedBlocks.size > ConfigurableValues.maxShipBlockCount) {
-					nextBlocksToCheck.clear()
 					detectedBlocks.clear()
-					break
+					return
 				}
 				detectedBlocks.add(currentBlock)
 
-				// Slightly condensed from MSP's nonsense, but this could be improved
-				for (x in listOf(-1, 1)) {
-					val block = currentBlock + BlockPosition(x, 0, 0)
+				// Honestly, doing this with loops is worse
+				val blocks = arrayOf(
+					currentBlock + BlockPosition(0, 1, 0),
+					currentBlock + BlockPosition(0, -1, 0),
+					currentBlock + BlockPosition(1, 0, 0),
+					currentBlock + BlockPosition(-1, 0, 0),
+					currentBlock + BlockPosition(0, 0, 1),
+					currentBlock + BlockPosition(0, 0, -1),
+				)
+
+				for (block in blocks) {
 					if (!checkedBlocks.contains(block)) {
-						nextBlocksToCheck.add(block)
-					}
-				}
-				for (z in listOf(-1, 1)) {
-					val block = currentBlock + BlockPosition(0, 0, z)
-					if (!checkedBlocks.contains(block)) {
-						nextBlocksToCheck.add(block)
-					}
-				}
-				for (y in -1..1) {
-					val block = currentBlock + BlockPosition(0, y, 0)
-					if (!checkedBlocks.contains(block)) {
-						checkedBlocks.add(block)
 						nextBlocksToCheck.add(block)
 					}
 				}

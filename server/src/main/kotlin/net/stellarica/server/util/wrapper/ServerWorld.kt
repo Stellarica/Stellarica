@@ -22,7 +22,7 @@ class ServerWorld {
 
 	fun getBlockTypeAt(pos: BlockPosition): BlockType {
 		// this feels slightly dirty, is there a better way?
-		// also nullability? what if it's not loaded there
+		// also nullability? what if it's not loaded there, pretty sure getBlockAt force sync loads the chunk
 		return BlockType.of(bukkit.getBlockAt(pos.x, pos.y, pos.z).blockData)
 	}
 
@@ -32,6 +32,7 @@ class ServerWorld {
 
 	override fun hashCode(): Int = vanilla.hashCode()
 	override fun equals(other: Any?): Boolean {
+		// I really don't like having this
 		return if (other is ServerWorld) {
 			vanilla == other.vanilla
 		} else {

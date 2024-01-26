@@ -6,11 +6,6 @@ interface NetworkHandler<L : PacketListener> {
 	operator fun plusAssign(listener: L) = register(listener)
 	operator fun minusAssign(listener: L) = unregister(listener)
 
-
-	/**
-	 * Register [listener]
-	 * If the listener has a timeout, it will expire that many milliseconds after this is called
-	 */
 	fun register(listener: L) {
 		listeners[listener] = System.currentTimeMillis()
 	}

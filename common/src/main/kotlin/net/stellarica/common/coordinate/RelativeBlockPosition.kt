@@ -4,9 +4,7 @@ import kotlinx.serialization.Serializable
 import net.minecraft.core.Direction
 
 
-/**
- * Coordinates relative to the origin of something
- */
+/** Represents coordinates relative to some other position */
 @Serializable
 data class RelativeBlockPosition(
 	val x: Int,

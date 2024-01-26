@@ -20,24 +20,23 @@ class FabricNetworkHandler : NetworkHandler<ClientboundPacketListener> {
 		}
 	}
 
-	private fun onPacketRecv(channel: Channel, message: ByteArray) {
-		val current = System.currentTimeMillis()
-		listeners.keys.removeIf { it.timeout != null && listeners[it]!! + it.timeout <= current }
-
-		val toCall = listeners.keys.filter {
-			it.channel == channel || it.channel == null
-		}.sortedBy { it.priority }
-		for (listener in toCall) {
-			if (listener.callback(listener, message)) break
+	private fun onPacketRecv(channel: Channel, message: ByteArray) = listeners.keys
+		// c h a i n s
+		.also { keys ->
+			val current = System.currentTimeMillis()
+			keys.removeIf { it.timeout != null && listeners[it]!! + it.timeout <= current }
 		}
-	}
+		.filter { it.channel == channel || it.channel == null }
+		.sortedBy { it.priority }
+		.forEach { if (it.callback(it, message)) return }
 
-	/** Send [content] on [channel] to the server */
+
+	/** Sends [content] on [channel] to the server plugin */
 	fun sendPacket(channel: Channel, content: ByteArray) {
 		ClientPlayNetworking.send(channel.fabric, PacketByteBufs.create().also { it.writeByteArray(content) })
 	}
 
-	/** Send [obj] (an object serializable with kotlinx.serialization) on [channel] to the server */
+	/** Sends [obj] (an object serializable with kotlinx.serialization) on [channel] to the server plugin */
 	inline fun <reified T : Any> sendSerializableObject(channel: Channel, obj: T) {
 		sendPacket(channel, Cbor.encodeToByteArray(obj))
 	}

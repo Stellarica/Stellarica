@@ -11,6 +11,7 @@ inline fun <reified T : BukkitEvent> listen(
 	priority: BukkitPriority = BukkitPriority.NORMAL,
 	ignoreCancelled: Boolean = false
 ) {
+	// a mild case of the cursed
 	plugin.server.pluginManager.registerEvent(
 		T::class.java,
 		object : BukkitListener {},

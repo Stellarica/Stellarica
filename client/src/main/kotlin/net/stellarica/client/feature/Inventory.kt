@@ -36,8 +36,9 @@ object Inventory {
 			false
 		}.register()
 
-		ItemGroupEvents.modifyEntriesEvent(itemGroup).register(ItemGroupEvents.ModifyEntries { content: FabricItemGroupEntries ->
-			content.acceptAll(customItems.map { it.itemStack() })
-		})
+		ItemGroupEvents.modifyEntriesEvent(itemGroup)
+			.register(ItemGroupEvents.ModifyEntries { content: FabricItemGroupEntries ->
+				content.acceptAll(customItems.map { it.itemStack() })
+			})
 	}
 }

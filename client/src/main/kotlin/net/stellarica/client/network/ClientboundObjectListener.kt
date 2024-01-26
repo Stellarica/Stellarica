@@ -18,6 +18,8 @@ class ClientboundObjectListener<T : Any>(
 	val objectCallback: ClientboundObjectListener<T>.(T) -> Boolean
 ) : ClientboundPacketListener(handler as NetworkHandler<PacketListener>, channel, timeout, priority, ::internal) {
 	companion object {
+		// todo: cursed, come up with a better solution
+		// it does work though, so not super high priority
 		@OptIn(ExperimentalSerializationApi::class)
 		private fun internal(listener: ClientboundPacketListener, data: ByteArray): Boolean {
 			@Suppress("UNCHECKED_CAST")

@@ -7,15 +7,16 @@ open class Event<D> {
 	open operator fun invoke(data: D) {
 		if (this is CancellableEvent) cancelled = false
 
-		listeners.sortedBy { it.priority }.forEach {
-			if ((this is CancellableEvent) && cancelled) {
-				return
+		listeners
+			.sortedBy { it.priority }
+			.forEach {
+				if ((this is CancellableEvent) && cancelled) {
+					return
+				}
+				it.onEvent(this, data)
 			}
-			it.onEvent(this, data)
-		}
 	}
 
-	fun listen(listener: Listener<D, Event<D>>) = listeners.add(listener)
 	operator fun plus(l: Listener<D, Event<D>>.(D) -> Unit) = listen(l)
 	fun listen(l: Listener<D, Event<D>>.(D) -> Unit, priority: Priority = Priority.NORMAL) {
 		// this is so incredibly cursed
@@ -29,6 +30,7 @@ open class Event<D> {
 			}
 		})
 	}
+	fun listen(listener: Listener<D, Event<D>>) = listeners.add(listener)
 
 	fun unregister(listener: Listener<D, Event<D>>) = assert(listeners.remove(listener))
 }
