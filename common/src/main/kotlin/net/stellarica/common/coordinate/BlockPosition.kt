@@ -12,10 +12,15 @@ data class BlockPosition(
 	val z: Int
 ) {
 	fun getAsRelative(origin: BlockPosition, direction: Direction): RelativeBlockPosition {
-		// todo: don't use rotateBlockPosition, use a when statement like RBP's getGlobalPosition
-		// rotateBlockPosition does a lot of trig that we really don't need to be doing here
-		return (rotateBlockPosition(this, origin, direction.getRotFromNorth()) - origin)
-			.let { RelativeBlockPosition(it.x, it.y, it.z) }
+		(this - origin).run {
+			return when (direction) {
+				Direction.NORTH -> RelativeBlockPosition(x, y, z)
+				Direction.SOUTH -> RelativeBlockPosition(-x, y, -z)
+				Direction.EAST -> RelativeBlockPosition(z, y, -x)
+				Direction.WEST -> RelativeBlockPosition(-z, y, x)
+				else -> throw IllegalArgumentException("Invalid direction $direction")
+			}
+		}
 	}
 
 	operator fun minus(other: BlockPosition) = BlockPosition(x - other.x, y - other.y, z - other.z)

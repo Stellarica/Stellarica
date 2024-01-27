@@ -2,6 +2,7 @@ package net.stellarica.server.command
 
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandMethod
+import net.minecraft.core.Direction
 import net.minecraft.world.level.block.Rotation
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.craft.CraftTransformation
@@ -77,5 +78,16 @@ object Temporary {
 	fun dump(sender: CommandSender){
 		sender.sendRichMessage("<blue>${ships.keys}")
 
+	}
+	
+	@CommandMethod("removeme")
+	fun temp(sender: Player) {
+		val o = BlockPosition(20,12,3)
+		sender.location.toBlockPosition()
+			.also { println(it) }
+			.getAsRelative(o, Direction.EAST)
+			.also { println(it) }
+			.getGlobalPosition(o, Direction.EAST)
+			.also { println(it) }
 	}
 }

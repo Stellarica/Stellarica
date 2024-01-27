@@ -17,7 +17,7 @@ class MultiblockInstance(
 	val id: UUID,
 	override var origin: BlockPosition,
 	@Serializable(with = WorldSerializer::class)
-	val world: ServerWorld,
+	var world: ServerWorld,
 	@Serializable(with = DirectionSerializer::class)
 	override var orientation: Direction,
 	@Serializable(with = MultiblockTypeSerializer::class)

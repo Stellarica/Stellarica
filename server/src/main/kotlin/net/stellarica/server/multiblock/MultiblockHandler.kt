@@ -91,7 +91,7 @@ object MultiblockHandler : Listener {
 	 */
 	fun moveMultiblock(multiblock: MultiblockInstance, newOrigin: BlockPosition, newWorld: ServerWorld) {
 		assert(multiblocks[multiblock.world.getChunkAt(multiblock.origin)]!!.remove(multiblock))
-		multiblocks[newWorld.getChunkAt(newOrigin)]!!.add(multiblock)
+		assert(multiblocks[newWorld.getChunkAt(newOrigin)]!!.add(multiblock))
 	}
 
 

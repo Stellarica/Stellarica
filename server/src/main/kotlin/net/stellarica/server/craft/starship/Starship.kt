@@ -16,6 +16,7 @@ import net.stellarica.server.craft.CraftContainer
 import net.stellarica.server.craft.CraftTransformation
 import net.stellarica.server.craft.Rideable
 import net.stellarica.server.craft.Subcraft
+import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.util.extension.minus
 import net.stellarica.server.util.extension.plus
 import net.stellarica.server.util.extension.toBlockPosition
@@ -96,25 +97,31 @@ class Starship : BasicCraft(), CraftContainer, Rideable {
 	}
 
 	fun detect() {
-		var nextBlocksToCheck = mutableSetOf(origin)
+		// todo: I don't like detect being in Starship... feels bad
+
+		multiblocks.clear() // todo: <- not the right place for this, and remove never gets called
 		detectedBlocks = mutableSetOf()
-		val checkedBlocks = nextBlocksToCheck.toMutableSet() // set for .contains performance
+		val nextBlocksToCheck = mutableSetOf(origin)
+		val blocksToCheck = mutableSetOf<BlockPosition>()
+		val checkedBlocks = mutableSetOf<BlockPosition>()
 
 		while (nextBlocksToCheck.isNotEmpty()) {
 
-			val blocksToCheck = nextBlocksToCheck
-			nextBlocksToCheck = mutableSetOf()
+			checkedBlocks.addAll(blocksToCheck)
+			blocksToCheck.clear()
+			blocksToCheck.addAll(nextBlocksToCheck)
+			nextBlocksToCheck.clear()
 
 			for (currentBlock in blocksToCheck) {
-
 				val state = world.vanilla.getBlockState(currentBlock.toBlockPos())
+
 				if (state.isAir) continue
+				detectedBlocks.add(currentBlock)
 
 				if (detectedBlocks.size > ConfigurableValues.maxShipBlockCount) {
 					detectedBlocks.clear()
 					return
 				}
-				detectedBlocks.add(currentBlock)
 
 				// Honestly, doing this with loops is worse
 				val blocks = arrayOf(
@@ -126,13 +133,15 @@ class Starship : BasicCraft(), CraftContainer, Rideable {
 					currentBlock + BlockPosition(0, 0, -1),
 				)
 
-				for (block in blocks) {
-					if (!checkedBlocks.contains(block)) {
-						nextBlocksToCheck.add(block)
-					}
-				}
+				nextBlocksToCheck.addAll(blocks.filterNot { checkedBlocks.contains(it) })
 			}
 		}
+
+		// probably a bad idea to go through all loaded multiblocks in the long run
+		// todo: what about multiblocks that contain undetectable blocks?
+		MultiblockHandler.getAllLoaded()
+			.filter { it.world == world && contains(it.origin) }
+			.forEach { addMultiblock(it) }
 	}
 
 	override fun addSubCraft(craft: Subcraft) {

@@ -12,6 +12,7 @@ import net.stellarica.common.coordinate.RelativeBlockPosition
 import net.stellarica.common.util.rotate
 import net.stellarica.common.util.toBlockPos
 import net.stellarica.server.StellaricaServer.Companion.klogger
+import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.multiblock.MultiblockInstance
 import net.stellarica.server.util.wrapper.ServerWorld
 import java.util.concurrent.ConcurrentHashMap
@@ -40,7 +41,7 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 	}
 
 	override fun getMultiblockAt(pos: RelativeBlockPosition): MultiblockInstance? {
-		TODO()
+		return MultiblockHandler.getMultiblockAt(this.getGlobalPos(pos), world)
 	}
 
 	override fun addMultiblock(multiblock: MultiblockInstance) {
@@ -138,10 +139,19 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 	}
 
 	protected fun moveMultiblocks(transformation: CraftTransformation) {
-		for (multiblockPos in multiblocks) {
-			val instance = getMultiblockAt(multiblockPos)!!
-			// todo
-		}
+		val invalid = mutableSetOf<RelativeBlockPosition>()
+
+		multiblocks
+			.mapNotNull { pos -> getMultiblockAt(pos) ?: run {invalid.add(pos); null} }
+			.forEach { instance ->
+				MultiblockHandler.moveMultiblock(instance, transformation.offset(instance.origin), transformation.world)
+
+				instance.origin = transformation.offset(instance.origin)
+				instance.orientation = transformation.rotation.rotate(instance.orientation)
+				instance.world = transformation.world
+			}
+
+		multiblocks.removeAll(invalid.also { println("invalid: $it") })
 	}
 
 	private fun calcNewCoords(transformation: CraftTransformation): Map<BlockPosition, BlockPosition> {
@@ -149,8 +159,9 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		val targetsCHM = ConcurrentHashMap<BlockPosition, BlockPosition>()
 
 		runBlocking {
-			for (section in detectedBlocks.chunked(detectedBlocks.size / 8)) {
+			for (section in detectedBlocks.chunked((detectedBlocks.size / 8).coerceAtLeast(128))) {
 				// chunk into sections to process parallel
+				// todo: I'm not sure this actually helps performance, should test it in the future
 				launch(Dispatchers.Default) {
 					val new = section.zip(section.map { current -> transformation.offset(current) })
 					targetsCHM.putAll(new)
