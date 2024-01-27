@@ -9,6 +9,7 @@ import net.stellarica.server.craft.starship.Starship
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPosition
 import net.stellarica.server.util.wrapper.ServerWorld
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import kotlin.system.measureTimeMillis
 
@@ -17,7 +18,9 @@ object Temporary {
 	val ships = mutableMapOf<Player, Starship>()
 
 	@CommandMethod("ship pilot")
-	fun pilot(sender: Player) {
+	fun pilot(sender: Player) = Tasks.sync {
+		// just a debugging command, but uh, pretty sure cloud has a way to run commands synchronously
+		// probably should just use that rather than tasks.sync
 		val ship = ships.getOrPut(sender) {
 			Starship().also {
 				it.setup(
@@ -39,10 +42,10 @@ object Temporary {
 	}
 
 	@CommandMethod("ship detect")
-	fun detect(sender: Player) {
+	fun detect(sender: Player) = Tasks.sync {
 		val ship = ships.getOrElse(sender) {
 			sender.sendRichMessage("<red>You aren't piloting a ship!")
-			return
+			return@sync
 		}
 		val oldCount = ship.blockCount;
 		val time = measureTimeMillis {
@@ -68,5 +71,11 @@ object Temporary {
 			}
 			sender.sendRichMessage("<green>Moved in ${time}ms")
 		}
+	}
+
+	@CommandMethod("ship dump")
+	fun dump(sender: CommandSender){
+		sender.sendRichMessage("<blue>${ships.keys}")
+
 	}
 }
