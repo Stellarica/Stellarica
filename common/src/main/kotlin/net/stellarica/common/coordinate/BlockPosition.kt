@@ -16,8 +16,8 @@ data class BlockPosition(
 			return when (direction) {
 				Direction.NORTH -> RelativeBlockPosition(x, y, z)
 				Direction.SOUTH -> RelativeBlockPosition(-x, y, -z)
-				Direction.EAST -> RelativeBlockPosition(z, y, -x)
-				Direction.WEST -> RelativeBlockPosition(-z, y, x)
+				Direction.EAST -> RelativeBlockPosition(-z, y, x)
+				Direction.WEST -> RelativeBlockPosition(z, y, -x)
 				else -> throw IllegalArgumentException("Invalid direction $direction")
 			}
 		}

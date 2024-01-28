@@ -3,14 +3,20 @@ package net.stellarica.server.command
 import cloud.commandframework.annotations.Argument
 import cloud.commandframework.annotations.CommandMethod
 import net.minecraft.core.Direction
+import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.level.block.Rotation
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.craft.CraftTransformation
 import net.stellarica.server.craft.starship.Starship
+import net.stellarica.server.material.block.type.BlockType
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPosition
+import net.stellarica.server.util.extension.toLocation
 import net.stellarica.server.util.wrapper.ServerWorld
+import org.bukkit.Color
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.BlockDisplay
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import kotlin.system.measureTimeMillis
 
@@ -89,5 +95,52 @@ object Temporary {
 			.also { println(it) }
 			.getGlobalPosition(o, Direction.EAST)
 			.also { println(it) }
+	}
+
+	@CommandMethod("cursedness")
+	fun cursed(sender: Player) = Tasks.sync {
+		val origin = sender.getTargetBlockExact(64)!!
+		val originDisplay = sender.world.spawnEntity(origin.toBlockPosition().toLocation(ServerWorld(sender.world)), EntityType.BLOCK_DISPLAY) as BlockDisplay
+		val catstare = { sender.world.spawnEntity(sender.location, EntityType.BLOCK_DISPLAY) as BlockDisplay }
+
+		val posDisplays = mutableMapOf(Direction.NORTH to catstare(), Direction.SOUTH to catstare(), Direction.EAST to catstare(), Direction.WEST to catstare())
+
+		val altPosDisplays = mutableMapOf(Direction.NORTH to catstare(), Direction.SOUTH to catstare(), Direction.EAST to catstare(), Direction.WEST to catstare())
+
+		posDisplays.forEach { (dir, disp) ->
+			disp.block = BlockType.of(Blocks.GLASS).getBukkitBlockData()
+			disp.isCustomNameVisible = true
+			disp.customName = dir.toString()
+			disp.glowColorOverride = Color.GREEN
+			disp.isGlowing = true
+			disp.viewRange = 256f
+		}
+
+		altPosDisplays.forEach { (dir, disp) ->
+			disp.block = BlockType.of(Blocks.GLASS).getBukkitBlockData()
+			disp.isCustomNameVisible = true
+			disp.customName = dir.toString()
+			disp.glowColorOverride = Color.RED
+			disp.isGlowing = true
+			disp.viewRange = 256f
+		}
+
+		originDisplay.glowColorOverride = Color.BLUE
+		originDisplay.isGlowing = true
+		originDisplay.block = BlockType.of(Blocks.GLASS).getBukkitBlockData()
+
+		Tasks.syncRepeat(0, 1) {
+			val playerPos = sender.location.toBlockPosition().let { it + BlockPosition(0, -1, 0)}
+				posDisplays.forEach { (dir, disp) ->
+					val rel = playerPos.getAsRelative(origin.toBlockPosition(), dir)
+					val pos = rel.getGlobalPosition(origin.toBlockPosition(), dir)
+					disp.teleport(pos.toLocation(ServerWorld(sender.world)))
+				}
+				altPosDisplays.forEach { (dir, disp) ->
+					val rel = playerPos.getAsRelative(origin.toBlockPosition(), dir)
+					disp.teleport(rel.let { BlockPosition(it.x, it.y - 1, it.z) + origin.toBlockPosition() }
+						.toLocation(ServerWorld(sender.world)))
+				}
+			}
 	}
 }
