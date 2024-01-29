@@ -28,7 +28,16 @@ import org.bukkit.persistence.PersistentDataType
 import java.util.UUID
 
 object MultiblockHandler : Listener {
+	/*
+	Hey, hey you, do you want to see something cursed?
+	Be glad I didn't end up using this:
+
+	private val multiblocks = object : MutableMap<Chunk, MutableSet<MultiblockInstance>> by mutableMapOf() {
+		override operator fun get(key: Chunk): MutableSet<MultiblockInstance> = getOrPut(key) { mutableSetOf() }
+	}
+	*/
 	private val multiblocks = mutableMapOf<Chunk, MutableSet<MultiblockInstance>>()
+
 
 	init {
 		Tasks.syncRepeat(5, 20) {
@@ -89,7 +98,7 @@ object MultiblockHandler : Listener {
 	 */
 	fun moveMultiblock(multiblock: MultiblockInstance, newOrigin: BlockPosition, newWorld: ServerWorld) {
 		assert(multiblocks[multiblock.world.getChunkAt(multiblock.origin)]!!.remove(multiblock))
-		assert(multiblocks[newWorld.getChunkAt(newOrigin)]!!.add(multiblock))
+		assert(multiblocks.getOrPut(newWorld.getChunkAt(newOrigin)){ mutableSetOf() }.add(multiblock))
 	}
 
 
