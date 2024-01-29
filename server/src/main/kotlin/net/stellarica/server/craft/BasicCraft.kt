@@ -90,8 +90,14 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		if (res.collision) {
 			return false
 		}
+
 		moveBlocks(transformation, res.data!!)
 		moveMultiblocks(transformation)
+
+		world = transformation.world
+		origin = transformation.offset(origin)
+		orientation = orientation.rotate(transformation.rotation)
+
 		return true
 	}
 
@@ -132,17 +138,14 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 		detectedBlocks.forEach { world.vanilla.setBlockFast(it.toBlockPos(), Blocks.AIR.defaultBlockState()) }
 
 
-		this.world = transformation.world
 		detectedBlocks = newDetectedBlocks
-		origin = transformation.offset(origin)
-		this.orientation = this.orientation.rotate(transformation.rotation)
 	}
 
 	protected fun moveMultiblocks(transformation: CraftTransformation) {
 		val invalid = mutableSetOf<RelativeBlockPosition>()
 
 		multiblocks
-			.mapNotNull { pos -> getMultiblockAt(pos) ?: run {invalid.add(pos); null} }
+			.mapNotNull { pos -> getMultiblockAt(pos) ?: run { invalid.add(pos); null} }
 			.forEach { instance ->
 				MultiblockHandler.moveMultiblock(instance, transformation.offset(instance.origin), transformation.world)
 
@@ -151,7 +154,7 @@ abstract class BasicCraft : Craft, MultiblockContainer {
 				instance.world = transformation.world
 			}
 
-		multiblocks.removeAll(invalid.also { println("invalid: $it") })
+		multiblocks.removeAll(invalid)
 	}
 
 	private fun calcNewCoords(transformation: CraftTransformation): Map<BlockPosition, BlockPosition> {

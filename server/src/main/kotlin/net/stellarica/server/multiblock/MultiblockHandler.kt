@@ -53,16 +53,13 @@ object MultiblockHandler : Listener {
 	 * @return the multiblock with origin at [pos], or null if none exists
 	 */
 	fun getMultiblockAt(pos: BlockPosition, world: ServerWorld): MultiblockInstance? {
-		val set = multiblocks[world.getChunkAt(pos)] ?: return null
-		return set.firstOrNull { it.origin == pos }
+		return multiblocks[world.getChunkAt(pos)]?.firstOrNull { it.origin == pos }
 	}
 
 	/**
 	 * @return the multiblock containing [pos] or null if none exists
 	 */
-	fun getMultiblockContaining(pos: BlockPosition, world: ServerWorld): MultiblockInstance? {
-		getMultiblockAt(pos, world)?.let { return it }
-
+	fun getMultiblocksContaining(pos: BlockPosition, world: ServerWorld): Collection<MultiblockInstance> {
 		val neighbors = arrayOf(
 			world.getChunkAt(pos),
 			world.getChunkAt(pos + BlockPosition(0, 0, 16)),
@@ -71,13 +68,14 @@ object MultiblockHandler : Listener {
 			world.getChunkAt(pos + BlockPosition(-16, 0, 0)),
 		)
 
+		val found = mutableSetOf<MultiblockInstance>()
 		for (chunk in neighbors) {
 			multiblocks[chunk]?.let { set ->
-				set.firstOrNull { it.contains(pos) }?.let { return it }
+				found.addAll(set.filter { it.contains(pos) })
 			}
 		}
 
-		return null
+		return found
 	}
 
 	fun getAllLoaded(): Collection<MultiblockInstance> {
