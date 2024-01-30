@@ -1,5 +1,6 @@
 package net.stellarica.server.material.item
 
+import net.stellarica.server.material.item.ItemPower.Companion.power
 import net.stellarica.server.material.item.type.CustomItemType
 import net.stellarica.server.material.item.type.ItemType
 import net.stellarica.server.util.Tasks
@@ -46,9 +47,9 @@ object CustomItemHandler : Listener {
 
 	@EventHandler
 	private fun onPowerableItemBreak(event: PlayerItemBreakEvent) {
-		if (!event.brokenItem.isPowerable) return
+		val p = event.brokenItem.power ?: return
 		// https://bukkit.org/threads/playeritembreakevent-cancelling.282678/
 		event.brokenItem.amount += 1 // If there's a custom item dupe it's probably because of this
-		Tasks.syncDelay(1) { event.brokenItem.power = 0 /* updates durability bar */ }
+		Tasks.syncDelay(1) { p.power = 0 /* updates durability bar */ }
 	}
 }

@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack
 import net.stellarica.server.StellaricaServer
 import net.stellarica.server.material.block.type.BlockType
 import net.stellarica.server.material.item.CustomItem
-import net.stellarica.server.material.item.power
+import net.stellarica.server.material.item.ItemPower.Companion.power
 import net.stellarica.server.util.asMiniMessage
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -41,7 +41,7 @@ value class CustomItemType(val item: CustomItem) : ItemType {
 			meta.lore(loreComponents)
 			meta.setCustomModelData(item.modelData)
 		}
-		if (item.isPowerable) stack.power = 0
+		if (item.isPowerable) stack.power!!.power = 0
 		return stack
 	}
 
