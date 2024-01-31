@@ -5,18 +5,21 @@ import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.resources.ResourceLocation
 import net.minecraft.world.item.Item
 import net.minecraft.world.item.ItemStack
-import net.stellarica.server.StellaricaServer
+import net.stellarica.server.StellaricaServer.Companion.identifier
 import net.stellarica.server.material.block.type.BlockType
 import net.stellarica.server.material.item.CustomItem
 import net.stellarica.server.material.item.ItemPower.Companion.power
 import net.stellarica.server.util.asMiniMessage
+import net.stellarica.server.util.extension.toNamespacedKey
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.craftbukkit.v1_20_R3.inventory.CraftItemStack
 import org.bukkit.persistence.PersistentDataType
 
 @JvmInline
 value class CustomItemType(val item: CustomItem) : ItemType {
+	companion object {
+		val key = identifier("custom_item_id").toNamespacedKey()
+	}
 
 	override fun getVanillaItemStack(count: Int): ItemStack {
 		return (getBukkitItemStack(count) as CraftItemStack).handle
@@ -26,7 +29,7 @@ value class CustomItemType(val item: CustomItem) : ItemType {
 		val stack = org.bukkit.inventory.ItemStack(item.base.getBukkitItem(), count)
 		stack.editMeta { meta ->
 			meta.persistentDataContainer.set(
-				NamespacedKey(StellaricaServer.plugin, "custom_item_id"),
+				key,
 				PersistentDataType.STRING,
 				item.id.toString()
 			)

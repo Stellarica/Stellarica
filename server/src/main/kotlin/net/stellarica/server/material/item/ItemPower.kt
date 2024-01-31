@@ -38,7 +38,7 @@ class ItemPower private constructor(val stack: ItemStack, private val type: Cust
 				return ItemPower(this, type.item)
 			}
 
-		private val key = identifier("item-power").toNamespacedKey()
+		private val key = identifier("item_power").toNamespacedKey()
 	}
 }
 
