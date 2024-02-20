@@ -8,7 +8,6 @@ import net.minecraft.core.Direction
 import net.stellarica.common.coordinate.BlockPosition
 import net.stellarica.server.Multiblocks
 import net.stellarica.server.StellaricaServer
-import net.stellarica.server.material.item.custom.DebugCustomItems
 import net.stellarica.server.material.item.type.ItemType
 import net.stellarica.server.util.Tasks
 import net.stellarica.server.util.extension.toBlockPosition
@@ -18,6 +17,7 @@ import net.stellarica.server.util.extension.vanilla
 import net.stellarica.server.util.sendRichActionBar
 import net.stellarica.server.util.wrapper.ServerWorld
 import org.bukkit.Chunk
+import org.bukkit.Material
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
@@ -133,7 +133,7 @@ object MultiblockHandler : Listener {
 	@EventHandler
 	private fun onPlayerAttemptDetect(event: PlayerInteractEvent) {
 		if (event.action != Action.RIGHT_CLICK_BLOCK) return
-		if (event.item?.let { ItemType.of(it) } != ItemType.of(DebugCustomItems.DETECTOR)) return
+		if (event.item?.let { ItemType.of(it) } != ItemType.of(Material.GLOW_INK_SAC)) return
 		getMultiblockAt(event.clickedBlock!!.toBlockPosition(), ServerWorld(event.player.world))
 			?.let {
 				event.player.sendRichActionBar("<dark_green>Found already detected ${it.type.displayName}")

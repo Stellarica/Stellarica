@@ -30,7 +30,7 @@ interface BlockType {
 		fun of(block: org.bukkit.block.data.BlockData): BlockType {
 			if (block !is NoteBlock) return of(block.material)
 
-			return CustomBlocks.firstOrNull {
+			return CustomBlocks.values.firstOrNull {
 				it.note == block.note && it.instrument == block.instrument
 			}?.let { CustomBlockType(it) } ?: of(block.material)
 		}

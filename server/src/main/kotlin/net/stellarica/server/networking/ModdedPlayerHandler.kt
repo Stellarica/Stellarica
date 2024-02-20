@@ -24,7 +24,7 @@ object ModdedPlayerHandler : Listener {
 	val networkHandler = BukkitNetworkHandler()
 	val moddedPlayers = mutableSetOf<Player>()
 
-	private val creativeItems = CustomItems.map {
+	private val creativeItems = CustomItems.values.map {
 		ClientCustomItemData(
 			it.id,
 			it.base.getId(),
