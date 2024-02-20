@@ -11,6 +11,7 @@ import net.stellarica.server.command.MultiblockCommand
 import net.stellarica.server.command.Temporary
 import net.stellarica.server.material.block.CustomBlockHandler
 import net.stellarica.server.material.item.CustomItemHandler
+import net.stellarica.server.material.loader.MaterialLoader
 import net.stellarica.server.multiblock.MultiblockHandler
 import net.stellarica.server.networking.BukkitNetworkHandler
 import net.stellarica.server.networking.ModdedPlayerHandler
@@ -58,6 +59,8 @@ class StellaricaServer : JavaPlugin() {
 		plugin = this
 
 		networkHandler = BukkitNetworkHandler()
+
+		MaterialLoader.load()
 
 		val commandManager = PaperCommandManager(
 			this,
