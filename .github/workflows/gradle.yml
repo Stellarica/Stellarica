@@ -16,6 +16,6 @@ jobs:
                     distribution: 'temurin'
 
             -   name: Build
-                uses: gradle/gradle-build-action@v3.1.0
+                uses: gradle/gradle-build-action@v3.4.2
                 with:
                     arguments: build
